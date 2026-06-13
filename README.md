@@ -10,6 +10,7 @@
 - リンクバジェット簡易診断
 - 920MHz LPWA、BLE、Wi-Fi、LTE-M、金属筐体の悪い例プリセット
 - Signal Flow Diagram、Link Margin Gauge、Distance vs Received Power Chart
+- Link Budget Waterfall Chart による利得・損失の可視化
 - Sensitivity Line Visual、Wavelength Visual、Decibel Scale Visual
 - 改善シミュレーションと相談用テキストコピー
 - FAQ、SEO metadata、JSON-LD、コラム/お問い合わせ導線
@@ -21,6 +22,8 @@
 ## 図解コンポーネント
 
 - `SignalFlowDiagram`: 送信出力、アンテナ利得、損失、受信電力、リンクマージンの流れをカードで表示
+- `LinkBudgetWaterfallChart`: 送信出力から利得・損失を積み上げ、推定受信電力に落ちるまでを滝グラフで表示
+- `RadioPathDiagram`: 送信側、空間損失、ケーブル・筐体・環境、受信側を経路図として表示
 - `LinkMarginGauge`: 0dB、10dB、20dBの判定基準をゲージで表示
 - `DistancePowerChart`: 距離を変えたときの推定受信電力と受信感度ラインを表示
 - `SensitivityLineVisual`: 受信電力と受信感度の上下関係を視覚化

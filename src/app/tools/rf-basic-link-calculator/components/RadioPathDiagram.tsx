@@ -1,0 +1,96 @@
+import { Box, Cable, RadioReceiver, RadioTower, Waves } from "lucide-react";
+import { formatDb, formatDbm } from "@/lib/rf/format";
+import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
+
+type RadioPathDiagramProps = {
+  input: LinkBudgetInput;
+  result: LinkBudgetResult;
+};
+
+export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
+  const distanceLabel =
+    input.distanceUnit === "km"
+      ? `${input.distance} km`
+      : `${input.distance} m`;
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="text-sm font-semibold text-staf">Path Diagram</p>
+          <h3 className="mt-1 text-lg font-bold text-slate-950">
+            電波が弱くなる場所を分けて見る
+          </h3>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+            同じリンクバジェットでも、弱くなる理由は「距離」「ケーブル」「筐体・環境」で分けて考えると改善点を見つけやすくなります。
+          </p>
+        </div>
+        <div className="rounded-lg bg-staf-light px-4 py-3 text-right">
+          <p className="text-xs font-semibold text-staf">推定受信電力</p>
+          <p className="text-2xl font-bold text-slate-950">{formatDbm(result.receivedPowerDbm)}</p>
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-3 lg:grid-cols-[1fr_1.2fr_1fr_1fr]">
+        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+          <RadioTower aria-hidden="true" className="h-7 w-7 text-emerald-700" />
+          <p className="mt-3 text-sm font-semibold text-emerald-950">送信側</p>
+          <p className="mt-1 text-2xl font-bold text-emerald-950">
+            {formatDbm(input.txPowerDbm)}
+          </p>
+          <p className="mt-1 text-xs text-emerald-800">
+            Txアンテナ {input.txAntennaGainDbi >= 0 ? "+" : ""}
+            {input.txAntennaGainDbi} dBi
+          </p>
+        </div>
+
+        <div className="relative overflow-hidden rounded-lg border border-sky-200 bg-sky-50 p-4">
+          <div className="absolute inset-x-5 top-1/2 h-1 -translate-y-1/2 rounded-full bg-sky-200" />
+          <div className="relative flex h-full min-h-32 items-center justify-between gap-3">
+            <Waves aria-hidden="true" className="h-9 w-9 text-sky-700" />
+            <div className="text-center">
+              <p className="text-sm font-semibold text-sky-950">空間で広がる</p>
+              <p className="mt-1 text-2xl font-bold text-sky-950">-{formatDb(result.fsplDb)}</p>
+              <p className="mt-1 text-xs text-sky-800">
+                {distanceLabel} / {input.frequencyMHz} MHz
+              </p>
+            </div>
+            <Waves aria-hidden="true" className="h-9 w-9 rotate-180 text-sky-700" />
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+          <div className="flex items-center gap-2">
+            <Cable aria-hidden="true" className="h-6 w-6 text-rose-700" />
+            <Box aria-hidden="true" className="h-6 w-6 text-rose-700" />
+          </div>
+          <p className="mt-3 text-sm font-semibold text-rose-950">ケーブル・筐体・環境</p>
+          <p className="mt-1 text-2xl font-bold text-rose-950">
+            -{formatDb(input.cableLossDb + input.environmentLossDb)}
+          </p>
+          <p className="mt-1 text-xs text-rose-800">
+            ケーブル {input.cableLossDb} dB / 環境 {input.environmentLossDb} dB
+          </p>
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <RadioReceiver aria-hidden="true" className="h-7 w-7 text-slate-700" />
+          <p className="mt-3 text-sm font-semibold text-slate-950">受信側</p>
+          <p className="mt-1 text-2xl font-bold text-slate-950">
+            {formatDbm(result.receivedPowerDbm)}
+          </p>
+          <p className="mt-1 text-xs text-slate-600">
+            受信感度 {formatDbm(input.receiverSensitivityDbm)}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <p className="text-sm font-semibold text-slate-950">改善の読み方</p>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+          滝グラフで大きく落ちている部分が、通信余裕を削っている主因です。距離損失が大きい場合は距離や周波数、環境損失が大きい場合は筐体材質・金属近接・アンテナ配置を重点的に確認します。
+        </p>
+      </div>
+    </section>
+  );
+}

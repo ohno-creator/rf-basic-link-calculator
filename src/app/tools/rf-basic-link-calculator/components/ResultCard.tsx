@@ -10,8 +10,10 @@ import { BeginnerExplanation } from "./BeginnerExplanation";
 import { ConsultationCta } from "./ConsultationCta";
 import { DistancePowerChart } from "./DistancePowerChart";
 import { ImprovementSimulator } from "./ImprovementSimulator";
+import { LinkBudgetWaterfallChart } from "./LinkBudgetWaterfallChart";
 import { LinkMarginGauge } from "./LinkMarginGauge";
 import { NextCheckpoints } from "./NextCheckpoints";
+import { RadioPathDiagram } from "./RadioPathDiagram";
 import { SensitivityLineVisual } from "./SensitivityLineVisual";
 import { SignalFlowDiagram } from "./SignalFlowDiagram";
 
@@ -109,6 +111,8 @@ export function ResultCard({ input, result, errors }: ResultCardProps) {
       </section>
 
       <BeginnerExplanation input={input} result={result} />
+      <LinkBudgetWaterfallChart input={input} result={result} />
+      <RadioPathDiagram input={input} result={result} />
       <SignalFlowDiagram input={input} result={result} />
       <LinkMarginGauge result={result} />
       <DistancePowerChart input={input} />
