@@ -57,6 +57,14 @@ npm run build
 - `/`: ツールへの簡易トップページ
 - `/tools/rf-basic-link-calculator`: RF Basic Link Calculator 本体
 
+## 公開URL
+
+GitHub Pages:
+
+https://ohno-creator.github.io/rf-basic-link-calculator/
+
+GitHub Pages ではリポジトリ名のサブパスで配信するため、Actions 実行時だけ `GITHUB_PAGES=true` を指定し、Next.js の `basePath` を `/rf-basic-link-calculator` に切り替えています。
+
 ## 計算式
 
 ```text

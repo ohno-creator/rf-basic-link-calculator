@@ -18,9 +18,9 @@ export function Header() {
           </span>
         </Link>
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 md:flex">
-          <a className="hover:text-staf" href="/tools/rf-basic-link-calculator">
+          <Link className="hover:text-staf" href="/tools/rf-basic-link-calculator">
             ツール
-          </a>
+          </Link>
           <a className="hover:text-staf" href={COLUMN_URL}>
             解説コラム
           </a>
