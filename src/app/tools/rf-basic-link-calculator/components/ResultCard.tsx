@@ -14,6 +14,7 @@ import { LinkBudgetWaterfallChart } from "./LinkBudgetWaterfallChart";
 import { LinkMarginGauge } from "./LinkMarginGauge";
 import { NextCheckpoints } from "./NextCheckpoints";
 import { RadioPathDiagram } from "./RadioPathDiagram";
+import { ResultReadingGuide } from "./ResultReadingGuide";
 import { SensitivityLineVisual } from "./SensitivityLineVisual";
 import { SignalFlowDiagram } from "./SignalFlowDiagram";
 
@@ -110,6 +111,7 @@ export function ResultCard({ input, result, errors }: ResultCardProps) {
         </a>
       </section>
 
+      <ResultReadingGuide input={input} result={result} />
       <BeginnerExplanation input={input} result={result} />
       <LinkBudgetWaterfallChart input={input} result={result} />
       <RadioPathDiagram input={input} result={result} />

@@ -10,12 +10,18 @@ import {
 import { DbmConverterPanel } from "./DbmConverterPanel";
 import { FrequencyWavelengthPanel } from "./FrequencyWavelengthPanel";
 import { FsplPanel } from "./FsplPanel";
+import { InputImpactGuide } from "./InputImpactGuide";
+import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
 import { ResultCard } from "./ResultCard";
+import { StickyResultSummary } from "./StickyResultSummary";
 
 type CalculatorTabsProps = {
   input: LinkBudgetInput;
   onInputChange: (input: LinkBudgetInput) => void;
+  onReset: () => void;
+  onShare: () => void;
+  shareState: ShareState;
 };
 
 type TabId = "link" | "frequency" | "dbm" | "fspl";
@@ -27,7 +33,15 @@ const tabs: Array<{ id: TabId; label: string; description: string }> = [
   { id: "fspl", label: "自由空間損失", description: "距離による損失" }
 ];
 
-export function CalculatorTabs({ input, onInputChange }: CalculatorTabsProps) {
+const RESULT_ANCHOR_ID = "link-budget-result";
+
+export function CalculatorTabs({
+  input,
+  onInputChange,
+  onReset,
+  onShare,
+  shareState
+}: CalculatorTabsProps) {
   const [activeTab, setActiveTab] = useState<TabId>("link");
   const errors = useMemo(() => validateLinkBudgetInput(input), [input]);
   const result = useMemo(() => {
@@ -74,10 +88,19 @@ export function CalculatorTabs({ input, onInputChange }: CalculatorTabsProps) {
       </div>
 
       {activeTab === "link" ? (
-        <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-          <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
-          <ResultCard input={input} result={result} errors={errors} />
-        </div>
+        <>
+          <div className="mb-5">
+            <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
+          </div>
+          <InputImpactGuide />
+          <div className="mt-5 grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
+            <div id={RESULT_ANCHOR_ID} className="scroll-mt-24">
+              <ResultCard input={input} result={result} errors={errors} />
+            </div>
+          </div>
+          {result ? <StickyResultSummary result={result} targetId={RESULT_ANCHOR_ID} /> : null}
+        </>
       ) : null}
       {activeTab === "frequency" ? <FrequencyWavelengthPanel /> : null}
       {activeTab === "dbm" ? <DbmConverterPanel /> : null}

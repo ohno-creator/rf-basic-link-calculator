@@ -11,6 +11,16 @@ export function JsonLd() {
       url: TOOL_URL,
       applicationCategory: "EngineeringApplication",
       operatingSystem: "Web",
+      featureList: [
+        "リンクバジェット簡易診断",
+        "周波数・波長計算",
+        "dBm / mW / W 変換",
+        "自由空間損失 FSPL 計算",
+        "VSWR・リターンロス変換",
+        "同軸線路インピーダンス計算",
+        "フレネルゾーン半径計算",
+        "伝搬損失計算（奥村-秦 / COST 231-Hata）"
+      ],
       provider: {
         "@type": "Organization",
         name: "スタッフ株式会社",
