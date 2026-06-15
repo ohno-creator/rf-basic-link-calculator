@@ -55,15 +55,12 @@ test("microstrip impedance reacts to trace width", async ({ page }) => {
   await expect(page.getByText("87.5 Ω").first()).toBeVisible();
 });
 
-test("microstrip bend miter reacts to angle", async ({ page }) => {
+test("microstrip bend significance reacts to frequency", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
-  const angle = page.locator('input[type="range"]').first();
-  await angle.evaluate((el: HTMLInputElement) => {
-    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
-    setter?.call(el, "45");
-    el.dispatchEvent(new Event("input", { bubbles: true }));
-  });
-  await expect(page.getByText("45°").first()).toBeVisible();
+  // default 2.4GHz, 3mm trace -> the bend is electrically small
+  await expect(page.getByText("ほぼ無視できる")).toBeVisible();
+  await page.locator("#msFreq").fill("10000");
+  await expect(page.getByText("大きい（要対策）")).toBeVisible();
 });
 
 test("fresnel page includes the IoT deep-dive", async ({ page }) => {

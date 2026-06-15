@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  bendSignificance,
+  guidedWavelengthMm,
+  isMiterFormulaApplicable,
   microstripImpedance,
   miterCutbackMm,
   optimalMiterPercent,
-  recommendedMiterPercent
+  recommendedBendRadiusMm
 } from "@/lib/rf/microstrip";
 
 describe("microstrip impedance", () => {
@@ -31,14 +34,26 @@ describe("microstrip mitered bend", () => {
     expect(optimalMiterPercent(3.0, 1.6)).toBeCloseTo(57.2, 1);
   });
 
-  it("scales the recommended miter with the bend angle", () => {
-    const full = recommendedMiterPercent(3.0, 1.6, 90);
-    const half = recommendedMiterPercent(3.0, 1.6, 45);
-    expect(full).toBeCloseTo(optimalMiterPercent(3.0, 1.6), 5);
-    expect(half).toBeCloseTo(full / 2, 5);
+  it("flags when the miter formula is out of its validity range", () => {
+    expect(isMiterFormulaApplicable(3.0, 1.6, 4.4)).toBe(true);
+    expect(isMiterFormulaApplicable(0.3, 1.6, 4.4)).toBe(false); // W/h < 0.25
+    expect(isMiterFormulaApplicable(3.0, 1.6, 30)).toBe(false); // εr > 25
   });
 
-  it("derives the diagonal cutback length", () => {
+  it("derives the diagonal cutback length and curved-bend radius", () => {
     expect(miterCutbackMm(2.0, 50)).toBeCloseTo(2.0 * 0.5 * Math.SQRT2, 5);
+    expect(recommendedBendRadiusMm(3.0)).toBeCloseTo(9.0, 5);
+  });
+});
+
+describe("does the bend matter (frequency-based)", () => {
+  it("computes the guided wavelength", () => {
+    expect(guidedWavelengthMm(2400, 4)).toBeCloseTo(62.46, 1);
+  });
+
+  it("classifies bend significance by W / λg", () => {
+    expect(bendSignificance(3, 100)).toBe("negligible"); // ratio 0.03
+    expect(bendSignificance(3, 40)).toBe("minor"); // ratio 0.075
+    expect(bendSignificance(3, 20)).toBe("significant"); // ratio 0.15
   });
 });

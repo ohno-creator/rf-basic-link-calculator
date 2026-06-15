@@ -1,3 +1,5 @@
+import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
+
 /**
  * 基板上のマイクロストリップ線路の特性インピーダンスと、直角曲げのマイター（角の斜めカット）設計。
  *
@@ -66,20 +68,49 @@ export function optimalMiterPercent(widthMm: number, heightMm: number): number {
   return 52 + 65 * Math.exp(-1.35 * (widthMm / heightMm));
 }
 
-/**
- * 任意の曲げ角度に対する推奨マイター率[%]の目安。
- * 90°の最適値を、曲げ角度（直進=0°, 直角=90°）に比例させた簡易目安。
- */
-export function recommendedMiterPercent(
+/** Douville-James の式が妥当な範囲か（W/h 0.25〜2.75、εr ≤ 25）。 */
+export function isMiterFormulaApplicable(
   widthMm: number,
   heightMm: number,
-  angleDeg: number
-): number {
-  if (!Number.isFinite(angleDeg) || angleDeg < 0) {
-    throw new Error("曲げ角度は0以上で入力してください。");
+  dielectricConstant: number
+): boolean {
+  const u = widthMm / heightMm;
+  return u >= 0.25 && u <= 2.75 && dielectricConstant <= 25;
+}
+
+/** マイクロストリップ中の導波波長 λg[mm] = c / (f · √εeff)。 */
+export function guidedWavelengthMm(frequencyMHz: number, effectiveDielectric: number): number {
+  assertPositiveFinite(frequencyMHz, "周波数");
+  if (!Number.isFinite(effectiveDielectric) || effectiveDielectric < 1) {
+    throw new Error("実効比誘電率は1以上である必要があります。");
   }
-  const scaled = optimalMiterPercent(widthMm, heightMm) * (Math.min(angleDeg, 90) / 90);
-  return Math.min(100, Math.max(0, scaled));
+  const wavelengthM =
+    SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000 * Math.sqrt(effectiveDielectric));
+  return wavelengthM * 1000;
+}
+
+export type BendSignificance = "negligible" | "minor" | "significant";
+
+/**
+ * 曲げ（不連続）が電気的に効くかの目安。線路幅Wと導波波長λgの比で判定する。
+ * λg/20より小さければほぼ無視でき、λg/10を超えると無視できない。
+ */
+export function bendSignificance(
+  widthMm: number,
+  guidedWavelengthValueMm: number
+): BendSignificance {
+  assertPositiveFinite(widthMm, "線路幅 W");
+  assertPositiveFinite(guidedWavelengthValueMm, "導波波長 λg");
+  const ratio = widthMm / guidedWavelengthValueMm;
+  if (ratio < 0.05) return "negligible";
+  if (ratio < 0.1) return "minor";
+  return "significant";
+}
+
+/** 円弧（R）曲げの推奨最小半径[mm]の目安。中心線で線路幅の約3倍。 */
+export function recommendedBendRadiusMm(widthMm: number): number {
+  assertPositiveFinite(widthMm, "線路幅 W");
+  return 3 * widthMm;
 }
 
 /** マイターで角から斜めに切り取る対角方向の長さ[mm]。 */
