@@ -118,3 +118,23 @@ export function miterCutbackMm(widthMm: number, miterPercent: number): number {
   assertPositiveFinite(widthMm, "線路幅 W");
   return (miterPercent / 100) * widthMm * Math.SQRT2;
 }
+
+/** 物理長[mm]を電気長[度]に換算（λgは導波波長[mm]）。1波長=360度。 */
+export function electricalLengthDegrees(lengthMm: number, guidedWavelengthValueMm: number): number {
+  assertPositiveFinite(lengthMm, "線路長 L");
+  assertPositiveFinite(guidedWavelengthValueMm, "導波波長 λg");
+  return (360 * lengthMm) / guidedWavelengthValueMm;
+}
+
+/**
+ * グラウンドのスティッチングビア（スルーホール）の推奨最大ピッチ[mm]。
+ * 共振・漏れを抑えるため、ピッチは導波波長 λg の数分の1以下にする。
+ * fraction = 0.1 で λg/10（目安）、0.05 で λg/20（より安全側）。
+ */
+export function stitchingViaPitchMm(guidedWavelengthValueMm: number, fraction: number): number {
+  assertPositiveFinite(guidedWavelengthValueMm, "導波波長 λg");
+  if (!Number.isFinite(fraction) || fraction <= 0) {
+    throw new Error("分数は0より大きい値で指定してください。");
+  }
+  return guidedWavelengthValueMm * fraction;
+}

@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   bendSignificance,
+  electricalLengthDegrees,
   guidedWavelengthMm,
   isMiterFormulaApplicable,
   microstripImpedance,
   miterCutbackMm,
   optimalMiterPercent,
-  recommendedBendRadiusMm
+  recommendedBendRadiusMm,
+  stitchingViaPitchMm
 } from "@/lib/rf/microstrip";
 
 describe("microstrip impedance", () => {
@@ -55,5 +57,18 @@ describe("does the bend matter (frequency-based)", () => {
     expect(bendSignificance(3, 100)).toBe("negligible"); // ratio 0.03
     expect(bendSignificance(3, 40)).toBe("minor"); // ratio 0.075
     expect(bendSignificance(3, 20)).toBe("significant"); // ratio 0.15
+  });
+});
+
+describe("microstrip electrical length and stitching vias", () => {
+  it("converts physical length to electrical degrees", () => {
+    expect(electricalLengthDegrees(25, 100)).toBeCloseTo(90, 5);
+    expect(electricalLengthDegrees(100, 100)).toBeCloseTo(360, 5);
+  });
+
+  it("recommends a stitching via pitch as a fraction of the guided wavelength", () => {
+    expect(stitchingViaPitchMm(68, 0.1)).toBeCloseTo(6.8, 5);
+    expect(stitchingViaPitchMm(68, 0.05)).toBeCloseTo(3.4, 5);
+    expect(() => stitchingViaPitchMm(68, 0)).toThrow();
   });
 });

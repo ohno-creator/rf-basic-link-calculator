@@ -5,12 +5,14 @@ import { formatNumber } from "@/lib/rf/format";
 import {
   type BendSignificance,
   bendSignificance,
+  electricalLengthDegrees,
   guidedWavelengthMm,
   isMiterFormulaApplicable,
   microstripImpedance,
   miterCutbackMm,
   optimalMiterPercent,
-  recommendedBendRadiusMm
+  recommendedBendRadiusMm,
+  stitchingViaPitchMm
 } from "@/lib/rf/microstrip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { MicrostripBendDiagram } from "./MicrostripBendDiagram";
@@ -103,11 +105,21 @@ function NumberInput({
   );
 }
 
+function ResultCard({ label, value, primary = false }: { label: string; value: string; primary?: boolean }) {
+  return (
+    <div className={`rounded-lg p-4 ${primary ? "bg-staf-light" : "bg-slate-50"}`}>
+      <p className={`text-xs ${primary ? "font-semibold text-staf" : "text-slate-500"}`}>{label}</p>
+      <p className={`mt-1 text-2xl font-bold ${primary ? "text-slate-950" : "text-staf"}`}>{value}</p>
+    </div>
+  );
+}
+
 export function MicrostripLinePanel() {
   const [widthMm, setWidthMm] = useState(3.0);
   const [heightMm, setHeightMm] = useState(1.6);
   const [dielectricConstant, setDielectricConstant] = useState(4.4);
-  const [bendFrequencyMHz, setBendFrequencyMHz] = useState(2400);
+  const [frequencyMHz, setFrequencyMHz] = useState(2400);
+  const [lengthMm, setLengthMm] = useState(25);
 
   const result = useMemo(() => {
     try {
@@ -117,6 +129,25 @@ export function MicrostripLinePanel() {
     }
   }, [widthMm, heightMm, dielectricConstant]);
 
+  // 電気長・導波波長・Vp と、ビア（スルーホール）の推奨ピッチ。
+  const electrical = useMemo(() => {
+    if (!result) {
+      return null;
+    }
+    try {
+      const lambdaGMm = guidedWavelengthMm(frequencyMHz, result.effectiveDielectric);
+      return {
+        lambdaGMm,
+        electricalDeg: electricalLengthDegrees(lengthMm, lambdaGMm),
+        electricalLambda: lengthMm / lambdaGMm,
+        viaPitchLooseMm: stitchingViaPitchMm(lambdaGMm, 0.1),
+        viaPitchTightMm: stitchingViaPitchMm(lambdaGMm, 0.05)
+      };
+    } catch {
+      return null;
+    }
+  }, [result, frequencyMHz, lengthMm]);
+
   // 90°曲げのマイター設計値と、「この周波数でその曲げを気にすべきか」の判定。
   const bend = useMemo(() => {
     if (!result) {
@@ -124,7 +155,7 @@ export function MicrostripLinePanel() {
     }
     try {
       const miterPercent = optimalMiterPercent(widthMm, heightMm);
-      const lambdaGMm = guidedWavelengthMm(bendFrequencyMHz, result.effectiveDielectric);
+      const lambdaGMm = guidedWavelengthMm(frequencyMHz, result.effectiveDielectric);
       return {
         miterPercent,
         cutbackMm: miterCutbackMm(widthMm, miterPercent),
@@ -137,13 +168,13 @@ export function MicrostripLinePanel() {
     } catch {
       return null;
     }
-  }, [result, widthMm, heightMm, dielectricConstant, bendFrequencyMHz]);
+  }, [result, widthMm, heightMm, dielectricConstant, frequencyMHz]);
 
   return (
     <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <h2 className="text-xl font-bold text-slate-950">マイクロストリップ線路シミュレーション</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
-        基板上の配線（マイクロストリップ）の特性インピーダンスを計算し、曲げ部については「この周波数でその曲げを気にすべきか」を判定して、マイター・45°・円弧などの対策を提案します。
+        基板上の配線（マイクロストリップ）の特性インピーダンス・実効比誘電率・電気長を計算し、曲げ（マイター）やグラウンドのスルーホール（ビア）の設計目安まで確認できます。
       </p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
@@ -167,23 +198,26 @@ export function MicrostripLinePanel() {
           </button>
         ))}
       </div>
+      <div className="mt-3 grid gap-3 sm:grid-cols-2">
+        <NumberInput id="msFreq" label="動作周波数（MHz）" value={frequencyMHz} min={1} step={10} invalid={!electrical} onChange={setFrequencyMHz} />
+        <NumberInput id="msLen" label="線路長 L（mm）" value={lengthMm} min={0.1} step={1} invalid={!electrical} onChange={setLengthMm} />
+      </div>
 
       {result ? (
         <>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg bg-staf-light p-4">
-              <p className="text-xs font-semibold text-staf">特性インピーダンス</p>
-              <p className="mt-1 text-2xl font-bold text-slate-950">{formatNumber(result.impedanceOhms, 1)} Ω</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">実効比誘電率 εeff</p>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.effectiveDielectric, 2)}</p>
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">速度係数 VF</p>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.velocityFactor, 3)}</p>
-            </div>
+            <ResultCard label="特性インピーダンス" value={`${formatNumber(result.impedanceOhms, 1)} Ω`} primary />
+            <ResultCard label="実効比誘電率 εeff" value={formatNumber(result.effectiveDielectric, 2)} />
+            <ResultCard label="速度係数 VF（Vp）" value={formatNumber(result.velocityFactor, 3)} />
           </div>
+
+          {electrical ? (
+            <div className="mt-3 grid gap-3 sm:grid-cols-3">
+              <ResultCard label="導波波長 λg" value={`${formatNumber(electrical.lambdaGMm, 1)} mm`} />
+              <ResultCard label={`電気長（L=${formatNumber(lengthMm, 1)}mm）`} value={`${formatNumber(electrical.electricalDeg, 1)}°`} />
+              <ResultCard label="電気長（波長比）" value={`${formatNumber(electrical.electricalLambda, 3)} λ`} />
+            </div>
+          ) : null}
 
           <div className="mt-5">
             <MicrostripCrossSectionDiagram
@@ -198,39 +232,54 @@ export function MicrostripLinePanel() {
         </>
       ) : (
         <p className="mt-4 text-sm font-medium text-rose-700">
-          線路幅・基板厚は0より大きい値、比誘電率は1以上で入力してください。
+          線路幅・基板厚は0より大きい値、比誘電率は1以上、周波数・長さは0より大きい値で入力してください。
         </p>
       )}
 
       <div className="mt-5">
         <FormulaExplanationCard
-          title="特性インピーダンスの式を見る"
-          formula={"u = W / h\nεeff = (εr+1)/2 + (εr-1)/2 · (1 + 12/u)^(-1/2)\nZ0 = (120π/√εeff) / (u + 1.393 + 0.667·ln(u + 1.444))   ※ u ≥ 1"}
+          title="特性インピーダンス・電気長の式を見る"
+          formula={
+            "u = W / h\nεeff = (εr+1)/2 + (εr-1)/2 · (1 + 12/u)^(-1/2)\nZ0 = (120π/√εeff) / (u + 1.393 + 0.667·ln(u + 1.444))   ※ u ≥ 1\nλg = c / (f·√εeff),  Vp = 1/√εeff,  電気長[度] = 360 · L / λg"
+          }
         >
           <p>
-            Hammerstad-Wheelerの近似式です。線路幅W、基板厚h、比誘電率εrの3つで特性インピーダンスがほぼ決まります。同軸と違い、電界の一部が空気中、一部が基板中を通るため、実効比誘電率
-            εeff（1〜εr）で扱います。基板の比誘電率は材料データシートの値を使ってください。
+            Hammerstad-Wheelerの近似式です。線路幅W・基板厚h・比誘電率εrで特性インピーダンスが、εeffから導波波長λgと速度係数Vp（=1/√εeff）が決まります。電気長はλgに対する物理長Lの割合で、整合スタブやλ/4変成器の設計に使います。
           </p>
         </FormulaExplanationCard>
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
-        <h3 className="text-lg font-bold text-slate-950">曲げの設計：まず「気にすべきか」</h3>
+        <h3 className="text-lg font-bold text-slate-950">スルーホール（ビア）の目安</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          配線を直角に曲げると角で反射が出ますが、効くかどうかは周波数（波長）次第です。動作周波数を入れて、そもそも対策が要るかを確認します。
+          表裏グラウンドをつなぐスティッチングビアは、共振や電磁波の漏れを抑えるため、導波波長 λg の数分の1以下のピッチで並べます。
         </p>
 
-        <div className="mt-4 sm:max-w-xs">
-          <NumberInput
-            id="msFreq"
-            label="動作周波数（MHz）"
-            value={bendFrequencyMHz}
-            min={1}
-            step={10}
-            invalid={!bend}
-            onChange={setBendFrequencyMHz}
-          />
+        {electrical ? (
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <ResultCard label="推奨 最大ピッチ（λg/10）" value={`${formatNumber(electrical.viaPitchLooseMm, 2)} mm 以下`} primary />
+            <ResultCard label="より安全側（λg/20）" value={`${formatNumber(electrical.viaPitchTightMm, 2)} mm 以下`} />
+          </div>
+        ) : null}
+
+        <div className="mt-5">
+          <FormulaExplanationCard
+            title="ビア（スルーホール）の考え方を見る"
+            formula={"スティッチングビアの最大ピッチ ≈ λg / 10（より安全側は λg / 20）"}
+          >
+            <p>
+              グラウンド面の電位を均一に保ち、スロット共振や放射・漏れを抑えるために、信号線の脇やグラウンド境界にビアを並べます。ピッチが波長に対して大きいとビアの隙間から漏れるため、目安として
+              λg/10 以下（高アイソレーションが要る場合は λg/20 以下）にします。コネクタや端の近く、グラウンド境界、リファレンス層を切り替える箇所は特に重要です。グランデッドCPWでは表裏グラウンドの接続ビアが必須です。
+            </p>
+          </FormulaExplanationCard>
         </div>
+      </div>
+
+      <div className="mt-6 border-t border-slate-200 pt-5">
+        <h3 className="text-lg font-bold text-slate-950">曲げの設計：まず「気にすべきか」</h3>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          上で入力した動作周波数をもとに、配線の曲げで反射を気にすべきかを判定し、マイター・45°・円弧などの対策を提案します。
+        </p>
 
         {bend ? (
           <>
@@ -259,18 +308,9 @@ export function MicrostripLinePanel() {
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg bg-staf-light p-4">
-                <p className="text-xs font-semibold text-staf">90°マイター率</p>
-                <p className="mt-1 text-2xl font-bold text-slate-950">{formatNumber(bend.miterPercent, 0)} %</p>
-              </div>
-              <div className="rounded-lg bg-slate-50 p-4">
-                <p className="text-xs text-slate-500">対角カット長</p>
-                <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(bend.cutbackMm, 2)} mm</p>
-              </div>
-              <div className="rounded-lg bg-slate-50 p-4">
-                <p className="text-xs text-slate-500">円弧の推奨最小R</p>
-                <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(bend.radiusMm, 1)} mm</p>
-              </div>
+              <ResultCard label="90°マイター率" value={`${formatNumber(bend.miterPercent, 0)} %`} primary />
+              <ResultCard label="対角カット長" value={`${formatNumber(bend.cutbackMm, 2)} mm`} />
+              <ResultCard label="円弧の推奨最小R" value={`${formatNumber(bend.radiusMm, 1)} mm`} />
             </div>
 
             <div className="mt-5">
