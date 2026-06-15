@@ -69,9 +69,9 @@ export const toolDirectory: DirectoryTool[] = [
     category: "line"
   },
   {
-    href: "/tools/coaxial-line-impedance",
-    name: "同軸線路インピーダンス",
-    tagline: "ケーブルの特性 Z0 と速度係数",
+    href: "/tools/coaxial-cable-loss",
+    name: "同軸ケーブル損失",
+    tagline: "フィードラインの損失を dB で",
     icon: "cable",
     category: "line"
   },

@@ -8,7 +8,7 @@ const ALL_SLUGS = [
   "frequency-wavelength",
   "dbm-converter",
   "vswr-return-loss",
-  "coaxial-line-impedance",
+  "coaxial-cable-loss",
   "microstrip-line"
 ];
 
@@ -28,7 +28,7 @@ test.describe("tool hub", () => {
 test.describe("tool pages render with hero, diagram and explanation", () => {
   const pages = [
     { slug: "vswr-return-loss", h1: "VSWR・リターンロス変換", fig: "定在波で見るVSWR" },
-    { slug: "coaxial-line-impedance", h1: "同軸線路インピーダンス", fig: "断面で見る特性インピーダンス" },
+    { slug: "coaxial-cable-loss", h1: "同軸ケーブル損失", fig: "フィードラインで失われる電力" },
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
     { slug: "propagation-loss", h1: "伝搬損失（奥村-秦）", fig: "距離で見る伝搬損失" },

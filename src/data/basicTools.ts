@@ -27,14 +27,14 @@ export const basicTools: BasicToolMeta[] = [
     canonical: `${SITE_TOOLS}/vswr-return-loss`
   },
   {
-    slug: "coaxial-line-impedance",
-    title: "同軸線路インピーダンス",
-    metaTitle: "同軸線路インピーダンス計算ツール｜特性インピーダンス・速度係数",
+    slug: "coaxial-cable-loss",
+    title: "同軸ケーブル損失",
+    metaTitle: "同軸ケーブル損失 計算ツール｜フィードライン損失をdBで",
     description:
-      "同軸ケーブルの寸法（外部導体内径D・内部導体外径d）と誘電体から、特性インピーダンスと速度係数を計算します。断面図で寸法比の効きを確認できます。",
-    formula: "Z0 = (138 / √εr) × log10(D / d)",
-    essenceLead: "特性インピーダンスは、導体の寸法比 D/d と誘電体でほぼ決まります。",
-    canonical: `${SITE_TOOLS}/coaxial-line-impedance`
+      "U.FLピッグテールやSMAケーブルなど、同軸フィードラインの損失をdBで見積もります。ケーブル種別・長さ・周波数から、リンクバジェットの「ケーブル・コネクタ損失」に入れる値を求められます。",
+    formula: "損失[dB] = α(f) × 長さ,  α(f) = α₂.₄GHz × √(f/2400)",
+    essenceLead: "細い・長い・高周波のケーブルほど、フィードラインで失われるdBは増えます。",
+    canonical: `${SITE_TOOLS}/coaxial-cable-loss`
   },
   {
     slug: "microstrip-line",

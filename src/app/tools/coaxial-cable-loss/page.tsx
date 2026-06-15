@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { CoaxImpedancePanel } from "@/app/tools/rf-basic-link-calculator/components/CoaxImpedancePanel";
+import { CoaxCableLossPanel } from "@/app/tools/rf-basic-link-calculator/components/CoaxCableLossPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";
 
-const tool = getBasicTool("coaxial-line-impedance")!;
+const tool = getBasicTool("coaxial-cable-loss")!;
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   }
 };
 
-export default function CoaxialLineImpedancePage() {
+export default function CoaxialCableLossPage() {
   return (
     <ToolLayout>
       <BasicToolPageShell tool={tool}>
-        <CoaxImpedancePanel />
+        <CoaxCableLossPanel />
       </BasicToolPageShell>
     </ToolLayout>
   );

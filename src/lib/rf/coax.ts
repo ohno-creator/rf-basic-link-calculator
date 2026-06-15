@@ -1,12 +1,19 @@
 /**
- * 同軸線路の特性インピーダンスと波長短縮率（速度係数）の計算。
+ * 同軸フィードライン（ケーブル）の損失を見積もる。
  *
- *   Z0[Ω] = (138 / √εr) × log10(D / d)
- *   速度係数 VF = 1 / √εr
+ * 減衰は周波数とともに増える。表皮効果による導体損失が支配的な範囲では
+ * おおむね √f に比例するので、2.4GHz の代表減衰量を基準にスケールする。
  *
- * D = 外部導体の内径、d = 内部導体の外径、εr = 誘電体の比誘電率。
- * 比誘電率の例：空気 1.0、PTFE(テフロン) 約2.1、ポリエチレン 約2.3。
+ *   α(f)[dB/m] = α(2.4GHz) × √(f[MHz] / 2400)
+ *   ケーブル損失[dB] = α(f) × 長さ[m]
+ *   合計損失[dB]   = ケーブル損失 + コネクタ数 × 1個あたり損失
+ *   残る電力[%]    = 10^(-合計損失/10) × 100
+ *
+ * あくまで初期検討用の目安。実際の値はケーブル個体、コネクタ品質、曲げ、温度で変わる。
  */
+
+const REFERENCE_FREQUENCY_MHZ = 2400;
+export const DEFAULT_CONNECTOR_LOSS_DB = 0.15;
 
 function assertPositiveFinite(value: number, label: string) {
   if (!Number.isFinite(value) || value <= 0) {
@@ -14,32 +21,43 @@ function assertPositiveFinite(value: number, label: string) {
   }
 }
 
-export type CoaxResult = {
-  impedanceOhms: number;
-  velocityFactor: number;
+export type CoaxLossResult = {
+  perMeterDb: number;
+  cableDb: number;
+  connectorDb: number;
+  totalDb: number;
+  powerRemainingPercent: number;
 };
 
-export function calculateCoaxImpedance(
-  outerInnerDiameter: number,
-  innerOuterDiameter: number,
-  dielectricConstant: number
-): CoaxResult {
-  assertPositiveFinite(outerInnerDiameter, "外部導体の内径");
-  assertPositiveFinite(innerOuterDiameter, "内部導体の外径");
+export function coaxCableLoss(
+  attenuationAt2400DbPerM: number,
+  frequencyMHz: number,
+  lengthM: number,
+  connectorCount: number,
+  perConnectorDb: number = DEFAULT_CONNECTOR_LOSS_DB
+): CoaxLossResult {
+  assertPositiveFinite(attenuationAt2400DbPerM, "基準減衰量");
+  assertPositiveFinite(frequencyMHz, "周波数");
+  assertPositiveFinite(lengthM, "ケーブル長");
 
-  if (!Number.isFinite(dielectricConstant) || dielectricConstant < 1) {
-    throw new Error("比誘電率は1以上の値を入力してください。");
+  if (!Number.isFinite(connectorCount) || connectorCount < 0) {
+    throw new Error("コネクタ数は0以上で入力してください。");
+  }
+  if (!Number.isFinite(perConnectorDb) || perConnectorDb < 0) {
+    throw new Error("コネクタ1個あたりの損失は0以上で入力してください。");
   }
 
-  if (outerInnerDiameter <= innerOuterDiameter) {
-    throw new Error("外部導体の内径は内部導体の外径より大きくしてください。");
-  }
-
-  const impedanceOhms =
-    (138 / Math.sqrt(dielectricConstant)) * Math.log10(outerInnerDiameter / innerOuterDiameter);
+  const perMeterDb =
+    attenuationAt2400DbPerM * Math.sqrt(frequencyMHz / REFERENCE_FREQUENCY_MHZ);
+  const cableDb = perMeterDb * lengthM;
+  const connectorDb = connectorCount * perConnectorDb;
+  const totalDb = cableDb + connectorDb;
 
   return {
-    impedanceOhms,
-    velocityFactor: 1 / Math.sqrt(dielectricConstant)
+    perMeterDb,
+    cableDb,
+    connectorDb,
+    totalDb,
+    powerRemainingPercent: 10 ** (-totalDb / 10) * 100
   };
 }
