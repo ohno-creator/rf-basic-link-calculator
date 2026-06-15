@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { formatNumber } from "@/lib/rf/format";
 import { type AreaType, calculatePropagationLoss } from "@/lib/rf/propagation";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { PropagationCurveDiagram } from "./PropagationCurveDiagram";
 
 const areaOptions: Array<{ id: AreaType; label: string }> = [
   { id: "urbanLarge", label: "市街地（大都市）" },
@@ -137,6 +138,18 @@ export function PropagationLossPanel() {
           各項目は0より大きい値を入力してください。
         </p>
       )}
+
+      {result ? (
+        <div className="mt-5">
+          <PropagationCurveDiagram
+            frequencyMHz={frequencyMHz}
+            baseHeightM={baseHeightM}
+            mobileHeightM={mobileHeightM}
+            distanceKm={distanceKm}
+            area={area}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5">
         <FormulaExplanationCard

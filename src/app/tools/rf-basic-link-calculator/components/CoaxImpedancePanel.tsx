@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { calculateCoaxImpedance } from "@/lib/rf/coax";
 import { formatNumber } from "@/lib/rf/format";
+import { CoaxCrossSectionDiagram } from "./CoaxCrossSectionDiagram";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
 const dielectricPresets = [
@@ -115,6 +116,18 @@ export function CoaxImpedancePanel() {
           外径Dは内径dより大きく、比誘電率は1以上で入力してください。
         </p>
       )}
+
+      {result ? (
+        <div className="mt-5">
+          <CoaxCrossSectionDiagram
+            outerInnerDiameter={outerInnerDiameter}
+            innerOuterDiameter={innerOuterDiameter}
+            dielectricConstant={dielectricConstant}
+            impedanceOhms={result.impedanceOhms}
+            velocityFactor={result.velocityFactor}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5">
         <FormulaExplanationCard

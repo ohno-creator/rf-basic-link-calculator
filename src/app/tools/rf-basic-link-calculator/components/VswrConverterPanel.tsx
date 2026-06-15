@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { formatNumber } from "@/lib/rf/format";
 import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { VswrStandingWaveDiagram } from "./VswrStandingWaveDiagram";
 
 const modes: Array<{ id: VswrSourceKind; label: string; unit: string; placeholder: number }> = [
   { id: "vswr", label: "VSWR", unit: "", placeholder: 1.5 },
@@ -85,6 +86,16 @@ export function VswrConverterPanel() {
           VSWRは1以上、反射係数は0以上1未満、リターンロスは0以上のdBで入力してください。
         </p>
       )}
+
+      {result ? (
+        <div className="mt-5">
+          <VswrStandingWaveDiagram
+            reflection={result.reflectionCoefficient}
+            vswr={result.vswr}
+            reflectedPowerPercent={result.reflectedPowerPercent}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5">
         <FormulaExplanationCard

@@ -11,6 +11,9 @@ dist/
 
 # test
 coverage/
+test-results/
+playwright-report/
+.playwright/
 
 # misc
 .DS_Store

@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { calculateFresnel } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { FresnelZoneDiagram } from "./FresnelZoneDiagram";
 
 export function FresnelZonePanel() {
   const [frequencyMHz, setFrequencyMHz] = useState(2400);
@@ -17,6 +18,15 @@ export function FresnelZonePanel() {
       return null;
     }
   }, [frequencyMHz, distanceKm, positionPercent]);
+
+  // 楕円の縦スケール用に、中央（最大）の半径も求めておく。
+  const midRadiusM = useMemo(() => {
+    try {
+      return calculateFresnel(frequencyMHz, distanceKm, 0.5).firstZoneRadiusM;
+    } catch {
+      return null;
+    }
+  }, [frequencyMHz, distanceKm]);
 
   return (
     <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -98,6 +108,17 @@ export function FresnelZonePanel() {
           周波数と距離は0より大きい値を入力してください。
         </p>
       )}
+
+      {result && midRadiusM !== null ? (
+        <div className="mt-5">
+          <FresnelZoneDiagram
+            midRadiusM={midRadiusM}
+            positionRatio={positionPercent / 100}
+            firstZoneRadiusM={result.firstZoneRadiusM}
+            clearance60M={result.clearance60M}
+          />
+        </div>
+      ) : null}
 
       <div className="mt-5">
         <FormulaExplanationCard

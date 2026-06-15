@@ -16,7 +16,7 @@
 - 改善シミュレーションと相談用テキストコピー
 - 入力条件の共有リンク生成・URL/ローカル保存・初期値リセット
 - スクロール追従の判定サマリ（モバイル）
-- 基本計算ツール集（単機能）：VSWR・リターンロス変換、同軸線路インピーダンス、フレネルゾーン半径、伝搬損失（奥村-秦／COST 231-Hata）
+- 基本計算ツール集（単機能・専用ページ）：VSWR・リターンロス変換、同軸線路インピーダンス、マイクロストリップ線路（特性インピーダンス＋マイター曲げ設計）、フレネルゾーン半径、伝搬損失（奥村-秦／COST 231-Hata）。各ページに入力連動の動的図と本質解説を搭載
 - FAQ、SEO metadata、JSON-LD、コラム/お問い合わせ導線
 
 ## UI/UX方針
@@ -36,7 +36,7 @@
 - `LinkMarginGauge`: 0dB、10dB、20dBの判定基準をゲージで表示
 - `DistancePowerChart`: 距離を変えたときの推定受信電力と受信感度ラインを表示
 - `SensitivityLineVisual`: 受信電力と受信感度の上下関係を視覚化
-- `WavelengthVisual`: 周波数が高いほど波長が短くなることを表示
+- `WavelengthVisual`: 半波長λ/2（アンテナの基準寸法）を表示し、共振の本質・誘電率などによる小型化手法・小型化に伴う特性劣化を解説
 - `DecibelScaleVisual`: dBmとmW/Wの関係、+10dBで10倍の感覚を表示
 
 ## 技術スタック
@@ -67,7 +67,14 @@ npm run build
 ## ページ
 
 - `/`: ツールへの簡易トップページ
-- `/tools/rf-basic-link-calculator`: RF Basic Link Calculator 本体
+- `/tools/rf-basic-link-calculator`: RF Basic Link Calculator 本体（基本計算ツールのインデックスを内包）
+- `/tools/vswr-return-loss`: VSWR・リターンロス変換（定在波の動的図つき）
+- `/tools/coaxial-line-impedance`: 同軸線路インピーダンス（断面の動的図つき）
+- `/tools/microstrip-line`: マイクロストリップ線路（断面図＋マイター曲げ設計の動的図つき）
+- `/tools/fresnel-zone`: フレネルゾーン半径（経路断面の動的図つき）
+- `/tools/propagation-loss`: 伝搬損失 奥村-秦／COST 231-Hata（距離-損失カーブつき）
+
+各基本計算ツールは専用ページを持ち、入力に連動する図と本質解説（その結果が何を意味するか）を備えています。
 
 ## 公開URL
 
