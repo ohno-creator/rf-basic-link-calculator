@@ -1,32 +1,44 @@
 import { describe, expect, it } from "vitest";
-import { coaxCableLoss } from "@/lib/rf/coax";
+import { cableAssemblyLoss, interpolateCableLoss, type LossPoint } from "@/lib/rf/coax";
 
-describe("coaxial feedline loss", () => {
-  it("computes total loss at the reference frequency", () => {
-    // RG-316 (1.2 dB/m @2.4GHz), 2m, 2 connectors @0.15dB
-    const result = coaxCableLoss(1.2, 2400, 2, 2);
-    expect(result.perMeterDb).toBeCloseTo(1.2, 5);
-    expect(result.cableDb).toBeCloseTo(2.4, 5);
-    expect(result.connectorDb).toBeCloseTo(0.3, 5);
-    expect(result.totalDb).toBeCloseTo(2.7, 5);
-    expect(result.powerRemainingPercent).toBeCloseTo(53.7, 1);
+const points: LossPoint[] = [
+  { freqMHz: 500, lossDb: 1.39 },
+  { freqMHz: 2000, lossDb: 2.97 },
+  { freqMHz: 3000, lossDb: 3.72 },
+  { freqMHz: 8000, lossDb: 6.77 }
+];
+
+describe("measured cable loss interpolation", () => {
+  it("returns the exact value at a measured point", () => {
+    expect(interpolateCableLoss(points, 2000)).toBeCloseTo(2.97, 5);
   });
 
-  it("scales attenuation with the square root of frequency", () => {
-    // 600MHz = 2400/4 -> sqrt = 0.5
-    const result = coaxCableLoss(1.2, 600, 1, 0);
-    expect(result.perMeterDb).toBeCloseTo(0.6, 5);
-    expect(result.totalDb).toBeCloseTo(0.6, 5);
+  it("linearly interpolates between measured points", () => {
+    // halfway 2000->3000: (2.97 + 3.72)/2 = 3.345
+    expect(interpolateCableLoss(points, 2500)).toBeCloseTo(3.345, 3);
   });
 
-  it("maps a 3dB loss to about half the power remaining", () => {
-    const result = coaxCableLoss(3, 2400, 1, 0);
-    expect(result.powerRemainingPercent).toBeCloseTo(50.1, 1);
+  it("extrapolates below and above the measured range", () => {
+    expect(interpolateCableLoss(points, 9000)).toBeGreaterThan(6.77);
+    expect(interpolateCableLoss(points, 100)).toBeGreaterThanOrEqual(0);
+    expect(interpolateCableLoss(points, 100)).toBeLessThan(1.39);
   });
 
-  it("rejects invalid inputs", () => {
-    expect(() => coaxCableLoss(0, 2400, 2, 2)).toThrow();
-    expect(() => coaxCableLoss(1.2, 2400, 0, 2)).toThrow();
-    expect(() => coaxCableLoss(1.2, 2400, 2, -1)).toThrow();
+  it("rejects an invalid frequency", () => {
+    expect(() => interpolateCableLoss(points, 0)).toThrow();
+  });
+});
+
+describe("cable assembly loss with quantity", () => {
+  it("multiplies the per-piece loss by the number of pieces", () => {
+    const result = cableAssemblyLoss(points, 2000, 2);
+    expect(result.perPieceDb).toBeCloseTo(2.97, 5);
+    expect(result.totalDb).toBeCloseTo(5.94, 5);
+    // 10^(-0.594) ≈ 25.5%
+    expect(result.powerRemainingPercent).toBeCloseTo(25.5, 1);
+  });
+
+  it("rejects a quantity below 1", () => {
+    expect(() => cableAssemblyLoss(points, 2000, 0)).toThrow();
   });
 });

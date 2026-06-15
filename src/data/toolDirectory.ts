@@ -71,7 +71,7 @@ export const toolDirectory: DirectoryTool[] = [
   {
     href: "/tools/coaxial-cable-loss",
     name: "同軸ケーブル損失",
-    tagline: "フィードラインの損失を dB で",
+    tagline: "標準品の実測ロスを品番×周波数で",
     icon: "cable",
     category: "line"
   },

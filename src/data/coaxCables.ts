@@ -1,22 +1,120 @@
-export type CoaxCable = {
-  label: string;
-  /** 2.4GHz での代表減衰量[dB/m]（メーカーや個体で変わる目安値） */
-  attAt2400: number;
-  /** 外径の目安[mm] */
-  outerDiameterMm: number;
-  note: string;
+import type { LossPoint } from "@/lib/rf/coax";
+
+export type CableAssembly = {
+  partNumber: string;
+  description: string;
+  /** 挿入損失（S12）の実測値[dB]。周波数昇順。 */
+  points: LossPoint[];
 };
 
 /**
- * IoT・無線機器でよく使う同軸フィードラインの代表値（おおよその目安）。
- * 細いケーブルほど損失は大きい。値は各社データシートの代表値をもとにした概算。
+ * 標準品（変換・延長用）同軸ケーブルの挿入損失 実測値。
+ * 測定：スタッフ株式会社、100〜9000MHz の S12（マーカー読み値）、2026/5/11。
  */
-export const coaxCables: CoaxCable[] = [
-  { label: "U.FL 1.13mm 同軸", attAt2400: 2.0, outerDiameterMm: 1.13, note: "極細・短距離向け" },
-  { label: "U.FL 1.37mm 同軸", attAt2400: 1.5, outerDiameterMm: 1.37, note: "極細・短距離向け" },
-  { label: "RG-178", attAt2400: 1.7, outerDiameterMm: 1.8, note: "細径・テフロン" },
-  { label: "RG-316", attAt2400: 1.2, outerDiameterMm: 2.5, note: "細径・テフロン" },
-  { label: "RG-174", attAt2400: 1.0, outerDiameterMm: 2.8, note: "汎用細径" },
-  { label: "RG-58", attAt2400: 0.9, outerDiameterMm: 5.0, note: "汎用" },
-  { label: "LMR-195 相当", attAt2400: 0.6, outerDiameterMm: 5.0, note: "低損失" }
+export const cableAssemblies: CableAssembly[] = [
+  {
+    partNumber: "1702-003B",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 0.16 },
+      { freqMHz: 800, lossDb: 0.21 },
+      { freqMHz: 2000, lossDb: 0.36 },
+      { freqMHz: 3000, lossDb: 0.41 },
+      { freqMHz: 4000, lossDb: 0.5 },
+      { freqMHz: 5000, lossDb: 0.49 },
+      { freqMHz: 6000, lossDb: 0.51 },
+      { freqMHz: 7000, lossDb: 0.68 },
+      { freqMHz: 8000, lossDb: 0.88 }
+    ]
+  },
+  {
+    partNumber: "1702-004A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 1.39 },
+      { freqMHz: 800, lossDb: 1.8 },
+      { freqMHz: 2000, lossDb: 2.97 },
+      { freqMHz: 3000, lossDb: 3.72 },
+      { freqMHz: 4000, lossDb: 4.38 },
+      { freqMHz: 5000, lossDb: 5.0 },
+      { freqMHz: 6000, lossDb: 5.73 },
+      { freqMHz: 7000, lossDb: 6.22 },
+      { freqMHz: 8000, lossDb: 6.77 }
+    ]
+  },
+  {
+    partNumber: "1702-013A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 1.95 },
+      { freqMHz: 800, lossDb: 2.53 },
+      { freqMHz: 2000, lossDb: 4.25 },
+      { freqMHz: 3000, lossDb: 5.36 },
+      { freqMHz: 4000, lossDb: 6.4 },
+      { freqMHz: 5000, lossDb: 7.34 },
+      { freqMHz: 6000, lossDb: 8.21 },
+      { freqMHz: 7000, lossDb: 8.97 },
+      { freqMHz: 8000, lossDb: 9.85 }
+    ]
+  },
+  {
+    partNumber: "1702-015A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 0.15 },
+      { freqMHz: 800, lossDb: 0.21 },
+      { freqMHz: 2000, lossDb: 0.37 },
+      { freqMHz: 3000, lossDb: 0.47 },
+      { freqMHz: 4000, lossDb: 0.59 },
+      { freqMHz: 5000, lossDb: 0.87 },
+      { freqMHz: 6000, lossDb: 0.74 },
+      { freqMHz: 7000, lossDb: 0.76 },
+      { freqMHz: 8000, lossDb: 1.04 }
+    ]
+  },
+  {
+    partNumber: "1702-016A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 0.14 },
+      { freqMHz: 800, lossDb: 0.21 },
+      { freqMHz: 2000, lossDb: 0.4 },
+      { freqMHz: 3000, lossDb: 0.43 },
+      { freqMHz: 4000, lossDb: 0.48 },
+      { freqMHz: 5000, lossDb: 0.44 },
+      { freqMHz: 6000, lossDb: 0.52 },
+      { freqMHz: 7000, lossDb: 0.58 },
+      { freqMHz: 8000, lossDb: 0.68 }
+    ]
+  },
+  {
+    partNumber: "1702-017A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 1.84 },
+      { freqMHz: 800, lossDb: 2.42 },
+      { freqMHz: 2000, lossDb: 3.95 },
+      { freqMHz: 3000, lossDb: 4.89 },
+      { freqMHz: 4000, lossDb: 5.72 },
+      { freqMHz: 5000, lossDb: 6.41 },
+      { freqMHz: 6000, lossDb: 7.25 },
+      { freqMHz: 7000, lossDb: 7.89 },
+      { freqMHz: 8000, lossDb: 8.65 }
+    ]
+  },
+  {
+    partNumber: "1702-018A",
+    description: "標準品（変換・延長用）",
+    points: [
+      { freqMHz: 500, lossDb: 1.38 },
+      { freqMHz: 800, lossDb: 1.77 },
+      { freqMHz: 2000, lossDb: 2.91 },
+      { freqMHz: 3000, lossDb: 3.63 },
+      { freqMHz: 4000, lossDb: 4.33 },
+      { freqMHz: 5000, lossDb: 4.93 },
+      { freqMHz: 6000, lossDb: 5.65 },
+      { freqMHz: 7000, lossDb: 6.27 },
+      { freqMHz: 8000, lossDb: 6.79 }
+    ]
+  }
 ];

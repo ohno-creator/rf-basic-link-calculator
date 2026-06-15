@@ -69,7 +69,7 @@ npm run build
 - `/`: ツールへの簡易トップページ
 - `/tools/rf-basic-link-calculator`: RF Basic Link Calculator 本体（基本計算ツールのインデックスを内包）
 - `/tools/vswr-return-loss`: VSWR・リターンロス変換（定在波の動的図つき）
-- `/tools/coaxial-cable-loss`: 同軸ケーブル損失（フィードライン損失の動的図つき）
+- `/tools/coaxial-cable-loss`: 同軸ケーブル損失（標準品の実測ロス曲線つき・品番×周波数）
 - `/tools/microstrip-line`: マイクロストリップ線路（Z0・εeff・電気長・λg・Vp、マイター曲げ、ビアピッチ。断面図/上面図つき）
 - `/tools/fresnel-zone`: フレネルゾーン半径（経路断面の動的図つき）
 - `/tools/propagation-loss`: 伝搬損失 奥村-秦／COST 231-Hata（距離-損失カーブつき）
@@ -122,8 +122,8 @@ VSWR = (1 + Γ) / (1 - Γ)
 ```
 
 ```text
-同軸ケーブル損失[dB] = α(f) × 長さ + コネクタ数 × 約0.15dB
-α(f)[dB/m] = α(2.4GHz) × √(f[MHz] / 2400)
+同軸ケーブル損失（標準品の実測値を周波数で補間）
+合計損失[dB] = 1本あたり損失（実測の補間値） × 本数
 残る電力[%] = 10^(-損失/10) × 100
 ```
 
