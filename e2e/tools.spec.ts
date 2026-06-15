@@ -7,6 +7,7 @@ const ALL_SLUGS = [
   "propagation-loss",
   "frequency-wavelength",
   "dbm-converter",
+  "db-feel",
   "vswr-return-loss",
   "coaxial-cable-loss",
   "microstrip-line"
@@ -28,12 +29,13 @@ test.describe("tool hub", () => {
 test.describe("tool pages render with hero, diagram and explanation", () => {
   const pages = [
     { slug: "vswr-return-loss", h1: "VSWR・リターンロス変換", fig: "定在波で見るVSWR" },
-    { slug: "coaxial-cable-loss", h1: "同軸ケーブル損失", fig: "実測ロス曲線" },
+    { slug: "coaxial-cable-loss", h1: "同軸ケーブル損失", fig: "ロス比較" },
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
     { slug: "propagation-loss", h1: "伝搬損失（奥村-秦）", fig: "距離で見る伝搬損失" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
+    { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "自由空間損失 FSPL 計算" }
   ];
 
@@ -53,6 +55,18 @@ test("VSWR diagram reacts to input", async ({ page }) => {
   await input.fill("3");
   await expect(page.getByText("3.00").first()).toBeVisible();
   await expect(page.getByText("25.0%").first()).toBeVisible();
+});
+
+test("dB feel slider reacts to dB", async ({ page }) => {
+  await page.goto("/tools/db-feel/");
+  const slider = page.locator("#dbValue");
+  await slider.evaluate((el: HTMLInputElement) => {
+    const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
+    setter?.call(el, "20");
+    el.dispatchEvent(new Event("input", { bubbles: true }));
+  });
+  // +20dB -> power ×100, distance ×10
+  await expect(page.getByText("×100").first()).toBeVisible();
 });
 
 test("microstrip impedance reacts to trace width", async ({ page }) => {

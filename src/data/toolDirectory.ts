@@ -62,6 +62,13 @@ export const toolDirectory: DirectoryTool[] = [
     category: "basics"
   },
   {
+    href: "/tools/db-feel",
+    name: "dBを体感する",
+    tagline: "+3dBで2倍・+6dBで距離2倍",
+    icon: "ruler",
+    category: "basics"
+  },
+  {
     href: "/tools/vswr-return-loss",
     name: "VSWR・リターンロス",
     tagline: "整合の良し悪しを見る",

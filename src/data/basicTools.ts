@@ -87,6 +87,16 @@ export const basicTools: BasicToolMeta[] = [
     canonical: `${SITE_TOOLS}/dbm-converter`
   },
   {
+    slug: "db-feel",
+    title: "dBを体感する",
+    metaTitle: "dBを体感する｜+3dBで2倍・+6dBで距離2倍を直感理解",
+    description:
+      "dBは掛け算を足し算にするものさし。スライダーでdB→電力倍率・距離倍率を体感し、+3dBで約2倍・+6dBで距離2倍を直感的に理解できます。",
+    formula: "電力倍率 = 10^(dB/10)　距離倍率 = 10^(dB/20)",
+    essenceLead: "10倍ごとに+10dB。dBは掛け算を足し算にする『ものさし』です。",
+    canonical: `${SITE_TOOLS}/db-feel`
+  },
+  {
     slug: "free-space-loss",
     title: "自由空間損失（FSPL）",
     metaTitle: "自由空間損失 FSPL 計算ツール｜距離と周波数による損失",

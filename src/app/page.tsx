@@ -10,6 +10,7 @@ import {
   type LucideIcon,
   RadioTower,
   Repeat,
+  Ruler,
   Spline,
   Waves
 } from "lucide-react";
@@ -32,6 +33,7 @@ const iconMap: Record<string, LucideIcon> = {
   building: Building2,
   radio: RadioTower,
   repeat: Repeat,
+  ruler: Ruler,
   activity: Activity,
   cable: Cable,
   circuit: CircuitBoard

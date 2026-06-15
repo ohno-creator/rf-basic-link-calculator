@@ -66,8 +66,12 @@ npm run build
 
 ## ページ
 
-- `/`: ツールへの簡易トップページ
-- `/tools/rf-basic-link-calculator`: RF Basic Link Calculator 本体（基本計算ツールのインデックスを内包）
+- `/`: Apple調のツール一覧ハブ（全ツールをカテゴリ別カードで表示）
+- `/tools/rf-basic-link-calculator`: 通信距離・リンクバジェット簡易診断（旗艦ツール）
+- `/tools/frequency-wavelength`: 周波数・波長（半波長・誘電率短縮の図つき）
+- `/tools/dbm-converter`: dBm / mW / W 変換
+- `/tools/db-feel`: dBを体感する（+3dBで2倍・+6dBで距離2倍を直感理解）
+- `/tools/free-space-loss`: 自由空間損失 FSPL
 - `/tools/vswr-return-loss`: VSWR・リターンロス変換（定在波の動的図つき）
 - `/tools/coaxial-cable-loss`: 同軸ケーブル損失（標準品の実測ロス曲線つき・品番×周波数）
 - `/tools/microstrip-line`: マイクロストリップ線路（Z0・εeff・電気長・λg・Vp、マイター曲げ、ビアピッチ。断面図/上面図つき）
