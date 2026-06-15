@@ -128,6 +128,7 @@ export function RfBasicLinkCalculatorClient() {
   return (
     <>
       <HeroSection onStart={scrollToCalculator} onSample={selectSample} />
+      <BasicToolsSection />
       <BeginnerRoadmap />
       <div ref={presetRef}>
         <QuickStartPresets onSelect={selectPreset} />
@@ -141,7 +142,6 @@ export function RfBasicLinkCalculatorClient() {
           shareState={shareState}
         />
       </div>
-      <BasicToolsSection />
       <SeoLinks />
       <FaqSection />
       <section className="mx-auto mt-10 max-w-5xl px-4 sm:px-6 lg:px-8">
