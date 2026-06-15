@@ -1,4 +1,4 @@
-import type { LossPoint } from "@/lib/rf/coax";
+import { type LossPoint, referenceLossPoints } from "@/lib/rf/coax";
 
 export type CableAssembly = {
   partNumber: string;
@@ -6,6 +6,21 @@ export type CableAssembly = {
   /** 挿入損失（S12）の実測値[dB]。周波数昇順。 */
   points: LossPoint[];
 };
+
+export type ReferenceCable = {
+  label: string;
+  color: string;
+  points: LossPoint[];
+};
+
+/**
+ * 比較用：一般的な同軸ケーブルの参考ロス曲線（1m相当の目安）。
+ * 代表減衰量[dB/m]から √f でスケールした概算（各社データシートの代表値ベース・非実測）。
+ */
+export const referenceCables: ReferenceCable[] = [
+  { label: "一般 細径 RG-178 相当（参考・1m）", color: "#f59e0b", points: referenceLossPoints(1.7, 1) },
+  { label: "一般 RG-316 相当（参考・1m）", color: "#94a3b8", points: referenceLossPoints(1.2, 1) }
+];
 
 /**
  * 標準品（変換・延長用）同軸ケーブルの挿入損失 実測値。

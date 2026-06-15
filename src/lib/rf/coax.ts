@@ -21,6 +21,23 @@ function assertPositiveFinite(value: number, label: string) {
   }
 }
 
+/** 比較用の参考周波数点（測定品番と同じ周波数）。 */
+const REFERENCE_FREQUENCIES_MHZ = [500, 800, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
+
+/**
+ * 一般的なケーブルの参考損失カーブを生成する。
+ * 表皮効果が支配的な範囲を想定し、2.4GHzの代表減衰量[dB/m]から √f でスケールする目安。
+ *   loss(f)[dB] = α(2.4GHz) × √(f/2400) × 長さ[m]
+ */
+export function referenceLossPoints(attenuationAt2400DbPerM: number, lengthM: number): LossPoint[] {
+  assertPositiveFinite(attenuationAt2400DbPerM, "代表減衰量");
+  assertPositiveFinite(lengthM, "長さ");
+  return REFERENCE_FREQUENCIES_MHZ.map((freqMHz) => ({
+    freqMHz,
+    lossDb: attenuationAt2400DbPerM * Math.sqrt(freqMHz / 2400) * lengthM
+  }));
+}
+
 /** 測定点（周波数昇順）から、指定周波数の損失[dB]を線形補間／外挿で求める。 */
 export function interpolateCableLoss(points: LossPoint[], frequencyMHz: number): number {
   assertPositiveFinite(frequencyMHz, "周波数");

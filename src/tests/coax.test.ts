@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { cableAssemblyLoss, interpolateCableLoss, type LossPoint } from "@/lib/rf/coax";
+import {
+  cableAssemblyLoss,
+  interpolateCableLoss,
+  type LossPoint,
+  referenceLossPoints
+} from "@/lib/rf/coax";
 
 const points: LossPoint[] = [
   { freqMHz: 500, lossDb: 1.39 },
@@ -40,5 +45,22 @@ describe("cable assembly loss with quantity", () => {
 
   it("rejects a quantity below 1", () => {
     expect(() => cableAssemblyLoss(points, 2000, 0)).toThrow();
+  });
+});
+
+describe("reference cable loss curve", () => {
+  it("generates √f-scaled points at the standard frequencies", () => {
+    const ref = referenceLossPoints(1.2, 1);
+    expect(ref).toHaveLength(9);
+    const at2400 = ref.find((p) => p.freqMHz === 2000);
+    // 1.2 * sqrt(2000/2400) * 1 ≈ 1.095
+    expect(at2400?.lossDb).toBeCloseTo(1.095, 2);
+    // loss increases with frequency
+    expect(ref[ref.length - 1].lossDb).toBeGreaterThan(ref[0].lossDb);
+  });
+
+  it("rejects invalid inputs", () => {
+    expect(() => referenceLossPoints(0, 1)).toThrow();
+    expect(() => referenceLossPoints(1.2, 0)).toThrow();
   });
 });

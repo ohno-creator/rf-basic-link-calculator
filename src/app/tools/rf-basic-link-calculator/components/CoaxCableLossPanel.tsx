@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { cableAssemblies } from "@/data/coaxCables";
+import { cableAssemblies, referenceCables } from "@/data/coaxCables";
 import { cableAssemblyLoss, interpolateCableLoss } from "@/lib/rf/coax";
 import { formatNumber } from "@/lib/rf/format";
 import { CableLossCurveDiagram } from "./CableLossCurveDiagram";
@@ -111,6 +111,7 @@ export function CoaxCableLossPanel() {
               points={cable.points}
               frequencyMHz={frequencyMHz}
               currentLossDb={result.perPieceDb}
+              referenceCables={referenceCables}
             />
           </div>
         </>
