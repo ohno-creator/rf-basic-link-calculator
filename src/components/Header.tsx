@@ -18,8 +18,8 @@ export function Header() {
           </span>
         </Link>
         <nav className="hidden items-center gap-5 text-sm font-medium text-slate-600 md:flex">
-          <Link className="hover:text-staf" href="/tools/rf-basic-link-calculator">
-            ツール
+          <Link className="hover:text-staf" href="/">
+            ツール一覧
           </Link>
           <a className="hover:text-staf" href={COLUMN_URL}>
             解説コラム

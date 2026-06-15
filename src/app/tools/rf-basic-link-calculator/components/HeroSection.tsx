@@ -1,5 +1,4 @@
-import { ArrowDown, BookOpen, MessageSquareText, PlayCircle } from "lucide-react";
-import { COLUMN_URL, CONTACT_URL } from "@/lib/rf/presets";
+import { ArrowDown, PlayCircle } from "lucide-react";
 
 type HeroSectionProps = {
   onStart: () => void;
@@ -32,7 +31,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
         <div className="mt-7 flex flex-wrap gap-3">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-md bg-staf px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark"
+            className="inline-flex items-center gap-2 rounded-full bg-staf px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark"
             onClick={onStart}
           >
             <PlayCircle aria-hidden="true" className="h-4 w-4" />
@@ -40,26 +39,12 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-md border border-staf/30 bg-white px-5 py-3 text-sm font-semibold text-staf transition hover:bg-staf-light"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/30 hover:text-staf"
             onClick={onSample}
           >
             <ArrowDown aria-hidden="true" className="h-4 w-4" />
-            まずはサンプル条件で試す
+            まずはサンプルで試す
           </button>
-          <a
-            className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/30 hover:text-staf"
-            href={COLUMN_URL}
-          >
-            <BookOpen aria-hidden="true" className="h-4 w-4" />
-            詳しい解説を読む
-          </a>
-          <a
-            className="inline-flex items-center gap-2 rounded-md border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/30 hover:text-staf"
-            href={CONTACT_URL}
-          >
-            <MessageSquareText aria-hidden="true" className="h-4 w-4" />
-            アンテナ選定を相談する
-          </a>
         </div>
 
         <div className="mt-7 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-950">

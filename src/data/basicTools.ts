@@ -65,6 +65,36 @@ export const basicTools: BasicToolMeta[] = [
     formula: "L = 69.55 + 26.16·log10(f) − 13.82·log10(hb) − a(hm) + …",
     essenceLead: "実環境の損失は、自由空間損失に建物や地形の影響を足したものです。",
     canonical: `${SITE_TOOLS}/propagation-loss`
+  },
+  {
+    slug: "frequency-wavelength",
+    title: "周波数・波長",
+    metaTitle: "周波数・波長 計算ツール｜λ・λ/2・λ/4 とアンテナサイズ",
+    description:
+      "周波数から波長 λ、λ/2、λ/4、λ/8 を計算します。半波長アンテナの目安や、誘電率による波長短縮も図で確認できます。",
+    formula: "λ[m] = 299,792,458 / 周波数[Hz]",
+    essenceLead: "周波数が高いほど波長は短くなり、アンテナも小さくできます。",
+    canonical: `${SITE_TOOLS}/frequency-wavelength`
+  },
+  {
+    slug: "dbm-converter",
+    title: "dBm 変換",
+    metaTitle: "dBm / mW / W 変換ツール｜電力単位の相互変換",
+    description:
+      "dBm、mW、W のいずれか1つを入力すると、他の単位へ自動変換します。+10dBで10倍などのdBの感覚もデシベルスケールで確認できます。",
+    formula: "mW = 10 ^ (dBm / 10)",
+    essenceLead: "dBmは電力そのもの、dBは比率。リンクバジェットは足し引きで扱います。",
+    canonical: `${SITE_TOOLS}/dbm-converter`
+  },
+  {
+    slug: "free-space-loss",
+    title: "自由空間損失（FSPL）",
+    metaTitle: "自由空間損失 FSPL 計算ツール｜距離と周波数による損失",
+    description:
+      "障害物のない理想空間で、距離により電波が弱くなる量（自由空間損失）を計算します。距離2倍で約6dB増えることも確認できます。",
+    formula: "FSPL[dB] = 32.44 + 20log10(距離[km]) + 20log10(周波数[MHz])",
+    essenceLead: "距離が伸びるほど、また周波数が高いほど、自由空間損失は大きくなります。",
+    canonical: `${SITE_TOOLS}/free-space-loss`
   }
 ];
 

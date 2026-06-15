@@ -17,7 +17,6 @@ import {
   loadStoredInput,
   saveStoredInput
 } from "@/lib/rf/share";
-import { BasicToolsSection } from "./BasicToolsSection";
 import { BeginnerRoadmap } from "./BeginnerRoadmap";
 import { ConsultationCta } from "./ConsultationCta";
 import { CalculatorTabs } from "./CalculatorTabs";
@@ -128,7 +127,6 @@ export function RfBasicLinkCalculatorClient() {
   return (
     <>
       <HeroSection onStart={scrollToCalculator} onSample={selectSample} />
-      <BasicToolsSection />
       <BeginnerRoadmap />
       <div ref={presetRef}>
         <QuickStartPresets onSelect={selectPreset} />

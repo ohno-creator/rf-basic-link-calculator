@@ -10,10 +10,8 @@ type BasicToolPageShellProps = {
   children: ReactNode;
 };
 
-const TOOLS_INDEX_HREF = "/tools/rf-basic-link-calculator#basic-tools";
-
 export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) {
-  const related = basicTools.filter((item) => item.slug !== tool.slug);
+  const related = basicTools.filter((item) => item.slug !== tool.slug).slice(0, 6);
 
   const jsonLd = [
     {
@@ -55,12 +53,8 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
       />
       <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
         <nav aria-label="パンくず" className="flex flex-wrap items-center gap-1 text-xs text-slate-500">
-          <Link className="hover:text-staf" href="/tools/rf-basic-link-calculator">
-            アンテナ・無線 基礎計算ツール
-          </Link>
-          <ChevronRight aria-hidden="true" className="h-3 w-3" />
-          <Link className="hover:text-staf" href={TOOLS_INDEX_HREF}>
-            基本計算ツール
+          <Link className="hover:text-staf" href="/">
+            ツール一覧
           </Link>
           <ChevronRight aria-hidden="true" className="h-3 w-3" />
           <span className="font-medium text-slate-700">{tool.title}</span>

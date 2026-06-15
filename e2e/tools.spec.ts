@@ -1,21 +1,26 @@
 import { expect, test } from "@playwright/test";
 
-const RF = "/tools/rf-basic-link-calculator/";
+const ALL_SLUGS = [
+  "rf-basic-link-calculator",
+  "free-space-loss",
+  "fresnel-zone",
+  "propagation-loss",
+  "frequency-wavelength",
+  "dbm-converter",
+  "vswr-return-loss",
+  "coaxial-line-impedance",
+  "microstrip-line"
+];
 
-test.describe("basic tools index", () => {
-  test("lists the five single-function tools and links to each", async ({ page }) => {
-    await page.goto(RF);
-    const section = page.locator("#basic-tools");
-    await expect(section.getByRole("heading", { name: "単機能の計算ツール集" })).toBeVisible();
+test.describe("tool hub", () => {
+  test("home lists every tool and links to its page", async ({ page }) => {
+    await page.goto("/");
+    await expect(
+      page.getByRole("heading", { level: 1, name: "無線設計の計算を、ひとつずつ。" })
+    ).toBeVisible();
 
-    for (const slug of [
-      "vswr-return-loss",
-      "coaxial-line-impedance",
-      "microstrip-line",
-      "fresnel-zone",
-      "propagation-loss"
-    ]) {
-      await expect(section.locator(`a[href*="/tools/${slug}"]`)).toHaveCount(1);
+    for (const slug of ALL_SLUGS) {
+      await expect(page.locator(`a[href*="/tools/${slug}"]`)).toHaveCount(1);
     }
   });
 });
@@ -26,7 +31,10 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "coaxial-line-impedance", h1: "同軸線路インピーダンス", fig: "断面で見る特性インピーダンス" },
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
-    { slug: "propagation-loss", h1: "伝搬損失（奥村-秦）", fig: "距離で見る伝搬損失" }
+    { slug: "propagation-loss", h1: "伝搬損失（奥村-秦）", fig: "距離で見る伝搬損失" },
+    { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
+    { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
+    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "自由空間損失 FSPL 計算" }
   ];
 
   for (const { slug, h1, fig } of pages) {
