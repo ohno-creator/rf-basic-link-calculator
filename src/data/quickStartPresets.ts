@@ -27,8 +27,8 @@ export const quickStartPresets: QuickStartPreset[] = [
       distance: 1,
       distanceUnit: "km",
       txPowerDbm: 13,
-      txAntennaGainDbi: 0,
-      rxAntennaGainDbi: 0,
+      txAntennaGainDbi: -6,
+      rxAntennaGainDbi: -6,
       cableLossDb: 1,
       environmentLossDb: 0,
       receiverSensitivityDbm: -120
