@@ -4,6 +4,8 @@ import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 type LinkBudgetWaterfallChartProps = {
   input: LinkBudgetInput;
   result: LinkBudgetResult;
+  /** バーをクリックしたとき、対応する入力キーを通知する（入力へジャンプ用） */
+  onStepSelect?: (key: keyof LinkBudgetInput) => void;
 };
 
 type WaterfallStep = {
@@ -14,6 +16,8 @@ type WaterfallStep = {
   delta: number;
   kind: "source" | "gain" | "loss" | "total";
   note: string;
+  /** このバーを動かす入力（クリックでジャンプ） */
+  inputKey?: keyof LinkBudgetInput;
 };
 
 const chart = {
@@ -26,7 +30,7 @@ const chart = {
   barWidth: 54
 };
 
-const stepStyles = {
+export const stepStyles = {
   source: { fill: "#0071BD", stroke: "#005A95", text: "#005A95" },
   gain: { fill: "#10B981", stroke: "#047857", text: "#047857" },
   loss: { fill: "#FB7185", stroke: "#BE123C", text: "#BE123C" },
@@ -42,55 +46,41 @@ function buildSteps(input: LinkBudgetInput, result: LinkBudgetResult): Waterfall
     shortLabel: string,
     delta: number,
     kind: WaterfallStep["kind"],
-    note: string
+    note: string,
+    inputKey?: keyof LinkBudgetInput
   ) => {
     const start = current;
     const end = current + delta;
-    steps.push({ label, shortLabel, start, end, delta, kind, note });
+    steps.push({ label, shortLabel, start, end, delta, kind, note, inputKey });
     current = end;
   };
 
-  addStep(
-    "送信出力",
-    "送信",
-    input.txPowerDbm,
-    "source",
-    "送信機から出る電波の強さ"
-  );
+  addStep("送信出力", "送信", input.txPowerDbm, "source", "送信機から出る電波の強さ", "txPowerDbm");
   addStep(
     "送信アンテナ利得",
     "Tx利得",
     input.txAntennaGainDbi,
     input.txAntennaGainDbi >= 0 ? "gain" : "loss",
-    "送信側アンテナで足される要素"
+    "送信側アンテナで足される要素",
+    "txAntennaGainDbi"
   );
   addStep(
     "受信アンテナ利得",
     "Rx利得",
     input.rxAntennaGainDbi,
     input.rxAntennaGainDbi >= 0 ? "gain" : "loss",
-    "受信側アンテナで足される要素"
+    "受信側アンテナで足される要素",
+    "rxAntennaGainDbi"
   );
-  addStep(
-    "自由空間損失",
-    "FSPL",
-    -result.fsplDb,
-    "loss",
-    "距離と周波数で弱くなる量"
-  );
-  addStep(
-    "ケーブル損失",
-    "ケーブル",
-    -input.cableLossDb,
-    "loss",
-    "ケーブルやコネクタで失われる量"
-  );
+  addStep("自由空間損失", "FSPL", -result.fsplDb, "loss", "距離と周波数で弱くなる量", "distance");
+  addStep("ケーブル損失", "ケーブル", -input.cableLossDb, "loss", "ケーブルやコネクタで失われる量", "cableLossDb");
   addStep(
     "環境補正損失",
     "環境",
     -input.environmentLossDb,
     "loss",
-    "筐体、壁、金属、設置環境で弱くなる目安"
+    "筐体、壁、金属、設置環境で弱くなる目安",
+    "environmentLossDb"
   );
 
   return [
@@ -114,7 +104,8 @@ function roundedTick(value: number, direction: "up" | "down") {
 
 export function LinkBudgetWaterfallChart({
   input,
-  result
+  result,
+  onStepSelect
 }: LinkBudgetWaterfallChartProps) {
   const steps = buildSteps(input, result);
   const values = steps.flatMap((step) => [step.start, step.end]);
@@ -141,11 +132,10 @@ export function LinkBudgetWaterfallChart({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf">Waterfall Chart</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">
-            リンクバジェット滝グラフ
-          </h3>
+          <h3 className="mt-1 text-lg font-bold text-slate-950">リンクバジェット滝グラフ</h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-            送信出力からスタートし、アンテナ利得で少し増え、距離・ケーブル・筐体や環境の損失で落ちていく流れをdBm軸で表示します。
+            送信出力からスタートし、アンテナ利得で増え、距離・ケーブル・環境の損失で落ちていく流れをdBm軸で表示します。
+            {onStepSelect ? "バーをクリックすると、その入力スライダーへジャンプします。" : null}
           </p>
         </div>
         <div className="grid grid-cols-2 gap-2 text-xs font-semibold sm:grid-cols-4">
@@ -216,13 +206,33 @@ export function LinkBudgetWaterfallChart({
             const height = Math.max(3, Math.abs(endY - startY));
             const style = stepStyles[step.kind];
             const centerX = x(index) + chart.barWidth / 2;
+            const clickable = Boolean(onStepSelect && step.inputKey);
             const valueLabel =
               step.kind === "total"
                 ? formatDbm(step.end)
                 : formatSigned(step.delta, step.kind === "source" ? "dBm" : "dB");
 
             return (
-              <g key={step.label}>
+              <g
+                key={step.label}
+                className={clickable ? "cursor-pointer" : undefined}
+                role={clickable ? "button" : undefined}
+                tabIndex={clickable ? 0 : undefined}
+                aria-label={clickable ? `${step.label}の入力へ移動` : undefined}
+                onClick={
+                  clickable ? () => onStepSelect?.(step.inputKey as keyof LinkBudgetInput) : undefined
+                }
+                onKeyDown={
+                  clickable
+                    ? (event) => {
+                        if (event.key === "Enter" || event.key === " ") {
+                          event.preventDefault();
+                          onStepSelect?.(step.inputKey as keyof LinkBudgetInput);
+                        }
+                      }
+                    : undefined
+                }
+              >
                 {index > 0 ? (
                   <line
                     x1={x(index - 1) + chart.barWidth}
@@ -270,24 +280,6 @@ export function LinkBudgetWaterfallChart({
             dBm
           </text>
         </svg>
-      </div>
-
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        {steps.map((step) => (
-          <div key={step.label} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="text-sm font-semibold text-slate-950">{step.label}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-500">{step.note}</p>
-              </div>
-              <p className="shrink-0 text-sm font-bold text-slate-950">
-                {step.kind === "total"
-                  ? formatDbm(step.end)
-                  : formatSigned(step.delta, step.kind === "source" ? "dBm" : "dB")}
-              </p>
-            </div>
-          </div>
-        ))}
       </div>
 
       <p className="mt-4 text-sm leading-relaxed text-slate-600">

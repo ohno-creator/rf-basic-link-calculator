@@ -1,12 +1,14 @@
 "use client";
 
 import { type ReactNode, useMemo } from "react";
+import { Accordion } from "@/components/Accordion";
 import { Tooltip } from "@/components/Tooltip";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { frequencyPresets } from "@/data/frequencyPresets";
 import { glossary } from "@/data/glossary";
 import { wirelessSystemPresets } from "@/data/wirelessSystemPresets";
 import type { LinkBudgetInput, ValidationErrors } from "@/lib/rf/linkBudget";
+import { InputImpactGuide } from "./InputImpactGuide";
 
 type LinkBudgetPanelProps = {
   input: LinkBudgetInput;
@@ -154,9 +156,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-xl font-bold text-slate-950">リンクバジェット簡易診断</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          送信出力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。
+          送信出力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。スライダーを動かすと、右の滝グラフがその場で変わります。
         </p>
       </div>
+
+      <Accordion title="入力で何が変わるか（効き方ガイド）">
+        <InputImpactGuide />
+      </Accordion>
 
       <div className="grid gap-5">
         <InputGroup

@@ -39,3 +39,14 @@ details > summary {
 details > summary::-webkit-details-marker {
   display: none;
 }
+
+/* クリック可能な滝グラフのバー（SVG g[role=button]）にフォーカスが当たったときの可視表現。
+   g はボックスを持たず既定のフォーカスリングが出ないため、内側の rect を強調する。 */
+svg g[role="button"] {
+  outline: none;
+}
+
+svg g[role="button"]:focus-visible rect {
+  stroke: #0071bd;
+  stroke-width: 3;
+}
