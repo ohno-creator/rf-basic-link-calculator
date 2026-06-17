@@ -37,7 +37,7 @@ export const defaultLinkBudgetInput: LinkBudgetInput = {
   txAntennaGainDbi: -6,
   rxAntennaGainDbi: -6,
   cableLossDb: 1,
-  environmentLossDb: 0,
+  environmentLossDb: 20, // 環境補正プリセット「金属近接」
   receiverSensitivityDbm: -120
 };
 

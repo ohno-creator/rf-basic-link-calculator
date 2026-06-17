@@ -18,9 +18,9 @@ export const quickStartPresets: QuickStartPreset[] = [
     system: "LoRa / Wi-SUN / LPWA",
     frequencyLabel: "920MHz",
     distanceLabel: "1km",
-    difficulty: "長距離だが感度に余裕を作りやすい",
+    difficulty: "金属近接では余裕が小さく要注意",
     description:
-      "920MHz帯のセンサー端末を想定したサンプルです。長距離・低データ量のIoT用途をイメージしています。",
+      "920MHz帯のセンサー端末を想定したサンプルです。長距離・低データ量のIoT用途で、金属近接（環境補正20dB）の条件を含みます。",
     input: {
       system: "LoRa / LoRaWAN",
       frequencyMHz: 920,
@@ -30,7 +30,7 @@ export const quickStartPresets: QuickStartPreset[] = [
       txAntennaGainDbi: -6,
       rxAntennaGainDbi: -6,
       cableLossDb: 1,
-      environmentLossDb: 0,
+      environmentLossDb: 20,
       receiverSensitivityDbm: -120
     }
   },
