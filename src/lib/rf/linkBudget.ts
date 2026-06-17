@@ -26,17 +26,19 @@ export type LinkBudgetResult = {
 
 export type ValidationErrors = Partial<Record<keyof LinkBudgetInput, string>>;
 
+// 初期表示はLoRa（920MHz LPWA）プリセットを既定にする。
+// quickStartPresets の "lpwa-920" と同じ値（循環import回避のためここでは値を直書き）。
 export const defaultLinkBudgetInput: LinkBudgetInput = {
-  system: "LTE-M / NB-IoT",
-  frequencyMHz: 800,
+  system: "LoRa / LoRaWAN",
+  frequencyMHz: 920,
   distance: 1,
   distanceUnit: "km",
-  txPowerDbm: 23,
-  txAntennaGainDbi: -2,
-  rxAntennaGainDbi: 0,
-  cableLossDb: 0.5,
-  environmentLossDb: 10,
-  receiverSensitivityDbm: -105
+  txPowerDbm: 13,
+  txAntennaGainDbi: -6,
+  rxAntennaGainDbi: -6,
+  cableLossDb: 1,
+  environmentLossDb: 0,
+  receiverSensitivityDbm: -120
 };
 
 export function normalizeDistanceKm(distance: number, unit: DistanceUnit): number {
