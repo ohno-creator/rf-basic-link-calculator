@@ -69,6 +69,20 @@ test("dB feel slider reacts to dB", async ({ page }) => {
   await expect(page.getByText("×100").first()).toBeVisible();
 });
 
+test("RF calculator switches to the research distance sheet", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "目標信頼率を満たす最大通信距離を別シートで計算します" })
+  ).toBeVisible();
+  await expect(page.getByText("90%信頼率の最大距離")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "距離別リンク余裕" })).toBeVisible();
+
+  await page.getByLabel("距離計算モデル").selectOption("tr38901_umi_nlos");
+  await expect(page.getByRole("heading", { name: "適用範囲と注意" })).toBeVisible();
+});
+
 test("microstrip impedance reacts to trace width", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   await expect(page.getByText("50.8 Ω").first()).toBeVisible();

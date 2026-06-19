@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import {
   calculateLinkBudget,
   hasValidationErrors,
@@ -10,6 +10,7 @@ import {
 } from "@/lib/rf/linkBudget";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
+import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
 import { ResultDetails } from "./ResultDetails";
 import { ResultHero } from "./ResultHero";
 import { StickyResultSummary } from "./StickyResultSummary";
@@ -30,6 +31,21 @@ const relatedTools = [
   { href: "/tools/free-space-loss", label: "自由空間損失" }
 ];
 
+const sheets = [
+  {
+    id: "link-budget",
+    label: "リンクバジェット",
+    description: "現在の距離で通信成立の余裕を見る"
+  },
+  {
+    id: "research-distance",
+    label: "研究ベース距離計算",
+    description: "信頼率とばらつき込みで最大距離を逆算する"
+  }
+] as const;
+
+type SheetId = (typeof sheets)[number]["id"];
+
 // 滝グラフのバーをクリックしたとき、対応する入力スライダーへスクロール＋フォーカス（フォーカスリングで強調）。
 function jumpToInput(key: keyof LinkBudgetInput) {
   const element = document.getElementById(String(key));
@@ -49,6 +65,7 @@ export function CalculatorTabs({
   onShare,
   shareState
 }: CalculatorTabsProps) {
+  const [activeSheet, setActiveSheet] = useState<SheetId>("link-budget");
   const errors = useMemo(() => validateLinkBudgetInput(input), [input]);
   const result = useMemo(() => {
     if (hasValidationErrors(errors)) {
@@ -67,7 +84,7 @@ export function CalculatorTabs({
       <div className="mb-5">
         <p className="text-sm font-semibold text-staf">メイン診断</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-          入力を動かすと、右の滝グラフと判定がその場で変わります
+          リンクバジェットと研究ベース距離計算を切り替えて確認できます
         </h2>
       </div>
 
@@ -75,21 +92,52 @@ export function CalculatorTabs({
         <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
-        <div
-          id={RESULT_ANCHOR_ID}
-          className="scroll-mt-24 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1"
-        >
-          <ResultHero input={input} result={result} errors={errors} onStepSelect={jumpToInput} />
+      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
+        <div role="tablist" aria-label="計算シート" className="grid gap-2 sm:grid-cols-2">
+          {sheets.map((sheet) => {
+            const selected = activeSheet === sheet.id;
+            return (
+              <button
+                key={sheet.id}
+                type="button"
+                role="tab"
+                aria-selected={selected}
+                className={`rounded-md px-4 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
+                  selected ? "bg-staf text-white shadow-sm" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                }`}
+                onClick={() => setActiveSheet(sheet.id)}
+              >
+                <span className="block text-sm font-bold">{sheet.label}</span>
+                <span className={`mt-1 block text-xs ${selected ? "text-white/85" : "text-slate-500"}`}>
+                  {sheet.description}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="mt-6">
-        <ResultDetails input={input} result={result} />
-      </div>
+      {activeSheet === "link-budget" ? (
+        <>
+          <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+            <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
+            <div
+              id={RESULT_ANCHOR_ID}
+              className="scroll-mt-24 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1"
+            >
+              <ResultHero input={input} result={result} errors={errors} onStepSelect={jumpToInput} />
+            </div>
+          </div>
 
-      {result ? (
+          <div className="mt-6">
+            <ResultDetails input={input} result={result} />
+          </div>
+        </>
+      ) : (
+        <ResearchDistanceSheet baseInput={input} />
+      )}
+
+      {result && activeSheet === "link-budget" ? (
         <StickyResultSummary result={result} input={input} targetId={RESULT_ANCHOR_ID} />
       ) : null}
 
