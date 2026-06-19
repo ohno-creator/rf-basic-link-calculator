@@ -22,6 +22,12 @@ function riskItems(input: LinkBudgetInput, result: LinkBudgetResult) {
   if (input.cableLossDb >= 1) {
     risks.push("ケーブル・コネクタ損失");
   }
+  if (result.nearTerminalLossDb >= 3) {
+    risks.push("端末近傍損失");
+  }
+  if (input.calibrationOffsetDb === 0) {
+    risks.push("実測補正未入力");
+  }
   if (input.frequencyMHz <= 920) {
     risks.push("低周波LTE帯でのアンテナサイズ不足");
   }
@@ -48,8 +54,11 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
       <Accordion title="なぜこの判定？" defaultOpen>
         <p>{result.judgement.technicalComment}</p>
         <p className="mt-2">
-          自由空間損失は {formatDb(result.fsplDb)}、環境補正損失は {formatDb(input.environmentLossDb)}{" "}
-          として計算しています。
+          採用した伝搬モデルは「{result.propagationModelLabel}」です。伝搬損失は{" "}
+          {formatDb(result.pathLossDb)}、環境損失は {formatDb(input.environmentLossDb)}、
+          端末近傍損失は {formatDb(result.nearTerminalLossDb)}、実測補正値は{" "}
+          {formatSigned(input.calibrationOffsetDb, "dB")} として計算しています。
+          Log-distanceモデルでは距離損失指数 n={input.pathLossExponent.toFixed(1)} を使います。
         </p>
       </Accordion>
 
@@ -71,8 +80,9 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
 
       <Accordion title="技術者向けの説明を見る">
         <p>
-          受信電力[dBm] = 送信出力[dBm] + 送信アンテナ利得[dBi] + 受信アンテナ利得[dBi] -
-          自由空間損失[dB] - ケーブル・コネクタ損失[dB] - 環境補正損失[dB] です。
+          受信電力[dBm] = 送信電力[dBm] + 送信アンテナ利得[dBi] + 受信アンテナ利得[dBi] -
+          伝搬損失[dB] - ケーブル・コネクタ損失[dB] - 環境損失[dB] - 端末近傍損失[dB] +
+          実測補正値[dB] です。
         </p>
         <p className="mt-2">
           リンクマージン[dB] = 受信電力[dBm] - 受信感度[dBm] で、現在は{" "}

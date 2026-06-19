@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     template: "%s｜スタッフ株式会社"
   },
   description:
-    "周波数、距離、送信出力、アンテナ利得、受信感度から、無線通信のリンクマージンを簡易計算できます。",
+    "周波数、距離、送信電力、アンテナ利得、受信感度から、無線通信のリンクマージンを簡易計算できます。",
   openGraph: {
     siteName: "スタッフ株式会社",
     type: "website"

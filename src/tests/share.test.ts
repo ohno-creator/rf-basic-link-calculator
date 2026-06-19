@@ -10,14 +10,25 @@ import {
 
 const sample: LinkBudgetInput = {
   system: "LoRa / LoRaWAN",
+  linkType: "gateway_to_low_height_terminal",
+  propagationModel: "free_space",
+  pathLossExponent: 3.2,
   frequencyMHz: 920,
   distance: 1.5,
   distanceUnit: "km",
   txPowerDbm: 13,
   txAntennaGainDbi: 0,
   rxAntennaGainDbi: 2,
+  txAntennaHeightM: 8,
+  rxAntennaHeightM: 1.5,
   cableLossDb: 1,
   environmentLossDb: 10,
+  groundProximityLossDb: 2,
+  enclosureLossDb: 3,
+  polarizationMismatchLossDb: 1,
+  vehicleBodyObstructionLossDb: 0,
+  installationMarginDb: 2,
+  calibrationOffsetDb: -1,
   receiverSensitivityDbm: -120
 };
 
@@ -41,6 +52,9 @@ describe("share encode/decode", () => {
     expect(decoded?.distance).toBe(defaultLinkBudgetInput.distance);
     expect(decoded?.distanceUnit).toBe(defaultLinkBudgetInput.distanceUnit);
     expect(decoded?.system).toBe(defaultLinkBudgetInput.system);
+    expect(decoded?.linkType).toBe(defaultLinkBudgetInput.linkType);
+    expect(decoded?.propagationModel).toBe(defaultLinkBudgetInput.propagationModel);
+    expect(decoded?.pathLossExponent).toBe(defaultLinkBudgetInput.pathLossExponent);
     expect(decoded?.txPowerDbm).toBe(defaultLinkBudgetInput.txPowerDbm);
   });
 
@@ -51,10 +65,16 @@ describe("share encode/decode", () => {
       distance: Number.NaN,
       distanceUnit: "km",
       txPowerDbm: "15",
+      linkType: "terminal_to_terminal",
+      propagationModel: "two_ray",
+      pathLossExponent: "2.7",
       receiverSensitivityDbm: -75
     });
 
     expect(sanitized.system).toBe("Wi-Fi");
+    expect(sanitized.linkType).toBe("terminal_to_terminal");
+    expect(sanitized.propagationModel).toBe("two_ray");
+    expect(sanitized.pathLossExponent).toBe(2.7);
     expect(sanitized.frequencyMHz).toBe(2400);
     expect(sanitized.distance).toBe(defaultLinkBudgetInput.distance);
     expect(sanitized.txPowerDbm).toBe(15);

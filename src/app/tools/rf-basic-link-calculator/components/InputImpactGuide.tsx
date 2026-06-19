@@ -11,15 +11,15 @@ const impacts = [
   {
     title: "距離・周波数",
     change: "長くなる / 高くなる",
-    result: "自由空間損失が増えて、受信電力が下がる",
+    result: "伝搬損失が増えて、受信電力が下がる",
     example: "距離2倍で約 -6dB",
     icon: Waves,
     effectIcon: ArrowDownRight,
     tone: "border-sky-200 bg-sky-50 text-sky-800"
   },
   {
-    title: "送信出力・アンテナ利得",
-    change: "大きくする",
+    title: "送信電力・アンテナ利得・高さ",
+    change: "大きくする / 高くする",
     result: "受信電力が上がり、リンクマージンが増える",
     example: "+3dBで電力感覚は約2倍",
     icon: RadioTower,
@@ -27,18 +27,18 @@ const impacts = [
     tone: "border-emerald-200 bg-emerald-50 text-emerald-800"
   },
   {
-    title: "ケーブル・環境損失",
+    title: "ケーブル・環境・端末近傍損失",
     change: "大きくなる",
     result: "途中で電波が失われ、リンクマージンが減る",
-    example: "金属近接や筐体内蔵で悪化",
+    example: "地面近接・筐体・遮蔽で悪化",
     icon: ShieldAlert,
     effectIcon: ArrowDownRight,
     tone: "border-rose-200 bg-rose-50 text-rose-800"
   },
   {
-    title: "受信感度",
-    change: "より小さいdBmにする",
-    result: "弱い電波まで受けられ、判定ラインに余裕が出る",
+    title: "受信感度・実測補正値",
+    change: "高感度化 / 現地測定で補正",
+    result: "判定ラインと現地との差分を見て、評価の確度を上げる",
     example: "-100dBmは-90dBmより高感度",
     icon: Gauge,
     effectIcon: ArrowUpRight,
@@ -50,7 +50,7 @@ export function InputImpactGuide() {
   return (
     <div>
       <p className="text-sm leading-relaxed text-slate-600">
-        迷ったら「距離・損失はマージンを減らす」「利得・高感度はマージンを増やす」と覚えると読みやすくなります。
+        迷ったら「距離・損失はマージンを減らす」「利得・アンテナ高・高感度はマージンを増やす」「実測補正値は現地差分を反映する」と覚えると読みやすくなります。
       </p>
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">

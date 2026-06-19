@@ -17,6 +17,7 @@ const dotStyles: Record<LinkJudgementLevel, string> = {
   excellent: "bg-emerald-500",
   good: "bg-sky-500",
   caution: "bg-amber-500",
+  unstable: "bg-orange-500",
   poor: "bg-rose-500"
 };
 

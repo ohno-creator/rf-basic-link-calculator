@@ -1,7 +1,9 @@
 import {
   defaultLinkBudgetInput,
   type DistanceUnit,
-  type LinkBudgetInput
+  type LinkBudgetInput,
+  type LinkPropagationModel,
+  type LinkType
 } from "./linkBudget";
 
 /**
@@ -15,14 +17,25 @@ const STORAGE_KEY = "rf-basic-link-calculator:input";
 // URLを短く保つための短縮キー。値はLinkBudgetInputのキーに対応する。
 const QUERY_KEYS = {
   system: "sys",
+  linkType: "lt",
+  propagationModel: "pm",
+  pathLossExponent: "n",
   frequencyMHz: "f",
   distance: "d",
   distanceUnit: "du",
   txPowerDbm: "tx",
   txAntennaGainDbi: "tg",
   rxAntennaGainDbi: "rg",
+  txAntennaHeightM: "th",
+  rxAntennaHeightM: "rh",
   cableLossDb: "cl",
   environmentLossDb: "el",
+  groundProximityLossDb: "gl",
+  enclosureLossDb: "nl",
+  polarizationMismatchLossDb: "pl",
+  vehicleBodyObstructionLossDb: "vl",
+  installationMarginDb: "im",
+  calibrationOffsetDb: "co",
   receiverSensitivityDbm: "rs"
 } as const;
 
@@ -44,6 +57,35 @@ function toSystem(value: unknown): string {
   return typeof value === "string" && value.trim() ? value : defaultLinkBudgetInput.system;
 }
 
+function toLinkType(value: unknown): LinkType {
+  const allowed: LinkType[] = [
+    "cellular_base_station_to_iot_terminal",
+    "private_base_station_to_iot_terminal",
+    "gateway_to_low_height_terminal",
+    "terminal_to_terminal",
+    "custom"
+  ];
+
+  return typeof value === "string" && allowed.includes(value as LinkType)
+    ? (value as LinkType)
+    : defaultLinkBudgetInput.linkType;
+}
+
+function toPropagationModel(value: unknown): LinkPropagationModel {
+  const allowed: LinkPropagationModel[] = [
+    "free_space",
+    "two_ray",
+    "log_distance",
+    "measured_correction",
+    "okumura_hata",
+    "cost231_hata"
+  ];
+
+  return typeof value === "string" && allowed.includes(value as LinkPropagationModel)
+    ? (value as LinkPropagationModel)
+    : defaultLinkBudgetInput.propagationModel;
+}
+
 /**
  * 任意の入力（部分オブジェクト・URL由来・localStorage由来）を既定値とマージし、
  * すべてのフィールドが有効な型・有限値になったLinkBudgetInputを返す。
@@ -51,14 +93,34 @@ function toSystem(value: unknown): string {
 export function sanitizeInput(raw: Partial<Record<keyof LinkBudgetInput, unknown>>): LinkBudgetInput {
   return {
     system: toSystem(raw.system),
+    linkType: toLinkType(raw.linkType),
+    propagationModel: toPropagationModel(raw.propagationModel),
+    pathLossExponent: toFiniteNumber(raw.pathLossExponent, defaultLinkBudgetInput.pathLossExponent),
     frequencyMHz: toFiniteNumber(raw.frequencyMHz, defaultLinkBudgetInput.frequencyMHz),
     distance: toFiniteNumber(raw.distance, defaultLinkBudgetInput.distance),
     distanceUnit: toDistanceUnit(raw.distanceUnit),
     txPowerDbm: toFiniteNumber(raw.txPowerDbm, defaultLinkBudgetInput.txPowerDbm),
     txAntennaGainDbi: toFiniteNumber(raw.txAntennaGainDbi, defaultLinkBudgetInput.txAntennaGainDbi),
     rxAntennaGainDbi: toFiniteNumber(raw.rxAntennaGainDbi, defaultLinkBudgetInput.rxAntennaGainDbi),
+    txAntennaHeightM: toFiniteNumber(raw.txAntennaHeightM, defaultLinkBudgetInput.txAntennaHeightM),
+    rxAntennaHeightM: toFiniteNumber(raw.rxAntennaHeightM, defaultLinkBudgetInput.rxAntennaHeightM),
     cableLossDb: toFiniteNumber(raw.cableLossDb, defaultLinkBudgetInput.cableLossDb),
     environmentLossDb: toFiniteNumber(raw.environmentLossDb, defaultLinkBudgetInput.environmentLossDb),
+    groundProximityLossDb: toFiniteNumber(
+      raw.groundProximityLossDb,
+      defaultLinkBudgetInput.groundProximityLossDb
+    ),
+    enclosureLossDb: toFiniteNumber(raw.enclosureLossDb, defaultLinkBudgetInput.enclosureLossDb),
+    polarizationMismatchLossDb: toFiniteNumber(
+      raw.polarizationMismatchLossDb,
+      defaultLinkBudgetInput.polarizationMismatchLossDb
+    ),
+    vehicleBodyObstructionLossDb: toFiniteNumber(
+      raw.vehicleBodyObstructionLossDb,
+      defaultLinkBudgetInput.vehicleBodyObstructionLossDb
+    ),
+    installationMarginDb: toFiniteNumber(raw.installationMarginDb, defaultLinkBudgetInput.installationMarginDb),
+    calibrationOffsetDb: toFiniteNumber(raw.calibrationOffsetDb, defaultLinkBudgetInput.calibrationOffsetDb),
     receiverSensitivityDbm: toFiniteNumber(
       raw.receiverSensitivityDbm,
       defaultLinkBudgetInput.receiverSensitivityDbm
@@ -76,14 +138,25 @@ export function isDefaultInput(input: LinkBudgetInput): boolean {
 export function encodeInputToQuery(input: LinkBudgetInput): string {
   const params = new URLSearchParams();
   params.set(QUERY_KEYS.system, input.system);
+  params.set(QUERY_KEYS.linkType, input.linkType);
+  params.set(QUERY_KEYS.propagationModel, input.propagationModel);
+  params.set(QUERY_KEYS.pathLossExponent, String(input.pathLossExponent));
   params.set(QUERY_KEYS.frequencyMHz, String(input.frequencyMHz));
   params.set(QUERY_KEYS.distance, String(input.distance));
   params.set(QUERY_KEYS.distanceUnit, input.distanceUnit);
   params.set(QUERY_KEYS.txPowerDbm, String(input.txPowerDbm));
   params.set(QUERY_KEYS.txAntennaGainDbi, String(input.txAntennaGainDbi));
   params.set(QUERY_KEYS.rxAntennaGainDbi, String(input.rxAntennaGainDbi));
+  params.set(QUERY_KEYS.txAntennaHeightM, String(input.txAntennaHeightM));
+  params.set(QUERY_KEYS.rxAntennaHeightM, String(input.rxAntennaHeightM));
   params.set(QUERY_KEYS.cableLossDb, String(input.cableLossDb));
   params.set(QUERY_KEYS.environmentLossDb, String(input.environmentLossDb));
+  params.set(QUERY_KEYS.groundProximityLossDb, String(input.groundProximityLossDb));
+  params.set(QUERY_KEYS.enclosureLossDb, String(input.enclosureLossDb));
+  params.set(QUERY_KEYS.polarizationMismatchLossDb, String(input.polarizationMismatchLossDb));
+  params.set(QUERY_KEYS.vehicleBodyObstructionLossDb, String(input.vehicleBodyObstructionLossDb));
+  params.set(QUERY_KEYS.installationMarginDb, String(input.installationMarginDb));
+  params.set(QUERY_KEYS.calibrationOffsetDb, String(input.calibrationOffsetDb));
   params.set(QUERY_KEYS.receiverSensitivityDbm, String(input.receiverSensitivityDbm));
   return params.toString();
 }
@@ -101,14 +174,25 @@ export function decodeInputFromQuery(query: string): LinkBudgetInput | null {
 
   return sanitizeInput({
     system: params.get(QUERY_KEYS.system) ?? undefined,
+    linkType: params.get(QUERY_KEYS.linkType) ?? undefined,
+    propagationModel: params.get(QUERY_KEYS.propagationModel) ?? undefined,
+    pathLossExponent: params.get(QUERY_KEYS.pathLossExponent) ?? undefined,
     frequencyMHz: params.get(QUERY_KEYS.frequencyMHz) ?? undefined,
     distance: params.get(QUERY_KEYS.distance) ?? undefined,
     distanceUnit: params.get(QUERY_KEYS.distanceUnit) ?? undefined,
     txPowerDbm: params.get(QUERY_KEYS.txPowerDbm) ?? undefined,
     txAntennaGainDbi: params.get(QUERY_KEYS.txAntennaGainDbi) ?? undefined,
     rxAntennaGainDbi: params.get(QUERY_KEYS.rxAntennaGainDbi) ?? undefined,
+    txAntennaHeightM: params.get(QUERY_KEYS.txAntennaHeightM) ?? undefined,
+    rxAntennaHeightM: params.get(QUERY_KEYS.rxAntennaHeightM) ?? undefined,
     cableLossDb: params.get(QUERY_KEYS.cableLossDb) ?? undefined,
     environmentLossDb: params.get(QUERY_KEYS.environmentLossDb) ?? undefined,
+    groundProximityLossDb: params.get(QUERY_KEYS.groundProximityLossDb) ?? undefined,
+    enclosureLossDb: params.get(QUERY_KEYS.enclosureLossDb) ?? undefined,
+    polarizationMismatchLossDb: params.get(QUERY_KEYS.polarizationMismatchLossDb) ?? undefined,
+    vehicleBodyObstructionLossDb: params.get(QUERY_KEYS.vehicleBodyObstructionLossDb) ?? undefined,
+    installationMarginDb: params.get(QUERY_KEYS.installationMarginDb) ?? undefined,
+    calibrationOffsetDb: params.get(QUERY_KEYS.calibrationOffsetDb) ?? undefined,
     receiverSensitivityDbm: params.get(QUERY_KEYS.receiverSensitivityDbm) ?? undefined
   });
 }

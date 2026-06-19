@@ -22,7 +22,7 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <h3 className="text-base font-semibold text-slate-950">Sensitivity Line Visual</h3>
       <p className="mt-1 text-sm leading-relaxed text-slate-600">
-        受信感度は「ここまで弱い電波なら受け取れる」という最低ラインです。推定受信電力がこのラインより上にあれば、通信できる可能性があります。
+        受信感度は「ここまで弱い電波なら受け取れる」という最低ラインです。受信電力がこのラインより上にあれば、通信できる可能性があります。
       </p>
 
       <div className="mt-5 grid gap-4 sm:grid-cols-[110px_1fr]">
@@ -39,7 +39,7 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
             style={{ top: `${receivedTop}%` }}
           >
             <span className="absolute -top-4 left-3 rounded-full bg-staf px-2 py-1 text-xs font-semibold text-white">
-              推定受信電力 {formatDbm(result.receivedPowerDbm)}
+              受信電力 {formatDbm(result.receivedPowerDbm)}
             </span>
           </div>
           <div

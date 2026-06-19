@@ -7,7 +7,7 @@ import { RfBasicLinkCalculatorClient } from "./components/RfBasicLinkCalculatorC
 const title =
   "通信距離・リンクバジェット簡易診断｜アンテナ・無線 基礎計算ツール｜スタッフ株式会社";
 const description =
-  "周波数、距離、送信出力、アンテナ利得、受信感度から、無線通信のリンクマージンを簡易計算できます。IoT機器、LTE-M/NB-IoT、Wi-Fi、BLE、920MHz帯機器などのアンテナ検討にご活用ください。スタッフ株式会社が提供するアンテナ・無線設計支援ツールです。";
+  "周波数、距離、送信電力、アンテナ利得、受信感度から、無線通信のリンクマージンを簡易計算できます。IoT機器、LTE-M/NB-IoT、Wi-Fi、BLE、920MHz帯機器などのアンテナ検討にご活用ください。スタッフ株式会社が提供するアンテナ・無線設計支援ツールです。";
 const keywords = [
   "リンクバジェット",
   "通信距離 計算",

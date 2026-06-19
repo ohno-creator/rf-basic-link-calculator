@@ -32,10 +32,10 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">
-            Distance vs Received Power Chart
+            通信距離と受信電力のグラフ
           </h3>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            距離が伸びるほど、受信機に届く電波は弱くなります。推定受信電力が受信感度のラインを下回ると、通信が不安定になる可能性があります。
+            距離が伸びるほど、受信機に届く電波は弱くなります。受信電力が受信感度のラインを下回ると、通信が不安定になる可能性があります。
           </p>
         </div>
         {current ? (
@@ -45,7 +45,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
         ) : null}
       </div>
 
-      <div className="mt-5 h-72 w-full" aria-label="距離と推定受信電力のグラフ">
+      <div className="mt-5 h-72 w-full" aria-label="距離と受信電力のグラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
@@ -61,7 +61,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                 domain={["dataMin - 12", "dataMax + 8"]}
               />
               <RechartsTooltip
-                formatter={(value) => [`${value} dBm`, "推定受信電力"]}
+                formatter={(value) => [`${value} dBm`, "受信電力"]}
                 labelFormatter={(label) => `距離 ${label}`}
               />
               <ReferenceLine
@@ -93,7 +93,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                     />
                   );
                 }}
-                name="推定受信電力"
+                name="受信電力"
               />
             </LineChart>
           </ResponsiveContainer>

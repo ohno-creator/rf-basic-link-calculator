@@ -6,10 +6,11 @@ type LinkMarginGaugeProps = {
 };
 
 const zones = [
-  { label: "条件見直し推奨", range: "0dB未満", className: "bg-rose-100 text-rose-900" },
-  { label: "要注意", range: "0-10dB", className: "bg-amber-100 text-amber-900" },
-  { label: "概ね可能性あり", range: "10-20dB", className: "bg-sky-100 text-sky-900" },
-  { label: "余裕あり", range: "20dB以上", className: "bg-emerald-100 text-emerald-900" }
+  { label: "通信困難", range: "0dB未満", className: "bg-rose-100 text-rose-900" },
+  { label: "不安定", range: "0-3dB", className: "bg-orange-100 text-orange-900" },
+  { label: "条件付き", range: "3-10dB", className: "bg-amber-100 text-amber-900" },
+  { label: "良好", range: "10-20dB", className: "bg-sky-100 text-sky-900" },
+  { label: "安定", range: "20dB以上", className: "bg-emerald-100 text-emerald-900" }
 ];
 
 function markerPosition(marginDb: number) {
@@ -38,7 +39,7 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
       </div>
 
       <div className="mt-5">
-        <div className="grid grid-cols-4 overflow-hidden rounded-lg border border-slate-200 text-center text-xs font-semibold">
+        <div className="grid overflow-hidden rounded-lg border border-slate-200 text-center text-xs font-semibold sm:grid-cols-5">
           {zones.map((zone) => (
             <div key={zone.label} className={`px-2 py-3 ${zone.className}`}>
               <span className="block">{zone.label}</span>

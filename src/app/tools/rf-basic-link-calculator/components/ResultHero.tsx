@@ -5,6 +5,7 @@ import type {
   ValidationErrors
 } from "@/lib/rf/linkBudget";
 import { LinkBudgetWaterfallChart } from "./LinkBudgetWaterfallChart";
+import { PropagationWarnings } from "./PropagationWarnings";
 
 type ResultHeroProps = {
   input: LinkBudgetInput;
@@ -17,6 +18,7 @@ export const levelStyles = {
   excellent: "border-emerald-200 bg-emerald-50 text-emerald-950",
   good: "border-sky-200 bg-sky-50 text-sky-950",
   caution: "border-amber-200 bg-amber-50 text-amber-950",
+  unstable: "border-orange-200 bg-orange-50 text-orange-950",
   poor: "border-rose-200 bg-rose-50 text-rose-950"
 };
 
@@ -56,6 +58,7 @@ export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroPr
         </div>
       </section>
 
+      <PropagationWarnings warnings={result.warnings} />
       <LinkBudgetWaterfallChart input={input} result={result} onStepSelect={onStepSelect} />
     </div>
   );

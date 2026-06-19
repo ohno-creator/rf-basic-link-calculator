@@ -22,7 +22,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
           通信距離・リンクバジェット簡易診断
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-700">
-          周波数、距離、送信出力、アンテナ利得、受信感度から、無線通信の「届きやすさ」を簡易チェックできます。
+          周波数、距離、送信電力、アンテナ利得、受信感度から、無線通信の「届きやすさ」を簡易チェックできます。
         </p>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
           IoT機器、LTE-M/NB-IoT、BLE、Wi-Fi、920MHz帯、LPWA、センサー端末などのアンテナ検討にご活用ください。

@@ -16,7 +16,7 @@ const cards = [
   },
   {
     title: "2. 3つの数値を見る",
-    body: "推定受信電力、受信感度、リンクマージンの関係を確認します。",
+    body: "受信電力、受信感度、リンクマージンの関係を確認します。",
     icon: Gauge,
     tone: "border-emerald-200 bg-emerald-50 text-emerald-800"
   },
@@ -31,7 +31,7 @@ const cards = [
 export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
   const metrics = [
     {
-      label: "推定受信電力",
+      label: "受信電力",
       value: formatDbm(result.receivedPowerDbm),
       note: "受信機に届く見込みの強さ"
     },

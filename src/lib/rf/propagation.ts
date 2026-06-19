@@ -35,6 +35,7 @@ export type PropagationInput = {
   mobileHeightM: number;
   distanceKm: number;
   area: AreaType;
+  preferredModel?: PropagationModel;
 };
 
 function assertPositiveFinite(value: number, label: string) {
@@ -80,7 +81,7 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
   const logD = Math.log10(d);
   const distanceTerm = (44.9 - 6.55 * logHb) * logD;
 
-  const model: PropagationModel = f >= 1500 ? "COST231-Hata" : "Hata";
+  const model: PropagationModel = input.preferredModel ?? (f >= 1500 ? "COST231-Hata" : "Hata");
 
   let urbanLoss: number;
   if (model === "COST231-Hata") {

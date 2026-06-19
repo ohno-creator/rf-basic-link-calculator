@@ -6,8 +6,18 @@ import { Tooltip } from "@/components/Tooltip";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { frequencyPresets } from "@/data/frequencyPresets";
 import { glossary } from "@/data/glossary";
+import {
+  getPropagationModelOption,
+  linkTypeOptions,
+  propagationModelOptions
+} from "@/data/linkBudgetOptions";
 import { wirelessSystemPresets } from "@/data/wirelessSystemPresets";
-import type { LinkBudgetInput, ValidationErrors } from "@/lib/rf/linkBudget";
+import {
+  calculateNearTerminalLossDb,
+  getCommunicationMode,
+  type LinkBudgetInput,
+  type ValidationErrors
+} from "@/lib/rf/linkBudget";
 import { InputImpactGuide } from "./InputImpactGuide";
 
 type LinkBudgetPanelProps = {
@@ -136,6 +146,20 @@ function NumberField({
   );
 }
 
+function modeDescription(input: LinkBudgetInput): string {
+  const mode = getCommunicationMode(input.linkType);
+
+  if (mode === "high_base_station_to_iot_terminal") {
+    return "携帯基地局や高所基地局と、地上近傍に設置されたIoT端末との通信を評価するモードです。奥村・秦モデルやCOST231-Hataモデルは、基地局から端末までの広域平均伝搬損失の参考値として利用できます。ただし、端末側が地上近傍にある場合は、地面反射、筐体、車両・人体遮蔽、設置方向などの影響が大きくなるため、端末近傍損失を別途加算して評価します。";
+  }
+
+  if (mode === "low_height_terminal_to_terminal") {
+    return "送信機・受信機の双方が地上近傍にある通信を評価するモードです。低高度端末同士の通信では、地面反射、フレネルゾーン欠損、設置高さ、周辺遮蔽物の影響が大きくなります。そのため、奥村・秦モデルは主モデルとして使用せず、自由空間損失、2波モデル、Log-distanceモデル、実測補正モデルを中心に評価します。";
+  }
+
+  return "任意のアンテナ高、通信距離、環境損失、端末近傍損失、実測補正値を設定して評価します。モデルの適用範囲と警告を確認しながら、一次評価として扱ってください。";
+}
+
 export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProps) {
   const update = <K extends keyof LinkBudgetInput>(key: K, value: LinkBudgetInput[K]) => {
     onChange({ ...input, [key]: value });
@@ -150,13 +174,22 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
     () => frequencyPresets.some((preset) => preset.frequencyMHz === input.frequencyMHz),
     [input.frequencyMHz]
   );
+  const selectedLinkType = useMemo(
+    () => linkTypeOptions.find((option) => option.value === input.linkType) ?? linkTypeOptions[0],
+    [input.linkType]
+  );
+  const selectedPropagationModel = useMemo(
+    () => getPropagationModelOption(input.propagationModel),
+    [input.propagationModel]
+  );
+  const nearTerminalLossDb = calculateNearTerminalLossDb(input);
 
   return (
     <section className="space-y-4">
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <h2 className="text-xl font-bold text-slate-950">リンクバジェット簡易診断</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          送信出力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。スライダーを動かすと、右の滝グラフがその場で変わります。
+          送信電力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。スライダーを動かすと、右の滝グラフがその場で変わります。
         </p>
       </div>
 
@@ -167,10 +200,77 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
       <div className="grid gap-5">
         <InputGroup
           step="1"
-          title="通信条件を決める"
-          description="通信方式、周波数、距離を入れます。距離と周波数は自由空間損失に直結します。"
+          title="通信形態・伝搬モデル・距離を決める"
+          description="まず通信形態と伝搬モデルを選びます。奥村・秦モデルは参考値として残し、適用範囲外では警告します。"
           tone="sky"
         >
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <label htmlFor="linkType" className="text-sm font-semibold text-slate-950">
+              通信形態
+            </label>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              送信側と受信側の高さ関係に近い通信形態を選んでください。
+            </p>
+            <select
+              id="linkType"
+              value={input.linkType}
+              className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              onChange={(event) => update("linkType", event.target.value as LinkBudgetInput["linkType"])}
+            >
+              {linkTypeOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs leading-relaxed text-slate-600">{selectedLinkType.description}</p>
+            <div className="mt-3 rounded-md border border-sky-200 bg-sky-50 p-3 text-xs leading-relaxed text-sky-950">
+              {modeDescription(input)}
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <label htmlFor="propagationModel" className="text-sm font-semibold text-slate-950">
+              伝搬モデル
+            </label>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              伝搬損失の主モデルを選びます。低高度端末同士では奥村・秦モデルを主モデルとして推奨しません。
+            </p>
+            <select
+              id="propagationModel"
+              value={input.propagationModel}
+              className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              onChange={(event) =>
+                update("propagationModel", event.target.value as LinkBudgetInput["propagationModel"])
+              }
+            >
+              {propagationModelOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs leading-relaxed text-slate-600">
+              {selectedPropagationModel.description}
+            </p>
+          </div>
+
+          <NumberField
+            id="pathLossExponent"
+            label="距離損失指数"
+            unit="n"
+            description="Log-distanceモデルで使う距離減衰の指数です。自由空間は2、遮蔽物が多い環境では3以上が目安です。"
+            tooltip="距離損失指数は現地環境に依存します。本ツールの初期値3.0は一次評価用の仮定で、RSSIまたはRSRP実測に合わせて調整してください。"
+            example="2 / 3 / 4"
+            range="1-6"
+            min={1}
+            max={6}
+            step={0.1}
+            value={input.pathLossExponent}
+            error={errors.pathLossExponent}
+            onChange={(value) => update("pathLossExponent", value)}
+          />
+
           <div className="rounded-lg border border-slate-200 bg-white p-4">
           <label htmlFor="system" className="text-sm font-semibold text-slate-950">
             通信方式
@@ -293,13 +393,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
         <InputGroup
           step="2"
-          title="送信側とアンテナの強さを入れる"
-          description="送信出力とアンテナ利得は、受信電力を押し上げる要素です。アンテナ効率が悪い場合はマイナス値も使います。"
+          title="送信側・受信側のアンテナ条件を入れる"
+          description="送信電力、アンテナ利得、アンテナ高を入れます。2波モデルや奥村・秦モデルではアンテナ高が伝搬損失に効きます。"
           tone="emerald"
         >
           <NumberField
             id="txPowerDbm"
-            label="送信出力"
+            label="送信電力"
             unit="dBm"
             description="無線モジュールや送信機から出る電波の強さです。"
             tooltip="0dBm = 1mW、10dBm = 10mW、20dBm = 100mWです。LTE-Mでは23dBm程度の出力が使われる場合があります。"
@@ -344,12 +444,44 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             error={errors.rxAntennaGainDbi}
             onChange={(value) => update("rxAntennaGainDbi", value)}
           />
+
+          <NumberField
+            id="txAntennaHeightM"
+            label="送信側アンテナ高"
+            unit="m"
+            description="送信側アンテナの地上高です。基地局やゲートウェイでは重要な条件です。"
+            tooltip="奥村・秦モデルの一般的な基地局アンテナ高の目安は30m〜200mです。低高度端末同士では地面反射やフレネルゾーン欠損に効きます。"
+            example="1.5 / 10 / 30"
+            range="0.1-200m"
+            min={0.1}
+            max={200}
+            step={0.1}
+            value={input.txAntennaHeightM}
+            error={errors.txAntennaHeightM}
+            onChange={(value) => update("txAntennaHeightM", value)}
+          />
+
+          <NumberField
+            id="rxAntennaHeightM"
+            label="受信側アンテナ高"
+            unit="m"
+            description="受信側アンテナの地上高です。地上近傍端末では近傍損失を別途見ます。"
+            tooltip="奥村・秦モデルの移動局アンテナ高の目安は1m〜10mです。地上近傍では地面反射、筐体、車両・人体遮蔽の影響が大きくなります。"
+            example="0.8 / 1.5 / 10"
+            range="0.1-50m"
+            min={0.1}
+            max={50}
+            step={0.1}
+            value={input.rxAntennaHeightM}
+            error={errors.rxAntennaHeightM}
+            onChange={(value) => update("rxAntennaHeightM", value)}
+          />
         </InputGroup>
 
         <InputGroup
           step="3"
-          title="途中で弱くなる要因を入れる"
-          description="ケーブル、コネクタ、筐体、壁、金属近接などで失われる分です。ここが大きいほどマージンは減ります。"
+          title="環境損失と端末近傍損失を入れる"
+          description="ケーブル、環境、地面近接、筐体、偏波、車両・人体遮蔽、設置ばらつきを分けて入力します。"
           tone="rose"
         >
           <NumberField
@@ -371,7 +503,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           <div className="rounded-lg border border-slate-200 bg-white p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="environmentPreset" className="text-sm font-semibold text-slate-950">
-              環境補正プリセット
+              環境損失プリセット
             </label>
             <Tooltip term={glossary.environmentLoss.term}>{glossary.environmentLoss.description}</Tooltip>
           </div>
@@ -394,13 +526,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             ))}
           </select>
           <p className="mt-2 text-xs leading-relaxed text-slate-500">
-            環境補正損失は初期検討用の目安です。実際の損失は筐体材質、金属部品、設置姿勢、周辺環境、ノイズ条件によって大きく変動します。
+            環境損失は初期検討用の目安です。実際の損失は筐体材質、金属部品、設置姿勢、周辺環境、ノイズ条件によって大きく変動します。
           </p>
           </div>
 
           <NumberField
             id="environmentLossDb"
-            label="環境補正損失"
+            label="環境損失"
             unit="dB"
             description="壁、筐体、金属部品、設置環境などによる追加損失の目安です。"
             tooltip="金属近接や筐体内蔵では追加損失が大きくなることがあります。値はあくまで初期検討用の目安です。"
@@ -413,12 +545,102 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             error={errors.environmentLossDb}
             onChange={(value) => update("environmentLossDb", value)}
           />
+
+          <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+            <p className="text-sm font-semibold text-rose-950">端末近傍損失</p>
+            <p className="mt-1 text-2xl font-bold text-rose-950">
+              {nearTerminalLossDb.toFixed(1)} dB
+            </p>
+            <p className="mt-1 text-xs leading-relaxed text-rose-800">
+              Hataモデルなどの広域平均伝搬損失だけでは表しにくい、端末のすぐ近くで起きる損失を合算します。
+            </p>
+          </div>
+
+          <NumberField
+            id="groundProximityLossDb"
+            label="地面近接損失"
+            unit="dB"
+            description="端末アンテナが地面に近いことで発生する追加損失です。"
+            tooltip="地面反射やフレネルゾーン欠損により、低高度端末では追加損失が出やすくなります。"
+            example="0 / 3 / 6"
+            range="0-30dB"
+            min={0}
+            max={30}
+            step={0.5}
+            value={input.groundProximityLossDb}
+            error={errors.groundProximityLossDb}
+            onChange={(value) => update("groundProximityLossDb", value)}
+          />
+
+          <NumberField
+            id="enclosureLossDb"
+            label="筐体損失"
+            unit="dB"
+            description="端末筐体、基板GND、金属部品、内蔵アンテナ配置による追加損失です。"
+            tooltip="樹脂筐体でも配置次第で損失が出ます。金属筐体や金属近接では大きく悪化することがあります。"
+            example="0 / 5 / 15"
+            range="0-40dB"
+            min={0}
+            max={40}
+            step={0.5}
+            value={input.enclosureLossDb}
+            error={errors.enclosureLossDb}
+            onChange={(value) => update("enclosureLossDb", value)}
+          />
+
+          <NumberField
+            id="polarizationMismatchLossDb"
+            label="偏波ミスマッチ損失"
+            unit="dB"
+            description="送信側と受信側の偏波や設置向きがずれることで発生する損失です。"
+            tooltip="端末の設置方向が変わる用途では、偏波ミスマッチ損失を見込むと安全側の評価になります。"
+            example="0 / 3 / 10"
+            range="0-30dB"
+            min={0}
+            max={30}
+            step={0.5}
+            value={input.polarizationMismatchLossDb}
+            error={errors.polarizationMismatchLossDb}
+            onChange={(value) => update("polarizationMismatchLossDb", value)}
+          />
+
+          <NumberField
+            id="vehicleBodyObstructionLossDb"
+            label="車両・人体遮蔽損失"
+            unit="dB"
+            description="車両、人体、荷物、設備などが端末の近くで電波を遮る損失です。"
+            tooltip="スマートメーター、物流、車載・人の近くで使う端末では、遮蔽条件を別枠で見込むと判断しやすくなります。"
+            example="0 / 5 / 20"
+            range="0-40dB"
+            min={0}
+            max={40}
+            step={0.5}
+            value={input.vehicleBodyObstructionLossDb}
+            error={errors.vehicleBodyObstructionLossDb}
+            onChange={(value) => update("vehicleBodyObstructionLossDb", value)}
+          />
+
+          <NumberField
+            id="installationMarginDb"
+            label="設置ばらつきマージン"
+            unit="dB"
+            description="設置方向、個体差、量産ばらつき、施工ばらつきに備える余裕分です。"
+            tooltip="量産・現地施工ではアンテナ向きや周辺物が揃わないため、余裕分を損失として引いて評価します。"
+            example="0 / 3 / 10"
+            range="0-30dB"
+            min={0}
+            max={30}
+            step={0.5}
+            value={input.installationMarginDb}
+            error={errors.installationMarginDb}
+            onChange={(value) => update("installationMarginDb", value)}
+          />
         </InputGroup>
 
         <InputGroup
           step="4"
-          title="受信できる最低ラインを入れる"
-          description="受信感度は合格ラインです。推定受信電力がこの線より上にあるほど、リンクマージンが増えます。"
+          title="受信感度と実測補正を入れる"
+          description="受信感度は合格ラインです。現地測定がある場合は、RSSI/RSRPから得た差分を実測補正値として入れます。"
           tone="amber"
         >
           <NumberField
@@ -426,7 +648,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             label="受信感度"
             unit="dBm"
             description="受信機がどれくらい弱い電波まで受け取れるかを示します。"
-            tooltip="-100dBmのように数値が小さいほど、より弱い電波を受信できます。推定受信電力が受信感度を上回ると、通信できる可能性があります。"
+            tooltip="-100dBmのように数値が小さいほど、より弱い電波を受信できます。受信電力が受信感度を上回ると、通信できる可能性があります。"
             example="-75 / -90 / -120"
             range="-130--50dBm"
             min={-130}
@@ -435,6 +657,22 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             value={input.receiverSensitivityDbm}
             error={errors.receiverSensitivityDbm}
             onChange={(value) => update("receiverSensitivityDbm", value)}
+          />
+
+          <NumberField
+            id="calibrationOffsetDb"
+            label="実測補正値"
+            unit="dB"
+            description="現地RSSI/RSRP測定と計算値の差分です。実測が弱い場合はマイナス、強い場合はプラスで入力します。"
+            tooltip="未測定の場合は0dBのままです。低高度IoT通信では現地測定で補正することを推奨します。"
+            example="-10 / 0 / 5"
+            range="-40-40dB"
+            min={-40}
+            max={40}
+            step={0.5}
+            value={input.calibrationOffsetDb}
+            error={errors.calibrationOffsetDb}
+            onChange={(value) => update("calibrationOffsetDb", value)}
           />
         </InputGroup>
       </div>

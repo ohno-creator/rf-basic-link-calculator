@@ -57,7 +57,7 @@ export const glossary = {
     description: "アンテナケーブルやコネクタで失われる電力です。"
   },
   environmentLoss: {
-    term: "環境補正損失",
+    term: "環境損失",
     description:
       "壁、筐体、金属部品、人体、設置環境などによる追加損失の目安です。"
   }

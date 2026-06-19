@@ -16,7 +16,7 @@ export function BeginnerExplanation({ input, result }: BeginnerExplanationProps)
       </InfoCard>
       <InfoCard title="技術的には">
         <p>
-          推定受信電力は {formatDbm(result.receivedPowerDbm)}、受信感度は{" "}
+          受信電力は {formatDbm(result.receivedPowerDbm)}、受信感度は{" "}
           {formatDbm(input.receiverSensitivityDbm)} です。リンクマージンは{" "}
           {formatSigned(result.linkMarginDb, "dB")} で、判定は「{result.judgement.label}」です。
         </p>

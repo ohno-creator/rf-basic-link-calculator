@@ -2,7 +2,7 @@ import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 import { stepStyles } from "./LinkBudgetWaterfallChart";
 
-// モバイルの追従サマリ用の簡易滝グラフ。推定受信電力と受信感度の上下関係＝リンクマージンだけを示す。
+// モバイルの追従サマリ用の簡易滝グラフ。受信電力と受信感度の上下関係＝リンクマージンだけを示す。
 
 type MiniWaterfallProps = {
   result: LinkBudgetResult;
@@ -43,14 +43,14 @@ export function MiniWaterfall({ result, input }: MiniWaterfallProps) {
   const recvX = close ? xR + (xR < xS ? -4 : 4) : xR;
 
   return (
-    <svg viewBox="0 0 320 56" role="img" aria-label="推定受信電力と受信感度の差（リンクマージン）の簡易表示" className="mt-1 w-full">
+    <svg viewBox="0 0 320 56" role="img" aria-label="受信電力と受信感度の差（リンクマージン）の簡易表示" className="mt-1 w-full">
       <line x1={X0} y1={TRACK_Y} x2={X1} y2={TRACK_Y} stroke="#e2e8f0" strokeWidth="2" />
       {/* マージン区間 */}
       <rect x={barLeft} y={TRACK_Y - 4} width={barWidth} height="8" rx="2" fill={ok ? "#10B981" : "#FB7185"} opacity="0.5" />
       {/* 受信感度マーカー */}
       <line x1={xS} y1={TRACK_Y - 9} x2={xS} y2={TRACK_Y + 9} stroke="#E11D48" strokeWidth="2.5" />
       <text x={sensX} y={TRACK_Y + 22} textAnchor={sensAnchor} fontSize="9" fill="#be123c">感度</text>
-      {/* 推定受信電力マーカー */}
+      {/* 受信電力マーカー */}
       <circle cx={xR} cy={TRACK_Y} r="5" fill={stepStyles.total.fill} stroke="#ffffff" strokeWidth="1.5" />
       <text x={recvX} y={TRACK_Y + 22} textAnchor={recvAnchor} fontSize="9" fill={stepStyles.total.text}>受信</text>
       {/* マージン値 */}

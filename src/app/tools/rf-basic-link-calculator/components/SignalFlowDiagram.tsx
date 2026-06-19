@@ -22,7 +22,7 @@ const toneClasses = {
 export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
   const items: FlowItem[] = [
     {
-      title: "送信出力",
+      title: "送信電力",
       value: formatSigned(input.txPowerDbm, "dBm"),
       helper: "送信機から出る強さ",
       tone: "plus"
@@ -40,9 +40,9 @@ export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
       tone: "plus"
     },
     {
-      title: "自由空間損失",
-      value: `-${formatDb(result.fsplDb)}`,
-      helper: "距離と周波数で弱くなる",
+      title: "伝搬損失",
+      value: `-${formatDb(result.pathLossDb)}`,
+      helper: result.propagationModelLabel,
       tone: "minus"
     },
     {
@@ -52,13 +52,25 @@ export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
       tone: "minus"
     },
     {
-      title: "環境補正損失",
+      title: "環境損失",
       value: `-${formatDb(input.environmentLossDb)}`,
       helper: "筐体・壁・金属など",
       tone: "minus"
     },
     {
-      title: "推定受信電力",
+      title: "端末近傍損失",
+      value: `-${formatDb(result.nearTerminalLossDb)}`,
+      helper: "地面・筐体・偏波・遮蔽",
+      tone: "minus"
+    },
+    {
+      title: "実測補正値",
+      value: formatSigned(input.calibrationOffsetDb, "dB"),
+      helper: "RSSI/RSRPで補正",
+      tone: input.calibrationOffsetDb >= 0 ? "plus" : "minus"
+    },
+    {
+      title: "受信電力",
       value: formatDbm(result.receivedPowerDbm),
       helper: "受信機に届く強さ",
       tone: "result"
@@ -81,9 +93,9 @@ export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap justify-between gap-4">
         <div>
-          <h3 className="text-base font-semibold text-slate-950">Signal Flow Diagram</h3>
+          <h3 className="text-base font-semibold text-slate-950">信号フロー図</h3>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            リンクバジェットは、電波が送信機から出て、空間やケーブル、筐体などで弱くなり、受信機に届いた時点でどれくらい余裕があるかを見る考え方です。
+            リンクバジェットは、電波が送信機から出て、伝搬・ケーブル・環境・端末近傍で弱くなり、実測補正も加えたうえで受信機に届いた時点の余裕を見る考え方です。
           </p>
         </div>
         <div className="flex gap-2 text-xs font-semibold">

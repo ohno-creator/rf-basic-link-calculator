@@ -17,16 +17,16 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-staf">Path Diagram</p>
+          <p className="text-sm font-semibold text-staf">経路図</p>
           <h3 className="mt-1 text-lg font-bold text-slate-950">
             電波が弱くなる場所を分けて見る
           </h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-            同じリンクバジェットでも、弱くなる理由は「距離」「ケーブル」「筐体・環境」で分けて考えると改善点を見つけやすくなります。
+            同じリンクバジェットでも、弱くなる理由は「伝搬」「ケーブル」「環境」「端末近傍」で分けて考えると改善点を見つけやすくなります。
           </p>
         </div>
         <div className="rounded-lg bg-staf-light px-4 py-3 text-right">
-          <p className="text-xs font-semibold text-staf">推定受信電力</p>
+          <p className="text-xs font-semibold text-staf">受信電力</p>
           <p className="text-2xl font-bold text-slate-950">{formatDbm(result.receivedPowerDbm)}</p>
         </div>
       </div>
@@ -49,10 +49,10 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
           <div className="relative flex h-full min-h-32 items-center justify-between gap-3">
             <Waves aria-hidden="true" className="h-9 w-9 text-sky-700" />
             <div className="text-center">
-              <p className="text-sm font-semibold text-sky-950">空間で広がる</p>
-              <p className="mt-1 text-2xl font-bold text-sky-950">-{formatDb(result.fsplDb)}</p>
+              <p className="text-sm font-semibold text-sky-950">伝搬で弱くなる</p>
+              <p className="mt-1 text-2xl font-bold text-sky-950">-{formatDb(result.pathLossDb)}</p>
               <p className="mt-1 text-xs text-sky-800">
-                {distanceLabel} / {input.frequencyMHz} MHz
+                {result.propagationModelLabel} / {distanceLabel} / {input.frequencyMHz} MHz
               </p>
             </div>
             <Waves aria-hidden="true" className="h-9 w-9 rotate-180 text-sky-700" />
@@ -64,12 +64,13 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
             <Cable aria-hidden="true" className="h-6 w-6 text-rose-700" />
             <Box aria-hidden="true" className="h-6 w-6 text-rose-700" />
           </div>
-          <p className="mt-3 text-sm font-semibold text-rose-950">ケーブル・筐体・環境</p>
+          <p className="mt-3 text-sm font-semibold text-rose-950">ケーブル・環境・端末近傍</p>
           <p className="mt-1 text-2xl font-bold text-rose-950">
-            -{formatDb(input.cableLossDb + input.environmentLossDb)}
+            -{formatDb(input.cableLossDb + input.environmentLossDb + result.nearTerminalLossDb)}
           </p>
           <p className="mt-1 text-xs text-rose-800">
-            ケーブル {input.cableLossDb} dB / 環境 {input.environmentLossDb} dB
+            ケーブル {input.cableLossDb} dB / 環境 {input.environmentLossDb} dB / 近傍{" "}
+            {result.nearTerminalLossDb.toFixed(1)} dB
           </p>
         </div>
 
@@ -88,7 +89,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
       <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
         <p className="text-sm font-semibold text-slate-950">改善の読み方</p>
         <p className="mt-1 text-sm leading-relaxed text-slate-600">
-          滝グラフで大きく落ちている部分が、通信余裕を削っている主因です。距離損失が大きい場合は距離や周波数、環境損失が大きい場合は筐体材質・金属近接・アンテナ配置を重点的に確認します。
+          滝グラフで大きく落ちている部分が、通信余裕を削っている主因です。伝搬損失が大きい場合は距離・周波数・アンテナ高、端末近傍損失が大きい場合は地面近接・筐体・偏波・遮蔽・設置方向を重点的に確認します。
         </p>
       </div>
     </section>

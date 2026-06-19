@@ -20,7 +20,7 @@ const steps = [
   },
   {
     title: "3. 滝グラフを見る",
-    body: "送信出力から受信電力まで、どこで大きく落ちたかを見ます。大きな落ち込みが改善ポイントです。",
+    body: "送信電力から受信電力まで、どこで大きく落ちたかを見ます。大きな落ち込みが改善ポイントです。",
     icon: ChartColumnIncreasing,
     tone: "border-amber-200 bg-amber-50 text-amber-800"
   },

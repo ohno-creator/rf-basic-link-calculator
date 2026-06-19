@@ -3,7 +3,7 @@ import { CheckCircle2 } from "lucide-react";
 const checkpoints = [
   "使用する通信方式・周波数帯",
   "通信モジュールの型番",
-  "送信出力・受信感度",
+  "送信電力・受信感度",
   "アンテナの内蔵/外付け条件",
   "筐体材質",
   "基板GNDサイズ",
