@@ -160,6 +160,60 @@ function modeDescription(input: LinkBudgetInput): string {
   return "任意のアンテナ高、通信距離、環境損失、端末近傍損失、実測補正値を設定して評価します。モデルの適用範囲と警告を確認しながら、一次評価として扱ってください。";
 }
 
+function isHataFamily(model: LinkBudgetInput["propagationModel"]): boolean {
+  return model === "okumura_hata" || model === "cost231_hata";
+}
+
+function focusAntennaHeightInput(id: "txAntennaHeightM" | "rxAntennaHeightM") {
+  const element = document.getElementById(id);
+  element?.scrollIntoView({ behavior: "smooth", block: "center" });
+  window.setTimeout(() => {
+    (element as HTMLElement | null)?.focus({ preventScroll: true });
+  }, 220);
+}
+
+function HataAntennaHeightNotice({ input }: { input: LinkBudgetInput }) {
+  if (!isHataFamily(input.propagationModel)) {
+    return (
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <p className="text-sm font-semibold text-slate-950">空中線地上高も評価に使えます</p>
+        <p className="mt-1 text-xs leading-relaxed text-slate-600">
+          2波モデル、奥村・秦モデル、COST231-Hataモデルでは、送信側・受信側のアンテナ高が伝搬損失に効きます。高さ条件は次のステップで入力できます。
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+      <p className="text-sm font-semibold text-emerald-950">
+        奥村・秦モデルの空中線地上高は固定ではありません
+      </p>
+      <p className="mt-1 text-xs leading-relaxed text-emerald-900">
+        現在の計算では、送信側アンテナ高 {input.txAntennaHeightM.toFixed(1)}m を基地局高 hb、
+        受信側アンテナ高 {input.rxAntennaHeightM.toFixed(1)}m を移動局高 hm として伝搬損失に反映します。
+        一般的な適用目安は hb 30〜200m、hm 1〜10m、距離1〜20kmです。
+      </p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button
+          type="button"
+          className="rounded-md border border-emerald-300 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-300/60"
+          onClick={() => focusAntennaHeightInput("txAntennaHeightM")}
+        >
+          送信側アンテナ高を確認
+        </button>
+        <button
+          type="button"
+          className="rounded-md border border-emerald-300 bg-white px-3 py-1.5 text-xs font-semibold text-emerald-800 transition hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-300/60"
+          onClick={() => focusAntennaHeightInput("rxAntennaHeightM")}
+        >
+          受信側アンテナ高を確認
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProps) {
   const update = <K extends keyof LinkBudgetInput>(key: K, value: LinkBudgetInput[K]) => {
     onChange({ ...input, [key]: value });
@@ -254,6 +308,8 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               {selectedPropagationModel.description}
             </p>
           </div>
+
+          <HataAntennaHeightNotice input={input} />
 
           <NumberField
             id="pathLossExponent"

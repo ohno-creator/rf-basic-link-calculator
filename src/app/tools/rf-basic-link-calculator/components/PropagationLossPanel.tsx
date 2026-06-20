@@ -34,6 +34,9 @@ export function PropagationLossPanel() {
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         市街地・郊外などの実環境での伝搬損失を、奥村-秦／COST 231-Hata モデルで推定します。
       </p>
+      <div className="mt-3 rounded-md border border-emerald-200 bg-emerald-50 p-3 text-xs leading-relaxed text-emerald-950">
+        空中線地上高は固定ではありません。基地局アンテナ高 hb と移動局アンテナ高 hm を入力値として扱い、伝搬損失に反映します。
+      </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
@@ -68,7 +71,7 @@ export function PropagationLossPanel() {
         </div>
         <div>
           <label htmlFor="propHb" className="text-sm font-semibold text-slate-950">
-            基地局アンテナ高 hb（m）
+            基地局空中線地上高 hb（m）
           </label>
           <input
             id="propHb"
@@ -83,7 +86,7 @@ export function PropagationLossPanel() {
         </div>
         <div>
           <label htmlFor="propHm" className="text-sm font-semibold text-slate-950">
-            移動局アンテナ高 hm（m）
+            移動局空中線地上高 hm（m）
           </label>
           <input
             id="propHm"
@@ -161,6 +164,10 @@ export function PropagationLossPanel() {
           <p>
             奥村-秦モデルは、実測に基づき市街地・郊外などの伝搬損失を推定する代表的な経験式です。自由空間損失と違い、建物や地形による損失を含みます。1500MHzを超える帯域では、拡張版のCOST
             231-Hataに自動で切り替わります（大都市は+3dBの補正）。あくまで中央値の推定で、実際の値は地形やフェージングで変動します。
+          </p>
+          <p>
+            hb と hm は固定値ではなく、画面上の「基地局空中線地上高」「移動局空中線地上高」の入力値です。
+            一般的な適用目安は、基地局高30〜200m、移動局高1〜10m、距離1〜20kmです。
           </p>
         </FormulaExplanationCard>
       </div>

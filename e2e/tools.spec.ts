@@ -83,6 +83,15 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
   await expect(page.getByRole("heading", { name: "適用範囲と注意" })).toBeVisible();
 });
 
+test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByLabel("伝搬モデル").selectOption("okumura_hata");
+
+  await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではありません")).toBeVisible();
+  await expect(page.getByText(/送信側アンテナ高 .*基地局高 hb/).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
+});
+
 test("microstrip impedance reacts to trace width", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   await expect(page.getByText("50.8 Ω").first()).toBeVisible();
