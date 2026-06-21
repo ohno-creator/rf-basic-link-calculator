@@ -51,7 +51,7 @@ export const toolDirectory: DirectoryTool[] = [
   {
     href: "/tools/rf-learning-quest",
     name: "RF学習クエスト",
-    tagline: "問題→即答え→解説で基礎から玄人へ",
+    tagline: "50問のRPG形式で基礎から研究者へ",
     icon: "book",
     category: "learning"
   },

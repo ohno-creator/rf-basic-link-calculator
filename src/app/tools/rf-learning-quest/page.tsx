@@ -4,7 +4,7 @@ import { RfLearningQuestClient } from "./components/RfLearningQuestClient";
 
 const title = "RF学習クエスト｜問題と解説でリンク設計を学ぶ｜スタッフ株式会社";
 const description =
-  "dB、自由空間損失、2波モデル、端末近傍損失、Hata系モデル、信頼率マージン、実測補正を、問題→即答え→解説→関連ツールで学べるRF学習ページです。";
+  "初心者、見習い、実務者、玄人、研究者の5モード合計50問で、dB、自由空間損失、2波モデル、端末近傍損失、Hata系モデル、信頼率マージン、最新IoT伝搬研究を学べるRF学習ページです。";
 
 export const metadata: Metadata = {
   title,

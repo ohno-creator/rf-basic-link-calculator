@@ -188,15 +188,48 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(
     page.getByRole("heading", { level: 1, name: "問題を倒して、リンク設計の勘を育てる" })
   ).toBeVisible();
+  await expect(page.getByText("初心者、見習い、実務者、玄人、研究者の5モードで合計50問")).toBeVisible();
+  await expect(page.getByRole("button", { name: /研究者モード/ })).toBeVisible();
 
   await page.getByRole("button", { name: "約2倍" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
   await expect(page.getByText("+3dBは電力で約2倍です。")).toBeVisible();
   await expect(page.getByRole("link", { name: /dBを体感する/ })).toBeVisible();
   await expect(page.getByText("現場コラム").first()).toBeVisible();
-  await expect(page.getByText("1/8")).toBeVisible();
+  await expect(page.getByText("1/50")).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/8")).toBeVisible();
+  await expect(page.getByText("1/50")).toBeVisible();
+  await page.getByRole("button", { name: /ステージ1 dBのものさし/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
+});
+
+test("RF learning quest has researcher mode with recent-study sources", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+  await page.getByRole("button", { name: /研究者モード/ }).click();
+
+  await expect(page.getByRole("heading", { name: "最新研究の塔" })).toBeVisible();
+  await expect(page.getByText("2025年の屋内LoRaWAN測定データ研究")).toBeVisible();
+  await page.getByRole("button", { name: "温湿度、CO2、気圧、粒子状物質など" }).click();
+  await expect(page.getByText("正解").first()).toBeVisible();
+  await expect(page.getByText("RMSEが10.58dBから8.04dBへ改善")).toBeVisible();
+  await expect(page.getByRole("link", { name: "2025 Indoor LoRaWAN environmental dataset" })).toBeVisible();
+});
+
+test("RF learning quest shows a level-up screen after five clears", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+
+  await page.getByRole("button", { name: "約2倍" }).click();
+  await page.getByRole("button", { name: /ステージ2 dBmの巻物/ }).click();
+  await page.getByRole("button", { name: "1mW" }).click();
+  await page.getByRole("button", { name: /ステージ3 距離2倍の試練/ }).click();
+  await page.getByRole("button", { name: "約6dB増える" }).click();
+  await page.getByRole("button", { name: /ステージ4 周波数の塔/ }).click();
+  await page.getByRole("button", { name: "2.4GHz" }).click();
+  await page.getByRole("button", { name: /ステージ5 アンテナ利得の剣/ }).click();
+  await page.getByRole("button", { name: "受信電力が約3dB増える" }).click();
+
+  await expect(page.getByText("レベルアップ")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Lv.2 初心者" })).toBeVisible();
+  await expect(page.getByText("5/50")).toBeVisible();
 });
