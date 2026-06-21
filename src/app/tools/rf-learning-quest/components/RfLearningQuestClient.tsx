@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
   Award,
@@ -700,7 +700,20 @@ function LessonBattle({
   const correct = selectedChoice === lesson.correctIndex;
   const chapter = Math.ceil(lesson.stage / 10);
   const isBossStage = lesson.stage % 10 === 0;
-  const displayedChoices = useMemo(() => shuffleChoices(lesson), [lesson]);
+  // 初期は元の並び（SSRとクライアントで一致させ、ハイドレーションのズレを防ぐ）。
+  // 実際のシャッフルはマウント後にクライアント側で行う。
+  const [displayedChoices, setDisplayedChoices] = useState<DisplayChoice[]>(() =>
+    lesson.choices.map((choice, originalIndex) => ({ choice, originalIndex }))
+  );
+  const shuffledLessonId = useRef<string | null>(null);
+  useEffect(() => {
+    // 別の問題を開いたとき、または未回答に戻した（再挑戦）ときに並びをランダムにする。
+    // 回答直後（未回答→回答）は固定し、選んだ選択肢がずれないようにする。
+    if (shuffledLessonId.current !== lesson.id || selectedChoice === undefined) {
+      setDisplayedChoices(shuffleChoices(lesson));
+      shuffledLessonId.current = lesson.id;
+    }
+  }, [lesson, selectedChoice]);
   const actionLinks = seoLinksForLesson(lesson);
 
   return (
