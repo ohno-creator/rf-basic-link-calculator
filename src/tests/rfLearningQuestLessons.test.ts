@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { questModes, rfQuestLessons } from "@/data/rfLearningQuestLessons";
+import { antennaSeoLinks, questModes, rfQuestLessons } from "@/data/rfLearningQuestLessons";
 
 describe("RF learning quest lessons", () => {
   it("contains exactly 700 lessons across the six modes", () => {
@@ -57,6 +57,17 @@ describe("RF learning quest lessons", () => {
     expect(stafMediaIntroLessons.map((lesson) => lesson.id)).toContain("intro-staf-cable-install");
     expect(stafMediaIntroLessons.map((lesson) => lesson.id)).toContain("intro-staf-efficiency-vs-gain");
     expect(stafMediaIntroLessons.map((lesson) => lesson.id)).toContain("intro-staf-vswr-unitless");
+  });
+
+  it("keeps antenna SEO pathways available for the learning quest", () => {
+    const hrefs = antennaSeoLinks.map((link) => link.href);
+
+    expect(antennaSeoLinks).toHaveLength(5);
+    expect(hrefs).toContain("https://www.staf.co.jp/product/antenna.html");
+    expect(hrefs).toContain("https://www.staf.co.jp/frequency.html");
+    expect(hrefs).toContain("https://www.staf.co.jp/media/");
+    expect(hrefs).toContain("https://www.staf.co.jp/download.html");
+    expect(hrefs).toContain("https://www.staf.co.jp/contact.html");
   });
 
   it("adds source links to the researcher mode lessons", () => {

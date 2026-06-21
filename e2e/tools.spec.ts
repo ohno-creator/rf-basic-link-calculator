@@ -187,10 +187,14 @@ test("propagation page includes the Okumura-Hata column", async ({ page }) => {
 test("RF learning quest answers immediately and saves progress", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
   await expect(
-    page.getByRole("heading", { level: 1, name: "問題を倒して、リンク設計の勘を育てる" })
+    page.getByRole("heading", { level: 1, name: "問題を倒して、アンテナ設計の勘を育てる" })
   ).toBeVisible();
   await expect(page.getByText("入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問")).toBeVisible();
+  await expect(page.getByText("アンテナギルド")).toBeVisible();
+  await expect(page.getByRole("link", { name: /アンテナ製品を見る/ }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /周波数からアンテナを探す/ }).first()).toBeVisible();
   await expect(page.getByText("第1章 STAGE 1-10")).toBeVisible();
+  await expect(page.getByText("電波と波長").first()).toBeVisible();
   await expect(page.getByText("20章×10問")).toBeVisible();
   await expect(page.getByRole("button", { name: /研究者モード/ })).toBeVisible();
 
@@ -199,6 +203,7 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(page.getByText("電波・高周波を扱う技術分野 が正解です。")).toBeVisible();
   await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
   await expect(page.getByText("現場コラム").first()).toBeVisible();
+  await expect(page.getByText("アンテナ設計の次の一手")).toBeVisible();
   await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
   await expect(page.getByText("1/700")).toBeVisible();
 
@@ -227,7 +232,7 @@ test("RF learning quest has researcher mode with recent-study sources", async ({
   await page.goto("/tools/rf-learning-quest/");
   await page.getByRole("button", { name: /研究者モード/ }).click();
 
-  await expect(page.getByRole("heading", { name: "最新研究の塔" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "アンテナ研究と最新伝搬の塔" })).toBeVisible();
   await expect(page.getByText("2025年の屋内LoRaWAN測定データ研究")).toBeVisible();
   await page.getByRole("button", { name: "温湿度、CO2、気圧、粒子状物質など" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();

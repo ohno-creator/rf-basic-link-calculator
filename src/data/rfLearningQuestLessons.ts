@@ -139,8 +139,36 @@ const sources = {
   stafReflector: {
     label: "スタッフ株式会社 平面型反射板の新技術",
     href: "https://www.staf.co.jp/media/category03/Antenna-Reflector202505"
+  },
+  stafAntennaProducts: {
+    label: "スタッフ株式会社 アンテナ製品",
+    href: "https://www.staf.co.jp/product/antenna.html"
+  },
+  stafFrequencySearch: {
+    label: "スタッフ株式会社 周波数から探す",
+    href: "https://www.staf.co.jp/frequency.html"
+  },
+  stafAntennaScenes: {
+    label: "スタッフ株式会社 アンテナ活用シーン",
+    href: "https://www.staf.co.jp/scene_antenna.html"
+  },
+  stafDownloads: {
+    label: "スタッフ株式会社 資料ダウンロード",
+    href: "https://www.staf.co.jp/download.html"
+  },
+  stafContact: {
+    label: "スタッフ株式会社 お問い合わせ",
+    href: "https://www.staf.co.jp/contact.html"
   }
 } as const;
+
+export const antennaSeoLinks: QuestSource[] = [
+  { label: "アンテナ製品を見る", href: sources.stafAntennaProducts.href },
+  { label: "周波数からアンテナを探す", href: sources.stafFrequencySearch.href },
+  { label: "アンテナ基礎コラムを読む", href: sources.stafMedia.href },
+  { label: "資料ダウンロード", href: sources.stafDownloads.href },
+  { label: "アンテナ相談・お問い合わせ", href: sources.stafContact.href }
+];
 
 const supplementalWrongChoices: Record<QuestModeId, string[]> = {
   intro: [
@@ -225,43 +253,43 @@ export const questModes: QuestMode[] = [
   {
     id: "intro",
     label: "入門モード",
-    title: "電波用語のはじまりの村",
-    description: "RF、アンテナ、伝搬、測定、セルラー/LPWAで最初に知っておきたい用語を固めます。",
+    title: "アンテナ用語のはじまりの村",
+    description: "波長、利得、VSWR、放射効率、GND、筐体影響など、アンテナメーカーの現場で最初に押さえたい言葉を固めます。",
     badge: "200問"
   },
   {
     id: "beginner",
     label: "初心者モード",
-    title: "dBと距離の城下町",
-    description: "dB、dBm、周波数、距離、受信感度など、リンク計算の入口を固めます。",
+    title: "アンテナ利得とdBの城下町",
+    description: "dB、dBm、EIRP、受信感度、アンテナ利得、ケーブル損失をつなげ、通信距離の入口を固めます。",
     badge: "100問"
   },
   {
     id: "apprentice",
     label: "見習いモード",
-    title: "反射と近傍損失の洞窟",
-    description: "2波、フレネル、端末近傍損失、実測補正の基本を扱います。",
+    title: "設置と近傍損失の洞窟",
+    description: "金属筐体、人体、地面反射、フレネル、ケーブル取り回しなど、アンテナ実装で距離が崩れる理由を扱います。",
     badge: "100問"
   },
   {
     id: "practitioner",
     label: "実務者モード",
-    title: "モデル選択の砦",
-    description: "通信形態ごとのモデル選択、Hata系の適用範囲、信頼率評価を確認します。",
+    title: "アンテナ選定とモデル選択の砦",
+    description: "通信形態、アンテナ高、Hata系の適用範囲、端末近傍損失、実測補正を組み合わせて判断します。",
     badge: "100問"
   },
   {
     id: "expert",
     label: "玄人モード",
-    title: "基地局設計の迷宮",
-    description: "SUI、COST231 WI、3GPP、GIS、複数実測点など、設計実務寄りの判断を学びます。",
+    title: "基地局アンテナ設計の迷宮",
+    description: "SUI、COST231 WI、3GPP、GIS、MIMO、チルト、方位、複数実測点など、アンテナ配置寄りの判断を学びます。",
     badge: "100問"
   },
   {
     id: "researcher",
     label: "研究者モード",
-    title: "最新研究の塔",
-    description: "2025〜2026年の測定研究、環境特徴量、残差分布、Rel-19の論点を織り込みます。",
+    title: "アンテナ研究と最新伝搬の塔",
+    description: "2025〜2026年の測定研究、環境特徴量、端末アンテナ、偏波、残差分布、Rel-19の論点を織り込みます。",
     badge: "100問"
   }
 ];

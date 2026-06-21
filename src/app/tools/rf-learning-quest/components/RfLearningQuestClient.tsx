@@ -9,23 +9,30 @@ import {
   CheckCircle2,
   CircleHelp,
   Crown,
+  ExternalLink,
   FileDown,
   FlaskConical,
+  Gauge,
+  Radio,
   RefreshCw,
   RotateCcw,
   ShieldCheck,
   Shuffle,
   Sparkles,
   Swords,
+  Target,
   Trophy,
   XCircle,
+  Zap,
   type LucideIcon
 } from "lucide-react";
 import {
+  antennaSeoLinks,
   questModes,
   rfQuestLessons,
   type QuestLesson,
-  type QuestModeId
+  type QuestModeId,
+  type QuestSource
 } from "@/data/rfLearningQuestLessons";
 
 type ProgressMap = Record<string, boolean>;
@@ -74,6 +81,127 @@ const modeIconMap: Record<QuestModeId, LucideIcon> = {
   expert: Crown,
   researcher: FlaskConical
 };
+
+const chapterTitles: Record<QuestModeId, string[]> = {
+  intro: [
+    "電波と波長",
+    "dBと電力",
+    "アンテナ構造",
+    "GNDと偏波",
+    "筐体実装",
+    "VSWRと効率",
+    "ケーブル設置",
+    "LPWAと屋外",
+    "OTA測定",
+    "基地局アンテナ",
+    "MIMOとアレイ",
+    "測定メタデータ",
+    "リンク余裕",
+    "遮蔽と反射",
+    "フレネル",
+    "セルラーIoT",
+    "アンテナ選定",
+    "現場トラブル",
+    "研究の入口",
+    "総仕上げ"
+  ],
+  beginner: [
+    "dBの基礎",
+    "dBmとEIRP",
+    "周波数と波長",
+    "アンテナ利得",
+    "受信感度",
+    "リンク余裕",
+    "ケーブル損失",
+    "自由空間",
+    "LPWA距離感",
+    "初心者ボス"
+  ],
+  apprentice: [
+    "地面反射",
+    "フレネル",
+    "金属近接",
+    "筐体損失",
+    "偏波ミスマッチ",
+    "人体遮蔽",
+    "設置ばらつき",
+    "実測補正",
+    "低高度端末",
+    "見習いボス"
+  ],
+  practitioner: [
+    "通信形態",
+    "Hataの範囲",
+    "COST231",
+    "Log-distance",
+    "2波モデル",
+    "端末近傍",
+    "アンテナ高",
+    "信頼率",
+    "現地補正",
+    "実務者ボス"
+  ],
+  expert: [
+    "SUI",
+    "COST231 WI",
+    "3GPP",
+    "GISクラッタ",
+    "基地局チルト",
+    "MIMO配置",
+    "干渉管理",
+    "複数実測点",
+    "運用設計",
+    "玄人ボス"
+  ],
+  researcher: [
+    "公開測定データ",
+    "環境特徴量",
+    "残差分布",
+    "LoRa実測",
+    "地理入力",
+    "Rel-19",
+    "端末アンテナ",
+    "偏波と近傍界",
+    "モデル管理",
+    "研究者ボス"
+  ]
+};
+
+const finalAntennaAchievement = {
+  threshold: 700,
+  title: "アンテナ賢者",
+  description: "全700問を攻略し、研究と現場をつなげられます。"
+};
+
+const antennaAchievementBadges = [
+  { threshold: 20, title: "波長の羅針盤", description: "λ/2・λ/4のサイズ感が見えてきます。" },
+  { threshold: 60, title: "VSWRゲージ", description: "整合だけでなく効率を見る目が育ちます。" },
+  { threshold: 120, title: "実装ルーペ", description: "筐体、GND、ケーブルの影響を疑える段階です。" },
+  { threshold: 220, title: "近傍損失ハンター", description: "地面・人体・金属近接をリンク余裕へ落とし込めます。" },
+  { threshold: 360, title: "アンテナ設計士", description: "モデル選択と実測補正を組み合わせて説明できます。" },
+  { threshold: 520, title: "基地局配置マスター", description: "チルト、方位、干渉、GISの前提を意識できます。" },
+  finalAntennaAchievement
+];
+
+const primaryGuildMission = {
+  lessonId: "intro-staf-whip-lambda",
+  title: "λ/2・λ/4を読む",
+  description: "920MHzホイップのサイズ感を押さえる"
+};
+
+const guildMissions = [
+  primaryGuildMission,
+  {
+    lessonId: "intro-staf-vswr-unitless",
+    title: "VSWRの罠を避ける",
+    description: "低VSWRだけで距離を断定しない"
+  },
+  {
+    lessonId: "intro-staf-cable-install",
+    title: "設置トラブルを潰す",
+    description: "金属近接とケーブル曲げを確認する"
+  }
+];
 
 const emptyCertificateForms: Record<QuestModeId, { recipientName: string; companyName: string }> = {
   intro: { recipientName: "", companyName: "" },
@@ -131,13 +259,71 @@ function levelFromCompleted(completedCount: number): number {
 }
 
 function rankName(completedCount: number): string {
-  if (completedCount >= 700) return "RF賢者";
+  if (completedCount >= 700) return "アンテナ賢者";
   if (completedCount >= 600) return "研究者";
-  if (completedCount >= 500) return "玄人";
-  if (completedCount >= 350) return "実務者";
-  if (completedCount >= 200) return "見習い";
-  if (completedCount >= 100) return "入門者";
+  if (completedCount >= 500) return "基地局配置マスター";
+  if (completedCount >= 350) return "アンテナ実務者";
+  if (completedCount >= 200) return "実装見習い";
+  if (completedCount >= 100) return "アンテナ入門者";
   return "初学者";
+}
+
+function chapterTitleFor(modeId: QuestModeId, chapter: number): string {
+  const titles = chapterTitles[modeId];
+  return titles[chapter - 1] ?? "総合演習";
+}
+
+function nextAchievement(completedCount: number) {
+  return antennaAchievementBadges.find((badge) => completedCount < badge.threshold) ?? finalAntennaAchievement;
+}
+
+function unlockedAchievements(completedCount: number) {
+  return antennaAchievementBadges.filter((badge) => completedCount >= badge.threshold);
+}
+
+function addUniqueLink(map: Map<string, QuestSource>, link: QuestSource) {
+  if (!map.has(link.href)) {
+    map.set(link.href, link);
+  }
+}
+
+function seoLinksForLesson(lesson: QuestLesson): QuestSource[] {
+  const links = new Map<string, QuestSource>();
+  const lessonText = `${lesson.id} ${lesson.title} ${lesson.question} ${lesson.column}`;
+  const productLink = antennaSeoLinks.find((link) => link.href.includes("/product/antenna"));
+  const frequencyLink = antennaSeoLinks.find((link) => link.href.includes("/frequency"));
+  const mediaLink = antennaSeoLinks.find((link) => link.href.includes("/media"));
+  const downloadLink = antennaSeoLinks.find((link) => link.href.includes("/download"));
+  const contactLink = antennaSeoLinks.find((link) => link.href.includes("/contact"));
+
+  if (lesson.sources?.some((source) => source.href.includes("staf.co.jp"))) {
+    for (const source of lesson.sources) {
+      if (source.href.includes("staf.co.jp")) {
+        addUniqueLink(links, source);
+      }
+    }
+  }
+
+  if (productLink) {
+    addUniqueLink(links, productLink);
+  }
+
+  if (frequencyLink && /920|LPWA|LTE|5G|Sub6|Wi-Fi|Bluetooth|BLE|ミリ波|周波数|波長|λ/.test(lessonText)) {
+    addUniqueLink(links, frequencyLink);
+  }
+
+  if (mediaLink && /VSWR|効率|FPC|PCB|板金|ホイップ|筐体|金属|ケーブル|GND|グランド|アンテナ/.test(lessonText)) {
+    addUniqueLink(links, mediaLink);
+  }
+
+  if (downloadLink) {
+    addUniqueLink(links, downloadLink);
+  }
+  if (contactLink) {
+    addUniqueLink(links, contactLink);
+  }
+
+  return Array.from(links.values()).slice(0, 5);
 }
 
 function nextIncompleteLesson(modeId: QuestModeId, progress: ProgressMap): QuestLesson {
@@ -291,11 +477,13 @@ function ModeSelector({
 }
 
 function StageMap({
+  modeId,
   lessons,
   activeLesson,
   progress,
   onSelect
 }: {
+  modeId: QuestModeId;
   lessons: QuestLesson[];
   activeLesson: QuestLesson;
   progress: ProgressMap;
@@ -331,6 +519,9 @@ function StageMap({
                 </p>
                 <p className="text-[11px] font-bold text-slate-400">{completed}/10</p>
               </div>
+              <p className="mt-0.5 px-1 text-[11px] font-semibold text-staf">
+                {chapterTitleFor(modeId, chapter.chapter)}
+              </p>
               <div className="mt-2 grid grid-cols-5 gap-1.5">
                 {chapter.lessons.map((lesson) => {
                   const done = Boolean(progress[lesson.id]);
@@ -363,11 +554,135 @@ function StageMap({
   );
 }
 
+function AntennaGuildPanel({
+  completedCount,
+  progress,
+  onJump
+}: {
+  completedCount: number;
+  progress: ProgressMap;
+  onJump: (lesson: QuestLesson) => void;
+}) {
+  const nextBadge = nextAchievement(completedCount);
+  const unlocked = unlockedAchievements(completedCount);
+  const nextMission = guildMissions.find((mission) => !progress[mission.lessonId]) ?? primaryGuildMission;
+  const nextMissionLesson = rfQuestLessons.find((lesson) => lesson.id === nextMission.lessonId);
+
+  return (
+    <section className="rounded-lg border border-staf/20 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+            <Radio aria-hidden="true" className="h-4 w-4" />
+            アンテナギルド
+          </p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">今日の修行と実績</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+            アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日の修行から始めてください。
+          </p>
+        </div>
+        <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-3">
+          <p className="text-xs font-bold text-staf">次の称号</p>
+          <p className="mt-1 text-sm font-bold text-slate-950">{nextBadge.title}</p>
+          <p className="mt-1 text-xs leading-relaxed text-slate-600">
+            あと{Math.max(0, nextBadge.threshold - completedCount)}問で解放
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 grid gap-3 lg:grid-cols-[1.15fr_0.85fr]">
+        <div className="grid gap-3 sm:grid-cols-3">
+          {guildMissions.map((mission) => {
+            const lesson = rfQuestLessons.find((item) => item.id === mission.lessonId);
+            const done = Boolean(progress[mission.lessonId]);
+
+            return (
+              <button
+                key={mission.lessonId}
+                type="button"
+                className={`rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/20 ${
+                  done
+                    ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+                    : "border-slate-200 bg-slate-50 text-slate-700 hover:border-staf/30 hover:bg-white"
+                }`}
+                onClick={() => lesson && onJump(lesson)}
+              >
+                <span className="flex items-center gap-2 text-sm font-bold">
+                  {done ? (
+                    <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-emerald-700" />
+                  ) : (
+                    <Target aria-hidden="true" className="h-4 w-4 text-staf" />
+                  )}
+                  {mission.title}
+                </span>
+                <span className="mt-1 block text-xs leading-relaxed">{mission.description}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <p className="flex items-center gap-2 text-sm font-bold text-slate-950">
+            <Gauge aria-hidden="true" className="h-4 w-4 text-staf" />
+            実績スロット
+          </p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {antennaAchievementBadges.slice(0, 6).map((badge) => {
+              const earned = completedCount >= badge.threshold;
+              return (
+                <span
+                  key={badge.title}
+                  title={badge.description}
+                  className={`rounded-full border px-2.5 py-1 text-xs font-bold ${
+                    earned
+                      ? "border-staf/30 bg-white text-staf"
+                      : "border-slate-200 bg-white text-slate-400"
+                  }`}
+                >
+                  {earned ? "獲得 " : "未解放 "}
+                  {badge.title}
+                </span>
+              );
+            })}
+          </div>
+          <p className="mt-3 text-xs leading-relaxed text-slate-500">
+            獲得済み {unlocked.length}/{antennaAchievementBadges.length}。称号は修了証の前段階として、学習の寄り道を楽しくするための目印です。
+          </p>
+          {nextMissionLesson ? (
+            <button
+              type="button"
+              className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-xs font-bold text-staf transition hover:bg-staf-light"
+              onClick={() => onJump(nextMissionLesson)}
+            >
+              次の修行へ
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+            </button>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {antennaSeoLinks.map((link) => (
+          <a
+            key={link.href}
+            href={link.href}
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-staf transition hover:border-staf/40 hover:bg-staf-light"
+          >
+            {link.label}
+            <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+          </a>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 function LessonBattle({
   lesson,
   selectedChoice,
   isCompleted,
   nextLesson,
+  streak,
   onAnswer,
   onClearAnswer,
   onNext
@@ -376,6 +691,7 @@ function LessonBattle({
   selectedChoice?: number;
   isCompleted: boolean;
   nextLesson: QuestLesson;
+  streak: number;
   onAnswer: (choiceIndex: number) => void;
   onClearAnswer: () => void;
   onNext: () => void;
@@ -385,13 +701,14 @@ function LessonBattle({
   const chapter = Math.ceil(lesson.stage / 10);
   const isBossStage = lesson.stage % 10 === 0;
   const displayedChoices = useMemo(() => shuffleChoices(lesson), [lesson]);
+  const actionLinks = seoLinksForLesson(lesson);
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-slate-400">
-            第{chapter}章 / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
+            第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
           </p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">{lesson.title}</h2>
           <p className="mt-1 text-sm font-semibold text-slate-500">対戦相手：{lesson.enemy}</p>
@@ -455,6 +772,23 @@ function LessonBattle({
             <p className="mt-3 rounded-md border border-white/70 bg-white/70 p-2 text-xs font-bold text-slate-700">
               獲得：{lesson.reward}
             </p>
+            {correct ? (
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <div className="rounded-md border border-emerald-200 bg-white/80 p-3">
+                  <p className="flex items-center gap-2 text-xs font-bold text-emerald-900">
+                    <Zap aria-hidden="true" className="h-3.5 w-3.5" />
+                    連続正解コンボ
+                  </p>
+                  <p className="mt-1 text-lg font-bold text-emerald-800">{streak} COMBO</p>
+                </div>
+                <div className="rounded-md border border-staf/20 bg-white/80 p-3">
+                  <p className="text-xs font-bold text-slate-500">アンテナ勘</p>
+                  <p className="mt-1 text-sm font-bold text-slate-950">
+                    +{Math.min(99, Math.max(1, streak * 3))} / 設計メモに残したい知識
+                  </p>
+                </div>
+              </div>
+            ) : null}
             {!correct ? (
               <div className="mt-3 rounded-md border border-amber-200 bg-white/80 p-3">
                 <p className="text-xs font-bold text-amber-900">
@@ -512,6 +846,27 @@ function LessonBattle({
                 ))}
               </div>
             ) : null}
+            <div className="mt-4 rounded-md border border-staf/20 bg-staf-light p-3">
+              <p className="flex items-center gap-2 text-xs font-bold text-staf">
+                <Radio aria-hidden="true" className="h-3.5 w-3.5" />
+                アンテナ設計の次の一手
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                学んだ用語を、製品選定、周波数帯の確認、資料請求、相談へつなげられます。
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2">
+                {actionLinks.map((link) => (
+                  <a
+                    key={link.href}
+                    href={link.href}
+                    className="inline-flex items-center gap-1 rounded-full border border-staf/25 bg-white px-2.5 py-1 text-xs font-bold text-staf transition hover:bg-white/70"
+                  >
+                    {link.label}
+                    <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
+                  </a>
+                ))}
+              </div>
+            </div>
           </details>
         </div>
       ) : null}
@@ -997,8 +1352,8 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全700問を攻略しました。電波用語、リンク設計の基礎、実務、研究動向、掲示板で定番の誤解までひと通り確認済みです。"
-              : `${afterCount}問クリア。次のモードや未攻略ステージへ進めます。`
+              ? "全700問を攻略しました。アンテナ構造、実装、リンク設計、最新研究、掲示板で定番の誤解までひと通り確認済みです。"
+              : `${afterCount}問クリア。アンテナギルドの称号や未攻略ステージへ進めます。`
         });
       }
 
@@ -1194,11 +1549,11 @@ export function RfLearningQuestClient() {
               RF学習クエスト
             </p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-              問題を倒して、リンク設計の勘を育てる
+              問題を倒して、アンテナ設計の勘を育てる
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
               入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問。選択肢は表示ごとにランダム化され、1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
-              用語、掲示板でよくある誤解、現場の豆知識、最新研究の読み方まで、進捗はこのブラウザに保存されます。
+              波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究まで、アンテナメーカーの現場目線で進められます。
             </p>
           </div>
           <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
@@ -1245,6 +1600,10 @@ export function RfLearningQuestClient() {
       </div>
 
       <div className="mt-5">
+        <AntennaGuildPanel completedCount={completedCount} progress={progress} onJump={goToLesson} />
+      </div>
+
+      <div className="mt-5">
         <CertificationPanel
           mode={activeModeMeta}
           lessons={lessonsInMode}
@@ -1276,6 +1635,7 @@ export function RfLearningQuestClient() {
           </section>
 
           <StageMap
+            modeId={activeMode}
             lessons={lessonsInMode}
             activeLesson={activeLesson}
             progress={progress}
@@ -1288,6 +1648,7 @@ export function RfLearningQuestClient() {
           selectedChoice={answers[activeLesson.id]}
           isCompleted={Boolean(progress[activeLesson.id])}
           nextLesson={nextLesson}
+          streak={streak}
           onAnswer={(choiceIndex) => answerLesson(activeLesson, choiceIndex)}
           onClearAnswer={() => clearWrongLessonAnswer(activeLesson)}
           onNext={() => goToLesson(nextLesson)}
