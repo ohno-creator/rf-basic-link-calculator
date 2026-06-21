@@ -1,5 +1,6 @@
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
+import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 
 type LinkBudgetWaterfallChartProps = {
   input: LinkBudgetInput;
@@ -310,6 +311,8 @@ export function LinkBudgetWaterfallChart({
         {formatDbm(input.receiverSensitivityDbm)} より上にあるほど通信の余裕が大きくなります。現在のリンクマージンは{" "}
         {formatDb(result.linkMarginDb)} です。
       </p>
+
+      <LinkAssumptionDiagram input={input} result={result} />
     </section>
   );
 }

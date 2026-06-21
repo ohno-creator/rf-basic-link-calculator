@@ -98,6 +98,10 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
 test("RF calculator shows model assumptions, double-counting guidance, and research column", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
 
+  await expect(page.getByRole("img", { name: "リンク計算の2D前提図" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "計算・シミュレーション前提と指定パラメータ" })).toBeVisible();
+  await expect(page.getByText("この図と計算を見るときの注意点")).toBeVisible();
+
   await page.getByText("モデルの前提条件・入力の使われ方").click();
   await expect(page.getByText("二重計上に注意")).toBeVisible();
   await expect(page.getByText("奥村・秦の高さ入力")).toBeVisible();
