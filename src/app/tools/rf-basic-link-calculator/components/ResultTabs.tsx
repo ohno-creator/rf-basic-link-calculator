@@ -11,6 +11,7 @@ import { RadioPathDiagram } from "./RadioPathDiagram";
 import { ResultReadingGuide } from "./ResultReadingGuide";
 import { SensitivityLineVisual } from "./SensitivityLineVisual";
 import { SignalFlowDiagram } from "./SignalFlowDiagram";
+import { TwoRayInterferenceLab } from "./TwoRayInterferenceLab";
 
 type ResultTabsProps = {
   input: LinkBudgetInput;
@@ -19,7 +20,7 @@ type ResultTabsProps = {
 
 const tabs = [
   { id: "read", label: "読み方" },
-  { id: "diagrams", label: "図解で詳しく（5種）" },
+  { id: "diagrams", label: "図解で詳しく（6種）" },
   { id: "improve", label: "改善する" }
 ] as const;
 
@@ -95,6 +96,11 @@ export function ResultTabs({ input, result }: ResultTabsProps) {
             <LinkMarginGauge result={result} />
             <DistancePowerChart input={input} />
             <SensitivityLineVisual input={input} result={result} />
+            <TwoRayInterferenceLab
+              frequencyMHz={input.frequencyMHz}
+              txHeightM={input.txAntennaHeightM}
+              rxHeightM={input.rxAntennaHeightM}
+            />
           </>
         ) : null}
         {active === "improve" ? (

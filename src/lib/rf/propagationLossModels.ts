@@ -1,4 +1,5 @@
 import { calculateFsplDb } from "./fspl";
+import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 import { type AreaType, calculatePropagationLoss } from "./propagation";
 
 /**
@@ -106,4 +107,48 @@ export function comparePropagationModels(
     .map((model) => calculatePropagationLossResult(model, params))
     .filter((result) => Number.isFinite(result.pathLossDb))
     .sort((a, b) => a.pathLossDb - b.pathLossDb);
+}
+
+/**
+ * 完全な2波（直接波＋地面反射波）モデルの伝搬損失。直接波と反射波を位相込みで合成（コヒーレント和）するため、
+ * 距離に対して強め合い（最大 +6dB のピーク）と弱め合い（深い谷＝ヌル）が交互に現れ、グラフが「波打つ」。
+ * ブレークポイント d_bp = 4·ht·hr/λ 付近から、平均的には 40·log10(d) の遠方近似へ近づく。
+ *
+ *   直接波経路長 r1 = √(d² + (ht−hr)²),  反射波経路長 r2 = √(d² + (ht+hr)²)
+ *   位相差 φ = 2π·(r2−r1)/λ,  反射係数 Γ（接地・浅い入射角の目安で −1）
+ *   合成振幅² = 1 + Γ² + 2Γ·cos(φ)
+ *   損失[dB] = FSPL − 10·log10(合成振幅²)   （深い谷は FSPL + maxFadeDb で底打ち）
+ *
+ * 注: リンクバジェットや本ツールのモデル比較では、安定した一点見積もりのため平滑化した包絡線（two_ray）を使う。
+ *     この関数は干渉の山谷を可視化・学習するための完全版。
+ */
+export function twoRayInterferencePathLossDb(
+  frequencyMHz: number,
+  distanceKm: number,
+  txHeightM: number,
+  rxHeightM: number,
+  reflectionCoefficient = -1,
+  maxFadeDb = 40
+): number {
+  const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
+  const distanceM = distanceKm * 1000;
+  const directM = Math.hypot(distanceM, txHeightM - rxHeightM);
+  const reflectedM = Math.hypot(distanceM, txHeightM + rxHeightM);
+  const phase = (2 * Math.PI * (reflectedM - directM)) / wavelengthM;
+  const amplitudeSquared =
+    1 + reflectionCoefficient ** 2 + 2 * reflectionCoefficient * Math.cos(phase);
+  const fsplDb = calculateFsplDb(frequencyMHz, distanceKm);
+  const combinedGainDb = 10 * Math.log10(Math.max(amplitudeSquared, 1e-9));
+
+  return Math.min(fsplDb - combinedGainDb, fsplDb + maxFadeDb);
+}
+
+/** 2波モデルのブレークポイント距離 d_bp = 4·ht·hr/λ [m]。 */
+export function twoRayBreakpointM(
+  frequencyMHz: number,
+  txHeightM: number,
+  rxHeightM: number
+): number {
+  const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
+  return (4 * txHeightM * rxHeightM) / wavelengthM;
 }

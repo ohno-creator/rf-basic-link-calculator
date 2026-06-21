@@ -3,6 +3,7 @@ import Link from "next/link";
 import {
   Activity,
   ArrowUpRight,
+  BookOpenCheck,
   Building2,
   Cable,
   CircuitBoard,
@@ -31,6 +32,7 @@ const iconMap: Record<string, LucideIcon> = {
   waves: Waves,
   spline: Spline,
   building: Building2,
+  book: BookOpenCheck,
   radio: RadioTower,
   repeat: Repeat,
   ruler: Ruler,

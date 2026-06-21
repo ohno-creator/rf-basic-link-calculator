@@ -80,9 +80,9 @@ export const propagationModelOptions: Array<{
   {
     value: "two_ray",
     label: "2波モデル",
-    description: "直接波と地面反射の影響を考える低高度通信向けの参考モデルです。",
-    bestFor: "地面反射が効く屋外・中〜遠距離",
-    caution: "ブレークポイント手前では自由空間と同じ結果になる"
+    description: "直接波と地面反射波の合成を、リンク判定では平滑化した包絡線として扱う低高度通信向けの参考モデルです。",
+    bestFor: "地面反射が効く屋外・中〜遠距離。図解タブで干渉の山谷も確認できます。",
+    caution: "実際は強め合い・弱め合いで波打つ。深い谷は実測・端末近傍損失で確認"
   },
   {
     value: "log_distance",

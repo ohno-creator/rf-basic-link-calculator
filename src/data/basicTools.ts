@@ -61,9 +61,9 @@ export const basicTools: BasicToolMeta[] = [
     title: "伝搬損失モデル比較",
     metaTitle: "伝搬損失モデル比較ツール｜自由空間・2波・Log-distance・奥村-秦/COST231-Hata",
     description:
-      "自由空間損失、2波モデル、Log-distance、奥村-秦／COST 231-Hata を同じ条件で並べて比較できます。距離・周波数・アンテナ高を変えながら、2D断面図と距離カーブでモデルごとの伝搬損失を確認できます。",
+      "自由空間損失、2波モデル、Log-distance、奥村-秦／COST 231-Hata を同じ条件で並べて比較できます。距離・周波数・アンテナ高を変えながら、2D断面図、距離カーブ、2波干渉の山谷を確認できます。",
     formula: "FSPL = 32.44 + 20·log10(f) + 20·log10(d) ／ Hata = 69.55 + 26.16·log10(f) − …",
-    essenceLead: "同じ条件でも、選ぶモデルで伝搬損失の見積もりは大きく変わります。",
+    essenceLead: "同じ条件でも、選ぶモデルで伝搬損失の見積もりは大きく変わります。2波では直接波と反射波の干渉で局所的な山谷も出ます。",
     canonical: `${SITE_TOOLS}/propagation-loss`
   },
   {

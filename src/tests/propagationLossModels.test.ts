@@ -5,7 +5,9 @@ import {
   type PropagationLossParams,
   calculatePropagationLossResult,
   comparePropagationModels,
-  geometricPropagationModels
+  geometricPropagationModels,
+  twoRayBreakpointM,
+  twoRayInterferencePathLossDb
 } from "@/lib/rf/propagationLossModels";
 
 const baseParams: PropagationLossParams = {
@@ -70,6 +72,51 @@ describe("propagation loss models", () => {
     expect(sorted.length).toBe(geometricPropagationModels.length);
     for (let index = 1; index < sorted.length; index += 1) {
       expect(sorted[index].pathLossDb).toBeGreaterThanOrEqual(sorted[index - 1].pathLossDb);
+    }
+  });
+});
+
+describe("two-ray interference model", () => {
+  const f = 920;
+  const ht = 30;
+  const hr = 1.5;
+
+  it("has a constructive peak below free-space loss (the +6dB gain region)", () => {
+    // ブレークポイント付近では直接波と反射波が強め合い、FSPLより小さい損失（利得）になる。
+    const distances = Array.from({ length: 400 }, (_, i) => 0.02 + i * 0.005); // 20m〜2km
+    const minDeltaVsFspl = Math.min(
+      ...distances.map((d) => twoRayInterferencePathLossDb(f, d, ht, hr) - calculateFsplDb(f, d))
+    );
+    expect(minDeltaVsFspl).toBeLessThan(-3); // 明確な山が存在する
+  });
+
+  it("oscillates (deep nulls) before the breakpoint", () => {
+    const breakpointKm = twoRayBreakpointM(f, ht, hr) / 1000;
+    const distances = Array.from({ length: 300 }, (_, i) => 0.02 + (i * (breakpointKm - 0.02)) / 299);
+    const deltas = distances.map((d) => twoRayInterferencePathLossDb(f, d, ht, hr) - calculateFsplDb(f, d));
+    // ブレークポイント内側では、山（負）と谷（大きな正）の両方が現れる＝波打つ。
+    expect(Math.min(...deltas)).toBeLessThan(-3);
+    expect(Math.max(...deltas)).toBeGreaterThan(5);
+  });
+
+  it("converges to the smoothed two-ray envelope far beyond the breakpoint", () => {
+    const farKm = 5;
+    const full = twoRayInterferencePathLossDb(f, farKm, ht, hr);
+    const smoothed = calculatePropagationLossResult("two_ray", {
+      ...baseParams,
+      frequencyMHz: f,
+      txHeightM: ht,
+      rxHeightM: hr,
+      distanceKm: farKm
+    }).pathLossDb;
+    expect(Math.abs(full - smoothed)).toBeLessThan(2);
+  });
+
+  it("caps the deep nulls at FSPL + maxFadeDb", () => {
+    const distances = Array.from({ length: 500 }, (_, i) => 0.02 + i * 0.004);
+    for (const d of distances) {
+      const pl = twoRayInterferencePathLossDb(f, d, ht, hr, -1, 40);
+      expect(pl).toBeLessThanOrEqual(calculateFsplDb(f, d) + 40 + 1e-6);
     }
   });
 });

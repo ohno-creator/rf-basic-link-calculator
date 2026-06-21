@@ -1,6 +1,7 @@
 import { calculateFsplDb } from "./fspl";
 import { judgeLinkMargin, type LinkJudgement } from "./judgement";
 import { calculatePropagationLoss, type AreaType } from "./propagation";
+import { calculatePropagationLossResult, twoRayBreakpointM } from "./propagationLossModels";
 
 export type DistanceUnit = "m" | "km";
 
@@ -281,14 +282,14 @@ function calculateTwoRayPathLossDb(
   txAntennaHeightM: number,
   rxAntennaHeightM: number
 ): number {
-  const distanceM = distanceKm * 1000;
-  const fsplDb = calculateFsplDb(frequencyMHz, distanceKm);
-  const twoRayDb =
-    40 * Math.log10(distanceM) -
-    20 * Math.log10(txAntennaHeightM) -
-    20 * Math.log10(rxAntennaHeightM);
-
-  return Math.max(fsplDb, twoRayDb);
+  return calculatePropagationLossResult("two_ray", {
+    frequencyMHz,
+    distanceKm,
+    txHeightM: txAntennaHeightM,
+    rxHeightM: rxAntennaHeightM,
+    area: "urbanMedium",
+    pathLossExponent: 3
+  }).pathLossDb;
 }
 
 function calculateLogDistancePathLossDb(
@@ -304,8 +305,7 @@ function calculateLogDistancePathLossDb(
 }
 
 function calculateTwoRayBreakpointM(frequencyMHz: number, txAntennaHeightM: number, rxAntennaHeightM: number) {
-  const wavelengthM = 299_792_458 / (frequencyMHz * 1_000_000);
-  return (4 * Math.PI * txAntennaHeightM * rxAntennaHeightM) / wavelengthM;
+  return twoRayBreakpointM(frequencyMHz, txAntennaHeightM, rxAntennaHeightM);
 }
 
 function getPropagationModelLabel(model: LinkPropagationModel): string {
@@ -604,11 +604,11 @@ function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): P
     if (distanceM < breakpointM) {
       warnings.push({
         id: "two-ray-before-breakpoint",
-        message: `2波モデルの遠方近似は、概ねブレークポイント以遠で使う参考式です。現在の通信距離は約${distanceM.toFixed(
+        message: `2波モデルのリンクバジェット値は、直接波と地面反射波の細かな山谷を平滑化した包絡線として扱います。現在の通信距離は約${distanceM.toFixed(
           1
         )}m、ブレークポイント目安は約${breakpointM.toFixed(
           1
-        )}mです。この範囲では自由空間損失に近い結果として扱い、反射による深い落ち込みは実測または端末近傍損失で確認してください。`
+        )}mです。この範囲では干渉による強め合い・弱め合いで損失が波打つため、図解タブの「2波モデル実験室」と実測で確認してください。`
       });
     }
   }

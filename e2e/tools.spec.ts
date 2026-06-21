@@ -5,6 +5,7 @@ const ALL_SLUGS = [
   "free-space-loss",
   "fresnel-zone",
   "propagation-loss",
+  "rf-learning-quest",
   "frequency-wavelength",
   "dbm-converter",
   "db-feel",
@@ -32,7 +33,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "coaxial-cable-loss", h1: "同軸ケーブル損失", fig: "ロス比較" },
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
-    { slug: "propagation-loss", h1: "伝搬損失（奥村-秦）", fig: "距離で見る伝搬損失" },
+    { slug: "propagation-loss", h1: "伝搬損失モデル比較", fig: "現在距離" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
@@ -90,12 +91,12 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
 
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
-  await page.getByLabel("伝搬モデル").selectOption("okumura_hata");
+  await page.locator("#propagationModel").selectOption("okumura_hata");
 
   await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではありません")).toBeVisible();
   await expect(page.getByText(/送信側アンテナ高 .*基地局高 hb/).first()).toBeVisible();
-  await expect(page.getByLabel("奥村・秦モデルのエリア種別")).toBeVisible();
-  await page.getByLabel("奥村・秦モデルのエリア種別").selectOption("open");
+  await expect(page.locator("#propagationArea")).toBeVisible();
+  await page.locator("#propagationArea").selectOption("open");
   await expect(page.getByText("遮蔽物の少ない開放地として評価します。")).toBeVisible();
   await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
 });
@@ -106,6 +107,8 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
   await expect(page.getByRole("img", { name: "リンク計算の2D前提図" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "計算・シミュレーション前提と指定パラメータ" })).toBeVisible();
   await expect(page.getByText("この図と計算を見るときの注意点")).toBeVisible();
+  await expect(page.getByText("入力前提チェックメニュー")).toBeVisible();
+  await expect(page.getByText("損失の入れ分けと二重計上")).toBeVisible();
 
   await page.getByText("モデルの前提条件・入力の使われ方").click();
   await expect(page.getByText("二重計上に注意")).toBeVisible();
@@ -115,9 +118,24 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
   await expect(page.getByText("2025〜2026年の研究を追うと")).toBeVisible();
 });
 
+test("RF calculator diagrams show the two-ray interference lab synced with inputs", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByRole("spinbutton", { name: "周波数" }).fill("1500");
+  await page.getByRole("spinbutton", { name: "送信側アンテナ高" }).fill("20");
+  await page.getByRole("spinbutton", { name: "受信側アンテナ高" }).fill("2");
+  await page.getByRole("tab", { name: /図解で詳しく/ }).click();
+
+  await expect(page.getByText("2波モデル実験室：干渉で波打つ様子を見る")).toBeVisible();
+  await expect(page.locator("#lab-freq")).toHaveValue("1500");
+  await expect(page.locator("#lab-ht")).toHaveValue("20");
+  await expect(page.locator("#lab-hr")).toHaveValue("2");
+  await page.getByText("このグラフの前提と読み方").click();
+  await expect(page.getByText("反射係数 Γ=-1")).toBeVisible();
+});
+
 test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
-  await page.getByLabel("伝搬モデル").selectOption("iot_hata_calibrated");
+  await page.locator("#propagationModel").selectOption("iot_hata_calibrated");
 
   await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
   await expect(page.getByLabel("実測アンカー距離")).toBeVisible();
@@ -143,9 +161,9 @@ test("microstrip impedance reacts to trace width", async ({ page }) => {
 test("microstrip bend significance reacts to frequency", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   // default 2.4GHz, 3mm trace -> the bend is electrically small
-  await expect(page.getByText("ほぼ無視できる")).toBeVisible();
+  await expect(page.getByText("ほぼ無視できる").first()).toBeVisible();
   await page.locator("#msFreq").fill("10000");
-  await expect(page.getByText("大きい（要対策）")).toBeVisible();
+  await expect(page.getByText("大きい（要対策）").first()).toBeVisible();
 });
 
 test("fresnel page includes the IoT deep-dive", async ({ page }) => {
@@ -161,5 +179,24 @@ test("propagation page includes the Okumura-Hata column", async ({ page }) => {
   await expect(
     page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })
   ).toBeVisible();
-  await expect(page.getByText("距離で見る伝搬損失")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "伝搬損失モデル比較" }).first()).toBeVisible();
+  await expect(page.getByText("2波モデル実験室：干渉で波打つ様子を見る")).toBeVisible();
+});
+
+test("RF learning quest answers immediately and saves progress", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+  await expect(
+    page.getByRole("heading", { level: 1, name: "問題を倒して、リンク設計の勘を育てる" })
+  ).toBeVisible();
+
+  await page.getByRole("button", { name: "約2倍" }).click();
+  await expect(page.getByText("正解").first()).toBeVisible();
+  await expect(page.getByText("+3dBは電力で約2倍です。")).toBeVisible();
+  await expect(page.getByRole("link", { name: /dBを体感する/ })).toBeVisible();
+  await expect(page.getByText("現場コラム").first()).toBeVisible();
+  await expect(page.getByText("1/8")).toBeVisible();
+
+  await page.reload();
+  await expect(page.getByText("1/8")).toBeVisible();
+  await expect(page.getByText("攻略済み").first()).toBeVisible();
 });

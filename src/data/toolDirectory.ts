@@ -5,6 +5,7 @@ export type ToolCategory = {
 
 export const toolCategories: ToolCategory[] = [
   { id: "link", label: "リンク設計" },
+  { id: "learning", label: "学習クエスト" },
   { id: "basics", label: "単位・基礎" },
   { id: "line", label: "線路・整合" }
 ];
@@ -46,6 +47,13 @@ export const toolDirectory: DirectoryTool[] = [
     tagline: "自由空間〜Hata系を一括比較",
     icon: "building",
     category: "link"
+  },
+  {
+    href: "/tools/rf-learning-quest",
+    name: "RF学習クエスト",
+    tagline: "問題→即答え→解説で基礎から玄人へ",
+    icon: "book",
+    category: "learning"
   },
   {
     href: "/tools/frequency-wavelength",
