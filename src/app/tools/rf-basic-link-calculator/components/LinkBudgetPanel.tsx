@@ -1,6 +1,15 @@
 "use client";
 
 import { type ReactNode, useMemo } from "react";
+import {
+  Antenna,
+  Check,
+  RadioTower,
+  Router,
+  SlidersHorizontal,
+  Smartphone,
+  type LucideIcon
+} from "lucide-react";
 import { Accordion } from "@/components/Accordion";
 import { Tooltip } from "@/components/Tooltip";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
@@ -162,6 +171,87 @@ function modeDescription(input: LinkBudgetInput): string {
   }
 
   return "任意のアンテナ高、通信距離、環境損失、端末近傍損失、実測補正値を設定して評価します。モデルの適用範囲と警告を確認しながら、一次評価として扱ってください。";
+}
+
+const linkTypeIcons: Record<LinkBudgetInput["linkType"], LucideIcon> = {
+  cellular_base_station_to_iot_terminal: RadioTower,
+  private_base_station_to_iot_terminal: Antenna,
+  gateway_to_low_height_terminal: Router,
+  terminal_to_terminal: Smartphone,
+  custom: SlidersHorizontal
+};
+
+function LinkTypeCards({
+  value,
+  selectedOption,
+  modeText,
+  onSelect
+}: {
+  value: LinkBudgetInput["linkType"];
+  selectedOption: (typeof linkTypeOptions)[number];
+  modeText: string;
+  onSelect: (value: LinkBudgetInput["linkType"]) => void;
+}) {
+  return (
+    <div className="rounded-lg border border-slate-200 bg-white p-4">
+      <span id="linkType-label" className="text-sm font-semibold text-slate-950">
+        通信形態
+      </span>
+      <p className="mt-1 text-xs leading-relaxed text-slate-500">
+        送信側と受信側の高さ関係に近いものを選びます。各カードに高さの目安と代表例を示しています。
+      </p>
+      <div role="radiogroup" aria-labelledby="linkType-label" className="mt-3 grid gap-2">
+        {linkTypeOptions.map((option) => {
+          const Icon = linkTypeIcons[option.value];
+          const selected = option.value === value;
+
+          return (
+            <label
+              key={option.value}
+              className={`group relative flex cursor-pointer gap-3 rounded-lg border p-3 transition peer-focus-visible:ring-2 peer-focus-visible:ring-staf peer-focus-visible:ring-offset-2 ${
+                selected
+                  ? "border-staf bg-staf-light/40"
+                  : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
+              }`}
+            >
+              <input
+                type="radio"
+                name="linkType"
+                value={option.value}
+                checked={selected}
+                onChange={() => onSelect(option.value)}
+                className="peer sr-only"
+              />
+              <span
+                className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                  selected ? "bg-staf text-white" : "bg-slate-100 text-slate-500"
+                }`}
+              >
+                <Icon aria-hidden className="h-5 w-5" />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="flex items-center justify-between gap-2">
+                  <span className="text-sm font-bold text-slate-950">{option.label}</span>
+                  {selected ? <Check aria-hidden className="h-4 w-4 shrink-0 text-staf" /> : null}
+                </span>
+                <span className="mt-1 flex flex-col gap-0.5 text-xs leading-relaxed text-slate-500 sm:flex-row sm:flex-wrap sm:gap-x-3">
+                  <span>高さ: {option.heights}</span>
+                  <span>例: {option.examples}</span>
+                </span>
+              </span>
+            </label>
+          );
+        })}
+      </div>
+      <div className="mt-3 space-y-2 rounded-md border border-sky-200 bg-sky-50 p-3 text-xs leading-relaxed text-sky-950">
+        <p>
+          <span className="font-semibold">相性の良い伝搬モデル：</span>
+          <span className="text-sky-900">{selectedOption.recommendedModels}</span>
+        </p>
+        <p className="text-sky-900">{modeText}</p>
+      </div>
+    </div>
+  );
 }
 
 function isHataFamily(model: LinkBudgetInput["propagationModel"]): boolean {
@@ -430,30 +520,12 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           description="まず通信形態と伝搬モデルを選びます。奥村・秦モデルは参考値として残し、適用範囲外では警告します。"
           tone="sky"
         >
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
-            <label htmlFor="linkType" className="text-sm font-semibold text-slate-950">
-              通信形態
-            </label>
-            <p className="mt-1 text-xs leading-relaxed text-slate-500">
-              送信側と受信側の高さ関係に近い通信形態を選んでください。
-            </p>
-            <select
-              id="linkType"
-              value={input.linkType}
-              className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-              onChange={(event) => update("linkType", event.target.value as LinkBudgetInput["linkType"])}
-            >
-              {linkTypeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <p className="mt-2 text-xs leading-relaxed text-slate-600">{selectedLinkType.description}</p>
-            <div className="mt-3 rounded-md border border-sky-200 bg-sky-50 p-3 text-xs leading-relaxed text-sky-950">
-              {modeDescription(input)}
-            </div>
-          </div>
+          <LinkTypeCards
+            value={input.linkType}
+            selectedOption={selectedLinkType}
+            modeText={modeDescription(input)}
+            onSelect={(value) => update("linkType", value)}
+          />
 
           <div className="rounded-lg border border-slate-200 bg-white p-4">
             <label htmlFor="propagationModel" className="text-sm font-semibold text-slate-950">
@@ -476,9 +548,17 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                 </option>
               ))}
             </select>
-            <p className="mt-2 text-xs leading-relaxed text-slate-600">
-              {selectedPropagationModel.description}
-            </p>
+            <div className="mt-2 space-y-1.5 rounded-md border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed">
+              <p className="text-slate-700">{selectedPropagationModel.description}</p>
+              <p>
+                <span className="font-semibold text-slate-900">向いている：</span>
+                <span className="text-slate-600">{selectedPropagationModel.bestFor}</span>
+              </p>
+              <p>
+                <span className="font-semibold text-slate-900">注意：</span>
+                <span className="text-amber-700">{selectedPropagationModel.caution}</span>
+              </p>
+            </div>
           </div>
 
           {isHataFamily(input.propagationModel) ? (
