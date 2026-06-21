@@ -325,6 +325,21 @@ function getPropagationModelLabel(model: LinkPropagationModel): string {
   }
 }
 
+function getLinkTypeLabel(linkType: LinkType): string {
+  switch (linkType) {
+    case "cellular_base_station_to_iot_terminal":
+      return "携帯基地局 → IoT端末";
+    case "private_base_station_to_iot_terminal":
+      return "プライベート基地局 → IoT端末";
+    case "gateway_to_low_height_terminal":
+      return "ゲートウェイ → 低高度端末";
+    case "terminal_to_terminal":
+      return "低高度端末 ↔ 低高度端末";
+    case "custom":
+      return "カスタム";
+  }
+}
+
 function getPropagationAreaLabel(area: AreaType): string {
   switch (area) {
     case "urbanLarge":
@@ -698,18 +713,29 @@ export function calculateLinkBudget(input: LinkBudgetInput): LinkBudgetResult {
 }
 
 export function buildConsultationText(input: LinkBudgetInput, result: LinkBudgetResult): string {
+  const modelSpecificLines = [
+    isHataFamily(input.propagationModel)
+      ? `Hataエリア種別：${getPropagationAreaLabel(input.propagationArea)}`
+      : null,
+    input.propagationModel === "log_distance"
+      ? `距離損失指数：${input.pathLossExponent}`
+      : null,
+    input.propagationModel === "iot_hata_calibrated"
+      ? `IoT実測アンカー距離：${input.iotCalibrationDistance} ${input.iotCalibrationDistanceUnit}
+IoT実測受信電力：${input.iotMeasuredReceivedPowerDbm} dBm
+IoT距離勾配補正：${input.iotSlopeCorrectionDbPerDecade} dB/decade`
+      : null
+  ]
+    .filter(Boolean)
+    .join("\n");
+
   return `通信距離・リンクバジェット簡易診断を行ったところ、以下の条件となりました。
 アンテナ選定および実機評価について相談したく、ご連絡いたしました。
 
 通信方式：${input.system}
-通信形態：${input.linkType}
+通信形態：${getLinkTypeLabel(input.linkType)}
 伝搬モデル：${result.propagationModelLabel}
-Hataエリア種別：${getPropagationAreaLabel(input.propagationArea)}
-距離損失指数：${input.pathLossExponent}
-IoT実測アンカー距離：${input.iotCalibrationDistance} ${input.iotCalibrationDistanceUnit}
-IoT実測受信電力：${input.iotMeasuredReceivedPowerDbm} dBm
-IoT距離勾配補正：${input.iotSlopeCorrectionDbPerDecade} dB/decade
-周波数：${input.frequencyMHz} MHz
+${modelSpecificLines ? `${modelSpecificLines}\n` : ""}周波数：${input.frequencyMHz} MHz
 通信距離：${input.distance} ${input.distanceUnit}
 送信電力：${input.txPowerDbm} dBm
 送信アンテナ利得：${input.txAntennaGainDbi} dBi

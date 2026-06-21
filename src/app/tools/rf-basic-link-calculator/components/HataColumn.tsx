@@ -7,7 +7,7 @@ export function HataColumn() {
     <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-sm">
       <div className="flex items-center gap-2">
         <BookOpen aria-hidden="true" className="h-5 w-5 text-amber-700" />
-        <h2 className="text-lg font-bold text-amber-950">コラム：実測が生んだ式 ― 奥村-秦モデル</h2>
+        <h2 className="text-lg font-bold text-amber-950">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>
       </div>
 
       <div className="mt-3 space-y-3 text-sm leading-relaxed text-amber-950/90">
@@ -33,6 +33,12 @@ export function HataColumn() {
           最近のLPWA/IoT測定研究でも、同じ方向の結果が出ています。都市LoRaの大規模測定では、Okumura系やLog-distance系は計画の出発点として有効な一方、現地データで係数を求めることが重要とされています。屋内LoRaWANの研究では、壁や家具、温湿度、CO2、在室状況などの環境特徴量を入れることで、単純な距離モデルより誤差が下がることが報告されています。NB-IoTの深部屋内測定でも、既存の経験式だけでは2〜12dB程度の誤差増加が観測され、距離以外の特徴量が必要とされています。
         </p>
         <p>
+          2025〜2026年の研究を追うと、方向性はさらに明確です。屋内LoRaWANの長期測定では、温湿度、CO2、粒子状物質、気圧、SNRを加えたモデルがRMSEを8.07dBから7.09dBへ改善し、99%到達率に必要なフェードマージンも線形基準より約2dB小さくできると報告されています。2026年のAERPAW LoRaWAN実験では、地上車両、ドローン、高高度ヘリカイトを比較し、高度、移動、地形、NLOSが受信品質のばらつきを大きく変えることが示されています。
+        </p>
+        <p>
+          つまり「IoT向けに奥村・秦を少し直せば常に当たる」というより、現地の実測点で基準モデルを校正し、残差のばらつきから信頼率に応じた余裕を取る考え方が実務に近いです。3GPP TR 38.901 Release 19の議論でも、LOS/NLOS、端末アンテナ、クラッタ、近傍界、空間非定常性など、単一の平均損失式だけではなく、条件を分けて扱う流れが強まっています。
+        </p>
+        <p>
           そのため、本ツールではHataを「消す」のではなく、基準線として残します。その上で、IoT実測補正Hataモードでは、既知距離で測ったRSSIまたはRSRPからHataのずれを1点校正し、必要に応じて距離10倍あたりの勾配補正を加えます。これは万能な新公式ではありませんが、現地測定をリンクバジェットへ戻すための実務的な橋渡しです。
         </p>
         <p>
@@ -54,16 +60,28 @@ export function HataColumn() {
               ：環境特徴量を入れたモデルでRMSE改善を報告。
             </li>
             <li>
+              <a className="font-semibold text-amber-800 underline" href="https://arxiv.org/abs/2510.04346">
+                Environment-Aware Indoor LoRaWAN Path Loss
+              </a>
+              ：残差分布から信頼率つきフェードマージンを校正する2025年研究。
+            </li>
+            <li>
+              <a className="font-semibold text-amber-800 underline" href="https://arxiv.org/abs/2604.06444">
+                Real-World LoRaWAN Performance and Propagation Modeling
+              </a>
+              ：地上車両、UAV、ヘリカイトの高度・移動・地形差を比較した2026年実測研究。
+            </li>
+            <li>
               <a className="font-semibold text-amber-800 underline" href="https://arxiv.org/abs/2006.00880">
                 NB-IoT deep-indoor propagation modelling
               </a>
               ：深部屋内では既存経験式だけでは不十分であることを実測で評価。
             </li>
             <li>
-              <a className="font-semibold text-amber-800 underline" href="https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/38901-j20.zip">
-                3GPP TR 38.901 Release 19
+              <a className="font-semibold text-amber-800 underline" href="https://arxiv.org/abs/2507.19266">
+                Overview of 3GPP Release 19 Study on TR 38.901
               </a>
-              ：LOS/NLOS、シャドウフェージング、クラッタ、O2Iなどを分ける標準的なチャネルモデル。
+              ：TR 38.901のRelease 19拡張で、端末アンテナ、クラッタ、近傍界、空間非定常性などを整理。
             </li>
           </ul>
         </div>

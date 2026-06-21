@@ -95,6 +95,17 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
   await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
 });
 
+test("RF calculator shows model assumptions, double-counting guidance, and research column", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+
+  await page.getByText("モデルの前提条件・入力の使われ方").click();
+  await expect(page.getByText("二重計上に注意")).toBeVisible();
+  await expect(page.getByText("奥村・秦の高さ入力")).toBeVisible();
+  await expect(page.getByRole("button", { name: "RSSI/RSRPの説明" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })).toBeVisible();
+  await expect(page.getByText("2025〜2026年の研究を追うと")).toBeVisible();
+});
+
 test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   await page.getByLabel("伝搬モデル").selectOption("iot_hata_calibrated");
@@ -107,6 +118,9 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 
   await measuredPower.fill("-100");
   await expect(page.getByText(/実測受信電力から、基準モデルに対して/)).toBeVisible();
+
+  await page.getByRole("spinbutton", { name: "実測補正値" }).fill("5");
+  await expect(page.getByText("実測補正値との二重計上を確認してください")).toBeVisible();
 });
 
 test("microstrip impedance reacts to trace width", async ({ page }) => {
@@ -136,7 +150,7 @@ test("fresnel page includes the IoT deep-dive", async ({ page }) => {
 test("propagation page includes the Okumura-Hata column", async ({ page }) => {
   await page.goto("/tools/propagation-loss/");
   await expect(
-    page.getByRole("heading", { name: /実測が生んだ式/ })
+    page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })
   ).toBeVisible();
   await expect(page.getByText("距離で見る伝搬損失")).toBeVisible();
 });

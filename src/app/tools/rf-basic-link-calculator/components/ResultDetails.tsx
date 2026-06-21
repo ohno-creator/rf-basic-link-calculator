@@ -43,7 +43,11 @@ function riskItems(input: LinkBudgetInput, result: LinkBudgetResult) {
 }
 
 function isHataFamily(input: LinkBudgetInput): boolean {
-  return input.propagationModel === "okumura_hata" || input.propagationModel === "cost231_hata";
+  return (
+    input.propagationModel === "okumura_hata" ||
+    input.propagationModel === "cost231_hata" ||
+    input.propagationModel === "iot_hata_calibrated"
+  );
 }
 
 /**

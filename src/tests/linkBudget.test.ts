@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { judgeLinkMargin } from "@/lib/rf/judgement";
-import { calculateLinkBudget, type LinkBudgetInput } from "@/lib/rf/linkBudget";
+import { buildConsultationText, calculateLinkBudget, type LinkBudgetInput } from "@/lib/rf/linkBudget";
 
 const baseInput: LinkBudgetInput = {
   system: "LTE-M / NB-IoT",
@@ -179,5 +179,32 @@ describe("link budget calculations", () => {
 
     expect(withSlope.iotCalibration?.slopeCorrectionDb).toBeCloseTo(5, 6);
     expect(withSlope.pathLossDb).toBeCloseTo(withoutSlope.pathLossDb + 5, 6);
+  });
+
+  it("builds Japanese consultation text without internal link type ids", () => {
+    const result = calculateLinkBudget(baseInput);
+    const text = buildConsultationText(baseInput, result);
+
+    expect(text).toContain("通信形態：携帯基地局 → IoT端末");
+    expect(text).not.toContain("cellular_base_station_to_iot_terminal");
+    expect(text).not.toContain("IoT実測アンカー距離");
+  });
+
+  it("includes IoT calibration details in consultation text only for calibrated Hata mode", () => {
+    const input: LinkBudgetInput = {
+      ...baseInput,
+      propagationModel: "iot_hata_calibrated",
+      iotCalibrationDistance: 500,
+      iotCalibrationDistanceUnit: "m",
+      iotMeasuredReceivedPowerDbm: -93,
+      iotSlopeCorrectionDbPerDecade: 4
+    };
+    const result = calculateLinkBudget(input);
+    const text = buildConsultationText(input, result);
+
+    expect(text).toContain("伝搬モデル：IoT実測補正Hataモード");
+    expect(text).toContain("Hataエリア種別：市街地（中小都市）");
+    expect(text).toContain("IoT実測アンカー距離：500 m");
+    expect(text).toContain("IoT距離勾配補正：4 dB/decade");
   });
 });

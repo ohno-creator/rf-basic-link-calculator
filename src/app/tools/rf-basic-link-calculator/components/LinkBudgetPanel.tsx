@@ -17,10 +17,12 @@ import { wirelessSystemPresets } from "@/data/wirelessSystemPresets";
 import {
   calculateNearTerminalLossDb,
   getCommunicationMode,
+  normalizeDistanceKm,
   type LinkBudgetInput,
   type ValidationErrors
 } from "@/lib/rf/linkBudget";
 import { InputImpactGuide } from "./InputImpactGuide";
+import { ModelAssumptionGuide } from "./ModelAssumptionGuide";
 
 type LinkBudgetPanelProps = {
   input: LinkBudgetInput;
@@ -231,6 +233,13 @@ function IotHataCalibrationPanel({
     return null;
   }
 
+  const currentDistanceKm = normalizeDistanceKm(input.distance, input.distanceUnit);
+  const anchorDistanceKm = normalizeDistanceKm(input.iotCalibrationDistance, input.iotCalibrationDistanceUnit);
+  const extrapolationRatio =
+    currentDistanceKm > 0 && anchorDistanceKm > 0
+      ? Math.max(currentDistanceKm, anchorDistanceKm) / Math.min(currentDistanceKm, anchorDistanceKm)
+      : 0;
+
   return (
     <div className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
       <p className="text-sm font-semibold text-indigo-950">IoT実測補正Hataモードの校正点</p>
@@ -238,6 +247,24 @@ function IotHataCalibrationPanel({
         奥村・秦/COST231-Hataを基準値として、現地で測ったRSSIまたはRSRPからモデルのずれを補正します。
         測定時と同じ送信電力、アンテナ利得、環境損失、端末近傍損失を入力してください。
       </p>
+      {input.calibrationOffsetDb !== 0 ? (
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+          <p className="font-semibold">実測補正値との二重計上を確認してください</p>
+          <p className="mt-1">
+            このモードは実測受信電力からHata基準との差分を推定します。ステップ4の実測補正値
+            {input.calibrationOffsetDb.toFixed(1)}dB は、アンカー補正とは別の追加補正だけにしてください。
+          </p>
+        </div>
+      ) : null}
+      {extrapolationRatio >= 10 ? (
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+          <p className="font-semibold">アンカー距離から大きく外挿しています</p>
+          <p className="mt-1">
+            現在の通信距離と実測アンカー距離が約{extrapolationRatio.toFixed(1)}倍離れています。
+            1点補正だけでは距離勾配を判断しにくいため、複数地点のRSSI/RSRPで確認してください。
+          </p>
+        </div>
+      ) : null}
 
       <div className="mt-4 grid gap-4">
         <div className="rounded-lg border border-indigo-100 bg-white p-4">
@@ -392,6 +419,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
         <InputImpactGuide />
       </Accordion>
 
+      <Accordion title="モデルの前提条件・入力の使われ方">
+        <ModelAssumptionGuide input={input} />
+      </Accordion>
+
       <div className="grid gap-5">
         <InputGroup
           step="1"
@@ -486,7 +517,11 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             id="pathLossExponent"
             label="距離損失指数"
             unit="n"
-            description="Log-distanceモデルで使う距離減衰の指数です。自由空間は2、遮蔽物が多い環境では3以上が目安です。"
+            description={
+              input.propagationModel === "log_distance"
+                ? "Log-distanceモデルで使う距離減衰の指数です。自由空間は2、遮蔽物が多い環境では3以上が目安です。"
+                : "Log-distanceモデル用の値です。現在の伝搬モデルでは計算に使いませんが、モデルを切り替えると反映されます。"
+            }
             tooltip="距離損失指数は現地環境に依存します。本ツールの初期値3.0は一次評価用の仮定で、RSSIまたはRSRP実測に合わせて調整してください。"
             example="2 / 3 / 4"
             range="1-6"
@@ -890,8 +925,16 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             id="calibrationOffsetDb"
             label="実測補正値"
             unit="dB"
-            description="現地RSSI/RSRP測定と計算値の差分です。実測が弱い場合はマイナス、強い場合はプラスで入力します。"
-            tooltip="未測定の場合は0dBのままです。低高度IoT通信では現地測定で補正することを推奨します。"
+            description={
+              input.propagationModel === "iot_hata_calibrated"
+                ? "IoT実測補正Hataのアンカー補正とは別に加える補正です。同じ実測差分を二重に入れないよう注意してください。"
+                : "現地RSSI/RSRP測定と計算値の差分です。実測が弱い場合はマイナス、強い場合はプラスで入力します。"
+            }
+            tooltip={
+              input.propagationModel === "iot_hata_calibrated"
+                ? "IoT実測補正Hataモードでは、実測受信電力から基準モデルとの差分をすでに推定します。この欄は別要因の追加補正だけに使います。"
+                : "未測定の場合は0dBのままです。低高度IoT通信では現地測定で補正することを推奨します。"
+            }
             example="-10 / 0 / 5"
             range="-40-40dB"
             min={-40}

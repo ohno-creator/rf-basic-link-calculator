@@ -8,6 +8,7 @@ import {
   type LinkBudgetInput,
   validateLinkBudgetInput
 } from "@/lib/rf/linkBudget";
+import { HataColumn } from "./HataColumn";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
 import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
@@ -140,6 +141,10 @@ export function CalculatorTabs({
       {result && activeSheet === "link-budget" ? (
         <StickyResultSummary result={result} input={input} targetId={RESULT_ANCHOR_ID} />
       ) : null}
+
+      <div className="mt-8">
+        <HataColumn />
+      </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200/70 bg-white p-4">
         <span className="text-sm font-semibold text-slate-700">単位・損失の単機能ツール</span>
