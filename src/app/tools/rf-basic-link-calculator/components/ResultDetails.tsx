@@ -1,4 +1,5 @@
 import { Accordion } from "@/components/Accordion";
+import { getPropagationAreaOption } from "@/data/linkBudgetOptions";
 import { formatDb, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 import { ConsultationCta } from "./ConsultationCta";
@@ -52,6 +53,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
   if (!result) {
     return null;
   }
+  const propagationArea = getPropagationAreaOption(input.propagationArea);
 
   return (
     <div className="space-y-5">
@@ -70,6 +72,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
             {input.txAntennaHeightM.toFixed(1)}m を基地局高 hb、受信側アンテナ高{" "}
             {input.rxAntennaHeightM.toFixed(1)}m を移動局高 hm として計算しています。
             空中線地上高は固定値ではなく、入力値として伝搬損失に反映されます。
+            エリア種別は「{propagationArea.label}」として計算しています。
           </p>
         ) : null}
       </Accordion>
@@ -100,6 +103,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
           <p className="mt-2">
             奥村・秦モデルの市街地式では、基地局高 hb と移動局高 hm が式に含まれます。
             本ツールでは hb=送信側アンテナ高、hm=受信側アンテナ高として扱います。
+            また、市街地、郊外、開放地の補正も「奥村・秦モデルのエリア種別」の入力値で切り替えます。
           </p>
         ) : null}
         <p className="mt-2">

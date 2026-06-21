@@ -6,6 +6,7 @@ const baseInput: LinkBudgetInput = {
   system: "LTE-M / NB-IoT",
   linkType: "cellular_base_station_to_iot_terminal",
   propagationModel: "free_space",
+  propagationArea: "urbanMedium",
   pathLossExponent: 3,
   frequencyMHz: 800,
   distance: 1,
@@ -110,5 +111,20 @@ describe("link budget calculations", () => {
 
     expect(higher.pathLossDb).toBeGreaterThan(lower.pathLossDb);
     expect(higher.warnings.some((warning) => warning.id === "log-distance-exponent")).toBe(true);
+  });
+
+  it("uses the configured Hata area correction", () => {
+    const urban = calculateLinkBudget({
+      ...baseInput,
+      propagationModel: "okumura_hata",
+      propagationArea: "urbanMedium"
+    });
+    const open = calculateLinkBudget({
+      ...baseInput,
+      propagationModel: "okumura_hata",
+      propagationArea: "open"
+    });
+
+    expect(open.pathLossDb).toBeLessThan(urban.pathLossDb);
   });
 });

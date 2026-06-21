@@ -1,4 +1,5 @@
 import type { LinkPropagationModel, LinkType } from "@/lib/rf/linkBudget";
+import type { AreaType } from "@/lib/rf/propagation";
 
 export const linkTypeOptions: Array<{
   value: LinkType;
@@ -69,10 +70,41 @@ export const propagationModelOptions: Array<{
   }
 ];
 
+export const propagationAreaOptions: Array<{
+  value: AreaType;
+  label: string;
+  description: string;
+}> = [
+  {
+    value: "urbanLarge",
+    label: "市街地（大都市）",
+    description: "大都市中心部など、建物密度が高い環境として評価します。COST231-Hataでは大都市補正を加えます。"
+  },
+  {
+    value: "urbanMedium",
+    label: "市街地（中小都市）",
+    description: "標準的な市街地条件です。迷った場合の初期値ですが、固定値ではありません。"
+  },
+  {
+    value: "suburban",
+    label: "郊外",
+    description: "市街地より建物密度が低い郊外環境として評価します。"
+  },
+  {
+    value: "open",
+    label: "開放地",
+    description: "遮蔽物の少ない開放地として評価します。市街地より伝搬損失が小さく出やすい条件です。"
+  }
+];
+
 export function getLinkTypeLabel(value: LinkType): string {
   return linkTypeOptions.find((option) => option.value === value)?.label ?? "カスタム";
 }
 
 export function getPropagationModelOption(value: LinkPropagationModel) {
   return propagationModelOptions.find((option) => option.value === value) ?? propagationModelOptions[0];
+}
+
+export function getPropagationAreaOption(value: AreaType) {
+  return propagationAreaOptions.find((option) => option.value === value) ?? propagationAreaOptions[1];
 }

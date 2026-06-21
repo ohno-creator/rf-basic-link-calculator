@@ -7,8 +7,10 @@ import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { frequencyPresets } from "@/data/frequencyPresets";
 import { glossary } from "@/data/glossary";
 import {
+  getPropagationAreaOption,
   getPropagationModelOption,
   linkTypeOptions,
+  propagationAreaOptions,
   propagationModelOptions
 } from "@/data/linkBudgetOptions";
 import { wirelessSystemPresets } from "@/data/wirelessSystemPresets";
@@ -236,6 +238,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
     () => getPropagationModelOption(input.propagationModel),
     [input.propagationModel]
   );
+  const selectedPropagationArea = useMemo(
+    () => getPropagationAreaOption(input.propagationArea),
+    [input.propagationArea]
+  );
   const nearTerminalLossDb = calculateNearTerminalLossDb(input);
 
   return (
@@ -308,6 +314,34 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               {selectedPropagationModel.description}
             </p>
           </div>
+
+          {isHataFamily(input.propagationModel) ? (
+            <div className="rounded-lg border border-slate-200 bg-white p-4">
+              <label htmlFor="propagationArea" className="text-sm font-semibold text-slate-950">
+                奥村・秦モデルのエリア種別
+              </label>
+              <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                エリア種別も固定ではありません。市街地、郊外、開放地の違いを伝搬損失に反映します。
+              </p>
+              <select
+                id="propagationArea"
+                value={input.propagationArea}
+                className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                onChange={(event) =>
+                  update("propagationArea", event.target.value as LinkBudgetInput["propagationArea"])
+                }
+              >
+                {propagationAreaOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">
+                {selectedPropagationArea.description}
+              </p>
+            </div>
+          ) : null}
 
           <HataAntennaHeightNotice input={input} />
 

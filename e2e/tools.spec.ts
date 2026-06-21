@@ -89,6 +89,9 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
 
   await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではありません")).toBeVisible();
   await expect(page.getByText(/送信側アンテナ高 .*基地局高 hb/).first()).toBeVisible();
+  await expect(page.getByLabel("奥村・秦モデルのエリア種別")).toBeVisible();
+  await page.getByLabel("奥村・秦モデルのエリア種別").selectOption("open");
+  await expect(page.getByText("遮蔽物の少ない開放地として評価します。")).toBeVisible();
   await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
 });
 

@@ -1,6 +1,6 @@
 import { calculateFsplDb } from "./fspl";
 import { judgeLinkMargin, type LinkJudgement } from "./judgement";
-import { calculatePropagationLoss } from "./propagation";
+import { calculatePropagationLoss, type AreaType } from "./propagation";
 
 export type DistanceUnit = "m" | "km";
 
@@ -28,6 +28,7 @@ export type LinkBudgetInput = {
   system: string;
   linkType: LinkType;
   propagationModel: LinkPropagationModel;
+  propagationArea: AreaType;
   pathLossExponent: number;
   frequencyMHz: number;
   distance: number;
@@ -74,6 +75,7 @@ export const defaultLinkBudgetInput: LinkBudgetInput = {
   system: "LoRa / LoRaWAN",
   linkType: "gateway_to_low_height_terminal",
   propagationModel: "free_space",
+  propagationArea: "urbanMedium",
   pathLossExponent: 3,
   frequencyMHz: 920,
   distance: 1,
@@ -140,6 +142,10 @@ export function validateLinkBudgetInput(input: LinkBudgetInput): ValidationError
 
   if (!input.propagationModel) {
     errors.propagationModel = "伝搬モデルを選択してください。";
+  }
+
+  if (!["urbanLarge", "urbanMedium", "suburban", "open"].includes(input.propagationArea)) {
+    errors.propagationArea = "奥村・秦モデルのエリア種別を選択してください。";
   }
 
   if (isMissingNumber(input.pathLossExponent) || input.pathLossExponent < 1 || input.pathLossExponent > 6) {
@@ -278,6 +284,19 @@ function getPropagationModelLabel(model: LinkPropagationModel): string {
   }
 }
 
+function getPropagationAreaLabel(area: AreaType): string {
+  switch (area) {
+    case "urbanLarge":
+      return "市街地（大都市）";
+    case "urbanMedium":
+      return "市街地（中小都市）";
+    case "suburban":
+      return "郊外";
+    case "open":
+      return "開放地";
+  }
+}
+
 function isHataFamily(model: LinkPropagationModel): boolean {
   return model === "okumura_hata" || model === "cost231_hata";
 }
@@ -312,7 +331,7 @@ function calculatePathLoss(input: LinkBudgetInput, distanceKm: number, fsplDb: n
       baseHeightM: input.txAntennaHeightM,
       mobileHeightM: input.rxAntennaHeightM,
       distanceKm,
-      area: "urbanMedium",
+      area: input.propagationArea,
       preferredModel: input.propagationModel === "okumura_hata" ? "Hata" : "COST231-Hata"
     });
 
@@ -531,6 +550,7 @@ export function buildConsultationText(input: LinkBudgetInput, result: LinkBudget
 通信方式：${input.system}
 通信形態：${input.linkType}
 伝搬モデル：${result.propagationModelLabel}
+Hataエリア種別：${getPropagationAreaLabel(input.propagationArea)}
 距離損失指数：${input.pathLossExponent}
 周波数：${input.frequencyMHz} MHz
 通信距離：${input.distance} ${input.distanceUnit}

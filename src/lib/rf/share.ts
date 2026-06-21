@@ -5,6 +5,7 @@ import {
   type LinkPropagationModel,
   type LinkType
 } from "./linkBudget";
+import type { AreaType } from "./propagation";
 
 /**
  * 入力条件をURLクエリ・localStorageへ保存し、共有リンクとして復元するための
@@ -19,6 +20,7 @@ const QUERY_KEYS = {
   system: "sys",
   linkType: "lt",
   propagationModel: "pm",
+  propagationArea: "pa",
   pathLossExponent: "n",
   frequencyMHz: "f",
   distance: "d",
@@ -86,6 +88,14 @@ function toPropagationModel(value: unknown): LinkPropagationModel {
     : defaultLinkBudgetInput.propagationModel;
 }
 
+function toPropagationArea(value: unknown): AreaType {
+  const allowed: AreaType[] = ["urbanLarge", "urbanMedium", "suburban", "open"];
+
+  return typeof value === "string" && allowed.includes(value as AreaType)
+    ? (value as AreaType)
+    : defaultLinkBudgetInput.propagationArea;
+}
+
 /**
  * 任意の入力（部分オブジェクト・URL由来・localStorage由来）を既定値とマージし、
  * すべてのフィールドが有効な型・有限値になったLinkBudgetInputを返す。
@@ -95,6 +105,7 @@ export function sanitizeInput(raw: Partial<Record<keyof LinkBudgetInput, unknown
     system: toSystem(raw.system),
     linkType: toLinkType(raw.linkType),
     propagationModel: toPropagationModel(raw.propagationModel),
+    propagationArea: toPropagationArea(raw.propagationArea),
     pathLossExponent: toFiniteNumber(raw.pathLossExponent, defaultLinkBudgetInput.pathLossExponent),
     frequencyMHz: toFiniteNumber(raw.frequencyMHz, defaultLinkBudgetInput.frequencyMHz),
     distance: toFiniteNumber(raw.distance, defaultLinkBudgetInput.distance),
@@ -140,6 +151,7 @@ export function encodeInputToQuery(input: LinkBudgetInput): string {
   params.set(QUERY_KEYS.system, input.system);
   params.set(QUERY_KEYS.linkType, input.linkType);
   params.set(QUERY_KEYS.propagationModel, input.propagationModel);
+  params.set(QUERY_KEYS.propagationArea, input.propagationArea);
   params.set(QUERY_KEYS.pathLossExponent, String(input.pathLossExponent));
   params.set(QUERY_KEYS.frequencyMHz, String(input.frequencyMHz));
   params.set(QUERY_KEYS.distance, String(input.distance));
@@ -176,6 +188,7 @@ export function decodeInputFromQuery(query: string): LinkBudgetInput | null {
     system: params.get(QUERY_KEYS.system) ?? undefined,
     linkType: params.get(QUERY_KEYS.linkType) ?? undefined,
     propagationModel: params.get(QUERY_KEYS.propagationModel) ?? undefined,
+    propagationArea: params.get(QUERY_KEYS.propagationArea) ?? undefined,
     pathLossExponent: params.get(QUERY_KEYS.pathLossExponent) ?? undefined,
     frequencyMHz: params.get(QUERY_KEYS.frequencyMHz) ?? undefined,
     distance: params.get(QUERY_KEYS.distance) ?? undefined,
