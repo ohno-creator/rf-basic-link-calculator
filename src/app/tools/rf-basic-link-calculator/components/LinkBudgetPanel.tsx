@@ -1,9 +1,10 @@
 "use client";
 
-import { type ReactNode, useMemo } from "react";
+import { type ReactNode, useMemo, useState } from "react";
 import {
   Antenna,
   Check,
+  ChevronDown,
   RadioTower,
   Router,
   SlidersHorizontal,
@@ -194,9 +195,14 @@ function LinkTypeCards({
 }) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4">
-      <span id="linkType-label" className="text-sm font-semibold text-slate-950">
-        通信形態
-      </span>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span id="linkType-label" className="text-sm font-semibold text-slate-950">
+          通信形態
+        </span>
+        <Tooltip term="通信形態">
+          送信側と受信側の高さ関係（基地局・ゲートウェイ・端末）を選びます。各カードに高さの目安・代表例・相性の良い伝搬モデルを表示します。アンテナ高の当たりや推奨モデルの目安に使います。
+        </Tooltip>
+      </div>
       <p className="mt-1 text-xs leading-relaxed text-slate-500">
         送信側と受信側の高さ関係に近いものを選びます。各カードに高さの目安と代表例を示しています。
       </p>
@@ -473,10 +479,29 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
     onChange({ ...input, [key]: value });
   };
 
-  const environmentLabel = useMemo(() => {
+  const [nearDetailOpen, setNearDetailOpen] = useState(
+    () =>
+      input.groundProximityLossDb > 0 ||
+      input.enclosureLossDb > 0 ||
+      input.polarizationMismatchLossDb > 0 ||
+      input.vehicleBodyObstructionLossDb > 0 ||
+      input.installationMarginDb > 0
+  );
+
+  // 環境損失プリセットは lossDb が重複（屋内・軽度=10dB と 筐体内蔵=10dB）するため、
+  // 選択したラベル自体を保持して、選択直後に別ラベルへ化けないようにする。
+  const [environmentPresetLabel, setEnvironmentPresetLabel] = useState<string>(() => {
     const match = environmentLossPresets.find((preset) => preset.lossDb === input.environmentLossDb);
     return match?.label ?? "手動入力";
-  }, [input.environmentLossDb]);
+  });
+  const selectedEnvironmentPreset = environmentLossPresets.find(
+    (preset) => preset.label === environmentPresetLabel
+  );
+  const environmentSelectValue =
+    selectedEnvironmentPreset && selectedEnvironmentPreset.lossDb === input.environmentLossDb
+      ? environmentPresetLabel
+      : environmentLossPresets.find((preset) => preset.lossDb === input.environmentLossDb)?.label ??
+        "手動入力";
 
   const isPresetFrequency = useMemo(
     () => frequencyPresets.some((preset) => preset.frequencyMHz === input.frequencyMHz),
@@ -495,6 +520,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
     [input.propagationArea]
   );
   const nearTerminalLossDb = calculateNearTerminalLossDb(input);
+  // 通信距離は数値入力とスライダーで同じ範囲を使い、スライダー値は範囲内にクランプする。
+  const distanceMin = input.distanceUnit === "m" ? 1 : 0.01;
+  const distanceMax = input.distanceUnit === "m" ? 10000 : 20;
+  const distanceSliderValue = Math.min(
+    distanceMax,
+    Math.max(distanceMin, Number.isFinite(input.distance) ? input.distance : distanceMin)
+  );
 
   return (
     <section className="space-y-4">
@@ -528,9 +560,14 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           />
 
           <div className="rounded-lg border border-slate-200 bg-white p-4">
-            <label htmlFor="propagationModel" className="text-sm font-semibold text-slate-950">
-              伝搬モデル
-            </label>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <label htmlFor="propagationModel" className="text-sm font-semibold text-slate-950">
+                伝搬モデル
+              </label>
+              <Tooltip term="伝搬モデル">
+                距離による電波の減り方をどの式で見積もるかを選びます。自由空間＝見通しの基準、2波＝地面反射、Log-distance＝指数で近似、奥村・秦／COST231-Hata＝市街地の経験式。選ぶモデルで結果が大きく変わるため、通信形態に合うものを選びます。
+              </Tooltip>
+            </div>
             <p className="mt-1 text-xs leading-relaxed text-slate-500">
               伝搬損失の主モデルを選びます。低高度端末同士では奥村・秦モデルを主モデルとして推奨しません。
             </p>
@@ -559,13 +596,25 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                 <span className="text-amber-700">{selectedPropagationModel.caution}</span>
               </p>
             </div>
+            {selectedLinkType.recommendedModelValues.length > 0 &&
+            !selectedLinkType.recommendedModelValues.includes(input.propagationModel) ? (
+              <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+                <span className="font-semibold">この通信形態での推奨モデル：</span>
+                {selectedLinkType.recommendedModels}。現在の「{selectedPropagationModel.label}」は参考として計算します。
+              </div>
+            ) : null}
           </div>
 
           {isHataFamily(input.propagationModel) ? (
             <div className="rounded-lg border border-slate-200 bg-white p-4">
-              <label htmlFor="propagationArea" className="text-sm font-semibold text-slate-950">
-                奥村・秦モデルのエリア種別
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="propagationArea" className="text-sm font-semibold text-slate-950">
+                  奥村・秦モデルのエリア種別
+                </label>
+                <Tooltip term="エリア種別">
+                  Hata系で使う環境区分です。市街地（大都市）→市街地（中小都市）→郊外→開放地の順に伝搬損失は小さくなります（届きやすくなります）。迷ったら中小都市から始めます。
+                </Tooltip>
+              </div>
               <p className="mt-1 text-xs leading-relaxed text-slate-500">
                 エリア種別も固定ではありません。市街地、郊外、開放地の違いを伝搬損失に反映します。
               </p>
@@ -614,9 +663,14 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           />
 
           <div className="rounded-lg border border-slate-200 bg-white p-4">
-          <label htmlFor="system" className="text-sm font-semibold text-slate-950">
-            通信方式
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="system" className="text-sm font-semibold text-slate-950">
+              通信方式
+            </label>
+            <Tooltip term="通信方式">
+              使う無線規格の目安です（LTE-M/NB-IoT、BLE、Wi-Fi、LoRa など）。表示・相談メモ用のラベルで、計算には直接使いません。実際の結果は周波数・送信電力・受信感度で決まります。
+            </Tooltip>
+          </div>
           <p className="mt-1 text-xs text-slate-500">近い通信方式を選んでください。</p>
           <select
             id="system"
@@ -690,8 +744,8 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               id="distance"
               type="number"
               value={Number.isFinite(input.distance) ? input.distance : ""}
-              min={input.distanceUnit === "m" ? 1 : 0.001}
-              max={input.distanceUnit === "m" ? 10000 : 100}
+              min={distanceMin}
+              max={distanceMax}
               step={input.distanceUnit === "m" ? 1 : 0.01}
               className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-sm focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
               onChange={(event) => update("distance", event.target.value === "" ? Number.NaN : Number(event.target.value))}
@@ -717,10 +771,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           </div>
           <input
             type="range"
-            min={input.distanceUnit === "m" ? 1 : 0.01}
-            max={input.distanceUnit === "m" ? 10000 : 10}
+            min={distanceMin}
+            max={distanceMax}
             step={input.distanceUnit === "m" ? 1 : 0.01}
-            value={Number.isFinite(input.distance) ? input.distance : input.distanceUnit === "m" ? 1 : 0.01}
+            value={distanceSliderValue}
             className="mt-4 w-full"
             onChange={(event) => update("distance", Number(event.target.value))}
             aria-label="通信距離のスライダー"
@@ -851,9 +905,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           </div>
           <select
             id="environmentPreset"
-            value={environmentLabel}
+            value={environmentSelectValue}
             className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
             onChange={(event) => {
+              setEnvironmentPresetLabel(event.target.value);
               const preset = environmentLossPresets.find((item) => item.label === event.target.value);
               if (preset?.lossDb !== null && preset?.lossDb !== undefined) {
                 update("environmentLossDb", preset.lossDb);
@@ -894,10 +949,24 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               {nearTerminalLossDb.toFixed(1)} dB
             </p>
             <p className="mt-1 text-xs leading-relaxed text-rose-800">
-              Hataモデルなどの広域平均伝搬損失だけでは表しにくい、端末のすぐ近くで起きる損失を合算します。
+              地面近接・筐体・偏波・車両/人体遮蔽・設置ばらつきの合計です。下の内訳で各要因を入力できます。
             </p>
           </div>
 
+          <details
+            id="near-terminal-detail"
+            open={nearDetailOpen}
+            onToggle={(event) => setNearDetailOpen((event.target as HTMLDetailsElement).open)}
+            className="group rounded-lg border border-slate-200 bg-white"
+          >
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/30">
+              <span>端末近傍損失の内訳を入力（地面近接・筐体・偏波・遮蔽・設置ばらつき）</span>
+              <ChevronDown
+                aria-hidden
+                className="h-4 w-4 shrink-0 text-slate-500 transition group-open:rotate-180"
+              />
+            </summary>
+            <div className="grid gap-4 px-4 pb-4">
           <NumberField
             id="groundProximityLossDb"
             label="地面近接損失"
@@ -977,6 +1046,8 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             error={errors.installationMarginDb}
             onChange={(value) => update("installationMarginDb", value)}
           />
+            </div>
+          </details>
         </InputGroup>
 
         <InputGroup

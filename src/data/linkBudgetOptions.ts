@@ -9,8 +9,10 @@ export const linkTypeOptions: Array<{
   heights: string;
   /** 代表的な通信例 */
   examples: string;
-  /** 相性の良い伝搬モデル */
+  /** 相性の良い伝搬モデル（表示用テキスト） */
   recommendedModels: string;
+  /** 相性の良い伝搬モデル（判定用の値。空配列なら全モデル可） */
+  recommendedModelValues: LinkPropagationModel[];
 }> = [
   {
     value: "cellular_base_station_to_iot_terminal",
@@ -18,7 +20,8 @@ export const linkTypeOptions: Array<{
     description: "LTE-M、NB-IoT、セルラーIoTなど、高所基地局と地上近傍端末の通信を評価します。",
     heights: "基地局 30〜200m ／ 端末 1〜1.5m",
     examples: "LTE-M・NB-IoT・セルラーIoT",
-    recommendedModels: "奥村・秦／COST231-Hata（参考）＋端末近傍損失"
+    recommendedModels: "奥村・秦／COST231-Hata（参考）＋端末近傍損失",
+    recommendedModelValues: ["okumura_hata", "cost231_hata", "iot_hata_calibrated"]
   },
   {
     value: "private_base_station_to_iot_terminal",
@@ -26,7 +29,8 @@ export const linkTypeOptions: Array<{
     description: "ローカル5G、プライベートLTE、自営無線基地局などとIoT端末の通信を評価します。",
     heights: "基地局 5〜30m ／ 端末 1〜1.5m",
     examples: "ローカル5G・自営LTE・自営無線",
-    recommendedModels: "Log-distance／実測補正（Hataは参考）"
+    recommendedModels: "Log-distance／実測補正（Hataは参考）",
+    recommendedModelValues: ["log_distance", "measured_correction", "iot_hata_calibrated"]
   },
   {
     value: "gateway_to_low_height_terminal",
@@ -34,7 +38,8 @@ export const linkTypeOptions: Array<{
     description: "比較的低い位置に設置されたゲートウェイと、地上近傍端末の通信を評価します。",
     heights: "ゲートウェイ 3〜10m ／ 端末 0.5〜1.5m",
     examples: "LoRaWAN・Wi-SUN・私設ゲートウェイ",
-    recommendedModels: "Log-distance／2波／実測補正"
+    recommendedModels: "Log-distance／2波／実測補正",
+    recommendedModelValues: ["log_distance", "two_ray", "measured_correction"]
   },
   {
     value: "terminal_to_terminal",
@@ -42,7 +47,8 @@ export const linkTypeOptions: Array<{
     description: "送受信機の双方が地上近傍にある端末間通信を評価します。",
     heights: "両端とも 0.5〜2m",
     examples: "BLE・端末間メッシュ・近距離無線",
-    recommendedModels: "自由空間／2波／Log-distance"
+    recommendedModels: "自由空間／2波／Log-distance",
+    recommendedModelValues: ["free_space", "two_ray", "log_distance"]
   },
   {
     value: "custom",
@@ -50,7 +56,8 @@ export const linkTypeOptions: Array<{
     description: "任意のアンテナ高、距離、環境損失を設定して評価します。",
     heights: "任意（高さ・距離を自由に設定）",
     examples: "特殊な設置・実験的な構成",
-    recommendedModels: "全モデル（適用範囲の警告を確認）"
+    recommendedModels: "全モデル（適用範囲の警告を確認）",
+    recommendedModelValues: []
   }
 ];
 

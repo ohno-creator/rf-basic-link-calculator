@@ -54,6 +54,11 @@ function jumpToInput(key: keyof LinkBudgetInput) {
   if (!element) {
     return;
   }
+  // 折りたたみ（端末近傍損失の内訳など）の中にある入力は、先に開いてからスクロール・フォーカスする。
+  const collapsible = element.closest("details");
+  if (collapsible && !collapsible.open) {
+    collapsible.open = true;
+  }
   element.scrollIntoView({ behavior: "smooth", block: "center" });
   window.setTimeout(() => {
     (element as HTMLElement).focus({ preventScroll: true });
@@ -82,7 +87,7 @@ export function CalculatorTabs({
   }, [errors, input]);
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <section className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6 lg:px-8 lg:pb-10">
       <div className="mb-5">
         <p className="text-sm font-semibold text-staf">メイン診断</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
