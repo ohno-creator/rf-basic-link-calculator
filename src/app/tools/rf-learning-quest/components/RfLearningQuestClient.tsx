@@ -4,16 +4,21 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
   ArrowRight,
+  Award,
   BookOpen,
   CheckCircle2,
   CircleHelp,
   Crown,
+  FileDown,
   FlaskConical,
+  RefreshCw,
   RotateCcw,
   ShieldCheck,
+  Shuffle,
   Sparkles,
   Swords,
   Trophy,
+  XCircle,
   type LucideIcon
 } from "lucide-react";
 import {
@@ -25,6 +30,10 @@ import {
 
 type ProgressMap = Record<string, boolean>;
 type AnswerMap = Record<string, number>;
+type DisplayChoice = {
+  choice: string;
+  originalIndex: number;
+};
 
 type LevelUpState = {
   level: number;
@@ -32,14 +41,47 @@ type LevelUpState = {
   message: string;
 };
 
+type CertificationAttempt = {
+  lessonIds: string[];
+  answers: AnswerMap;
+  startedAt: string;
+};
+
+type CertificateRecord = {
+  mode: QuestModeId;
+  modeLabel: string;
+  recipientName: string;
+  companyName: string;
+  issuedAt: string;
+  score: number;
+  certificateId: string;
+};
+
+type CertificationState = {
+  attempts: Partial<Record<QuestModeId, CertificationAttempt>>;
+  certificates: Partial<Record<QuestModeId, CertificateRecord>>;
+};
+
 const STORAGE_KEY = "rf-learning-quest-progress:v2";
+const CERTIFICATION_STORAGE_KEY = "rf-learning-quest-certification:v1";
+const CERTIFICATION_QUESTION_COUNT = 10;
 
 const modeIconMap: Record<QuestModeId, LucideIcon> = {
+  intro: BookOpen,
   beginner: Sparkles,
   apprentice: Swords,
   practitioner: ShieldCheck,
   expert: Crown,
   researcher: FlaskConical
+};
+
+const emptyCertificateForms: Record<QuestModeId, { recipientName: string; companyName: string }> = {
+  intro: { recipientName: "", companyName: "" },
+  beginner: { recipientName: "", companyName: "" },
+  apprentice: { recipientName: "", companyName: "" },
+  practitioner: { recipientName: "", companyName: "" },
+  expert: { recipientName: "", companyName: "" },
+  researcher: { recipientName: "", companyName: "" }
 };
 
 function loadProgress(): ProgressMap {
@@ -63,17 +105,39 @@ function saveProgress(progress: ProgressMap) {
   }
 }
 
+function loadCertificationState(): CertificationState {
+  if (typeof window === "undefined") {
+    return { attempts: {}, certificates: {} };
+  }
+
+  try {
+    const raw = window.localStorage.getItem(CERTIFICATION_STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as CertificationState) : { attempts: {}, certificates: {} };
+  } catch {
+    return { attempts: {}, certificates: {} };
+  }
+}
+
+function saveCertificationState(state: CertificationState) {
+  try {
+    window.localStorage.setItem(CERTIFICATION_STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // 保存できない環境では、現在セッションだけで進める。
+  }
+}
+
 function levelFromCompleted(completedCount: number): number {
   return Math.max(1, Math.floor(completedCount / 5) + 1);
 }
 
 function rankName(completedCount: number): string {
-  if (completedCount >= 500) return "RF賢者";
-  if (completedCount >= 400) return "研究者";
-  if (completedCount >= 300) return "玄人";
-  if (completedCount >= 200) return "実務者";
-  if (completedCount >= 100) return "見習い";
-  return "初心者";
+  if (completedCount >= 700) return "RF賢者";
+  if (completedCount >= 600) return "研究者";
+  if (completedCount >= 500) return "玄人";
+  if (completedCount >= 350) return "実務者";
+  if (completedCount >= 200) return "見習い";
+  if (completedCount >= 100) return "入門者";
+  return "初学者";
 }
 
 function nextIncompleteLesson(modeId: QuestModeId, progress: ProgressMap): QuestLesson {
@@ -81,6 +145,62 @@ function nextIncompleteLesson(modeId: QuestModeId, progress: ProgressMap): Quest
     .filter((lesson) => lesson.mode === modeId)
     .sort((a, b) => a.stage - b.stage);
   return lessons.find((lesson) => !progress[lesson.id]) ?? lessons[0];
+}
+
+function randomUnit(): number {
+  if (typeof window !== "undefined" && window.crypto) {
+    const values = new Uint32Array(1);
+    window.crypto.getRandomValues(values);
+    return values[0] / 0xffffffff;
+  }
+
+  return Math.random();
+}
+
+function hashString(seed: string): number {
+  let hash = 2166136261;
+
+  for (let index = 0; index < seed.length; index += 1) {
+    hash ^= seed.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return hash >>> 0;
+}
+
+function seededRandom(seed: string): () => number {
+  let state = hashString(seed) || 1;
+
+  return () => {
+    state = Math.imul(1664525, state) + 1013904223;
+    return (state >>> 0) / 0x100000000;
+  };
+}
+
+function shuffleChoices(lesson: QuestLesson, seed?: string): DisplayChoice[] {
+  const random = seed ? seededRandom(seed) : randomUnit;
+  const choices = lesson.choices.map((choice, originalIndex) => ({ choice, originalIndex }));
+
+  for (let index = choices.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(random() * (index + 1));
+    [choices[index], choices[swapIndex]] = [choices[swapIndex], choices[index]];
+  }
+
+  return choices;
+}
+
+function pickRandomLessons(modeId: QuestModeId): QuestLesson[] {
+  return rfQuestLessons
+    .filter((lesson) => lesson.mode === modeId)
+    .map((lesson) => ({ lesson, order: randomUnit() }))
+    .sort((a, b) => a.order - b.order)
+    .slice(0, CERTIFICATION_QUESTION_COUNT)
+    .map(({ lesson }) => lesson);
+}
+
+function certificateIdFor(mode: QuestModeId, issuedAt: string): string {
+  const stamp = issuedAt.replace(/\D/g, "").slice(0, 14);
+  return `RFQ-${mode.toUpperCase()}-${stamp}`;
 }
 
 function ProgressBar({ value, max }: { value: number; max: number }) {
@@ -127,7 +247,7 @@ function ModeSelector({
   onSelect: (mode: QuestModeId) => void;
 }) {
   return (
-    <section className="grid gap-3 lg:grid-cols-5">
+    <section className="grid gap-3 lg:grid-cols-3 xl:grid-cols-6">
       {questModes.map((mode) => {
         const Icon = modeIconMap[mode.id];
         const lessons = rfQuestLessons.filter((lesson) => lesson.mode === mode.id);
@@ -249,6 +369,7 @@ function LessonBattle({
   isCompleted,
   nextLesson,
   onAnswer,
+  onClearAnswer,
   onNext
 }: {
   lesson: QuestLesson;
@@ -256,12 +377,14 @@ function LessonBattle({
   isCompleted: boolean;
   nextLesson: QuestLesson;
   onAnswer: (choiceIndex: number) => void;
+  onClearAnswer: () => void;
   onNext: () => void;
 }) {
   const answered = selectedChoice !== undefined;
   const correct = selectedChoice === lesson.correctIndex;
   const chapter = Math.ceil(lesson.stage / 10);
   const isBossStage = lesson.stage % 10 === 0;
+  const displayedChoices = useMemo(() => shuffleChoices(lesson), [lesson]);
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -291,9 +414,9 @@ function LessonBattle({
         <p className="text-xs font-bold text-staf">QUESTION</p>
         <p className="mt-1 text-base font-bold leading-relaxed text-slate-950">{lesson.question}</p>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
-          {lesson.choices.map((choice, choiceIndex) => {
-            const isSelected = selectedChoice === choiceIndex;
-            const isCorrect = choiceIndex === lesson.correctIndex;
+          {displayedChoices.map(({ choice, originalIndex }) => {
+            const isSelected = selectedChoice === originalIndex;
+            const isCorrect = originalIndex === lesson.correctIndex;
             const tone =
               answered && isCorrect
                 ? "border-emerald-300 bg-emerald-50 text-emerald-900"
@@ -305,8 +428,9 @@ function LessonBattle({
               <button
                 key={choice}
                 type="button"
-                className={`min-h-16 rounded-md border px-3 py-3 text-left text-sm font-semibold transition ${tone}`}
-                onClick={() => onAnswer(choiceIndex)}
+                className={`min-h-16 rounded-md border px-3 py-3 text-left text-sm font-semibold transition disabled:cursor-default ${tone}`}
+                onClick={() => onAnswer(originalIndex)}
+                disabled={answered}
               >
                 {choice}
               </button>
@@ -331,6 +455,21 @@ function LessonBattle({
             <p className="mt-3 rounded-md border border-white/70 bg-white/70 p-2 text-xs font-bold text-slate-700">
               獲得：{lesson.reward}
             </p>
+            {!correct ? (
+              <div className="mt-3 rounded-md border border-amber-200 bg-white/80 p-3">
+                <p className="text-xs font-bold text-amber-900">
+                  もう一度挑戦できます。左のステージ番号を再クリックするか、このボタンで回答をクリアしてください。
+                </p>
+                <button
+                  type="button"
+                  className="mt-2 inline-flex items-center gap-1 rounded-md border border-amber-300 bg-white px-3 py-2 text-sm font-bold text-amber-900 transition hover:bg-amber-100"
+                  onClick={onClearAnswer}
+                >
+                  <RefreshCw aria-hidden="true" className="h-4 w-4" />
+                  回答をクリアして再挑戦
+                </button>
+              </div>
+            ) : null}
             <Link
               href={lesson.appLink.href}
               className="mt-3 inline-flex items-center gap-1 rounded-md bg-staf px-3 py-2 text-sm font-bold text-white transition hover:bg-staf-dark"
@@ -380,13 +519,369 @@ function LessonBattle({
   );
 }
 
+function CertificateView({
+  certificate,
+  printTarget = false
+}: {
+  certificate: CertificateRecord;
+  printTarget?: boolean;
+}) {
+  const issuedDate = new Intl.DateTimeFormat("ja-JP", {
+    year: "numeric",
+    month: "long",
+    day: "numeric"
+  }).format(new Date(certificate.issuedAt));
+
+  return (
+    <section className={`${printTarget ? "rf-certificate-print" : ""} rounded-lg border-4 border-staf bg-white p-8 text-center shadow-sm`}>
+      <p className="text-xs font-bold uppercase tracking-[0.32em] text-staf">RF Learning Quest</p>
+      <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">修了証明書</h2>
+      <p className="mt-5 text-sm font-semibold text-slate-500">Certificate of Completion</p>
+      <div className="mx-auto mt-6 max-w-2xl border-y border-slate-200 py-6">
+        <p className="text-sm font-bold text-slate-500">会社名</p>
+        <p className="mt-1 text-2xl font-bold text-slate-950">{certificate.companyName}</p>
+        <p className="mt-5 text-sm font-bold text-slate-500">氏名</p>
+        <p className="mt-1 text-3xl font-bold text-slate-950">{certificate.recipientName}</p>
+      </div>
+      <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-slate-700">
+        上記の方は、スタッフ株式会社 RF Basic Link Calculator の
+        <span className="font-bold text-slate-950"> {certificate.modeLabel} </span>
+        において、全ステージを攻略し、ランダム修了試験10問で100点を達成したことを証明します。
+      </p>
+      <div className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
+        <div className="rounded-md border border-slate-200 p-3">
+          <p className="text-xs font-bold text-slate-500">修了モード</p>
+          <p className="mt-1 font-bold text-slate-950">{certificate.modeLabel}</p>
+        </div>
+        <div className="rounded-md border border-slate-200 p-3">
+          <p className="text-xs font-bold text-slate-500">修了試験</p>
+          <p className="mt-1 font-bold text-slate-950">{certificate.score}/100 点</p>
+        </div>
+        <div className="rounded-md border border-slate-200 p-3">
+          <p className="text-xs font-bold text-slate-500">発行日</p>
+          <p className="mt-1 font-bold text-slate-950">{issuedDate}</p>
+        </div>
+      </div>
+      <div className="mt-8 flex flex-wrap items-end justify-between gap-4 text-left text-xs text-slate-500">
+        <div>
+          <p className="font-bold text-slate-700">証明書ID</p>
+          <p>{certificate.certificateId}</p>
+        </div>
+        <div className="text-right">
+          <p className="font-bold text-slate-700">スタッフ株式会社</p>
+          <p>RF Basic Link Calculator</p>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function CertificationPanel({
+  mode,
+  lessons,
+  completedInMode,
+  certificationState,
+  certificateForm,
+  notice,
+  onStartAttempt,
+  onAnswer,
+  onClearAnswer,
+  onFormChange,
+  onIssueCertificate,
+  onPrintCertificate
+}: {
+  mode: (typeof questModes)[number];
+  lessons: QuestLesson[];
+  completedInMode: number;
+  certificationState: CertificationState;
+  certificateForm: { recipientName: string; companyName: string };
+  notice: { mode: QuestModeId; tone: "success" | "error"; message: string } | null;
+  onStartAttempt: (mode: QuestModeId) => void;
+  onAnswer: (mode: QuestModeId, lessonId: string, choiceIndex: number) => void;
+  onClearAnswer: (mode: QuestModeId, lessonId: string) => void;
+  onFormChange: (mode: QuestModeId, field: "recipientName" | "companyName", value: string) => void;
+  onIssueCertificate: (mode: QuestModeId) => void;
+  onPrintCertificate: (certificate: CertificateRecord) => void;
+}) {
+  const unlocked = completedInMode === lessons.length;
+  const attempt = certificationState.attempts[mode.id];
+  const certificate = certificationState.certificates[mode.id];
+  const examLessons =
+    attempt?.lessonIds
+      .map((lessonId) => rfQuestLessons.find((lesson) => lesson.id === lessonId))
+      .filter((lesson): lesson is QuestLesson => Boolean(lesson)) ?? [];
+  const answeredCount = examLessons.filter((lesson) => attempt?.answers[lesson.id] !== undefined).length;
+  const correctCount = examLessons.filter((lesson) => attempt?.answers[lesson.id] === lesson.correctIndex).length;
+  const score = correctCount * 10;
+  const finished = examLessons.length === CERTIFICATION_QUESTION_COUNT && answeredCount === CERTIFICATION_QUESTION_COUNT;
+  const passed = finished && correctCount === CERTIFICATION_QUESTION_COUNT;
+  const modeNotice = notice?.mode === mode.id ? notice : null;
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+            <Award aria-hidden="true" className="h-4 w-4" />
+            {mode.label} 修了試験
+          </p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">ランダム10問で100点ならPDF修了書を出力</h2>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+            このモードの{lessons.length}問をすべて攻略すると、同じモードからランダムに10問を出題します。誤答した問題は問題名をクリックして回答をクリアし、再挑戦できます。
+          </p>
+        </div>
+        <div className="min-w-40 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm">
+          <p className="text-xs font-bold text-slate-500">モード進捗</p>
+          <p className="mt-1 text-lg font-bold text-slate-950">
+            {completedInMode}/{lessons.length}
+          </p>
+          <ProgressBar value={completedInMode} max={lessons.length} />
+        </div>
+      </div>
+
+      {!unlocked ? (
+        <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
+          <p className="text-sm font-bold text-slate-700">修了試験はまだロック中です。</p>
+          <p className="mt-1 text-sm leading-relaxed text-slate-500">
+            残り{lessons.length - completedInMode}問を攻略すると、このモードのランダム修了試験が解放されます。
+          </p>
+        </div>
+      ) : (
+        <div className="mt-4 space-y-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-4">
+            <div>
+              <p className="text-sm font-bold text-emerald-900">修了試験が解放されています。</p>
+              <p className="mt-1 text-xs leading-relaxed text-emerald-800">
+                10問すべて正解すると、名前と会社名入りの修了書をPDF保存できます。
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={() => onStartAttempt(mode.id)}
+                className="inline-flex items-center gap-2 rounded-md bg-staf px-4 py-2 text-sm font-bold text-white transition hover:bg-staf-dark"
+              >
+                <Shuffle aria-hidden="true" className="h-4 w-4" />
+                {attempt ? "ランダム10問を引き直す" : "修了試験を開始"}
+              </button>
+              {certificate ? (
+                <button
+                  type="button"
+                  onClick={() => onPrintCertificate(certificate)}
+                  className="inline-flex items-center gap-2 rounded-md border border-emerald-300 bg-white px-4 py-2 text-sm font-bold text-emerald-800 transition hover:bg-emerald-100"
+                >
+                  <FileDown aria-hidden="true" className="h-4 w-4" />
+                  修了書を再出力
+                </button>
+              ) : null}
+            </div>
+          </div>
+
+          {attempt && examLessons.length ? (
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-sm font-bold text-slate-950">修了試験スコア</p>
+                  <p className="mt-1 text-xs text-slate-500">現在の回答で採点します。100点になるまで誤答を再挑戦できます。</p>
+                </div>
+                <div className="rounded-md bg-white px-4 py-2 text-right">
+                  <p className="text-xs font-bold text-slate-500">SCORE</p>
+                  <p className={`text-2xl font-bold ${passed ? "text-emerald-700" : "text-slate-950"}`}>{score}/100</p>
+                </div>
+              </div>
+
+              {finished && !passed ? (
+                <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
+                  満点まであと{CERTIFICATION_QUESTION_COUNT - correctCount}問です。誤答した問題名をクリックして回答をクリアし、再挑戦してください。
+                </div>
+              ) : null}
+
+              <div className="mt-4 grid gap-3">
+                {examLessons.map((lesson, index) => {
+                  const selectedChoice = attempt.answers[lesson.id];
+                  const answered = selectedChoice !== undefined;
+                  const correct = selectedChoice === lesson.correctIndex;
+                  const wrong = answered && !correct;
+                  const displayedChoices = shuffleChoices(lesson, `${attempt.startedAt}:${lesson.id}`);
+
+                  return (
+                    <section
+                      key={lesson.id}
+                      data-testid="cert-question"
+                      className={`rounded-md border bg-white p-4 ${
+                        correct
+                          ? "border-emerald-200"
+                          : wrong
+                            ? "border-amber-300"
+                            : "border-slate-200"
+                      }`}
+                    >
+                      <button
+                        type="button"
+                        data-testid="cert-question-title"
+                        className={`flex w-full items-center justify-between gap-3 text-left text-sm font-bold ${
+                          wrong ? "text-amber-900 underline decoration-amber-300 underline-offset-4" : "text-slate-950"
+                        }`}
+                        onClick={() => wrong && onClearAnswer(mode.id, lesson.id)}
+                        disabled={!wrong}
+                      >
+                        <span>
+                          問題{index + 1}：STAGE {lesson.stage} {lesson.title}
+                        </span>
+                        <span
+                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs ${
+                            correct
+                              ? "bg-emerald-100 text-emerald-800"
+                              : wrong
+                                ? "bg-amber-100 text-amber-900"
+                                : "bg-slate-100 text-slate-500"
+                          }`}
+                        >
+                          {correct ? (
+                            <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
+                          ) : wrong ? (
+                            <XCircle aria-hidden="true" className="h-3.5 w-3.5" />
+                          ) : (
+                            <CircleHelp aria-hidden="true" className="h-3.5 w-3.5" />
+                          )}
+                          {correct ? "正解" : wrong ? "再挑戦可" : "未回答"}
+                        </span>
+                      </button>
+                      <p data-testid="cert-question-text" className="mt-3 text-sm font-semibold leading-relaxed text-slate-800">
+                        {lesson.question}
+                      </p>
+                      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                        {displayedChoices.map(({ choice, originalIndex }) => {
+                          const isSelected = selectedChoice === originalIndex;
+                          const isCorrectChoice = originalIndex === lesson.correctIndex;
+                          const tone =
+                            answered && isCorrectChoice
+                              ? "border-emerald-300 bg-emerald-50 text-emerald-900"
+                              : answered && isSelected
+                                ? "border-rose-300 bg-rose-50 text-rose-900"
+                                : "border-slate-200 bg-white text-slate-700 hover:border-staf/40";
+
+                          return (
+                            <button
+                              key={choice}
+                              type="button"
+                              className={`min-h-14 rounded-md border px-3 py-2 text-left text-sm font-semibold transition disabled:cursor-default ${tone}`}
+                              onClick={() => onAnswer(mode.id, lesson.id, originalIndex)}
+                              disabled={answered}
+                            >
+                              {choice}
+                            </button>
+                          );
+                        })}
+                      </div>
+                      {wrong ? (
+                        <button
+                          type="button"
+                          className="mt-3 inline-flex items-center gap-1 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100"
+                          onClick={() => onClearAnswer(mode.id, lesson.id)}
+                        >
+                          <RefreshCw aria-hidden="true" className="h-3.5 w-3.5" />
+                          この問題を再挑戦
+                        </button>
+                      ) : null}
+                    </section>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
+
+          {passed ? (
+            <div className="grid gap-4 lg:grid-cols-[0.85fr_1.15fr]">
+              <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+                <p className="flex items-center gap-2 text-sm font-bold text-emerald-900">
+                  <Trophy aria-hidden="true" className="h-4 w-4" />
+                  100点達成
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-emerald-900">
+                  修了書に記載する氏名と会社名を入力してください。ボタンを押すとブラウザの印刷画面が開くので、保存先でPDFを選べます。
+                </p>
+                <label className="mt-4 block text-sm font-bold text-slate-700">
+                  氏名
+                  <input
+                    value={certificateForm.recipientName}
+                    onChange={(event) => onFormChange(mode.id, "recipientName", event.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/15"
+                    placeholder="例：山田 太郎"
+                  />
+                </label>
+                <label className="mt-3 block text-sm font-bold text-slate-700">
+                  会社名
+                  <input
+                    value={certificateForm.companyName}
+                    onChange={(event) => onFormChange(mode.id, "companyName", event.target.value)}
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/15"
+                    placeholder="例：スタッフ株式会社"
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="mt-4 inline-flex items-center gap-2 rounded-md bg-staf px-4 py-2 text-sm font-bold text-white transition hover:bg-staf-dark"
+                  onClick={() => onIssueCertificate(mode.id)}
+                >
+                  <FileDown aria-hidden="true" className="h-4 w-4" />
+                  PDF修了書を出力
+                </button>
+                {modeNotice ? (
+                  <p
+                    className={`mt-3 rounded-md border p-2 text-xs font-bold ${
+                      modeNotice.tone === "success"
+                        ? "border-emerald-200 bg-white text-emerald-800"
+                        : "border-rose-200 bg-rose-50 text-rose-800"
+                    }`}
+                  >
+                    {modeNotice.message}
+                  </p>
+                ) : null}
+              </section>
+
+              <CertificateView
+                certificate={
+                  certificate ?? {
+                    mode: mode.id,
+                    modeLabel: mode.label,
+                    recipientName: certificateForm.recipientName || "氏名未入力",
+                    companyName: certificateForm.companyName || "会社名未入力",
+                    issuedAt: new Date().toISOString(),
+                    score: 100,
+                    certificateId: certificateIdFor(mode.id, new Date().toISOString())
+                  }
+                }
+              />
+            </div>
+          ) : certificate ? (
+            <CertificateView certificate={certificate} />
+          ) : null}
+        </div>
+      )}
+    </section>
+  );
+}
+
 export function RfLearningQuestClient() {
   const [progress, setProgress] = useState<ProgressMap>({});
   const [answers, setAnswers] = useState<AnswerMap>({});
-  const [activeMode, setActiveMode] = useState<QuestModeId>("beginner");
-  const [activeLessonId, setActiveLessonId] = useState<string>("beginner-db-3db");
+  const [activeMode, setActiveMode] = useState<QuestModeId>("intro");
+  const [activeLessonId, setActiveLessonId] = useState<string>("intro-rf");
   const [levelUp, setLevelUp] = useState<LevelUpState | null>(null);
   const [streak, setStreak] = useState(0);
+  const [certificationState, setCertificationState] = useState<CertificationState>({
+    attempts: {},
+    certificates: {}
+  });
+  const [certificateForms, setCertificateForms] =
+    useState<Record<QuestModeId, { recipientName: string; companyName: string }>>(emptyCertificateForms);
+  const [certificateNotice, setCertificateNotice] = useState<{
+    mode: QuestModeId;
+    tone: "success" | "error";
+    message: string;
+  } | null>(null);
+  const [printableCertificate, setPrintableCertificate] = useState<CertificateRecord | null>(null);
 
   const completedCount = useMemo(
     () => rfQuestLessons.filter((lesson) => progress[lesson.id]).length,
@@ -431,7 +926,22 @@ export function RfLearningQuestClient() {
 
   useEffect(() => {
     const stored = loadProgress();
+    const storedCertification = loadCertificationState();
     setProgress(stored);
+    setCertificationState(storedCertification);
+    setCertificateForms(() => {
+      const next = { ...emptyCertificateForms };
+      for (const mode of questModes) {
+        const certificate = storedCertification.certificates[mode.id];
+        if (certificate) {
+          next[mode.id] = {
+            recipientName: certificate.recipientName,
+            companyName: certificate.companyName
+          };
+        }
+      }
+      return next;
+    });
     const firstMode = questModes[0].id;
     setActiveLessonId(nextIncompleteLesson(firstMode, stored).id);
   }, []);
@@ -439,6 +949,25 @@ export function RfLearningQuestClient() {
   function selectMode(mode: QuestModeId) {
     setActiveMode(mode);
     setActiveLessonId(nextIncompleteLesson(mode, progress).id);
+  }
+
+  function clearWrongLessonAnswer(lesson: QuestLesson) {
+    setAnswers((current) => {
+      const selectedChoice = current[lesson.id];
+
+      if (selectedChoice === undefined || selectedChoice === lesson.correctIndex) {
+        return current;
+      }
+
+      const next = { ...current };
+      delete next[lesson.id];
+      return next;
+    });
+  }
+
+  function selectLesson(lesson: QuestLesson) {
+    clearWrongLessonAnswer(lesson);
+    setActiveLessonId(lesson.id);
   }
 
   function answerLesson(lesson: QuestLesson, choiceIndex: number) {
@@ -468,7 +997,7 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全500問を攻略しました。リンク設計の基礎、実務、研究動向、掲示板で定番の誤解までひと通り確認済みです。"
+              ? "全700問を攻略しました。電波用語、リンク設計の基礎、実務、研究動向、掲示板で定番の誤解までひと通り確認済みです。"
               : `${afterCount}問クリア。次のモードや未攻略ステージへ進めます。`
         });
       }
@@ -481,16 +1010,178 @@ export function RfLearningQuestClient() {
     setProgress({});
     setAnswers({});
     saveProgress({});
+    setCertificationState({ attempts: {}, certificates: {} });
+    saveCertificationState({ attempts: {}, certificates: {} });
+    setCertificateForms(emptyCertificateForms);
+    setCertificateNotice(null);
     setLevelUp(null);
     setStreak(0);
-    setActiveMode("beginner");
-    setActiveLessonId("beginner-db-3db");
+    setActiveMode("intro");
+    setActiveLessonId("intro-rf");
   }
 
   function goToLesson(lesson: QuestLesson) {
     setActiveMode(lesson.mode);
     setActiveLessonId(lesson.id);
     setLevelUp(null);
+  }
+
+  function startCertificationAttempt(mode: QuestModeId) {
+    const lessonIds = pickRandomLessons(mode).map((lesson) => lesson.id);
+    setCertificateNotice(null);
+    setCertificationState((current) => {
+      const next: CertificationState = {
+        attempts: {
+          ...current.attempts,
+          [mode]: {
+            lessonIds,
+            answers: {},
+            startedAt: new Date().toISOString()
+          }
+        },
+        certificates: current.certificates
+      };
+      saveCertificationState(next);
+      return next;
+    });
+  }
+
+  function answerCertificationQuestion(mode: QuestModeId, lessonId: string, choiceIndex: number) {
+    setCertificationState((current) => {
+      const attempt = current.attempts[mode];
+
+      if (!attempt || attempt.answers[lessonId] !== undefined) {
+        return current;
+      }
+
+      const next: CertificationState = {
+        attempts: {
+          ...current.attempts,
+          [mode]: {
+            ...attempt,
+            answers: {
+              ...attempt.answers,
+              [lessonId]: choiceIndex
+            }
+          }
+        },
+        certificates: current.certificates
+      };
+      saveCertificationState(next);
+      return next;
+    });
+  }
+
+  function clearCertificationAnswer(mode: QuestModeId, lessonId: string) {
+    setCertificationState((current) => {
+      const attempt = current.attempts[mode];
+      const lesson = rfQuestLessons.find((item) => item.id === lessonId);
+
+      if (!attempt || !lesson || attempt.answers[lessonId] === undefined || attempt.answers[lessonId] === lesson.correctIndex) {
+        return current;
+      }
+
+      const nextAnswers = { ...attempt.answers };
+      delete nextAnswers[lessonId];
+
+      const next: CertificationState = {
+        attempts: {
+          ...current.attempts,
+          [mode]: {
+            ...attempt,
+            answers: nextAnswers
+          }
+        },
+        certificates: current.certificates
+      };
+      saveCertificationState(next);
+      return next;
+    });
+  }
+
+  function updateCertificateForm(
+    mode: QuestModeId,
+    field: "recipientName" | "companyName",
+    value: string
+  ) {
+    setCertificateForms((current) => ({
+      ...current,
+      [mode]: {
+        ...current[mode],
+        [field]: value
+      }
+    }));
+  }
+
+  function printCertificate(certificate: CertificateRecord) {
+    setPrintableCertificate(certificate);
+    setCertificateNotice({
+      mode: certificate.mode,
+      tone: "success",
+      message: "PDF出力の準備ができました。印刷画面でPDF保存を選択してください。"
+    });
+    window.setTimeout(() => {
+      document.body.classList.add("rf-certificate-printing");
+      window.print();
+      window.setTimeout(() => document.body.classList.remove("rf-certificate-printing"), 500);
+    }, 0);
+  }
+
+  function issueCertificate(mode: QuestModeId) {
+    const attempt = certificationState.attempts[mode];
+    const modeMeta = questModes.find((item) => item.id === mode);
+    const form = certificateForms[mode];
+    const examLessons =
+      attempt?.lessonIds
+        .map((lessonId) => rfQuestLessons.find((lesson) => lesson.id === lessonId))
+        .filter((lesson): lesson is QuestLesson => Boolean(lesson)) ?? [];
+    const answeredCount = examLessons.filter((lesson) => attempt?.answers[lesson.id] !== undefined).length;
+    const correctCount = examLessons.filter((lesson) => attempt?.answers[lesson.id] === lesson.correctIndex).length;
+
+    if (!attempt || !modeMeta || answeredCount !== CERTIFICATION_QUESTION_COUNT || correctCount !== CERTIFICATION_QUESTION_COUNT) {
+      setCertificateNotice({
+        mode,
+        tone: "error",
+        message: "修了書を出力するには、ランダム10問で100点を達成してください。"
+      });
+      return;
+    }
+
+    const recipientName = form.recipientName.trim();
+    const companyName = form.companyName.trim();
+
+    if (!recipientName || !companyName) {
+      setCertificateNotice({
+        mode,
+        tone: "error",
+        message: "修了書に記載する氏名と会社名を入力してください。"
+      });
+      return;
+    }
+
+    const issuedAt = new Date().toISOString();
+    const certificate: CertificateRecord = {
+      mode,
+      modeLabel: modeMeta.label,
+      recipientName,
+      companyName,
+      issuedAt,
+      score: 100,
+      certificateId: certificateIdFor(mode, issuedAt)
+    };
+
+    setCertificationState((current) => {
+      const next: CertificationState = {
+        attempts: current.attempts,
+        certificates: {
+          ...current.certificates,
+          [mode]: certificate
+        }
+      };
+      saveCertificationState(next);
+      return next;
+    });
+    printCertificate(certificate);
   }
 
   return (
@@ -506,8 +1197,8 @@ export function RfLearningQuestClient() {
               問題を倒して、リンク設計の勘を育てる
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              初心者、見習い、実務者、玄人、研究者の5モードで合計500問。1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
-              掲示板でよくある誤解、現場の豆知識、最新研究の読み方まで、進捗はこのブラウザに保存されます。
+              入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問。選択肢は表示ごとにランダム化され、1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
+              用語、掲示板でよくある誤解、現場の豆知識、最新研究の読み方まで、進捗はこのブラウザに保存されます。
             </p>
           </div>
           <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
@@ -553,6 +1244,23 @@ export function RfLearningQuestClient() {
         <ModeSelector activeMode={activeMode} progress={progress} onSelect={selectMode} />
       </div>
 
+      <div className="mt-5">
+        <CertificationPanel
+          mode={activeModeMeta}
+          lessons={lessonsInMode}
+          completedInMode={completedInMode}
+          certificationState={certificationState}
+          certificateForm={certificateForms[activeMode]}
+          notice={certificateNotice}
+          onStartAttempt={startCertificationAttempt}
+          onAnswer={answerCertificationQuestion}
+          onClearAnswer={clearCertificationAnswer}
+          onFormChange={updateCertificateForm}
+          onIssueCertificate={issueCertificate}
+          onPrintCertificate={printCertificate}
+        />
+      </div>
+
       <section className="mt-5 grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
         <aside className="space-y-4 lg:sticky lg:top-6">
           <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
@@ -571,7 +1279,7 @@ export function RfLearningQuestClient() {
             lessons={lessonsInMode}
             activeLesson={activeLesson}
             progress={progress}
-            onSelect={(lesson) => setActiveLessonId(lesson.id)}
+            onSelect={selectLesson}
           />
         </aside>
 
@@ -581,9 +1289,15 @@ export function RfLearningQuestClient() {
           isCompleted={Boolean(progress[activeLesson.id])}
           nextLesson={nextLesson}
           onAnswer={(choiceIndex) => answerLesson(activeLesson, choiceIndex)}
+          onClearAnswer={() => clearWrongLessonAnswer(activeLesson)}
           onNext={() => goToLesson(nextLesson)}
         />
       </section>
+      {printableCertificate ? (
+        <div className="rf-certificate-print-source">
+          <CertificateView certificate={printableCertificate} printTarget />
+        </div>
+      ) : null}
     </main>
   );
 }

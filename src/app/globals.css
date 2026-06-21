@@ -40,6 +40,10 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
+.rf-certificate-print-source {
+  display: none;
+}
+
 /* クリック可能な滝グラフのバー（SVG g[role=button]）にフォーカスが当たったときの可視表現。
    g はボックスを持たず既定のフォーカスリングが出ないため、内側の rect を強調する。 */
 svg g[role="button"] {
@@ -68,5 +72,27 @@ svg g[role="button"]:focus-visible rect {
   /* 折りたたみ（details）内も印刷では読めるよう、内容を開いた状態で出す */
   details > :not(summary) {
     display: block !important;
+  }
+
+  body.rf-certificate-printing * {
+    visibility: hidden !important;
+  }
+
+  body.rf-certificate-printing .rf-certificate-print-source {
+    display: block !important;
+    position: absolute;
+    inset: 0;
+    padding: 18mm;
+    visibility: visible !important;
+  }
+
+  body.rf-certificate-printing .rf-certificate-print,
+  body.rf-certificate-printing .rf-certificate-print * {
+    visibility: visible !important;
+  }
+
+  body.rf-certificate-printing .rf-certificate-print {
+    min-height: calc(100vh - 36mm);
+    box-shadow: none !important;
   }
 }

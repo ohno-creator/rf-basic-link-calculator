@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { rfQuestLessons } from "../src/data/rfLearningQuestLessons";
 
 const ALL_SLUGS = [
   "rf-basic-link-calculator",
@@ -188,23 +189,38 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(
     page.getByRole("heading", { level: 1, name: "問題を倒して、リンク設計の勘を育てる" })
   ).toBeVisible();
-  await expect(page.getByText("初心者、見習い、実務者、玄人、研究者の5モードで合計500問")).toBeVisible();
+  await expect(page.getByText("入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問")).toBeVisible();
   await expect(page.getByText("第1章 STAGE 1-10")).toBeVisible();
-  await expect(page.getByText("10章×10問")).toBeVisible();
+  await expect(page.getByText("20章×10問")).toBeVisible();
   await expect(page.getByRole("button", { name: /研究者モード/ })).toBeVisible();
 
-  await page.getByRole("button", { name: "約2倍" }).click();
+  await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
-  await expect(page.getByText("+3dBは電力で約2倍です。")).toBeVisible();
-  await expect(page.getByRole("link", { name: /dBを体感する/ })).toBeVisible();
+  await expect(page.getByText("電波・高周波を扱う技術分野 が正解です。")).toBeVisible();
+  await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
   await expect(page.getByText("現場コラム").first()).toBeVisible();
   await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
-  await expect(page.getByText("1/500")).toBeVisible();
+  await expect(page.getByText("1/700")).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/500")).toBeVisible();
-  await page.getByRole("button", { name: /ステージ1 dBのものさし/ }).click();
+  await expect(page.getByText("1/700")).toBeVisible();
+  await page.getByRole("button", { name: /ステージ1 RF/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
+});
+
+test("RF learning quest clears a wrong answer when the stage is clicked again", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+
+  await page.getByRole("button", { name: "低周波の音だけを扱う分野" }).click();
+  await expect(page.getByText("惜しい").first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "回答をクリアして再挑戦" })).toBeVisible();
+
+  await page.getByRole("button", { name: /ステージ1 RF/ }).click();
+  await expect(page.getByText("惜しい")).not.toBeVisible();
+
+  await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
+  await expect(page.getByText("正解").first()).toBeVisible();
+  await expect(page.getByText("1/700")).toBeVisible();
 });
 
 test("RF learning quest has researcher mode with recent-study sources", async ({ page }) => {
@@ -219,8 +235,58 @@ test("RF learning quest has researcher mode with recent-study sources", async ({
   await expect(page.getByRole("link", { name: "2025 Indoor LoRaWAN environmental dataset" })).toBeVisible();
 });
 
+test("RF learning quest unlocks certification exam and prepares PDF certificate", async ({ page }) => {
+  const beginnerLessons = rfQuestLessons.filter((lesson) => lesson.mode === "beginner");
+  const beginnerProgress = Object.fromEntries(beginnerLessons.map((lesson) => [lesson.id, true]));
+
+  await page.addInitScript((progress) => {
+    window.localStorage.setItem("rf-learning-quest-progress:v2", JSON.stringify(progress));
+    window.print = () => {
+      window.localStorage.setItem("rf-learning-quest-print-called", "yes");
+    };
+  }, beginnerProgress);
+
+  await page.goto("/tools/rf-learning-quest/");
+  await page.getByRole("button", { name: /初心者モード/ }).click();
+  await expect(page.getByText("初心者モード 修了試験")).toBeVisible();
+  await expect(page.getByText("修了試験が解放されています。")).toBeVisible();
+
+  await page.getByRole("button", { name: "修了試験を開始" }).click();
+  const questions = page.getByTestId("cert-question");
+  await expect(questions).toHaveCount(10);
+
+  const firstQuestion = questions.first();
+  const firstQuestionText = await firstQuestion.getByTestId("cert-question-text").innerText();
+  const firstLesson = beginnerLessons.find((lesson) => lesson.question === firstQuestionText);
+  expect(firstLesson).toBeTruthy();
+  const wrongChoice = firstLesson!.choices.find((_, index) => index !== firstLesson!.correctIndex)!;
+  await firstQuestion.getByRole("button", { name: wrongChoice, exact: true }).click();
+  await expect(firstQuestion.getByText("再挑戦可")).toBeVisible();
+  await firstQuestion.getByTestId("cert-question-title").click();
+  await expect(firstQuestion.getByText("未回答")).toBeVisible();
+
+  const questionCount = await questions.count();
+  for (let index = 0; index < questionCount; index += 1) {
+    const question = questions.nth(index);
+    const questionText = await question.getByTestId("cert-question-text").innerText();
+    const lesson = beginnerLessons.find((item) => item.question === questionText);
+    expect(lesson).toBeTruthy();
+    await question.getByRole("button", { name: lesson!.choices[lesson!.correctIndex], exact: true }).click();
+  }
+
+  await expect(page.getByText("100/100").first()).toBeVisible();
+  await page.getByLabel("氏名").fill("島田 忠明");
+  await page.getByLabel("会社名").fill("北陸電力送配電株式会社");
+  await page.getByRole("button", { name: "PDF修了書を出力" }).click();
+  await expect(page.getByText("PDF出力の準備ができました。印刷画面でPDF保存を選択してください。")).toBeVisible();
+  await expect
+    .poll(() => page.evaluate(() => window.localStorage.getItem("rf-learning-quest-print-called")))
+    .toBe("yes");
+});
+
 test("RF learning quest shows a level-up screen after five clears", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
+  await page.getByRole("button", { name: /初心者モード/ }).click();
 
   await page.getByRole("button", { name: "約2倍" }).click();
   await page.getByRole("button", { name: /ステージ2 dBmの巻物/ }).click();
@@ -233,6 +299,6 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
   await page.getByRole("button", { name: "受信電力が約3dB増える" }).click();
 
   await expect(page.getByText("レベルアップ")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Lv.2 初心者" })).toBeVisible();
-  await expect(page.getByText("5/500")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
+  await expect(page.getByText("5/700")).toBeVisible();
 });
