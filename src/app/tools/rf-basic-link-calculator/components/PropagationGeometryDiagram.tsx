@@ -173,6 +173,9 @@ export function PropagationGeometryDiagram({
           </text>
         </g>
       </svg>
+      <figcaption className="border-t border-slate-200 px-3 py-2 text-[11px] leading-relaxed text-slate-500">
+        模式図です（縦の高さは見やすさ優先の圧縮表示で、実寸ではありません）。周波数・エリアは上部に数値表示のみで、図形の大きさには反映しません。
+      </figcaption>
     </figure>
   );
 }

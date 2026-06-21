@@ -2,6 +2,7 @@
 
 import { type ReactNode, useMemo, useState } from "react";
 import { AlertTriangle } from "lucide-react";
+import { Tooltip } from "@/components/Tooltip";
 import { getPropagationModelOption, propagationAreaOptions } from "@/data/linkBudgetOptions";
 import { type AreaType } from "@/lib/rf/propagation";
 import {
@@ -35,19 +36,23 @@ type FieldProps = {
   step: number;
   onChange: (value: number) => void;
   hint?: string;
+  tooltip?: ReactNode;
   children?: ReactNode;
 };
 
-function Field({ id, label, unit, value, min, max, step, onChange, hint, children }: FieldProps) {
+function Field({ id, label, unit, value, min, max, step, onChange, hint, tooltip, children }: FieldProps) {
   const sliderValue = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
 
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-3">
-      <div className="flex items-baseline justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor={id} className="text-sm font-semibold text-slate-950">
           {label}
         </label>
-        <span className="text-xs font-medium text-slate-400">{unit}</span>
+        <div className="flex items-center gap-2">
+          {tooltip ? <Tooltip term={label}>{tooltip}</Tooltip> : null}
+          <span className="text-xs font-medium text-slate-400">{unit}</span>
+        </div>
       </div>
       <input
         id={id}
@@ -147,7 +152,12 @@ export function PropagationExplorer() {
 
       {/* モデル選択チップ */}
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <p className="text-sm font-semibold text-slate-950">比較するモデル</p>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-semibold text-slate-950">比較するモデル</p>
+          <Tooltip term="伝搬モデル">
+            距離による電波の減り方の式です。自由空間＝見通しの基準（最小）、2波＝地面反射、Log-distance＝指数nで近似、奥村・秦／COST231-Hata＝市街地の経験式。複数選ぶと同条件で損失を比較できます。
+          </Tooltip>
+        </div>
         <p className="mt-1 text-xs leading-relaxed text-slate-500">
           チップをタップで追加・解除できます。複数選ぶと図とグラフ・一覧で同時に比較します。
         </p>
@@ -192,6 +202,8 @@ export function PropagationExplorer() {
             max={6000}
             step={10}
             onChange={setFrequencyMHz}
+            hint="低い周波数ほど損失は小さく届きやすい。Hata系の適用目安は150〜2000MHz。"
+            tooltip="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。Hata系は150〜2000MHzが目安で、外れると結果は参考値になります。"
           >
             <div className="mt-2 flex flex-wrap gap-1.5">
               {frequencyChips.map((mhz) => (
@@ -220,6 +232,7 @@ export function PropagationExplorer() {
             step={0.01}
             onChange={setDistanceKm}
             hint="10m〜20km。Hata系の適用目安は1〜20kmです。"
+            tooltip="送受信点間の距離です。距離が2倍になると自由空間損失は約6dB増えます。Hata系は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。"
           />
           <Field
             id="propTxHeight"
@@ -231,6 +244,7 @@ export function PropagationExplorer() {
             step={1}
             onChange={setTxHeightM}
             hint="基地局・ゲートウェイ側。Hataの目安は30〜200m。"
+            tooltip="送信側（基地局・ゲートウェイ）のアンテナ地上高です。高いほど見通しが良く損失は小さめになります。Hata系の目安は30〜200m。"
           />
           <Field
             id="propRxHeight"
@@ -242,6 +256,7 @@ export function PropagationExplorer() {
             step={0.5}
             onChange={setRxHeightM}
             hint="端末・移動局側。Hataの目安は1〜10m。"
+            tooltip="受信側（端末・移動局）のアンテナ地上高です。低いほど地面反射やクラッタの影響を受けます。Hata系の目安は1〜10m。"
           />
           {logDistanceActive ? (
             <Field
@@ -254,13 +269,19 @@ export function PropagationExplorer() {
               step={0.1}
               onChange={setPathLossExponent}
               hint="自由空間=2、市街地NLOS=3〜4が目安。"
+              tooltip="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
             />
           ) : null}
           {hataActive ? (
             <div className="rounded-lg border border-slate-200 bg-white p-3">
-              <label htmlFor="propArea" className="text-sm font-semibold text-slate-950">
-                エリア種別（Hata系）
-              </label>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <label htmlFor="propArea" className="text-sm font-semibold text-slate-950">
+                  エリア種別（Hata系）
+                </label>
+                <Tooltip term="エリア種別">
+                  Hata系で使う環境区分です。市街地（大都市）→市街地（中小都市）→郊外→開放地の順に伝搬損失が小さくなります。自由空間／2波／Log-distanceには影響しません。
+                </Tooltip>
+              </div>
               <select
                 id="propArea"
                 value={area}
@@ -285,7 +306,7 @@ export function PropagationExplorer() {
       <div>
         <p className="text-sm font-semibold text-slate-950">前提条件の2D図</p>
         <p className="mt-1 mb-2 text-xs leading-relaxed text-slate-500">
-          入力中の周波数・距離・アンテナ高（hb / hm）を断面図で示します。2波モデルでは地面反射経路、Hata系では市街地クラッタを描きます。
+          図形は距離とアンテナ高（hb / hm）で決まります。周波数・エリアは図中の表示のみで、図形の大きさには反映しません（高さは見やすさ優先の圧縮表示です）。2波モデルを選ぶと地面反射経路、Hata系を選ぶと市街地クラッタを描きます。
         </p>
         <PropagationGeometryDiagram
           frequencyMHz={frequencyMHz}
