@@ -66,6 +66,40 @@ describe("research distance calculations", () => {
     );
   });
 
+  it("orders SUI terrain losses from harsh to open terrain", () => {
+    const input = {
+      ...defaultResearchDistanceInput,
+      frequencyGHz: 3.5,
+      txAntennaHeightM: 30,
+      rxAntennaHeightM: 2
+    };
+    const distanceM = 1000;
+    const terrainA = calculateResearchPathLossDb({ ...input, model: "sui_terrain_a" }, distanceM);
+    const terrainB = calculateResearchPathLossDb({ ...input, model: "sui_terrain_b" }, distanceM);
+    const terrainC = calculateResearchPathLossDb({ ...input, model: "sui_terrain_c" }, distanceM);
+
+    expect(terrainA).toBeGreaterThan(terrainB);
+    expect(terrainB).toBeGreaterThan(terrainC);
+  });
+
+  it("increases COST231 Walfisch-Ikegami loss for narrow streets", () => {
+    const input = {
+      ...defaultResearchDistanceInput,
+      model: "cost231_wi_nlos" as const,
+      frequencyGHz: 1.8,
+      txAntennaHeightM: 25,
+      rxAntennaHeightM: 1.5,
+      averageBuildingHeightM: 15,
+      buildingSeparationM: 40,
+      streetOrientationDeg: 35
+    };
+    const distanceM = 500;
+    const narrow = calculateResearchPathLossDb({ ...input, streetWidthM: 8 }, distanceM);
+    const wide = calculateResearchPathLossDb({ ...input, streetWidthM: 40 }, distanceM);
+
+    expect(narrow).toBeGreaterThan(wide);
+  });
+
   it("warns when 3GPP UMa is used outside height assumptions", () => {
     const result = calculateResearchDistance({
       ...defaultResearchDistanceInput,
@@ -77,5 +111,25 @@ describe("research distance calculations", () => {
     expect(result.warnings.some((warning) => warning.id === "tr38901-uma-base-height")).toBe(true);
     expect(result.warnings.some((warning) => warning.id === "tr38901-terminal-height")).toBe(true);
     expect(result.warnings.some((warning) => warning.id === "low-height-3gpp")).toBe(true);
+  });
+
+  it("warns when SUI and COST231 WI are used outside common assumptions", () => {
+    const sui = calculateResearchDistance({
+      ...defaultResearchDistanceInput,
+      model: "sui_terrain_a",
+      frequencyGHz: 0.92,
+      txAntennaHeightM: 2
+    });
+    const wi = calculateResearchDistance({
+      ...defaultResearchDistanceInput,
+      model: "cost231_wi_nlos",
+      frequencyGHz: 3.5,
+      rxAntennaHeightM: 0.5
+    });
+
+    expect(sui.warnings.some((warning) => warning.id === "sui-frequency-range")).toBe(true);
+    expect(sui.warnings.some((warning) => warning.id === "sui-base-height")).toBe(true);
+    expect(wi.warnings.some((warning) => warning.id === "cost231-wi-frequency-range")).toBe(true);
+    expect(wi.warnings.some((warning) => warning.id === "cost231-wi-terminal-height")).toBe(true);
   });
 });

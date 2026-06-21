@@ -65,6 +65,30 @@ const modelOptions: Array<{
       "近距離と遠距離で減衰勾配を切り替えます。道路沿い、地面反射、見通しが途中で崩れる環境の一次評価に使います。"
   },
   {
+    value: "sui_terrain_a",
+    label: "IEEE 802.16 SUI Terrain A",
+    description:
+      "丘陵・樹木密度が高い郊外や厳しい地形を想定する固定無線アクセス系モデルです。基地局距離設計の保守的な比較に使えます。"
+  },
+  {
+    value: "sui_terrain_b",
+    label: "IEEE 802.16 SUI Terrain B",
+    description:
+      "中間的な郊外地形を想定するSUIモデルです。Terrain AとCの間の距離感を比較できます。"
+  },
+  {
+    value: "sui_terrain_c",
+    label: "IEEE 802.16 SUI Terrain C",
+    description:
+      "平坦で開けた地形を想定するSUIモデルです。固定無線・広めのセル設計の楽観側比較に使います。"
+  },
+  {
+    value: "cost231_wi_nlos",
+    label: "COST231 Walfisch-Ikegami NLOS",
+    description:
+      "都市街路で、屋根越し回折、街路幅、建物間隔、道路角度を使ってNLOS損失を見積もるモデルです。街中の基地局設計らしい比較に向きます。"
+  },
+  {
     value: "tr38901_umi_los",
     label: "3GPP TR 38.901 UMi LOS",
     description:
@@ -316,7 +340,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               目標信頼率を満たす最大通信距離を別シートで計算します
             </h2>
             <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-              最新の3GPP TR 38.901 Release 19系の考え方と、実測フィットでよく使うCIモデルを使い、平均伝搬損失だけでなくシャドウフェージング、クラッタ、端末近傍損失、実測補正を含めて距離を逆算します。
+              3GPP TR 38.901、CI/Dual-slope、IEEE 802.16 SUI、COST231 Walfisch-Ikegamiを比較し、平均伝搬損失だけでなくシャドウフェージング、クラッタ、端末近傍損失、実測補正を含めて距離を逆算します。
             </p>
           </div>
           <button
@@ -602,6 +626,59 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               />
             </div>
           </section>
+
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+            <h3 className="text-base font-bold text-slate-950">基地局・街路設計用パラメータ</h3>
+            <p className="mt-1 text-sm leading-relaxed text-slate-600">
+              COST231 Walfisch-Ikegamiで使う都市街路の平均条件です。実際のキャリア設計では、地図・建物高・道路幅・クラッタをGISやレイトレースに渡しますが、このシートでは簡易入力で比較します。
+            </p>
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <NumberField
+                id="averageBuildingHeightM"
+                label="平均建物高"
+                unit="m"
+                description="街路周辺の平均的な屋根高です。基地局が屋根上か屋根下かで回折損失が変わります。"
+                min={1}
+                max={100}
+                step={0.5}
+                value={input.averageBuildingHeightM}
+                onChange={(value) => update("averageBuildingHeightM", value)}
+              />
+              <NumberField
+                id="streetWidthM"
+                label="街路幅"
+                unit="m"
+                description="道路や開口部の幅です。狭い街路ほど屋根から道路への回折損失が大きく出ます。"
+                min={1}
+                max={100}
+                step={0.5}
+                value={input.streetWidthM}
+                onChange={(value) => update("streetWidthM", value)}
+              />
+              <NumberField
+                id="buildingSeparationM"
+                label="建物間隔"
+                unit="m"
+                description="建物列の平均間隔です。複数スクリーン回折の近似に使います。"
+                min={1}
+                max={200}
+                step={0.5}
+                value={input.buildingSeparationM}
+                onChange={(value) => update("buildingSeparationM", value)}
+              />
+              <NumberField
+                id="streetOrientationDeg"
+                label="道路角度"
+                unit="deg"
+                description="電波の進行方向と道路方向の角度です。0度に近いほど道路沿い、90度に近いほど横切る条件です。"
+                min={0}
+                max={90}
+                step={1}
+                value={input.streetOrientationDeg}
+                onChange={(value) => update("streetOrientationDeg", value)}
+              />
+            </div>
+          </section>
         </div>
 
         <div className="space-y-5 lg:sticky lg:top-6">
@@ -671,6 +748,12 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               <p>
                 3GPP Release 19では7〜24GHz帯、近傍界、大規模アレイ、空間非定常性などの議論が進んでいます。ただし、このアプリは詳細なMIMOチャネルシミュレータではないため、最終判断には現地測定と必要に応じたレイトレースを併用してください。
               </p>
+              <p>
+                米国・日本の携帯キャリアが基地局を設計するときも、単一式だけではなく、標準モデル、地図クラッタ、建物高、アンテナパターン、トラフィック、干渉、ドライブテストやRSRP測定による補正を重ねます。このシートでは、既に入っていた3GPP UMi/UMa、CI、Dual-slopeに加え、今回SUI Terrain A/B/CとCOST231 Walfisch-Ikegami NLOSを比較モデルとして追加しました。
+              </p>
+              <p>
+                さらに高精度な設計では、レイトレースや機械学習も使われます。近年の研究では、3GPPモデルと測定で校正したレイトレースを比較し、工場内5Gでは校正RTがRSRPカバレッジ設計に有効であること、またGISや衛星画像を使うデータ駆動型伝搬推定が従来モデルを補う可能性が示されています。
+              </p>
               <div className="flex flex-wrap gap-2 pt-1">
                 <a
                   href="https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/38901-j20.zip"
@@ -689,6 +772,24 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
                 >
                   7〜24GHz測定・フィット資料
+                </a>
+                <a
+                  href="https://arxiv.org/abs/1708.02557"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                >
+                  IEEE TAP mmWave伝搬モデル概説
+                </a>
+                <a
+                  href="https://arxiv.org/abs/2407.16528"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                >
+                  5G工場RT/3GPP比較
+                </a>
+                <a
+                  href="https://arxiv.org/abs/2110.01848"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                >
+                  CNN伝搬推定
                 </a>
               </div>
             </div>

@@ -3,6 +3,10 @@ import { calculateFsplDb } from "./fspl";
 export type ResearchDistanceModel =
   | "ci"
   | "dual_slope"
+  | "sui_terrain_a"
+  | "sui_terrain_b"
+  | "sui_terrain_c"
+  | "cost231_wi_nlos"
   | "tr38901_umi_los"
   | "tr38901_umi_nlos"
   | "tr38901_uma_los"
@@ -27,6 +31,10 @@ export type ResearchDistanceInput = {
   nearPathLossExponent: number;
   farPathLossExponent: number;
   breakpointM: number;
+  averageBuildingHeightM: number;
+  streetWidthM: number;
+  buildingSeparationM: number;
+  streetOrientationDeg: number;
   shadowFadingStdDb: number;
   reliabilityPercent: ReliabilityPercent;
   fadeMarginDb: number;
@@ -79,6 +87,10 @@ export const defaultResearchDistanceInput: ResearchDistanceInput = {
   nearPathLossExponent: 2.1,
   farPathLossExponent: 3.8,
   breakpointM: 150,
+  averageBuildingHeightM: 12,
+  streetWidthM: 20,
+  buildingSeparationM: 50,
+  streetOrientationDeg: 30,
   shadowFadingStdDb: 7,
   reliabilityPercent: 90,
   fadeMarginDb: 3,
@@ -232,6 +244,88 @@ function calculate3gppUmaNlosPathLossDb(input: ResearchDistanceInput, distanceM:
   return Math.max(losDb, nlosDb);
 }
 
+type SuiTerrain = "a" | "b" | "c";
+
+function calculateSuiPathLossDb(input: ResearchDistanceInput, distanceM: number, terrain: SuiTerrain): number {
+  const coefficients = {
+    a: { a: 4.6, b: 0.0075, c: 12.6 },
+    b: { a: 4.0, b: 0.0065, c: 17.1 },
+    c: { a: 3.6, b: 0.005, c: 20.0 }
+  }[terrain];
+  const d0M = 100;
+
+  if (distanceM < d0M) {
+    return calculateFsplDb(input.frequencyGHz * 1000, distanceM / 1000);
+  }
+
+  const baseHeightM = Math.max(1, input.txAntennaHeightM);
+  const terminalHeightM = Math.max(0.1, input.rxAntennaHeightM);
+  const wavelengthM = SPEED_OF_LIGHT_MPS / (input.frequencyGHz * 1_000_000_000);
+  const referenceLossDb = 20 * log10((4 * Math.PI * d0M) / wavelengthM);
+  const pathLossExponent = coefficients.a - coefficients.b * baseHeightM + coefficients.c / baseHeightM;
+  const frequencyCorrectionDb = 6 * log10((input.frequencyGHz * 1000) / 2000);
+  const terminalHeightCorrectionDb =
+    terrain === "c" ? -20 * log10(terminalHeightM / 2) : -10.8 * log10(terminalHeightM / 2);
+
+  return (
+    referenceLossDb +
+    10 * pathLossExponent * log10(distanceM / d0M) +
+    frequencyCorrectionDb +
+    terminalHeightCorrectionDb
+  );
+}
+
+function calculateStreetOrientationLossDb(streetOrientationDeg: number): number {
+  const angleDeg = Math.min(90, Math.max(0, streetOrientationDeg));
+
+  if (angleDeg < 35) {
+    return -10 + 0.354 * angleDeg;
+  }
+
+  if (angleDeg < 55) {
+    return 2.5 + 0.075 * (angleDeg - 35);
+  }
+
+  return 4 - 0.114 * (angleDeg - 55);
+}
+
+function calculateCost231WalfischIkegamiNlosDb(input: ResearchDistanceInput, distanceM: number): number {
+  const distanceKm = Math.max(0.001, distanceM / 1000);
+  const frequencyMHz = input.frequencyGHz * 1000;
+  const baseHeightM = Math.max(0.1, input.txAntennaHeightM);
+  const terminalHeightM = Math.max(0.1, input.rxAntennaHeightM);
+  const roofHeightM = Math.max(terminalHeightM + 0.1, input.averageBuildingHeightM);
+  const streetWidthM = Math.max(1, input.streetWidthM);
+  const buildingSeparationM = Math.max(1, input.buildingSeparationM);
+  const freeSpaceLikeLossDb = 32.4 + 20 * log10(distanceKm) + 20 * log10(frequencyMHz);
+
+  const terminalToRoofDiffM = roofHeightM - terminalHeightM;
+  const orientationLossDb = calculateStreetOrientationLossDb(input.streetOrientationDeg);
+  const roofToStreetLossDb =
+    -16.9 - 10 * log10(streetWidthM) + 10 * log10(frequencyMHz) + 20 * log10(terminalToRoofDiffM) + orientationLossDb;
+
+  const baseAboveRoofM = baseHeightM - roofHeightM;
+  const baseBelowRoofM = roofHeightM - baseHeightM;
+  const baseStationHeightLossDb = baseAboveRoofM > 0 ? -18 * log10(1 + baseAboveRoofM) : 0;
+  const ka =
+    baseAboveRoofM > 0
+      ? 54
+      : distanceKm >= 0.5
+        ? 54 - 0.8 * baseBelowRoofM
+        : 54 - 0.8 * baseBelowRoofM * (distanceKm / 0.5);
+  const kd = baseAboveRoofM > 0 ? 18 : 18 - (15 * baseBelowRoofM) / roofHeightM;
+  const kf = -4 + 0.7 * (frequencyMHz / 925 - 1);
+  const multiscreenLossDb =
+    baseStationHeightLossDb +
+    ka +
+    kd * log10(distanceKm) +
+    kf * log10(frequencyMHz) -
+    9 * log10(buildingSeparationM);
+  const additionalUrbanLossDb = roofToStreetLossDb + multiscreenLossDb;
+
+  return additionalUrbanLossDb > 0 ? freeSpaceLikeLossDb + additionalUrbanLossDb : freeSpaceLikeLossDb;
+}
+
 export function calculateResearchPathLossDb(input: ResearchDistanceInput, distanceM: number): number {
   const effectiveDistanceM = Math.max(1, distanceM);
 
@@ -240,6 +334,14 @@ export function calculateResearchPathLossDb(input: ResearchDistanceInput, distan
       return calculateCiPathLossDb(input.frequencyGHz, effectiveDistanceM, input.pathLossExponent);
     case "dual_slope":
       return calculateDualSlopePathLossDb(input, effectiveDistanceM);
+    case "sui_terrain_a":
+      return calculateSuiPathLossDb(input, effectiveDistanceM, "a");
+    case "sui_terrain_b":
+      return calculateSuiPathLossDb(input, effectiveDistanceM, "b");
+    case "sui_terrain_c":
+      return calculateSuiPathLossDb(input, effectiveDistanceM, "c");
+    case "cost231_wi_nlos":
+      return calculateCost231WalfischIkegamiNlosDb(input, effectiveDistanceM);
     case "tr38901_umi_los":
       return calculate3gppUmiLosPathLossDb(input, effectiveDistanceM);
     case "tr38901_umi_nlos":
@@ -298,6 +400,8 @@ function solveMaximumDistanceM(
 function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<ResearchDistanceResult, "warnings">) {
   const warnings: ResearchDistanceWarning[] = [];
   const is3gppModel = input.model.startsWith("tr38901");
+  const isSuiModel = input.model.startsWith("sui");
+  const isCost231WiModel = input.model === "cost231_wi_nlos";
   const isUmi = input.model.includes("umi");
   const isUma = input.model.includes("uma");
   const representativeDistanceM = result.maximumDistanceM ?? result.minimumDistanceM;
@@ -331,6 +435,70 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
       id: "dual-slope-needs-breakpoint",
       message:
         "Dual-slopeモデルはブレークポイントの前後で減衰勾配を変える近似です。交差点、道路幅、アンテナ高、地面反射の状態によりブレークポイントは変わるため、実測またはレイトレースで確認してください。"
+    });
+  }
+
+  if (isSuiModel) {
+    if (input.frequencyGHz < 2 || input.frequencyGHz > 11) {
+      warnings.push({
+        id: "sui-frequency-range",
+        message:
+          "SUIモデルはIEEE 802.16系の固定無線アクセス向けに使われた地形別モデルで、主に2〜11GHz級の評価を想定します。現在の周波数では参考値として扱ってください。"
+      });
+    }
+
+    if (representativeDistanceM < 100 || representativeDistanceM > 8000) {
+      warnings.push({
+        id: "sui-distance-range",
+        message:
+          "SUIモデルは100m以上の屋外セル半径評価を想定するモデルです。近距離や8km超の外挿では、3GPP、CI、実測補正と比較してください。"
+      });
+    }
+
+    if (input.txAntennaHeightM < 10 || input.txAntennaHeightM > 80) {
+      warnings.push({
+        id: "sui-base-height",
+        message:
+          "SUIモデルの基地局高は概ね10〜80m級を想定します。低いゲートウェイや高所特殊局では、地形・クラッタ・実測補正を別途確認してください。"
+      });
+    }
+
+    warnings.push({
+      id: "sui-terrain-note",
+      message:
+        "SUI Terrain A/B/Cは、丘陵・樹木の多い地形から平坦で開けた地形までを係数で切り替えるモデルです。地図や現地測定を使わない簡易分類のため、同じ地形内の建物密度や植栽差は実測補正で吸収してください。"
+    });
+  }
+
+  if (isCost231WiModel) {
+    if (input.frequencyGHz < 0.8 || input.frequencyGHz > 2) {
+      warnings.push({
+        id: "cost231-wi-frequency-range",
+        message:
+          "COST231 Walfisch-Ikegamiは主に800MHz〜2GHzの都市街路を想定したモデルです。サブGHzや2GHz超では参考値として扱い、3GPPや実測補正と比較してください。"
+      });
+    }
+
+    if (representativeDistanceM < 20 || representativeDistanceM > 5000) {
+      warnings.push({
+        id: "cost231-wi-distance-range",
+        message:
+          "COST231 Walfisch-Ikegamiの距離目安は20m〜5kmです。短距離IoTや広域マクロセルでは外挿になるため注意してください。"
+      });
+    }
+
+    if (input.rxAntennaHeightM < 1 || input.rxAntennaHeightM > 3) {
+      warnings.push({
+        id: "cost231-wi-terminal-height",
+        message:
+          "COST231 Walfisch-Ikegamiの移動局高は1〜3m程度を想定します。地面近傍IoT端末では端末近傍損失と実測補正を併用してください。"
+      });
+    }
+
+    warnings.push({
+      id: "cost231-wi-street-note",
+      message:
+        "この実装はCOST231 Walfisch-IkegamiのNLOS簡易式です。平均建物高、街路幅、建物間隔、道路角度を入力できますが、実際の地図形状、交差点、個別ビル遮蔽は再現しません。"
     });
   }
 

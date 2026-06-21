@@ -81,6 +81,11 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
 
   await page.getByLabel("距離計算モデル").selectOption("tr38901_umi_nlos");
   await expect(page.getByRole("heading", { name: "適用範囲と注意" })).toBeVisible();
+  await page.getByLabel("距離計算モデル").selectOption("sui_terrain_a");
+  await expect(page.getByText(/SUI Terrain A\/B\/Cは、丘陵/)).toBeVisible();
+  await page.getByLabel("距離計算モデル").selectOption("cost231_wi_nlos");
+  await expect(page.getByRole("heading", { name: "基地局・街路設計用パラメータ" })).toBeVisible();
+  await expect(page.getByText("今回SUI Terrain A/B/CとCOST231 Walfisch-Ikegami NLOSを比較モデルとして追加しました")).toBeVisible();
 });
 
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
