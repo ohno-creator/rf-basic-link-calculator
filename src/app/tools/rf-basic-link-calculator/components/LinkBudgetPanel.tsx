@@ -276,9 +276,9 @@ function HataAntennaHeightNotice({ input }: { input: LinkBudgetInput }) {
   if (!isHataFamily(input.propagationModel)) {
     return (
       <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <p className="text-sm font-semibold text-slate-950">空中線地上高も評価に使えます</p>
+        <p className="text-sm font-semibold text-slate-950">空中線地上高も入力パラメータです</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-600">
-          2波モデル、奥村・秦モデル、COST231-Hataモデルでは、送信側・受信側のアンテナ高が伝搬損失に効きます。高さ条件は次のステップで入力できます。
+          2波モデル、奥村・秦モデル、COST231-Hataモデルでは、送信側・受信側の空中線地上高（アンテナ高）が伝搬損失に効きます。高さは固定ではなく「ステップ2：送信側・受信側のアンテナ条件を入れる」で入力できます。
         </p>
       </div>
     );
@@ -287,11 +287,12 @@ function HataAntennaHeightNotice({ input }: { input: LinkBudgetInput }) {
   return (
     <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
       <p className="text-sm font-semibold text-emerald-950">
-        奥村・秦モデルの空中線地上高は固定ではありません
+        奥村・秦モデルの空中線地上高は固定ではなく、入力パラメータです
       </p>
       <p className="mt-1 text-xs leading-relaxed text-emerald-900">
-        現在の計算では、送信側アンテナ高 {input.txAntennaHeightM.toFixed(1)}m を基地局高 hb、
-        受信側アンテナ高 {input.rxAntennaHeightM.toFixed(1)}m を移動局高 hm として伝搬損失に反映します。
+        送信側・受信側の空中線地上高は「ステップ2：送信側・受信側のアンテナ条件を入れる」で入力でき、変更するとその場で伝搬損失が再計算されます。
+        現在は、送信側 空中線地上高 {input.txAntennaHeightM.toFixed(1)}m を基地局高 hb、
+        受信側 空中線地上高 {input.rxAntennaHeightM.toFixed(1)}m を移動局高 hm として計算に反映しています。
         一般的な適用目安は hb 30〜200m、hm 1〜10m、距離1〜20kmです。
       </p>
       <div className="mt-3 flex flex-wrap gap-2">
@@ -965,10 +966,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <NumberField
             id="txAntennaHeightM"
-            label="送信側アンテナ高"
+            label="送信側 空中線地上高（アンテナ高 hb）"
             unit="m"
-            description="送信側アンテナの地上高です。基地局やゲートウェイでは重要な条件です。"
-            tooltip="奥村・秦モデルの一般的な基地局アンテナ高の目安は30m〜200mです。低高度端末同士では地面反射やフレネルゾーン欠損に効きます。"
+            description="送信側アンテナの地上高（空中線地上高）です。奥村・秦／COST231-Hataモデルでは基地局高 hb として伝搬損失に反映されます（固定値ではありません）。"
+            tooltip="奥村・秦モデルの基地局空中線地上高 hb は固定ではなく、この入力値が計算に反映されます。一般的な適用目安は30m〜200m。低高度端末同士では地面反射やフレネルゾーン欠損にも効きます。"
             example="1.5 / 10 / 30"
             range="0.1-200m"
             min={0.1}
@@ -981,10 +982,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <NumberField
             id="rxAntennaHeightM"
-            label="受信側アンテナ高"
+            label="受信側 空中線地上高（アンテナ高 hm）"
             unit="m"
-            description="受信側アンテナの地上高です。地上近傍端末では近傍損失を別途見ます。"
-            tooltip="奥村・秦モデルの移動局アンテナ高の目安は1m〜10mです。地上近傍では地面反射、筐体、車両・人体遮蔽の影響が大きくなります。"
+            description="受信側アンテナの地上高（空中線地上高）です。奥村・秦／COST231-Hataモデルでは移動局高 hm として伝搬損失に反映されます（固定値ではありません）。地上近傍端末では近傍損失を別途見ます。"
+            tooltip="奥村・秦モデルの移動局空中線地上高 hm は固定ではなく、この入力値が計算に反映されます。一般的な適用目安は1m〜10m。地上近傍では地面反射、筐体、車両・人体遮蔽の影響が大きくなります。"
             example="0.8 / 1.5 / 10"
             range="0.1-50m"
             min={0.1}
