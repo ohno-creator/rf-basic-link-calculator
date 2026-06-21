@@ -1,7 +1,7 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
-import { AlertTriangle } from "lucide-react";
+import { type ReactNode, useMemo, useRef, useState } from "react";
+import { AlertTriangle, Check, Copy, Plus, Printer, Trash2 } from "lucide-react";
 import { Tooltip } from "@/components/Tooltip";
 import { getPropagationModelOption, propagationAreaOptions } from "@/data/linkBudgetOptions";
 import { type AreaType } from "@/lib/rf/propagation";
@@ -25,6 +25,14 @@ const MODEL_COLORS: Record<GeometricPropagationModel, string> = {
 const HATA_MODELS: GeometricPropagationModel[] = ["okumura_hata", "cost231_hata"];
 
 const frequencyChips = [920, 2400, 5000, 700, 1500, 3700];
+
+const MAX_MEASURED_POINTS = 10;
+
+type MeasuredPoint = {
+  id: number;
+  distanceKm: number | null;
+  lossDb: number | null;
+};
 
 type FieldProps = {
   id: string;
@@ -90,6 +98,11 @@ export function PropagationExplorer() {
   const [selected, setSelected] = useState<Set<GeometricPropagationModel>>(
     () => new Set<GeometricPropagationModel>(["free_space", "two_ray", "log_distance", "okumura_hata"])
   );
+  const [measuredPoints, setMeasuredPoints] = useState<MeasuredPoint[]>([
+    { id: 0, distanceKm: null, lossDb: null }
+  ]);
+  const nextMeasuredId = useRef(1);
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "error">("idle");
 
   const params: PropagationLossParams = useMemo(
     () => ({ frequencyMHz, distanceKm, txHeightM, rxHeightM, area, pathLossExponent }),
@@ -138,6 +151,100 @@ export function PropagationExplorer() {
       }
       return next;
     });
+  };
+
+  const updateMeasured = (id: number, key: "distanceKm" | "lossDb", raw: string) => {
+    const parsed = raw === "" ? null : Number(raw);
+    const value = parsed !== null && Number.isFinite(parsed) ? parsed : null;
+    setMeasuredPoints((points) =>
+      points.map((point) => (point.id === id ? { ...point, [key]: value } : point))
+    );
+  };
+
+  const addMeasured = () => {
+    setMeasuredPoints((points) =>
+      points.length >= MAX_MEASURED_POINTS
+        ? points
+        : [...points, { id: nextMeasuredId.current++, distanceKm: null, lossDb: null }]
+    );
+  };
+
+  const removeMeasured = (id: number) => {
+    setMeasuredPoints((points) => (points.length <= 1 ? points : points.filter((point) => point.id !== id)));
+  };
+
+  const validMeasured = useMemo(
+    () =>
+      measuredPoints
+        .filter(
+          (point): point is { id: number; distanceKm: number; lossDb: number } =>
+            point.distanceKm !== null &&
+            point.lossDb !== null &&
+            Number.isFinite(point.distanceKm) &&
+            Number.isFinite(point.lossDb) &&
+            point.distanceKm > 0 &&
+            point.lossDb > 0
+        )
+        .map((point) => ({ distanceKm: point.distanceKm, lossDb: point.lossDb })),
+    [measuredPoints]
+  );
+
+  // グラフの距離軸は 0.01〜20km。範囲外の実測点は重ねず、件数だけ注意表示する。
+  const chartMeasured = useMemo(
+    () => validMeasured.filter((point) => point.distanceKm >= 0.01 && point.distanceKm <= 20),
+    [validMeasured]
+  );
+  const measuredOutOfRange = validMeasured.length - chartMeasured.length;
+
+  const formatDistance = (km: number) => (km >= 1 ? `${km} km` : `${Math.round(km * 1000)} m`);
+
+  const buildClipboardText = () => {
+    const lines: string[] = ["# 伝搬損失モデル比較の結果", "", "## 条件"];
+    lines.push(`- 周波数: ${frequencyMHz} MHz`);
+    lines.push(`- 距離: ${formatDistance(distanceKm)}`);
+    lines.push(`- 送信側アンテナ高 hb: ${txHeightM} m`);
+    lines.push(`- 受信側アンテナ高 hm: ${rxHeightM} m`);
+    if (hataActive) {
+      lines.push(`- エリア種別: ${areaLabel}`);
+    }
+    if (logDistanceActive) {
+      lines.push(`- 距離損失指数 n: ${pathLossExponent}`);
+    }
+    lines.push("", `## 現在距離 ${formatDistance(distanceKm)} でのモデル別 伝搬損失（届きやすい順）`);
+    for (const result of results) {
+      lines.push(
+        `- ${getPropagationModelOption(result.model).label}: ${result.pathLossDb.toFixed(1)} dB${
+          result.outOfRange ? "（適用範囲外）" : ""
+        }`
+      );
+    }
+    if (validMeasured.length > 0) {
+      lines.push("", "## 実測値");
+      for (const point of validMeasured) {
+        lines.push(`- ${point.distanceKm} km: ${point.lossDb} dB`);
+      }
+    }
+    lines.push(
+      "",
+      "## 分析してほしいこと",
+      "上記の条件・各モデルの伝搬損失・実測値をもとに、(1) 実測に最も近いモデルと妥当な距離損失指数 n、(2) 実測がモデルから外れる理由（地形・建物クラッタ・回折・反射・植生・マルチパス等）、(3) この環境での通信設計やアンテナ選定の注意点 を考察してください。"
+    );
+    return lines.join("\n");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(buildClipboardText());
+      setCopyState("copied");
+      window.setTimeout(() => setCopyState("idle"), 2000);
+    } catch {
+      setCopyState("error");
+      window.setTimeout(() => setCopyState("idle"), 4000);
+    }
+  };
+
+  const handlePrint = () => {
+    window.print();
   };
 
   return (
@@ -264,11 +371,11 @@ export function PropagationExplorer() {
               label="距離損失指数 n（Log-distance）"
               unit="n"
               value={pathLossExponent}
-              min={1.6}
+              min={1}
               max={6}
               step={0.1}
               onChange={setPathLossExponent}
-              hint="自由空間=2、市街地NLOS=3〜4が目安。"
+              hint="n=1（緩やか）〜6（急峻）。自由空間=2、市街地NLOS=3〜4が目安。"
               tooltip="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
             />
           ) : null}
@@ -378,12 +485,115 @@ export function PropagationExplorer() {
         )}
       </div>
 
+      {/* 実測値の入力 */}
+      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-semibold text-slate-950">実測値を重ねる（任意・最大10点）</p>
+          <Tooltip term="実測値">
+            現地で測った「距離」と「実測の経路損失[dB]」を入れると、グラフに黒点で重なり、どのモデル・距離損失指数nが現地に近いか比較できます。経路損失は概算で「送信電力＋送受信利得−受信電力(RSSI)」で求められます。
+          </Tooltip>
+        </div>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          Google Earthで距離を測り、現地の実測損失を入れて重ねると、どのモデルが合うか・なぜ外れるかが分かります（下の「実測で深掘りする」コラム参照）。距離は10m〜20kmが表示範囲です。
+        </p>
+        <div className="mt-3 grid gap-2">
+          {measuredPoints.map((point, index) => (
+            <div key={point.id} className="flex items-center gap-2">
+              <span className="w-6 shrink-0 text-xs font-semibold text-slate-400">#{index + 1}</span>
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0.01}
+                max={20}
+                step={0.01}
+                placeholder="距離 km"
+                aria-label={`実測${index + 1} 距離（km）`}
+                value={point.distanceKm ?? ""}
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                onChange={(event) => updateMeasured(point.id, "distanceKm", event.target.value)}
+              />
+              <input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                step={0.1}
+                placeholder="損失 dB"
+                aria-label={`実測${index + 1} 経路損失（dB）`}
+                value={point.lossDb ?? ""}
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                onChange={(event) => updateMeasured(point.id, "lossDb", event.target.value)}
+              />
+              <button
+                type="button"
+                aria-label={`実測${index + 1}を削除`}
+                disabled={measuredPoints.length <= 1}
+                onClick={() => removeMeasured(point.id)}
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border border-slate-200 text-slate-500 transition hover:bg-white disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                <Trash2 aria-hidden className="h-4 w-4" />
+              </button>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={addMeasured}
+          disabled={measuredPoints.length >= MAX_MEASURED_POINTS}
+          className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:border-staf/40 disabled:cursor-not-allowed disabled:opacity-40"
+        >
+          <Plus aria-hidden className="h-3.5 w-3.5" /> 実測点を追加（{measuredPoints.length}/{MAX_MEASURED_POINTS}）
+        </button>
+        {measuredOutOfRange > 0 ? (
+          <p className="mt-2 text-xs font-medium text-amber-700">
+            {measuredOutOfRange}点が表示範囲（10m〜20km）外のため、グラフには重ねていません。
+          </p>
+        ) : null}
+      </div>
+
       {/* 距離スイープのグラフ */}
       <PropagationModelComparisonChart
         models={chartModels}
         params={{ frequencyMHz, txHeightM, rxHeightM, area, pathLossExponent }}
         currentDistanceKm={distanceKm}
+        measured={chartMeasured}
       />
+
+      {/* 書き出し */}
+      <div className="no-print">
+        <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={handleCopy}
+            className="inline-flex items-center gap-2 rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-staf"
+          >
+            {copyState === "copied" ? (
+              <Check aria-hidden className="h-4 w-4" />
+            ) : (
+              <Copy aria-hidden className="h-4 w-4" />
+            )}
+            {copyState === "copied" ? "コピーしました" : "結果をコピー（ChatGPT等で分析）"}
+          </button>
+          <button
+            type="button"
+            onClick={handlePrint}
+            className="inline-flex items-center gap-2 rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40"
+          >
+            <Printer aria-hidden className="h-4 w-4" /> PDFで印刷・保存
+          </button>
+        </div>
+        <p role="status" aria-live="polite" className="sr-only">
+          {copyState === "copied"
+            ? "結果をコピーしました"
+            : copyState === "error"
+              ? "コピーに失敗しました"
+              : ""}
+        </p>
+        {copyState === "error" ? (
+          <p className="mt-2 text-xs font-medium text-rose-700">
+            コピーできませんでした。お手数ですが結果のテキストを手動で選択してコピーしてください。
+          </p>
+        ) : null}
+      </div>
 
       <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
         <div className="flex items-start gap-2">

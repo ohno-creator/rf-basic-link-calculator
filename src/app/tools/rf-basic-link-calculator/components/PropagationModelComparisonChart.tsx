@@ -3,11 +3,12 @@
 import { useEffect, useState } from "react";
 import {
   CartesianGrid,
+  ComposedChart,
   Legend,
   Line,
-  LineChart,
   ReferenceLine,
   ResponsiveContainer,
+  Scatter,
   Tooltip as RechartsTooltip,
   XAxis,
   YAxis
@@ -24,10 +25,16 @@ type ModelMeta = {
   color: string;
 };
 
+export type MeasuredChartPoint = {
+  distanceKm: number;
+  lossDb: number;
+};
+
 type PropagationModelComparisonChartProps = {
   models: ModelMeta[];
   params: Omit<PropagationLossParams, "distanceKm">;
   currentDistanceKm: number;
+  measured?: MeasuredChartPoint[];
 };
 
 const distancesKm = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 3, 5, 7, 10, 15, 20];
@@ -35,7 +42,8 @@ const distancesKm = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 3, 5, 7, 10, 15, 20]
 export function PropagationModelComparisonChart({
   models,
   params,
-  currentDistanceKm
+  currentDistanceKm,
+  measured = []
 }: PropagationModelComparisonChartProps) {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -55,13 +63,15 @@ export function PropagationModelComparisonChart({
     return row;
   });
 
+  const measuredData = measured.map((point) => ({ d: point.distanceKm, loss: point.lossDb }));
+
   return (
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <figcaption className="text-sm font-semibold text-slate-950">距離で見るモデル別 伝搬損失</figcaption>
       <div className="mt-2 h-72 w-full" aria-label="距離に対する伝搬損失をモデル別に比較したグラフ">
         {isMounted && models.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
-            <LineChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
+            <ComposedChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
               <XAxis
                 dataKey="d"
@@ -95,6 +105,17 @@ export function PropagationModelComparisonChart({
                   connectNulls
                 />
               ))}
+              {measuredData.length > 0 ? (
+                <Scatter
+                  data={measuredData}
+                  dataKey="loss"
+                  name="実測値"
+                  fill="#0f172a"
+                  stroke="#ffffff"
+                  strokeWidth={1.5}
+                  isAnimationActive={false}
+                />
+              ) : null}
               {Number.isFinite(currentDistanceKm) && currentDistanceKm > 0 ? (
                 <ReferenceLine
                   x={currentDistanceKm}
@@ -103,7 +124,7 @@ export function PropagationModelComparisonChart({
                   label={{ value: "現在距離", position: "top", fontSize: 11, fill: "#0f172a" }}
                 />
               ) : null}
-            </LineChart>
+            </ComposedChart>
           </ResponsiveContainer>
         ) : (
           <div className="flex h-full items-center justify-center rounded-lg bg-white text-sm text-slate-500">
@@ -112,7 +133,9 @@ export function PropagationModelComparisonChart({
         )}
       </div>
       <p className="mt-2 text-xs leading-relaxed text-slate-600">
-        縦の破線が現在の距離です。線が上にあるモデルほど損失が大きく（届きにくく）見積もります。Hata系は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。
+        縦の破線が現在の距離です。線が上にあるモデルほど損失が大きく（届きにくく）見積もります。
+        {measuredData.length > 0 ? "黒点は入力した実測値です。実測に最も近い線が、その環境に合うモデルの目安になります。" : null}
+        Hata系は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。
       </p>
     </figure>
   );

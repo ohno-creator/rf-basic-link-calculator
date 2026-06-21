@@ -50,3 +50,23 @@ svg g[role="button"]:focus-visible rect {
   stroke: #0071bd;
   stroke-width: 3;
 }
+
+/* PDF印刷（ブラウザの印刷→PDF保存）用。サイトのヘッダー/フッターや操作ボタンを隠して
+   記録に必要な条件・図・結果だけを出力する。 */
+@media print {
+  header,
+  footer,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  body {
+    background: #ffffff;
+  }
+
+  /* 折りたたみ（details）内も印刷では読めるよう、内容を開いた状態で出す */
+  details > :not(summary) {
+    display: block !important;
+  }
+}
