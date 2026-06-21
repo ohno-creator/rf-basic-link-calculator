@@ -67,6 +67,50 @@ const sources = {
   rel19: {
     label: "2025 3GPP Rel-19 TR 38.901 overview",
     href: "https://arxiv.org/abs/2507.19266"
+  },
+  antennaGain: {
+    label: "Antenna gain / dBi-dBd reference",
+    href: "https://en.wikipedia.org/wiki/Gain_%28antenna%29"
+  },
+  monopoleGround: {
+    label: "Monopole antenna and ground plane",
+    href: "https://en.wikipedia.org/wiki/Monopole_antenna"
+  },
+  groundPlane: {
+    label: "Ground plane reference",
+    href: "https://en.wikipedia.org/wiki/Ground_plane"
+  },
+  counterpoise: {
+    label: "Counterpoise ground system",
+    href: "https://en.wikipedia.org/wiki/Counterpoise_%28ground_system%29"
+  },
+  swr: {
+    label: "Standing wave ratio",
+    href: "https://en.wikipedia.org/wiki/Standing_wave_ratio"
+  },
+  antennaTuner: {
+    label: "Antenna tuner and feedline loss",
+    href: "https://en.wikipedia.org/wiki/Antenna_tuner"
+  },
+  commonMode: {
+    label: "Common-mode current",
+    href: "https://en.wikipedia.org/wiki/Common_mode_current"
+  },
+  coaxialCable: {
+    label: "Coaxial cable common-mode note",
+    href: "https://en.wikipedia.org/wiki/Coaxial_cable"
+  },
+  loraBasics: {
+    label: "LoRa PHY and spreading factor",
+    href: "https://en.wikipedia.org/wiki/LoRa"
+  },
+  loraRssiSnr2022: {
+    label: "2022 LoRa RSSI/SNR comparison",
+    href: "https://arxiv.org/abs/2210.15122"
+  },
+  loraRapidFading2020: {
+    label: "2020 LoRa high-SF robustness caveat",
+    href: "https://arxiv.org/abs/2009.01176"
   }
 } as const;
 
@@ -80,35 +124,35 @@ export const questModes: QuestMode[] = [
     label: "初心者モード",
     title: "dBと距離の城下町",
     description: "dB、dBm、周波数、距離、受信感度など、リンク計算の入口を固めます。",
-    badge: "50問"
+    badge: "100問"
   },
   {
     id: "apprentice",
     label: "見習いモード",
     title: "反射と近傍損失の洞窟",
     description: "2波、フレネル、端末近傍損失、実測補正の基本を扱います。",
-    badge: "50問"
+    badge: "100問"
   },
   {
     id: "practitioner",
     label: "実務者モード",
     title: "モデル選択の砦",
     description: "通信形態ごとのモデル選択、Hata系の適用範囲、信頼率評価を確認します。",
-    badge: "50問"
+    badge: "100問"
   },
   {
     id: "expert",
     label: "玄人モード",
     title: "基地局設計の迷宮",
     description: "SUI、COST231 WI、3GPP、GIS、複数実測点など、設計実務寄りの判断を学びます。",
-    badge: "50問"
+    badge: "100問"
   },
   {
     id: "researcher",
     label: "研究者モード",
     title: "最新研究の塔",
     description: "2025〜2026年の測定研究、環境特徴量、残差分布、Rel-19の論点を織り込みます。",
-    badge: "50問"
+    badge: "100問"
   }
 ];
 
@@ -1023,11 +1067,11 @@ function q(
 }
 
 const enemyPrefixes: Record<QuestModeId, string[]> = {
-  beginner: ["単位の小部屋", "距離の草原", "アンテナ工房", "判定の広場"],
-  apprentice: ["反射洞窟", "近傍損失の沼", "実測の祠", "設置ばらつきの谷"],
-  practitioner: ["モデル選択の砦", "Hata審問室", "信頼率の城壁", "校正の作戦室"],
-  expert: ["基地局設計の迷宮", "都市街路の屋根上", "GISの地図塔", "容量干渉の戦場"],
-  researcher: ["測定論文の書庫", "環境特徴量の研究棟", "残差分布の実験室", "標準化会議の塔"]
+  beginner: ["単位の小部屋", "距離の草原", "アンテナ工房", "判定の広場", "掲示板の酒場", "SWRの橋", "設置あるある横丁", "LoRa小径", "測定メモの広場", "誤解退治の門"],
+  apprentice: ["反射洞窟", "近傍損失の沼", "実測の祠", "設置ばらつきの谷", "多重波の水路", "フレネル峠", "筐体実装の工房", "RSSI観測所", "整合と給電線の橋", "現場判断の門"],
+  practitioner: ["モデル選択の砦", "Hata審問室", "信頼率の城壁", "校正の作戦室", "損失仕分け所", "規格と法規の門", "品質指標の広場", "実測計画の幕舎", "説明責任の書庫", "設計レビューの間"],
+  expert: ["基地局設計の迷宮", "都市街路の屋根上", "GISの地図塔", "容量干渉の戦場", "アンテナ方位の塔", "ドライブテスト街道", "アップリンクの要塞", "MIMO散乱の庭", "運用最適化の城", "玄人豆知識の間"],
+  researcher: ["測定論文の書庫", "環境特徴量の研究棟", "残差分布の実験室", "標準化会議の塔", "再現性の図書館", "LoRa測定の温室", "統計検証の天文台", "地理データの鉱山", "6Gチャネルの回廊", "研究者トリビアの塔"]
 };
 
 const defaultColumns: Record<QuestModeId, string> = {
@@ -1043,10 +1087,10 @@ const defaultColumns: Record<QuestModeId, string> = {
     "研究者モードでは、単一式の精度だけでなく、測定設計、特徴量、残差分布、検証方法、信頼率マージンまで確認します。"
 };
 
-function makeExpansionLessons(mode: QuestModeId, seeds: QuestExpansionSeed[]): QuestLesson[] {
+function makeExpansionLessons(mode: QuestModeId, seeds: QuestExpansionSeed[], startStage = 11): QuestLesson[] {
   return seeds.map((seed, index) => {
-    const stage = index + 11;
-    const chapterIndex = Math.floor(index / 10);
+    const stage = startStage + index;
+    const chapterIndex = Math.floor((stage - 1) / 10);
     const boss = stage % 10 === 0 ? "章ボス" : enemyPrefixes[mode][chapterIndex] ?? "クエスト";
 
     return lesson({
@@ -1283,11 +1327,281 @@ const researcherExpansionSeeds: QuestExpansionSeed[] = [
   q("researcher-boss", "研究者章ボス", "研究者モードの最終判断として最も妥当なのは？", "標準モデル、実測校正、環境特徴量、残差分布を組み合わせる", "単一式だけで全環境を保証する", "測定条件を残さない", "ここ数年の研究は、万能式探しよりも、測定と統計で不確かさを管理する方向が強いです。", toolLinks.calculator, "本ツールの研究者モードも、標準モデルを基準にしつつ、現地実測と信頼率マージンへつなげる設計です。", [sources.loraDataset2025, sources.envAware2025, sources.envKal2025, sources.aerpaw2026, sources.p1812Geo2025, sources.rel19])
 ];
 
+const beginnerCommunitySeeds: QuestExpansionSeed[] = [
+  q("dbi-dbd", "dBiとdBd", "アンテナ利得でdBiとdBdを見比べるとき、まず確認することは？", "基準アンテナが違う", "距離の単位が違う", "受信感度の単位が違う", "dBiは等方性アンテナ基準、dBdは半波長ダイポール基準です。数字だけを見ると誤解します。", toolLinks.wavelength, "掲示板でも定番の混乱です。dBdはdBiより約2.15dB小さく表示されます。", [sources.antennaGain]),
+  q("gain-not-amp", "利得は増幅器ではない", "アンテナ利得の説明として近いものは？", "特定方向へ電波を集中する性質", "電源なしで総電力を増やす装置", "周波数を下げる機能", "アンテナ利得は主に指向性と効率の結果です。総放射電力が魔法のように増えるわけではありません。", toolLinks.wavelength, "高利得アンテナはよく飛びますが、向きと設置が合っていることが前提です。", [sources.antennaGain]),
+  q("high-gain-narrow", "高利得の代償", "高利得アンテナで起きやすい実務上の注意は？", "向き合わせがシビアになる", "受信感度が不要になる", "ケーブル損失が消える", "利得が高いほどビームが狭くなりやすく、向きや高さのズレが効きます。", toolLinks.calculator, "長距離化だけを見て高利得にすると、現場で向き合わせが難しくなることがあります。", [sources.antennaGain]),
+  q("omni-doughnut", "無指向性の穴", "垂直アンテナの無指向性で見落としやすいことは？", "上下方向には弱い角度がある", "全方向に完全同じ強さ", "地面に必ず吸い込まれる", "一般的な垂直アンテナは水平面に広がり、真上方向などにヌルが出ることがあります。", toolLinks.wavelength, "無指向性は主に方位角の話です。上下角まで万能という意味ではありません。", [sources.monopoleGround]),
+  q("polarization-name", "偏波の向き", "送受信アンテナの向きが90度ずれると起きやすいことは？", "偏波ミスマッチ損失", "周波数が2倍になる", "距離がゼロになる", "偏波が合わないと受信電力が落ちます。端末姿勢が変わる用途ではマージンで見ます。", toolLinks.calculator),
+  q("hand-effect", "手で持つだけ", "小型端末のアンテナを手で覆うと起きやすいことは？", "効率や共振が変わる", "必ず感度が上がる", "dBmがmWになる", "人体は水分を含む大きな近傍物体です。手や体の近接はRSSIに影響します。", toolLinks.calculator),
+  q("metal-case", "金属筐体", "金属筐体でアンテナ設計が難しくなる主な理由は？", "遮蔽や共振ずれが起きる", "電波が必ず強くなる", "送信電力が無限になる", "金属はアンテナ周辺の電界と電流分布を大きく変えます。外出しや窓、絶縁距離を検討します。", toolLinks.calculator),
+  q("quarter-wave-ground", "1/4波長と相手", "1/4波長モノポールで重要になりやすい相手は？", "グランドプレーン", "ページタイトル", "温度単位だけ", "モノポールはグランドプレーンや筐体を含めてアンテナ系になります。素子だけで完結しません。", toolLinks.wavelength, "小型IoT端末では基板GNDがアンテナ性能の一部になります。", [sources.monopoleGround]),
+  q("rubber-duck", "ラバーダックの現実", "短いラバーダックアンテナの性格として近いものは？", "小型化の代わりに効率や帯域を犠牲にしやすい", "必ず八木より高利得", "ケーブル損失を回復する", "短縮アンテナは便利ですが、理想的な長さのアンテナより損失や帯域の課題が出やすいです。", toolLinks.wavelength, "小型アンテナのカタログ利得は、実装状態と一緒に確認します。", [sources.monopoleGround]),
+  q("mag-mount", "マグネット基台", "車載マグネット基台アンテナで車体が効く理由は？", "車体がグランドプレーンとして働くため", "車体が受信感度になるため", "タイヤが周波数を決めるため", "車体金属面はアンテナの相手側として働き、パターンや整合に影響します。", toolLinks.calculator, "同じアンテナでも机上、車体中央、端部で性能は変わります。", [sources.groundPlane]),
+  q("counterpoise-basic", "カウンターポイズ", "良い接地が取れないアンテナで使われることがあるものは？", "カウンターポイズ", "受信感度の削除", "HTMLタグ", "カウンターポイズは接地の代替や相手側導体として使われることがあります。", toolLinks.wavelength, "小型端末では専用線だけでなく、基板や筐体全体が相手側になります。", [sources.counterpoise]),
+  q("wrong-band", "違う帯域のアンテナ", "920MHz用アンテナを2.4GHzで使うときの注意は？", "整合や放射効率が合わない可能性", "必ず2倍飛ぶ", "受信感度が不要になる", "アンテナは周波数に強く依存します。対応帯域外では性能が大きく落ちます。", toolLinks.wavelength),
+  q("longer-not-always", "長ければ良い？", "アンテナは長いほど常に良い、という考えは？", "誤り", "常に正しい", "周波数と無関係", "アンテナ長は波長や方式、グランド、整合とセットで決まります。長ければ万能ではありません。", toolLinks.wavelength),
+  q("same-frequency", "同じ周波数", "送信側と受信側でまず合わせる必要があるものは？", "周波数と方式", "筐体の色", "ページの余白", "周波数、帯域幅、変調方式、プロトコルが合わなければ通信できません。", toolLinks.calculator),
+  q("busy-channel", "混雑チャネル", "距離が近いのに通信が悪い原因としてあり得るものは？", "同じチャネルの混雑や干渉", "距離が近いほど必ず良いだけ", "アンテナが不要になる", "受信電力が十分でも、干渉や同時送信が多いと通信品質が落ちます。", toolLinks.calculator),
+  q("indoor-shelf", "棚の奥", "屋内端末を金属棚の奥に置くと何が起きやすいですか？", "遮蔽と反射でRSSIが変わる", "必ず屋外より良い", "周波数がゼロになる", "棚、什器、壁、人の動きは屋内IoTの大きなばらつき要因です。", toolLinks.calculator),
+  q("line-of-sight", "見通しの意味", "見通しが良い状態で主に減るリスクは？", "遮蔽や回折による追加損失", "自由空間損失そのもの", "受信感度の必要性", "見通しは有利ですが、距離による基本損失は残ります。フレネルゾーンも確認します。", toolLinks.fresnel),
+  q("bars-throughput", "アンテナバー", "スマホのアンテナバーだけで分からないことは？", "SINRや混雑による実効速度", "電波があるかの雰囲気", "基地局の存在", "表示バーは簡略表示です。速度や安定性はSINR、混雑、方式にも左右されます。", toolLinks.calculator),
+  q("rssi-quality", "RSSIだけではない", "RSSIが強くても通信が悪いとき、追加で見るべき代表は？", "SNRや干渉状況", "筐体の色", "URLの長さ", "信号が強くてもノイズや干渉が強いと復調しにくくなります。", toolLinks.calculator),
+  q("snr-simple", "SNRの一言", "SNRは何と何の比に近い指標ですか？", "信号と雑音", "距離と高さ", "dBiとdBd", "SNRは信号がノイズに対してどれだけ目立つかを見る指標です。", toolLinks.calculator),
+  q("negative-dbm-quiz", "マイナスdBm", "-70dBmと-100dBmでは、一般に強い信号は？", "-70dBm", "-100dBm", "同じ強さ", "dBmは値が大きいほど電力が強いです。マイナス値ではゼロに近い方が強いと考えます。", toolLinks.dbm),
+  q("cable-before-antenna", "アンテナ前の損失", "送信側ケーブル損失はリンクバジェットでどこに効きますか？", "アンテナへ届く前に引かれる", "受信感度を上げる", "距離を短縮する単位になる", "送信機からアンテナまでのケーブルで失われた電力は、放射される前に減ります。", toolLinks.calculator),
+  q("connector-loss", "変換コネクタ", "変換コネクタや延長ケーブルを増やすと注意することは？", "挿入損失と接触不良", "必ず利得が増える", "周波数が消える", "小さな損失でも積み上がります。高周波ではコネクタ品質も効きます。", toolLinks.calculator),
+  q("foliage-water", "葉っぱと水", "樹木や葉が通信へ効く理由として近いものは？", "水分を含み損失や散乱が増えるため", "葉がdBを足すため", "木が受信感度になるため", "植生は季節や濡れ具合で損失が変わることがあります。", toolLinks.calculator),
+  q("rain-basic", "雨の影響", "920MHz程度のIoTで雨だけを過大評価しすぎない方がよい理由は？", "建物・地形・設置の方が支配的な場合が多い", "雨は必ず無影響", "雨で送信電力が増える", "周波数帯や距離によりますが、低GHz以下では雨そのものより遮蔽や設置条件が効く場面が多いです。", toolLinks.calculator),
+  q("legal-power", "送信電力の上限", "通信距離を伸ばすとき送信電力で必ず確認することは？", "法規制と機器仕様", "ページ背景色", "問題数", "無線方式ごとに出力やEIRPの上限があります。勝手に増やせません。", toolLinks.calculator),
+  q("orientation-check", "向き合わせ", "指向性アンテナを使うとき重要な作業は？", "方位と上下角を合わせる", "ケーブルを必ず長くする", "受信感度を無視する", "ビームが狭いアンテナほど、方位角と仰角のズレが大きな損失になります。", toolLinks.calculator),
+  q("fresnel-not-line", "見通し線だけ？", "フレネルゾーンの考え方として正しいものは？", "見通し線の周りの空間も大切", "線だけ空けば完全", "距離とは無関係", "見通し線が空いていても、周辺が塞がると回折損が増えます。", toolLinks.fresnel),
+  q("height-helps-caveat", "高くすれば万能？", "アンテナ高を上げるときの正しい見方は？", "見通し改善と干渉環境の両方を見る", "必ず全方向で良くなる", "送信電力が不要になる", "高くすると遮蔽は減りやすい一方、干渉を拾いやすくなる場合もあります。", toolLinks.calculator),
+  q("range-spec", "カタログ距離", "カタログの最大通信距離でよくある前提は？", "好条件の見通し環境", "金属箱の中", "地下室の奥", "最大距離は理想に近い条件のことが多く、現場条件では短くなります。", toolLinks.calculator),
+  q("environment-separate", "損失の置き場所", "壁や人体の影響を入れる欄として自然なのは？", "環境損失や端末近傍損失", "送信電力の単位欄", "ページ説明欄", "物理要因ごとに損失を分けると、改善策が見えやすくなります。", toolLinks.calculator),
+  q("measure-last", "最後は現地", "机上計算の後に必要な確認は？", "現地RSSI/RSRPや成功率の測定", "画面の拡大率だけ", "ファイル名だけ", "リンク計算は一次評価です。最終判断は現地測定で確認します。", toolLinks.calculator),
+  q("swr-name", "SWRとは", "SWRは主に何の不整合を示す指標ですか？", "給電線と負荷の整合", "受信感度の順位", "距離の倍率", "SWRは反射の程度を見る指標です。低いほど送信機から見た負荷が扱いやすくなります。", toolLinks.calculator, "SWRが低くても、アンテナ効率や設置が良いとは限りません。", [sources.swr]),
+  q("tuner-name", "チューナの名前", "アンテナチューナが主に合わせるものは？", "送信機から見たインピーダンス", "アンテナの物理長そのもの", "電波の法規", "チューナは整合を取りますが、悪い設置や損失を消す魔法ではありません。", toolLinks.calculator, "掲示板でよく出る誤解は、チューナがアンテナ効率を必ず上げるというものです。", [sources.antennaTuner]),
+  q("wifi-band", "Wi-Fi帯域", "同じ条件なら2.4GHzと5GHzで届きやすい傾向があるのは？", "2.4GHz", "5GHz", "必ず同じ", "低い周波数の方が自由空間損失や回り込みで有利な場面が多いです。混雑は別問題です。", toolLinks.fspl),
+  q("body-bluetooth", "Bluetoothと人体", "人体がBluetooth機器の近くにあると起きやすいことは？", "遮蔽や吸収で通信が不安定になる", "必ず通信距離が伸びる", "周波数が920MHzになる", "2.4GHz帯は人体や水分の近接影響を受けやすい場面があります。", toolLinks.calculator),
+  q("lpwa-trade", "LPWAの交換条件", "LPWAが長距離化しやすい代わりに犠牲にしやすいものは？", "データレートや送信時間", "アンテナの存在", "受信感度の意味", "長距離・低消費電力の方式では、低速化や送信時間増加とのトレードオフがあります。", toolLinks.calculator, "LoRaではSFを上げると感度は上がりやすい一方、Time-on-Airが増えます。", [sources.loraBasics]),
+  q("throughput-distance", "距離と速度", "距離が伸びるほど一般に厳しくなりやすいものは？", "高いデータレートの維持", "周波数の定義", "アンテナの向き不要化", "遠距離では変調や符号化を堅牢側に寄せ、速度を落として成立させることがあります。", toolLinks.calculator),
+  q("rssi-vendor", "RSSIの読み方", "RSSI値を機器間で比較するときの注意は？", "測定定義や校正が違う場合がある", "全メーカーで完全同一", "dBmではないものは存在しない", "RSSIは実装依存の表示もあります。絶対値だけでなく同一条件の相対比較を重視します。", toolLinks.calculator),
+  q("share-full-condition", "条件共有", "通信相談で数値を伝えるとき最も助かる情報は？", "周波数、距離、高さ、損失、モデルのセット", "判定結果だけ", "アンテナの色だけ", "前提条件がない数値は判断できません。共有リンクや入力一覧で条件も渡します。", toolLinks.calculator),
+  q("eirp-vs-power", "出力とEIRP", "送信電力だけでなくEIRPを見る理由は？", "アンテナ利得と損失込みの放射方向電力を見るため", "受信感度を消すため", "周波数をHzにするため", "法規や距離評価では、送信機出力だけでなくアンテナ利得と損失を含むEIRPが重要です。", toolLinks.calculator),
+  q("erp-vs-eirp", "ERPとEIRP", "ERPとEIRPで違うのは主に何ですか？", "基準アンテナ", "距離の単位", "ケーブルの色", "ERPはダイポール基準、EIRPは等方性アンテナ基準です。基準差を混同しないようにします。", toolLinks.calculator, "dBi/dBdと同じく、基準が違う数字をそのまま比べると誤解します。", [sources.antennaGain]),
+  q("noise-floor", "ノイズ床", "受信感度に近い弱信号で効くものは？", "ノイズフロア", "ページ余白", "Gitブランチ", "弱い信号では、受信機の雑音や周囲ノイズに埋もれないかが重要です。", toolLinks.calculator),
+  q("antenna-pattern", "パターン図", "アンテナパターン図で確認したいことは？", "強い方向と弱い方向", "ファイル名", "問題数", "利得は方向で変わります。設置方向と相手方向がパターンの強い側に入るか確認します。", toolLinks.wavelength),
+  q("datasheet-condition", "データシート条件", "アンテナデータシートを見るとき大切なことは？", "測定時の基板やグランド条件", "表紙の色", "メーカー名だけ", "小型アンテナの性能は評価基板や実装条件に依存します。条件が違えば結果も変わります。", toolLinks.wavelength),
+  q("sensitivity-data-rate", "感度と速度", "同じ無線機でも受信感度が変わることがある条件は？", "データレートや帯域幅", "筐体色", "問題番号", "低速・狭帯域ほど感度が良くなる方式があります。仕様表の条件を確認します。", toolLinks.calculator),
+  q("retry-not-range", "再送の見え方", "再送で通信できている場合、距離設計で注意することは？", "安定リンクとは限らない", "必ず余裕十分", "RSSIが不要", "再送で見かけ上届いても、電池寿命や遅延、混雑に影響します。", toolLinks.calculator),
+  q("latency-trade", "遅延の交換条件", "遠距離・高信頼化で増えやすいものは？", "送信時間や遅延", "アンテナ利得の単位数", "基板サイズだけ", "堅牢な通信設定は通信時間が長くなることがあります。用途の遅延許容も見ます。", toolLinks.calculator),
+  q("question-template", "質問テンプレ", "掲示板で通信距離の相談をするとき有効なのは？", "周波数・距離・高さ・アンテナ・RSSIを最初に書く", "届かないとだけ書く", "写真だけ載せる", "前提を書けば、回答者がモデル選択や損失要因を切り分けやすくなります。", toolLinks.calculator),
+  q("beginner-tavern-boss", "掲示板あるあるボス", "初心者が最初に避けたい落とし穴は？", "単位・前提・設置条件を混ぜて語ること", "質問を短くすること", "現地測定をすること", "無線の話は、単位、アンテナ、環境、方式が絡みます。切り分けるほど答えに近づきます。", toolLinks.calculator)
+];
+
+const apprenticeCommunitySeeds: QuestExpansionSeed[] = [
+  q("tworay-wave", "波打つ2波", "2波モデルのグラフが波打つ主な理由は？", "直接波と反射波の干渉", "dBmの丸め", "ページの配色", "直接波と地面反射波が強め合ったり弱め合ったりするため、距離で山谷が出ます。", toolLinks.propagation),
+  q("null-moves", "ヌルは動く", "深いヌルの位置が少し動く原因として近いものは？", "アンテナ高や地面条件の変化", "選択肢の順番", "GitHubの星数", "高さや反射係数が変わると経路差と位相が変わり、谷の位置も変わります。", toolLinks.propagation),
+  q("smooth-vs-coherent", "平滑と完全版", "リンク判定で平滑化線も見る理由は？", "一点の深い谷を過信しないため", "干渉を完全に消すため", "距離を不要にするため", "現実の地面は完全反射ではなく、端末位置も揺れるため、包絡的な見方も必要です。", toolLinks.propagation),
+  q("fresnel-fat", "太るフレネル", "第1フレネルゾーンが太くなりやすい位置は？", "経路中央付近", "送信機の内部だけ", "受信感度の欄", "障害物が中央付近にあるとフレネル欠損の影響が大きくなりやすいです。", toolLinks.fresnel),
+  q("ground-bounce", "地面バウンド", "低高度端末同士で地面反射が効きやすい理由は？", "直接波と反射波の経路差が小さく干渉しやすい", "周波数が消える", "受信感度が上がる", "端末が低いと地面が近く、反射波の寄与やフレネル欠損を無視しにくくなります。", toolLinks.propagation),
+  q("height-centimeters", "数十cmの差", "低高度IoTで数十cmの高さ差が効くことがある理由は？", "反射とフレネル条件が変わるため", "dBm定義が変わるため", "送信電力が自動で増えるため", "地面に近いほど、少しの高さ差で見通しや反射条件が変わります。", toolLinks.calculator),
+  q("enclosure-window", "アンテナ窓", "金属筐体で内蔵アンテナを使うとき有効になりやすい工夫は？", "樹脂窓や外部アンテナを検討する", "筐体を完全密閉するだけ", "アンテナを基板下に隠すだけ", "金属が遮蔽するため、アンテナ周りの逃げ場を設計します。", toolLinks.calculator),
+  q("body-margin", "人体マージン", "作業者が近くを通る端末で追加したい損失は？", "車両・人体遮蔽損失", "Hataの基地局高", "周波数単位", "人体の近接や遮蔽は端末近傍損失として扱うと説明しやすくなります。", toolLinks.calculator),
+  q("orientation-random", "姿勢ランダム", "端末の向きが毎回変わる用途で見るべきものは？", "偏波ミスマッチと指向性", "ページのフォント", "Gitのremote", "アンテナの向きが変わると、偏波とパターンが変わり受信電力が揺れます。", toolLinks.calculator),
+  q("near-loss-not-path", "近傍損失は別", "筐体や手の影響を伝搬モデルだけに押し込めない理由は？", "端末近くの実装要因だから", "距離式が不要だから", "自由空間損失が消えるから", "伝搬モデルは主に空間側の平均損失です。端末周りの損失は別枠にすると現実に寄ります。", toolLinks.calculator),
+  q("field-calibration-sign", "補正の符号", "実測が計算より10dB悪かった場合、補正値の扱いとして自然なのは？", "受信電力を下げる方向に入れる", "必ず+10dB改善として入れる", "距離を削除する", "実測補正は計算と現地の差を合わせるための値です。符号を間違えると逆効果です。", toolLinks.calculator),
+  q("single-measure-risk", "一回測定の罠", "1回だけのRSSIで断定しにくい理由は？", "時間変動やマルチパスがあるため", "RSSIが存在しないため", "dBmが使えないため", "RSSIは揺れます。複数回、複数位置で分布を見る方が堅実です。", toolLinks.calculator),
+  q("median-measure", "中央値", "RSSI測定で平均だけでなく中央値を見る利点は？", "外れ値に引っ張られにくい", "全ての値を無視する", "距離を増やす", "一時的な落ち込みや上振れがあると、中央値の方が代表値として安定する場合があります。", toolLinks.calculator),
+  q("packet-success-basic", "届いたか", "RSSI/SNR以外に現場で見たいものは？", "パケット成功率", "ページタイトル", "線の色", "実運用では、信号が見えるだけでなく通信が成立した割合が重要です。", toolLinks.calculator),
+  q("sf-trade-basic", "SFの取引", "LoRaでSFを上げると一般に起きるトレードオフは？", "感度は上がりやすいが送信時間が増える", "必ず速度が上がる", "周波数が変わる", "SFは距離と電池寿命、混雑のバランスに関わります。", toolLinks.calculator, "SFを上げれば万能ではなく、送信時間や衝突リスクも見ます。", [sources.loraBasics]),
+  q("near-far-basic", "近遠問題", "同じゲートウェイに近い端末と遠い端末が混在すると起き得ることは？", "強い信号が弱い信号を邪魔する", "全端末が同じRSSIになる", "距離が無効になる", "近遠問題では、近い端末の強い信号が遠い端末の受信を難しくする場合があります。", toolLinks.calculator, "LoRaでもゲートウェイ周りの端末配置や電力制御が話題になります。", [sources.loraRssiSnr2022]),
+  q("capture-effect-basic", "キャプチャ効果", "同時送信で片方だけ受かる現象に近い言葉は？", "キャプチャ効果", "フレネル半径", "dBi変換", "受信機が強い方の信号を捕まえることがあります。衝突が単純な全滅とは限りません。", toolLinks.calculator, "成功率を見るときは、RSSIだけでなく同時送信や近遠問題も考えます。", [sources.loraRssiSnr2022]),
+  q("common-mode-feedline", "同軸がアンテナ化", "同軸外皮に不要な電流が流れると起き得ることは？", "給電線が放射してパターンが崩れる", "必ず損失ゼロになる", "受信感度が消える", "コモンモード電流により、給電線自体がアンテナの一部のように振る舞う場合があります。", toolLinks.calculator, "掲示板でチョークが話題になる理由の一つです。", [sources.commonMode, sources.coaxialCable]),
+  q("choke-role", "チョークの役割", "コモンモードチョークの狙いとして近いものは？", "不要な同相電流を抑える", "送信電力を必ず増やす", "周波数を変える", "チョークは意図しない外皮電流やEMIを抑えるために使われます。", toolLinks.calculator, "チョークは万能薬ではなく、原因がコモンモードかを切り分けて使います。", [sources.commonMode]),
+  q("swr-efficiency", "低SWRと効率", "SWRが低ければ必ずよく飛ぶ、は正しいですか？", "正しくない", "常に正しい", "距離だけで決まる", "ダミーロードもSWRは低くできますが、電波は飛びません。効率と放射パターンも見ます。", toolLinks.calculator, "SWRは整合の指標であり、放射効率そのものではありません。", [sources.swr]),
+  q("atu-location", "チューナ位置", "長い同軸でアンテナが不整合なとき、損失を減らしやすいチューナ位置は？", "アンテナに近い位置", "必ず送信機の隣", "受信機の画面内", "送信機側で整合しても、給電線上の高SWR損失が残ることがあります。", toolLinks.calculator, "アンテナチューナは給電線損失を消す装置ではありません。", [sources.antennaTuner]),
+  q("coax-length-myth", "同軸長の神話", "SWRが同軸長でよく見える場合に疑うことは？", "測定位置の見え方が変わっただけ", "アンテナ効率が必ず上がった", "距離が伸びた証拠", "同軸長で送信機から見たインピーダンスが変わることがあります。放射効率改善とは別です。", toolLinks.calculator, "測定器の位置とアンテナ端の状態を分けて考えます。", [sources.swr]),
+  q("balun-purpose", "バランの目的", "バランを使う代表的な理由は？", "平衡・不平衡の変換や不要電流抑制", "法規制の回避", "周波数の削除", "ダイポールなど平衡系を同軸で給電するとき、バランやチョークが重要になります。", toolLinks.calculator, "給電方法はアンテナ性能の一部です。", [sources.commonMode]),
+  q("detuning-by-case", "ケースで離調", "試作裸基板では良かったアンテナが筐体組込後に悪くなる理由は？", "筐体や部品で共振がずれるため", "測定器が消えるため", "送信電力が必ず下がるため", "筐体、バッテリー、ネジ、ケーブルが近傍物体として効きます。", toolLinks.calculator),
+  q("antenna-clearance", "アンテナ周辺余白", "内蔵アンテナ周りで確保したいものは？", "金属やGNDからの距離", "問題番号", "説明文の長さ", "アンテナ近くの金属や配線は放射効率と整合を崩すことがあります。", toolLinks.wavelength),
+  q("battery-cable", "電池と配線", "小型端末で電池やケーブルがアンテナに影響する理由は？", "近傍導体として振る舞うことがあるため", "電池が周波数を決めるため", "ケーブルがdBmになるため", "端末内部の大きな導体は、アンテナパターンや共振へ影響します。", toolLinks.calculator),
+  q("multipath-indoor", "屋内マルチパス", "屋内でRSSIが数歩で変わる理由として近いものは？", "反射波の合成が場所で変わる", "受信感度が歩くため", "単位が変化するため", "壁や床、棚からの反射により、場所ごとの強め合い・弱め合いが起きます。", toolLinks.propagation),
+  q("diversity-basic", "ダイバーシティ", "アンテナダイバーシティの基本的な狙いは？", "深いフェージングを避けやすくする", "法律を変える", "距離を消す", "位置や偏波の異なるアンテナで、片方が谷に入るリスクを下げます。", toolLinks.calculator),
+  q("margin-for-fading", "フェージング余裕", "短時間でRSSIが揺れる現場で必要になりやすいものは？", "フェードマージン", "ページ背景", "Gitタグ", "平均値だけでギリギリだと、谷で通信が落ちます。余裕を持たせます。", toolLinks.calculator),
+  q("environment-repeat", "時間帯差", "同じ場所でも時間帯で通信が変わる理由は？", "人、車両、扉、機械の状態が変わるため", "dB定義が変わるため", "周波数が消えるため", "現場は静止していません。時間帯や運用状態を変えて測るとリスクが見えます。", toolLinks.calculator),
+  q("season-repeat", "季節差", "屋外IoTで春夏と冬の差が出ることがある理由は？", "植生や水分、利用環境が変わるため", "RSSIの単位が変わるため", "距離が変わるため", "葉や雨、積雪、周辺利用状況で損失や反射が変わることがあります。", toolLinks.calculator),
+  q("obstruction-class", "遮蔽物分類", "現場メモで遮蔽物を分類する利点は？", "再現性のある補正にしやすい", "測定を不要にする", "全てFSPLにする", "金属、人体、車両、樹木、壁を分けて記録すると後から見直しやすくなります。", toolLinks.calculator),
+  q("anchor-distance", "アンカー距離", "実測補正のアンカー点で大切なことは？", "距離と高さと設置状態も記録する", "RSSIだけ残せば十分", "写真は禁止する", "測定値だけでは理由を追えません。条件をセットで残します。", toolLinks.calculator),
+  q("photo-log", "写真ログ", "現地測定で写真を残す価値は？", "後から遮蔽物や設置向きを確認できる", "dBmを増やせる", "周波数を測れる", "数値だけでは見えない設置条件を補えます。", toolLinks.calculator),
+  q("height-log", "高さログ", "アンテナ高を記録する理由は？", "モデル入力と反射条件に効くため", "問題文を短くするため", "GitHubへ必要だから", "Hata系、2波、フレネルではアンテナ高が効きます。固定と思い込まないことが大切です。", toolLinks.calculator),
+  q("calibration-not-magic", "補正は魔法でない", "実測補正値の正しい理解は？", "測定点周辺のずれを合わせる値", "全距離を必ず完全予測する値", "電波を増やす装置", "補正は現場へ寄せるための手段ですが、外挿には限界があります。", toolLinks.calculator),
+  q("antenna-move-test", "少し動かす測定", "端末を少し動かしてRSSIを見る意味は？", "局所的なフェージングを見つけるため", "問題数を増やすため", "dBmを消すため", "数十cmの移動で山谷が変わるなら、設置位置の余裕を見直します。", toolLinks.calculator),
+  q("rotate-test", "回転テスト", "端末を回転させて測る目的は？", "偏波と指向性の影響を見る", "周波数を下げる", "受信感度を固定する", "姿勢が変わる用途では、向きごとのRSSI差を確認します。", toolLinks.calculator),
+  q("door-test", "扉テスト", "扉やシャッターを開閉して測る理由は？", "遮蔽状態の変化を確認する", "アンテナ長を伸ばす", "距離を変換する", "金属扉やシャッターは大きな遮蔽物です。運用状態で測ります。", toolLinks.calculator),
+  q("vehicle-position-test", "車両位置テスト", "駐車車両がある現場で試したいことは？", "車両あり・なしで測る", "周波数を隠す", "受信感度を消す", "車両は反射体にも遮蔽物にもなります。想定状態を分けて記録します。", toolLinks.calculator),
+  q("wet-test", "濡れた日の確認", "屋外設備で雨上がりにも確認したい理由は？", "水分で損失や反射が変わることがある", "雨で必ず利得が増える", "距離が半分になる規則がある", "地面や樹木、筐体表面の水分で条件が変わる場合があります。", toolLinks.calculator),
+  q("antenna-cable-strain", "ケーブル取り回し", "アンテナケーブルの取り回しが効くことがある理由は？", "近傍導体や不要電流の経路になるため", "ケーブルが電池になるため", "dBiをdBmへ変えるため", "ケーブル位置がアンテナ近傍に入るとパターンや整合へ影響することがあります。", toolLinks.calculator),
+  q("gateway-height-test", "ゲートウェイ高", "ゲートウェイを高くしたときまず確認することは？", "見通し改善と干渉増加の両方", "必ず全端末が安定する", "端末側損失が消える", "高所化は有効なことが多いですが、干渉やセル範囲の広がりも確認します。", toolLinks.calculator),
+  q("map-not-terrain", "地図と現地", "地図で見通しに見えても現地確認が必要な理由は？", "小さな建物や樹木、設置高さが抜けるため", "地図は常に間違いだから", "距離が不要だから", "地図データは便利ですが、現地の細部と設置状態は別途確認します。", toolLinks.calculator),
+  q("gateway-indoor-window", "窓際ゲートウェイ", "屋内ゲートウェイを窓際へ動かすと改善しやすい理由は？", "建物貫通損失を減らせるため", "受信感度が消えるため", "周波数が固定されるため", "外部端末との通信では、壁や金属膜入りガラスの影響を確認します。", toolLinks.calculator),
+  q("metal-film-glass", "金属膜ガラス", "窓越し通信で注意したいガラスは？", "金属膜入りや遮熱ガラス", "透明なら全て無損失", "厚さゼロのガラス", "遮熱・Low-Eガラスなどは電波を減衰させる場合があります。現地で確認します。", toolLinks.calculator),
+  q("pipe-and-cable", "配管とケーブル", "設備室でアンテナ近くの配管が効く理由は？", "金属反射や遮蔽が起きるため", "配管が感度になるため", "距離を消すため", "金属配管やラックは反射体にも遮蔽物にもなります。設置場所を少し変えて比較します。", toolLinks.calculator),
+  q("low-height-warning", "低高度警告", "低高度端末同士でHataを主モデルにしない理由は？", "地面反射や近傍損失が支配的になりやすい", "Hataに距離がないため", "FSPLが禁止されるため", "Hataは高所基地局と移動局の広域平均向けです。低高度同士は2波、FSPL、Log-distance、実測を中心にします。", toolLinks.calculator),
+  q("measurement-repeatability", "再現性チェック", "同じ条件で再測定して値が大きく違うとき疑うことは？", "環境変化や測定手順のばらつき", "必ず計算式の誤りだけ", "dBm単位の消失", "再現性が低い場合、測定方法、端末姿勢、人や車両の位置を見直します。", toolLinks.calculator),
+  q("apprentice-community-boss", "現場判断ボス", "見習いを卒業する判断として最も大切なのは？", "平均式と近傍損失と実測を分けて説明できる", "SWRだけで全て決める", "距離だけを眺める", "低高度IoTでは、伝搬路、端末周り、実測差分を分けると現実に近づきます。", toolLinks.calculator)
+];
+
+const practitionerCommunitySeeds: QuestExpansionSeed[] = [
+  q("community-mode-choice", "通信形態の選択", "モデル選択の最初に決めるべきものは？", "通信形態", "背景色", "問題番号", "高所基地局なのか低高度端末同士なのかで、使うべき主モデルが変わります。", toolLinks.calculator),
+  q("community-hata-domain", "Hataの領域", "奥村・秦モデルが得意とする評価は？", "高所基地局と移動局の広域平均", "机の上の数m通信", "筐体内の結合", "Hata系は広域セルラーの平均伝搬損失を見る経験式です。低高度端末近傍の損失は別途扱います。", toolLinks.propagation),
+  q("community-hata-terminal-low", "低い端末", "基地局条件がHata範囲内でも、端末が地上近傍なら必要なことは？", "端末近傍損失を加える", "警告を消す", "距離を0にする", "地面反射、筐体、人体・車両、設置方向の影響はHata単独では表しにくいです。", toolLinks.calculator),
+  q("community-terminal-hata-warning", "端末同士とHata", "低高度端末同士でHataを選んだ場合の扱いは？", "参考値として警告付きで見る", "主判定に単独使用する", "計算を必ず隠す", "低高度同士ではFSPL、2波、Log-distance、実測補正を中心にします。", toolLinks.calculator),
+  q("community-cost231-band", "COST231の帯域", "COST231-Hataを使うとき特に確認したい入力は？", "周波数とアンテナ高の範囲", "ページ名", "回答履歴", "経験式は適用範囲外でも数値は出ますが、参考値として扱うべきです。", toolLinks.propagation),
+  q("community-fspl-reference", "FSPL基準線", "自由空間損失モデルの使いどころは？", "見通し条件の基本損失", "屋内遮蔽の完全再現", "人体損失の自動推定", "FSPLは最も基本的な基準線です。現実の追加損失は別途足します。", toolLinks.fspl),
+  q("community-logdistance-n", "nの意味", "Log-distanceモデルの距離損失指数nが大きいほど何を意味しますか？", "距離で損失が増えやすい", "アンテナ利得が高い", "感度が良い", "nは環境の厳しさを表す傾きです。実測で合わせると現場寄りになります。", toolLinks.propagation),
+  q("community-measured-offset-role", "実測オフセット", "実測補正値の主な役割は？", "モデルと現地測定のずれを合わせる", "法規制を変える", "アンテナを長くする", "現地RSSI/RSRPとの差分を補正し、机上モデルを現場へ寄せます。", toolLinks.calculator),
+  q("community-loss-double-count", "二重計上注意", "筐体損失を端末近傍損失に入れたあと、同じ差を実測補正にも入れると？", "二重計上になり得る", "必ず正確になる", "Hataが不要になる", "同じ原因を複数欄に入れると悲観的すぎます。損失の由来を分けて記録します。", toolLinks.calculator),
+  q("community-near-env-split", "環境と近傍", "壁損失と筐体損失を分ける利点は？", "改善策を切り分けやすい", "計算不能にする", "距離を隠す", "建物側の問題か端末実装側の問題かを分けると、対策を選びやすくなります。", toolLinks.calculator),
+  q("community-calibration-split", "補正の入れ分け", "IoT実測補正Hataでアンカー補正を使うとき、追加の実測補正欄は何に使うべきですか？", "別要因の追加補正", "同じ差分の再入力", "送信電力の単位変更", "アンカー補正と同じ差分を重ねると二重計上になります。", toolLinks.calculator),
+  q("community-confidence-target", "信頼率目標", "距離逆算で目標信頼率を入れる理由は？", "平均ではなく失敗側の余裕を見るため", "計算を速くするため", "周波数を固定するため", "平均値でギリギリだと実運用で落ちます。信頼率に応じた余裕を持ちます。", toolLinks.calculator),
+  q("community-sigma", "σの意味", "シャドウフェージング標準偏差σが大きい環境は？", "ばらつきが大きい", "損失が必ず小さい", "アンテナ利得が一定", "σが大きいほど、同じ平均損失でも悪い側の外れが大きくなります。", toolLinks.calculator),
+  q("community-z-margin", "z×σ", "信頼率つき距離計算でz×σを差し引く意味は？", "悪い側のばらつき余裕", "送信電力の増加", "周波数変換", "目標信頼率を満たすため、中央値からフェード余裕を引いて考えます。", toolLinks.calculator),
+  q("community-median-link", "中央値の距離", "研究ベース距離シートで中央値損失だけを過信しない理由は？", "端末ごとのばらつきが残るため", "中央値が存在しないため", "全て同じ値だから", "平均や中央値は代表値です。信頼率、実測、マージンと合わせます。", toolLinks.calculator),
+  q("community-indoor-outdoor", "屋内外の切替", "屋内端末と屋外端末を同じ条件で扱いにくい理由は？", "壁・床・什器・人体の影響が違う", "dBmが違う単位になる", "周波数が消える", "屋内外でクラッタと近傍条件が変わるため、環境損失を分けます。", toolLinks.calculator),
+  q("community-hb-hm", "hb/hm入力", "Hata系モデルで固定してはいけない重要入力は？", "基地局高hbと移動局高hm", "ページタイトル", "選択肢の数", "空中線地上高は伝搬損失に効きます。問い合わせ対応でも明示すべき点です。", toolLinks.propagation),
+  q("community-frequency-check", "周波数範囲", "伝搬モデルの適用範囲チェックで見るものは？", "周波数", "フォント", "GitHubアイコン", "モデルには想定周波数範囲があります。範囲外では警告付き参考値にします。", toolLinks.propagation),
+  q("community-distance-check", "距離範囲", "Hata系で短すぎる距離を入れたときの扱いは？", "警告して参考値にする", "結果を保証する", "自動で隠す", "経験式の適用範囲外でも計算値は出ますが、通信判定には別モデルと実測を併用します。", toolLinks.calculator),
+  q("community-area-type", "エリア種別", "Hata系の市街地・郊外・開放地を選ぶ理由は？", "地物条件で補正が変わるため", "言語を変えるため", "送信電力を消すため", "環境種別により平均伝搬損失の補正が変わります。", toolLinks.propagation),
+  q("community-open-area", "開放地補正", "開放地モデルを市街地へそのまま使うと？", "楽観的になりやすい", "必ず悲観的", "差は出ない", "建物やクラッタが多い場所では、開放地より損失が増えやすいです。", toolLinks.propagation),
+  q("community-suburban", "郊外の扱い", "郊外補正で確認したいことは？", "実際の建物密度や樹木", "画面幅", "問題文の長さ", "郊外といっても住宅密度や樹木で条件が変わるため、現地情報と合わせます。", toolLinks.calculator),
+  q("community-urban", "市街地クラッタ", "市街地で距離が伸びにくい代表要因は？", "建物遮蔽とマルチパス", "受信感度の消滅", "距離単位の変更", "都市では建物、道路幅、基地局高、端末位置が大きく効きます。", toolLinks.calculator),
+  q("community-clutter-map", "クラッタ地図", "地図クラッタを使う狙いは？", "場所ごとの地物差をモデルに入れる", "計算式を隠す", "受信機を増幅する", "森林、市街地、農地などの違いを平均モデルへ反映しやすくなります。", toolLinks.calculator),
+  q("community-building-height", "建物高", "建物高データが距離推定へ効く理由は？", "遮蔽や屋根越し回折に関係するため", "電波の色を決めるため", "dBmを変換するため", "街路や屋上条件では建物高がパスの成立に関わります。", toolLinks.calculator),
+  q("community-road-width", "道路幅", "都市街路モデルで道路幅を見る理由は？", "街路回折や見通し条件に効くため", "ページ名に効くため", "アンテナ長にだけ効くため", "COST231 Walfisch-Ikegami系では街路条件が損失へ効きます。", toolLinks.calculator),
+  q("community-street-orientation", "街路方向", "道路方向と基地局方向の関係が効くことがある理由は？", "街路に沿った伝搬が変わるため", "受信感度を変換するため", "周波数単位だから", "都市では道路の向きと建物配置で電波の通り道が変わります。", toolLinks.calculator),
+  q("community-terminal-height", "端末高の実務", "端末アンテナ高を入力する理由は？", "反射・フレネル・Hata補正に効くため", "表示だけの飾りだから", "法規を変えるため", "低高度IoTでは端末高が特に重要です。固定値と思い込まないようにします。", toolLinks.calculator),
+  q("community-gateway-height", "ゲートウェイ高", "ゲートウェイ高を変えると主に何が変わりますか？", "見通しと反射条件", "選択肢の数", "dBmの定義", "高さは遮蔽、フレネル、2波ブレークポイントに効きます。", toolLinks.calculator),
+  q("community-private-base", "プライベート基地局", "プライベート基地局→IoT端末で見るべき組み合わせは？", "基地局高、端末近傍損失、実測補正", "画面色だけ", "問題数だけ", "屋内外や構内環境に合わせ、標準式と実測を組み合わせます。", toolLinks.calculator),
+  q("community-cellular-base", "セルラー基地局", "携帯基地局→IoT端末でHataを使うときの位置づけは？", "広域平均の参考値", "端末筐体損失の完全推定", "通信可否の唯一の根拠", "高所基地局の平均伝搬損失を見つつ、端末周りと実測で補正します。", toolLinks.calculator),
+  q("community-terminal-mode", "端末間通信", "低高度端末↔低高度端末で主に使うモデルは？", "FSPL、2波、Log-distance、実測補正", "Hata単独", "COST231だけ", "地面反射と近傍損失が効くため、低高度向けの見方にします。", toolLinks.calculator),
+  q("community-custom-mode", "カスタム", "カスタムモードで特に必要な姿勢は？", "前提条件を自分で説明する", "警告を読まない", "単位を混ぜる", "自由度が高い分、距離・高さ・損失の根拠を明確にします。", toolLinks.calculator),
+  q("community-uplink-downlink", "上りと下り", "基地局設計で上り下りを分ける理由は？", "送信電力や受信性能が非対称だから", "周波数が必ず同じだから", "距離が不要だから", "IoT端末は送信電力やアンテナが弱く、上りがボトルネックになることがあります。", toolLinks.calculator),
+  q("community-sensitivity-condition", "感度条件", "受信感度仕様で確認すべきことは？", "変調、データレート、帯域幅、PER条件", "筐体の色", "ページURL", "感度は測定条件込みの値です。方式設定が変わると同じ値ではありません。", toolLinks.calculator),
+  q("community-data-rate-sensitivity", "速度と感度", "データレートを下げると期待しやすい効果は？", "受信感度が良くなる場合がある", "ケーブル損失が消える", "アンテナが不要になる", "方式によっては低速設定で復調しやすくなります。電池や混雑とのトレードオフです。", toolLinks.calculator),
+  q("community-packet-success", "成功率判定", "リンクマージン以外に通信可否判断で見たいものは？", "パケット成功率", "フォントサイズ", "GitHubスター", "運用では届いた割合が重要です。RSSI/SNRと成功率を合わせて評価します。", toolLinks.calculator),
+  q("community-retry-policy", "再送設計", "再送で補える通信の注意点は？", "電池、遅延、混雑が悪化し得る", "必ず無料で改善", "リンクマージンが不要", "再送は便利ですが、根本的なリンク不足を隠すことがあります。", toolLinks.calculator),
+  q("community-battery-budget", "電池予算", "通信距離を伸ばす設定で見直すべきものは？", "電池寿命", "ページ名", "アイコン", "高出力、長い送信時間、再送増加は電池へ効きます。", toolLinks.calculator),
+  q("community-regulatory-eirp", "法規EIRP", "高利得アンテナへ変えるとき必ず見るべきものは？", "EIRP上限", "回答数", "背景画像", "アンテナ利得を上げるとEIRPが増え、法規上限に近づくことがあります。", toolLinks.calculator),
+  q("community-duty-cycle", "送信時間制約", "LPWAで通信回数を増やすとき見るべき制約は？", "送信時間やチャネル利用制限", "アンテナ色", "距離単位", "地域や方式により送信時間・チャネル利用の制約があります。", toolLinks.calculator),
+  q("community-pattern-input", "パターン反映", "アンテナ利得を入れるとき気をつけることは？", "相手方向の実効利得を見る", "最大値だけなら常にOK", "受信感度へ足す", "最大利得方向と実際の相手方向が違うと、期待利得は出ません。", toolLinks.calculator),
+  q("community-connector-loss", "細かな損失", "実務で忘れやすい小さな損失は？", "変換コネクタや短い同軸", "ページ余白", "問題番号", "0.5〜1dB級でも複数積み重なるとリンクマージンに効きます。", toolLinks.calculator),
+  q("community-temperature-aging", "温度と経年", "長期運用で余裕を見たい理由は？", "温度変化や経年で特性が変わるため", "単位が消えるため", "距離が伸びるため", "部品、電池、筐体、設置環境は時間で変わります。量産品では余裕を持ちます。", toolLinks.calculator),
+  q("community-production-margin", "量産ばらつき", "試作1台で成立した通信を量産へ展開するとき必要なものは？", "個体差マージン", "ページ名変更", "受信感度削除", "アンテナ実装、部品公差、組立差で性能がばらつきます。", toolLinks.calculator),
+  q("community-weather-margin", "天候マージン", "屋外常設機で天候マージンを考える理由は？", "雨、濡れ、積雪、風で条件が変わるため", "天候でdBmが無効になるため", "法律が変わるため", "常設用途では晴天だけでなく悪条件も想定します。", toolLinks.calculator),
+  q("community-measurement-plan", "測定計画", "現地測定の計画で最初に決めたいことは？", "測定点、姿勢、時間帯、記録項目", "スクリーン色", "問題文の長さ", "測定条件を揃えないと、差分の理由が分からなくなります。", toolLinks.calculator),
+  q("community-multipoint-fit", "複数点フィット", "複数距離の実測が役立つ理由は？", "損失の傾きとオフセットを分けやすい", "一つの値だけを強くする", "測定を不要にする", "一点だけではずれの原因を切り分けにくいです。複数点でnや補正を見ます。", toolLinks.propagation),
+  q("community-reporting", "説明資料", "顧客や社内へ通信可否を説明するとき必要なものは？", "前提、モデル、警告、実測予定", "結果の一言だけ", "画面色だけ", "数値の根拠と限界を併記すると、後工程で誤解が減ります。", toolLinks.calculator),
+  q("community-practitioner-boss", "実務レビューの門番", "実務者として妥当な最終確認は？", "モデル範囲、損失入れ分け、実測計画を確認する", "最大距離だけを読む", "警告を非表示にする", "通信距離は式だけでなく前提の整合性で決まります。レビューではそこを見ます。", toolLinks.calculator)
+];
+
+const expertCommunitySeeds: QuestExpansionSeed[] = [
+  q("community-planning-not-one", "設計は単一式でない", "基地局設計で距離式だけでは足りない理由は？", "容量、干渉、地形、運用条件も効くため", "距離が不要だから", "アンテナが不要だから", "セル設計はカバレッジだけでなく、容量と干渉も同時に見ます。", toolLinks.calculator),
+  q("community-coverage-capacity", "カバレッジと容量", "基地局を増やすと改善しやすいものは？", "カバレッジと容量の両方", "必ず干渉ゼロ", "端末筐体損失", "基地局密度は届きやすさと収容力に効きますが、干渉設計も必要です。", toolLinks.calculator),
+  q("community-uplink-bottleneck", "上りボトルネック", "IoT端末で上りが厳しくなりやすい理由は？", "端末の送信電力とアンテナが小さいため", "基地局が送信しないため", "距離式がないため", "基地局は高性能でも、端末側の出力・高さ・アンテナが弱いと上りが先に限界になります。", toolLinks.calculator),
+  q("community-downtilt", "ダウンチルト", "基地局アンテナのダウンチルトで調整するものは？", "カバレッジ範囲と干渉", "受信感度の単位", "端末の色", "傾け方でセル端の強さや隣接セルへの漏れが変わります。", toolLinks.calculator),
+  q("community-azimuth", "方位角", "セクタアンテナの方位角を決める目的は？", "狙うエリアへ主ビームを向ける", "dBmを増やす", "距離を非表示にする", "アンテナの主ビーム方向と対象エリアが合うかを確認します。", toolLinks.calculator),
+  q("community-vertical-beam", "垂直ビーム", "垂直ビーム幅が狭いアンテナで注意することは？", "近距離や高低差で外れやすい", "全高さで同じ", "必ず屋内が良くなる", "垂直方向のヌルやビーム外れは、近距離端末や高低差で問題になります。", toolLinks.calculator),
+  q("community-sectorization", "セクタ化", "基地局をセクタ化する主な狙いは？", "方向ごとの容量と干渉制御", "周波数の削除", "アンテナ高の固定", "セクタでエリアを分けると、指向性を活かして収容と干渉を制御できます。", toolLinks.calculator),
+  q("community-cell-edge", "セル端", "セル端設計で特に見る指標は？", "悪条件側のリンクマージン", "平均だけ", "ページ名", "セル中心で良くても端で落ちると実運用に効きます。信頼率と余裕を見ます。", toolLinks.calculator),
+  q("community-handover", "ハンドオーバ余裕", "移動体通信でセル境界に必要な設計は？", "ハンドオーバできる重なり", "全セルを孤立させる", "受信感度を消す", "隣接セルとの重なりや品質差が移動時の安定性に関わります。", toolLinks.calculator),
+  q("community-interference-limited", "干渉律速", "受信電力は十分なのに速度が出ない原因として近いものは？", "干渉でSINRが悪い", "距離が必ず長い", "アンテナが存在しない", "セルラーではノイズより干渉が支配する場面があります。", toolLinks.calculator),
+  q("community-noise-limited", "雑音律速", "人の少ない遠距離で支配的になりやすいものは？", "熱雑音と受信感度", "隣接セルだけ", "ページ背景", "郊外や孤立リンクでは雑音床に対する余裕が重要になります。", toolLinks.calculator),
+  q("community-sinr", "SINR", "SINRがRSSIより実効速度に近い理由は？", "信号、干渉、雑音を一緒に見るため", "距離だけを見るため", "アンテナの色を示すため", "強い信号でも干渉が強ければ速度や安定性は落ちます。", toolLinks.calculator),
+  q("community-rsrq", "RSRQ", "RSRQが悪いとき疑うものは？", "セル負荷や干渉", "アンテナ長だけ", "dBm変換だけ", "RSRPが十分でも、RSRQやSINRが悪いと品質が伸びません。", toolLinks.calculator),
+  q("community-pci-neighbor", "隣接関係", "移動通信の現場で隣接セル設定が重要な理由は？", "接続先切替に効くため", "周波数を決めないため", "RSSIを消すため", "無線品質だけでなく、ネットワーク設定も実運用品質に効きます。", toolLinks.calculator),
+  q("community-drive-test", "ドライブテスト", "ドライブテストの目的は？", "広域の受信品質を実走行で確認する", "机上式を隠す", "アンテナを交換するだけ", "地図上の推定と現地の差を見つけ、モデル補正や基地局調整に使います。", toolLinks.calculator),
+  q("community-walk-test", "ウォークテスト", "屋内や構内でウォークテストが有効な理由は？", "人の高さ・実経路で品質を確認できる", "GPSだけで十分だから", "建物を無視できるから", "屋内は地図式だけでは難しいため、実際の利用動線で測ります。", toolLinks.calculator),
+  q("community-clutter-map-expert", "クラッタマップ", "クラッタマップを基地局設計へ入れる理由は？", "土地利用ごとの損失差を反映する", "全場所をFSPLにする", "受信感度を上げる", "市街地、森林、水面、農地で伝搬条件が違います。", toolLinks.calculator),
+  q("community-dem", "標高データ", "DEMが距離設計で効く理由は？", "地形遮蔽と見通しに関係するため", "アンテナ利得を測るため", "dBiをdBmにするため", "丘陵や谷では標高差が見通しと回折に効きます。", toolLinks.calculator),
+  q("community-building-height-expert", "建物高データ", "3D都市モデルが役立つ場面は？", "街路や屋上遮蔽を詳しく見る", "単位を変える", "送信出力を増やす", "都市部では建物高と道路幅が伝搬路を決める大きな要因です。", toolLinks.calculator),
+  q("community-ray-tracing", "レイトレース", "詳細レイトレースが必要になりやすい場面は？", "ミリ波や複雑な都市街区", "数mのFSPLだけ", "問題文の検査", "高周波や遮蔽が多い環境では、反射・回折・透過を詳細に見る価値があります。", toolLinks.calculator),
+  q("community-model-tuning", "モデルチューニング", "現地測定で伝搬モデルを補正する目的は？", "対象エリア固有のずれを減らす", "法規を変える", "距離を消す", "標準モデルと現地差を合わせ、予測の偏りを減らします。", toolLinks.calculator),
+  q("community-drive-calibration", "測定校正", "ドライブテスト結果をモデルへ反映するとき大切なことは？", "測定条件と位置精度を管理する", "悪い点を全て捨てる", "平均だけを見る", "位置ずれや測定端末差があると、補正の品質に影響します。", toolLinks.calculator),
+  q("community-scanner-device", "スキャナと実端末", "測定スキャナと実端末の結果が違うことがある理由は？", "アンテナや受信機性能が違うため", "周波数が存在しないため", "測定値が必ず同じだから", "実端末の筐体、持ち方、アンテナ性能も通信品質に効きます。", toolLinks.calculator),
+  q("community-pattern-file", "アンテナパターン", "基地局設計でアンテナパターンを入れる理由は？", "方向ごとの利得差を見るため", "計算を遅くするため", "受信感度をなくすため", "水平・垂直パターン、サイドローブ、ヌルがエリア品質へ効きます。", toolLinks.calculator),
+  q("community-mech-elec-tilt", "機械チルトと電気チルト", "機械チルトと電気チルトで変わるものは？", "ビーム方向とパターンの出方", "周波数単位", "問題数", "チルト方法によりセル端、近傍、隣接セル干渉の出方が変わります。", toolLinks.calculator),
+  q("community-feeder-loss", "給電線損失", "基地局でも給電線損失を無視できない理由は？", "アンテナ前後の実効電力に効くため", "距離を消すため", "法規不要にするため", "長い同軸や変換部品はEIRPや受信系ノイズに効きます。", toolLinks.calculator),
+  q("community-mimo-diversity", "MIMOと多重波", "MIMOが多重波環境で有利になることがある理由は？", "複数経路を情報として使えるため", "反射が必ずゼロだから", "アンテナが1本だから", "MIMOは単に強く飛ばすだけでなく、空間チャネルを活用します。", toolLinks.calculator),
+  q("community-polarization-diversity", "偏波ダイバーシティ", "偏波ダイバーシティの狙いは？", "姿勢や反射による偏波差を吸収する", "周波数を変更する", "ケーブルを短くする", "偏波が変わる現場では、複数偏波を使うと安定しやすくなります。", toolLinks.calculator),
+  q("community-cross-pol", "交差偏波", "基地局アンテナで交差偏波を使う理由として近いものは？", "同じ場所で複数系統を扱いやすい", "全ての損失を消す", "距離を固定する", "MIMOやダイバーシティで偏波を分ける設計があります。", toolLinks.calculator),
+  q("community-beamforming", "ビームフォーミング", "ビームフォーミングの基本的な狙いは？", "必要な方向へエネルギーを寄せる", "受信感度を削除する", "周波数を低くする", "アンテナアレイで位相を制御し、方向性を作ります。", toolLinks.calculator),
+  q("community-power-control", "電力制御", "セルラーの電力制御が重要な理由は？", "近遠問題と干渉を抑えるため", "端末を必ず最大出力にするため", "測定を不要にするため", "必要以上の送信は干渉と電池消費を増やします。", toolLinks.calculator),
+  q("community-iot-repetition", "IoT反復送信", "NB-IoTなどのカバレッジ強化で使われる考え方は？", "繰り返し送信で受信しやすくする", "アンテナを消す", "距離をゼロにする", "反復は弱信号に有効ですが、時間と容量を使います。", toolLinks.calculator),
+  q("community-coverage-enhancement", "CEレベル", "カバレッジ強化設定で見るべきトレードオフは？", "到達性と遅延・容量", "画面色と文字数", "モデル名とURL", "遠距離や屋内深部を狙うほど、通信時間や収容に影響します。", toolLinks.calculator),
+  q("community-nb-iot", "NB-IoTの強み", "NB-IoTが深い屋内に向きやすい理由は？", "狭帯域・反復などでリンクバジェットを稼げる", "周波数が存在しない", "アンテナ不要", "方式の強みはありますが、端末近傍損失と実測確認は残ります。", toolLinks.calculator),
+  q("community-ltem-mobility", "LTE-Mの性格", "LTE-MがNB-IoTより向きやすい用途は？", "移動性や比較的高いデータレートが必要な用途", "必ず最長距離だけ", "アンテナなし用途", "方式選定は距離だけでなく、移動性、速度、電池、網対応で決めます。", toolLinks.calculator),
+  q("community-lora-density", "LoRaゲートウェイ密度", "LoRaでゲートウェイを増やす効果は？", "受信機会と冗長性が増える", "全端末の送信時間がゼロになる", "法規制が消える", "複数ゲートウェイで受かると成功率や位置推定に有利ですが、チャネル設計も必要です。", toolLinks.calculator),
+  q("community-capture-expert", "キャプチャ効果", "キャプチャ効果を考える理由は？", "同時送信時の成功率が単純でないため", "電波が必ず消えるため", "アンテナ利得を固定するため", "強い信号だけが受かることがあり、近遠問題と合わせて評価します。", toolLinks.calculator),
+  q("community-cochannel", "同一チャネル干渉", "同一チャネル干渉を下げる方法として近いものは？", "周波数計画や出力・アンテナ調整", "全端末を最大出力にする", "距離式を削除する", "同じチャネルを使うセル同士は、再利用距離やビームで制御します。", toolLinks.calculator),
+  q("community-adjacent-channel", "隣接チャネル", "隣接チャネルで問題になるものは？", "フィルタ特性や漏れ込み", "ページ名", "問題数", "隣のチャネルでも受信機や送信機の特性で干渉が起きることがあります。", toolLinks.calculator),
+  q("community-load", "負荷の時間変動", "昼夜で通信品質が変わる理由として近いものは？", "セル負荷や干渉が変わるため", "距離が変わるため", "周波数が消えるため", "ユーザー数やIoT送信集中でネットワーク負荷が変わります。", toolLinks.calculator),
+  q("community-time-of-day", "時間帯測定", "基地局設計の測定で複数時間帯を見る理由は？", "負荷と環境が変わるため", "測定器を休ませるため", "アンテナを増やすため", "人流、車両、通信負荷は時間帯で変わります。", toolLinks.calculator),
+  q("community-highband-rain", "高周波の雨", "高い周波数帯で雨減衰を気にしやすい理由は？", "波長が短く雨粒の影響が増えるため", "雨で送信電力が増えるため", "dBmが無効になるため", "低GHzとmmWaveでは支配要因が変わります。帯域ごとの前提を確認します。", toolLinks.calculator),
+  q("community-foliage-season", "樹木の季節", "基地局エリアで季節差が出る代表要因は？", "葉の繁り方や水分", "ページ色", "GitHub状態", "植生の多いエリアでは夏と冬で損失が変わることがあります。", toolLinks.calculator),
+  q("community-penetration", "屋内浸透", "屋外基地局から屋内端末を見るとき追加で必要な評価は？", "建物侵入損失", "問題文の長さ", "同軸長だけ", "壁材、窓、階数、室内位置で大きく変わります。", toolLinks.calculator),
+  q("community-rooftop-street", "屋上と街路", "屋上基地局から街路端末への伝搬で効くものは？", "屋根越し回折や街路方向", "受信感度の色", "問題数", "都市では高所から地上へ届く経路が建物配置に左右されます。", toolLinks.calculator),
+  q("community-emergency", "非常時余裕", "重要インフラ用途でリンクマージンを厚く見る理由は？", "悪天候や障害時も成立させたいため", "平均値だけで良いため", "測定が不要なため", "通常時だけでなく、停電・混雑・悪天候時の条件を考えます。", toolLinks.calculator),
+  q("community-sla", "SLA視点", "通信距離設計でSLA視点が必要な理由は？", "どの確率で成立するかが重要だから", "最大距離の一発値で十分だから", "単位をなくせるから", "顧客説明では平均ではなく、期待する稼働率や失敗時の影響を示します。", toolLinks.calculator),
+  q("community-uncertainty", "不確かさ説明", "玄人が距離結果に添えるべき一言は？", "前提と不確かさ", "結果だけ", "警告非表示", "モデルは現実の近似です。適用範囲と未測定リスクを明示します。", toolLinks.calculator),
+  q("community-peer-review", "レビュー観点", "設計レビューで最初に見るべき観点は？", "入力値の根拠とモデル適用範囲", "ボタンの色だけ", "問題数だけ", "数式が正しくても入力前提が違えば結果はずれます。", toolLinks.calculator),
+  q("community-expert-boss", "玄人豆知識ボス", "玄人らしい基地局距離設計の姿勢は？", "標準式、地図、干渉、容量、実測を重ねる", "最大距離だけで決める", "警告を消す", "携帯キャリア級の設計では、リンクバジェットだけでなく運用全体で検証します。", toolLinks.calculator)
+];
+
+const researcherCommunitySeeds: QuestExpansionSeed[] = [
+  q("community-forum-evidence", "掲示板と根拠", "掲示板の定番回答を研究者目線で扱う姿勢は？", "経験談を一次資料や実測で裏取りする", "経験談だけで断定する", "論文だけ見て現場を見ない", "SWR、チューナ、アンテナ利得の話は経験談が多いほど、測定条件と根拠を確認します。", toolLinks.calculator, "コミュニティ知を否定せず、標準資料や現地測定で検証する姿勢が重要です。", [sources.swr, sources.antennaTuner, sources.antennaGain]),
+  q("community-rssi-snr", "RSSIとSNR研究", "LoRaの実験でRSSIとSNRを分けて見る理由は？", "強度と復調しやすさが別だから", "同じ値だから", "距離が不要だから", "RSSIは強度、SNRは雑音に対する余裕です。近遠問題や衝突で意味が変わります。", toolLinks.calculator, "2022年のLoRa実験ではRSSI/SNR、近遠問題、クラスタ分けが議論されています。", [sources.loraRssiSnr2022]),
+  q("community-sf-caveat", "高SFの注意", "LoRaで高いSFが常に最も頑健とは言い切れない理由は？", "チャネル変動やペイロード長で不利になる場合がある", "高SFは禁止だから", "RSSIが消えるから", "高SFは感度に有利ですが、送信時間が長くなり動的チャネルでは別の弱点が出ます。", toolLinks.calculator, "2020年研究は、高SFの頑健性を時間変動チャネルで再検討しています。", [sources.loraRapidFading2020, sources.loraBasics]),
+  q("community-env-features", "環境特徴量", "近年の屋内LoRa研究で温湿度やCO2を入れる狙いは？", "RSSI残差の説明候補にするため", "送信電力を上げるため", "波長を固定するため", "人の活動や空調、環境変化を特徴量として扱い、モデル残差を減らす試みです。", toolLinks.calculator, "特徴量は魔法ではなく、測定環境で有効性を検証します。", [sources.loraDataset2025, sources.envAware2025]),
+  q("community-residual-tail", "残差の裾", "平均誤差が小さくても通信設計で心配なものは？", "悪い側の重い裾", "平均値そのもの", "ページ名", "残差の裾が重いと、まれな大きな落ち込みが通信失敗につながります。", toolLinks.calculator, "環境認識型フェードマージンでは、非ガウス残差や分位点が重要になります。", [sources.envAware2025]),
+  q("community-quantile-margin", "分位点マージン", "信頼率95%の設計で見るべき値は？", "悪い側5%付近の余裕", "平均だけ", "最大RSSIだけ", "通信失敗を減らすには、平均ではなく分位点で余裕を見ます。", toolLinks.calculator, "フェードマージンは分布の上側・下側の扱いで変わります。", [sources.envAware2025]),
+  q("community-bootstrap-research", "ブートストラップ", "有限測定データでブートストラップを使う目的は？", "推定値の不確かさを見る", "データを全部捨てる", "周波数を増やす", "測定数が有限なら、推定した分位点にも不確かさがあります。", toolLinks.calculator, "通信可否の余裕を数値化するには、不確かさも併記します。", [sources.envAware2025]),
+  q("community-block-bootstrap", "ブロック再標本化", "時系列RSSIでブロック化する理由は？", "時間相関を保つため", "単位を変えるため", "外れ値を全削除するため", "連続測定は独立でないため、相関を壊しすぎない再標本化が有効です。", toolLinks.calculator, "時系列の揺れを扱う研究では、独立同分布を雑に仮定しないことが大切です。", [sources.envAware2025]),
+  q("community-leakage", "評価リーク", "測定研究で評価リークを避ける理由は？", "未知環境性能を過大評価しないため", "平均を大きくするため", "距離を消すため", "同じ環境の情報が学習と評価に漏れると、実力より良く見えます。", toolLinks.propagation, "モデル評価は、式そのものと同じくらい重要です。", [sources.envAware2025, sources.envKal2025]),
+  q("community-domain-shift", "ドメインシフト", "別建物へモデルを移すと精度が落ちる理由は？", "環境分布が変わるため", "RSSIが存在しないため", "周波数が違う単位だから", "壁材、什器、人流、ゲートウェイ位置が違えば特徴量とRSSIの関係も変わります。", toolLinks.propagation, "現場展開では、学習環境と運用環境の差を確認します。", [sources.loraDataset2025, sources.envAware2025]),
+  q("community-metadata", "メタデータ", "研究用RSSIデータに必須に近い情報は？", "距離、高さ、時刻、姿勢、環境", "色名だけ", "CSVの行数だけ", "メタデータがないと、なぜRSSIが変わったか後から検証できません。", toolLinks.propagation, "公開データセットの価値は、数値だけでなく条件記録にもあります。", [sources.loraDataset2025]),
+  q("community-kalman", "適応カルマン", "RSSI平滑化で適応カルマンを使う狙いは？", "一時的な揺れと傾向を分ける", "送信電力を増やす", "距離を消す", "瞬間RSSIは揺れるため、時系列処理で安定した特徴を作ります。", toolLinks.propagation, "EnviKal-Locは環境特徴量とRSSI平滑化を組み合わせた例です。", [sources.envKal2025]),
+  q("community-localization-link", "測位とリンク", "LoRa測位研究が距離評価にも参考になる理由は？", "RSSI変動と環境特徴量を扱うため", "距離計算を禁止するため", "周波数を隠すため", "測位とリンク設計は目的が違っても、RSSIの揺れをどう扱うかは共通します。", toolLinks.propagation, "RSSIを位置推定へ使う研究は、測定のばらつき理解にも役立ちます。", [sources.envKal2025]),
+  q("community-aerpaw-altitude", "高度プラットフォーム", "AERPAW実測で高度差を見る意義は？", "遮蔽と見通し条件の差を見るため", "RSSIを消すため", "端末を増やさないため", "ドローンやヘリカイトは、地上車両と違う見通し条件を作ります。", toolLinks.calculator, "高度を変える実測は、ゲートウェイ設置高の効果を考える手掛かりになります。", [sources.aerpaw2026]),
+  q("community-aerpaw-ground", "地上車両", "地上移動体のRSSIが揺れやすい理由は？", "地形・遮蔽・マルチパスが変化するため", "単位が変わるため", "電波が直線だけだから", "低高度移動は地面と周辺物体の影響を強く受けます。", toolLinks.calculator, "AERPAWの地上車両測定は、低高度IoTのばらつき理解に近い題材です。", [sources.aerpaw2026]),
+  q("community-packet-success-research", "成功率研究", "RSSI/SNRに加えて成功率を記録する理由は？", "実際に通信できたかを示すため", "平均を隠すため", "アンテナ長を測るため", "物理指標が良くても、衝突や復調条件で失敗することがあります。", toolLinks.calculator, "距離評価は受信電力だけでなく、パケット成功率と合わせると実用に近づきます。", [sources.aerpaw2026]),
+  q("community-geodata", "地理データ", "P.1812系で地理データが重要な理由は？", "地形やクラッタが損失に効くため", "dBmをmWへ変えるため", "問題数を増やすため", "標高、土地被覆、クラッタ高さは、長距離推定の前提になります。", toolLinks.calculator, "2025年研究では、P.1812-7に使う地理入力の選択が議論されています。", [sources.p1812Geo2025]),
+  q("community-tree-height", "樹冠高", "樹冠高データを入れる狙いは？", "森林クラッタの高さを表すため", "アンテナ利得を固定するため", "RSSIを直接測るため", "森林は遮蔽と回折に効くため、高さ情報が推定に役立つ場合があります。", toolLinks.calculator, "ただしデータ解像度や分類品質の確認が必要です。", [sources.p1812Geo2025]),
+  q("community-landcover", "土地被覆", "土地被覆データで分かることは？", "市街地・森林・農地などの地表種別", "受信機の色", "SWR値", "地表種別はクラッタ損失の目安になります。", toolLinks.calculator, "地図クラッタは平均モデルと現地条件をつなぐ補助情報です。", [sources.p1812Geo2025]),
+  q("community-resolution", "解像度の罠", "地理データは高解像度なら常に良い、は？", "正しくない", "常に正しい", "使ってはいけない", "分類品質、更新性、代表値の割当が悪いと、高解像度でも精度は上がりません。", toolLinks.calculator, "地理データは細かさだけでなく、目的への適合性で選びます。", [sources.p1812Geo2025]),
+  q("community-rel19-gap", "7〜24GHz", "Rel-19で注目される7〜24GHz帯の論点は？", "sub-6とmmWaveの間のモデル整備", "音声帯域だけ", "920MHz専用化", "中間周波数帯は6G候補としてモデル拡張が議論されています。", toolLinks.calculator, "標準モデルも新しい周波数利用に合わせて更新されます。", [sources.rel19]),
+  q("community-uma-umi", "UMa/UMi", "UMa/UMiシナリオを分ける理由は？", "基地局高や街区スケールが違うため", "単位が違うため", "アンテナが不要だから", "マクロとマイクロでは見通し、建物高さ、距離スケールが変わります。", toolLinks.calculator, "3GPP系モデルはシナリオ前提が重要です。", [sources.rel19]),
+  q("community-ut-antenna", "UTアンテナ", "端末アンテナモデルが重要な理由は？", "姿勢や実装でチャネルが変わるため", "ページ色が変わるため", "距離が不要になるため", "端末側のアンテナ特性はIoTでも大きな前提です。", toolLinks.calculator, "筐体・人体・偏波の扱いは、低高度IoTにも直結します。", [sources.rel19]),
+  q("community-polarization-research", "偏波研究", "偏波を詳しく扱う理由は？", "端末姿勢や反射で受信電力が変わるため", "SWRを無視するため", "周波数を固定するため", "偏波ミスマッチはリンクマージンに直接効きます。", toolLinks.calculator, "Rel-19でも偏波パワー変動が論点に含まれます。", [sources.rel19]),
+  q("community-near-field", "近傍界", "大規模アレイで近傍界が論点になる理由は？", "平面波近似が崩れる距離が伸びるため", "RSSIが使えないため", "単位が消えるため", "高周波・大開口では、近距離でも従来近似が合わない場合があります。", toolLinks.calculator, "IoT端末でも別スケールで近傍物体影響を確認します。", [sources.rel19]),
+  q("community-nonstationarity", "空間非定常性", "空間非定常性とは？", "場所によりチャネル統計が変わること", "全地点でRSSIが同じこと", "距離が不要なこと", "大規模アレイや複雑環境では、見える散乱体が位置で変わります。", toolLinks.calculator, "平均モデルの限界を知るキーワードです。", [sources.rel19]),
+  q("community-gain-reference", "利得基準", "アンテナ利得の論文や仕様で確認することは？", "dBiかdBdか、測定条件は何か", "文字数だけ", "周波数を隠しているか", "利得の基準と測定治具が違うと比較できません。", toolLinks.wavelength, "掲示板でもdBi/dBd混同は頻出です。", [sources.antennaGain]),
+  q("community-ground-plane-research", "グランド面", "モノポールの研究・実装でグランド面を記録する理由は？", "アンテナの一部として効くため", "単なるネジ穴だから", "距離式に不要だから", "基板や筐体のサイズ・形状で放射特性が変わります。", toolLinks.wavelength, "小型端末では評価基板と実機基板の差が重要です。", [sources.monopoleGround, sources.groundPlane]),
+  q("community-common-mode", "コモンモード", "コモンモード電流を研究・測定で疑う理由は？", "給電線が意図せず放射するため", "アンテナ利得が常にゼロだから", "受信感度が不要だから", "外皮電流があると、測定したアンテナパターンが給電線込みになります。", toolLinks.calculator, "測定系そのものが結果を変える典型例です。", [sources.commonMode, sources.coaxialCable]),
+  q("community-tuner-loss", "チューナ損失", "アンテナチューナを研究者目線で評価するとき見るものは？", "整合だけでなく挿入損失", "SWRだけ", "外観だけ", "チューナは反射を見かけ上減らせても、内部損失や給電線損失が残ります。", toolLinks.calculator, "SWR低下と放射効率改善を分けて測ります。", [sources.antennaTuner, sources.swr]),
+  q("community-swr-efficiency", "SWRと効率", "SWRだけでアンテナ性能を断定できない理由は？", "放射効率やパターンを示さないため", "SWRが存在しないため", "距離だけで決まるため", "ダミーロードは整合しても放射しません。効率と電界強度測定が必要です。", toolLinks.calculator, "コミュニティで最も長く続く話題の一つです。", [sources.swr, sources.antennaTuner]),
+  q("community-capture-effect", "LoRaキャプチャ", "LoRaの同時送信評価でキャプチャ効果を見る理由は？", "強い信号だけ成功する場合があるため", "全衝突が必ず成功するため", "RSSIが不要だから", "衝突時の成功率は受信電力差や設定に依存します。", toolLinks.calculator, "近遠問題と合わせて、配置設計に効く論点です。", [sources.loraRssiSnr2022]),
+  q("community-near-far-cluster", "近遠クラスタ", "端末をクラスタ分けする研究上の狙いは？", "近遠問題を緩和しやすくする", "測定を減らすだけ", "周波数を変えるだけ", "ゲートウェイ周りの端末分布を整理し、RSSI/SNRや電力制御を扱いやすくします。", toolLinks.calculator, "2022年LoRa-ESL研究は、クラスタと動的設定を扱っています。", [sources.loraRssiSnr2022]),
+  q("community-large-dataset", "大規模データ", "100万件級のRSSIデータで見やすくなるものは？", "分布とばらつき", "単発の最大値だけ", "ページタイトル", "大量データでは平均だけでなく、時間・環境・外れ値を統計的に見られます。", toolLinks.propagation, "EnviKal-Loc系の大規模データは再現性評価にも意味があります。", [sources.envKal2025]),
+  q("community-model-selection", "モデル比較", "研究で複数モデルを比較する理由は？", "条件により得意不得意が違うため", "正解を隠すため", "全部同じだから", "FSPL、Log-distance、Hata、特徴量モデルは前提が違います。", toolLinks.propagation, "万能モデル探しより、適用条件を明示することが重要です。", [sources.envAware2025, sources.loraDataset2025]),
+  q("community-prediction-interval", "予測区間", "点推定だけでなく予測区間を見る理由は？", "通信失敗側のリスクを見るため", "平均を消すため", "RSSIを使わないため", "設計では一点の予測値より、どれだけ外れ得るかが重要です。", toolLinks.calculator, "信頼率つき距離計算は、予測区間的な考え方を簡易化したものです。", [sources.envAware2025]),
+  q("community-non-gaussian", "非ガウス残差", "RSSI残差が正規分布だけで表しにくい場合に困ることは？", "フェードマージン推定がずれる", "平均が存在しない", "距離が使えない", "重い裾や混合状態があると、単純なσだけではリスクを見誤ります。", toolLinks.calculator, "Student-tや混合分布を候補にする研究の背景です。", [sources.envAware2025]),
+  q("community-feature-selection", "特徴量選択", "環境特徴量を増やすほど必ず良い、は？", "正しくない", "常に正しい", "測定不要になる", "特徴量が多いほど過学習のリスクがあります。検証データで確認します。", toolLinks.propagation, "正則化や統計検定で有効性を確認します。", [sources.envAware2025]),
+  q("community-open-data", "公開データ", "公開測定データの価値は？", "他者が再検証できる", "現地測定が永久不要になる", "全環境で同じになる", "条件付きで再利用できるデータは、モデル比較と教育に役立ちます。", toolLinks.propagation, "ただし別環境への外挿には注意が必要です。", [sources.loraDataset2025]),
+  q("community-reproducibility", "再現性", "無線測定研究で再現性を高める要素は？", "手順、機材、位置、時刻、環境の記録", "結果だけ掲載", "悪い値を削除", "測定条件が残っていれば、別チームが結果を比較しやすくなります。", toolLinks.propagation, "研究と実務の橋渡しにはメタデータが欠かせません。", [sources.loraDataset2025, sources.aerpaw2026]),
+  q("community-baseline", "ベースライン", "新しい補正モデルで必ず比較したい相手は？", "単純な基準モデル", "最も複雑なモデルだけ", "比較不要", "FSPLやLog-distanceなどの基準線と比べないと、改善の意味が分かりません。", toolLinks.propagation, "研究ベース距離シートでも複数モデル比較を重視しています。", [sources.envAware2025, sources.p1812Geo2025]),
+  q("community-confidence", "信頼区間", "論文の改善値を見るとき確認したいものは？", "ばらつきや信頼区間", "平均値だけ", "タイトルだけ", "改善が偶然か、どの条件で有効かを判断するには不確かさの表示が必要です。", toolLinks.propagation, "平均改善だけでは現場判断に足りません。", [sources.envAware2025]),
+  q("community-measurement-uncertainty", "測定不確かさ", "RSSI測定の不確かさに含まれるものは？", "端末個体差、姿勢、時刻、位置誤差", "ページ余白", "問題番号", "同じ条件に見えても、測定器や設置の差で結果は揺れます。", toolLinks.calculator, "AERPAWのようなフィールド測定でも、プラットフォーム差を分けて見ます。", [sources.aerpaw2026, sources.loraDataset2025]),
+  q("community-human-blockage", "人体遮蔽研究", "人体遮蔽を端末近傍損失へ分ける発想が重要な理由は？", "端末周りの一時的損失だから", "Hataが完全に表すから", "距離と無関係だから", "人の動きは時間変動する近傍要因です。平均モデルだけでは説明しにくいです。", toolLinks.calculator, "Rel-19の端末アンテナや偏波議論とも、端末実装影響を意識する点でつながります。", [sources.rel19, sources.envAware2025]),
+  q("community-high-band-clutter", "高周波クラッタ", "周波数が上がるほど詳細な遮蔽モデルが欲しくなる理由は？", "波長が短く物体影響が強くなるため", "低周波が存在しないため", "距離が不要になるため", "サブ6、7〜24GHz、mmWaveでは支配要因が変わります。", toolLinks.calculator, "Rel-19のモデル拡張はこの周波数帯の現実的な扱いにも関わります。", [sources.rel19]),
+  q("community-iot-hata-correction", "IoT向けHata補正", "IoT向けにHataを使うなら現実的な扱いは？", "基準線として実測で補正する", "単独で全て保証する", "端末近傍損失を消す", "Hataは広域平均の参考にし、低高度IoTの実測差分や近傍損失を併用します。", toolLinks.calculator, "近年研究は万能な置換式より、測定・特徴量・残差管理を重視する流れです。", [sources.loraDataset2025, sources.envAware2025]),
+  q("community-no-universal", "万能式はない", "最新研究から読み取れる現実的な結論は？", "万能な単一距離式はまだ難しい", "Hataだけで全環境OK", "FSPLだけで屋内OK", "環境、実装、時間変動、干渉が絡むため、複数の根拠を重ねます。", toolLinks.calculator, "本ツールも標準モデル、端末近傍損失、実測補正、信頼率を組み合わせます。", [sources.envAware2025, sources.aerpaw2026, sources.p1812Geo2025, sources.rel19]),
+  q("community-governance", "モデル管理", "組織で伝搬モデルを使うとき必要な管理は？", "適用範囲、版、補正履歴の記録", "計算者の記憶だけ", "警告削除", "同じモデル名でも版や補正条件が違うと結果が変わります。", toolLinks.calculator, "標準化や地理データ研究を使うほど、前提管理が重要になります。", [sources.rel19, sources.p1812Geo2025]),
+  q("community-field-validation", "フィールド検証", "研究モデルを現場導入する最後の確認は？", "実地測定での検証", "論文タイトルだけ", "シミュレーションだけ", "現地のアンテナ、筐体、遮蔽、運用条件で確認して初めて判断できます。", toolLinks.calculator, "AERPAWのようなフィールド測定は、机上モデルの限界を知る材料になります。", [sources.aerpaw2026]),
+  q("community-researcher-boss", "研究者トリビアボス", "研究者モードで一番大切な考え方は？", "物理、統計、実測、運用をつなげて検証する", "新しい論文名だけ覚える", "式を一つだけ信じる", "最新研究は、単一式で断定するより、データと不確かさを管理する方向へ進んでいます。", toolLinks.calculator, "掲示板の知恵も論文も、最後は現場の測定で接続します。", [sources.loraDataset2025, sources.envAware2025, sources.envKal2025, sources.aerpaw2026, sources.p1812Geo2025, sources.rel19, sources.swr, sources.antennaTuner])
+];
+
 export const rfQuestLessons: QuestLesson[] = [
   ...coreQuestLessons,
   ...makeExpansionLessons("beginner", beginnerExpansionSeeds),
+  ...makeExpansionLessons("beginner", beginnerCommunitySeeds, 51),
   ...makeExpansionLessons("apprentice", apprenticeExpansionSeeds),
+  ...makeExpansionLessons("apprentice", apprenticeCommunitySeeds, 51),
   ...makeExpansionLessons("practitioner", practitionerExpansionSeeds),
+  ...makeExpansionLessons("practitioner", practitionerCommunitySeeds, 51),
   ...makeExpansionLessons("expert", expertExpansionSeeds),
-  ...makeExpansionLessons("researcher", researcherExpansionSeeds)
+  ...makeExpansionLessons("expert", expertCommunitySeeds, 51),
+  ...makeExpansionLessons("researcher", researcherExpansionSeeds),
+  ...makeExpansionLessons("researcher", researcherCommunitySeeds, 51)
 ];

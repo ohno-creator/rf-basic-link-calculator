@@ -68,11 +68,11 @@ function levelFromCompleted(completedCount: number): number {
 }
 
 function rankName(completedCount: number): string {
-  if (completedCount >= 250) return "RF賢者";
-  if (completedCount >= 200) return "研究者";
-  if (completedCount >= 150) return "玄人";
-  if (completedCount >= 100) return "実務者";
-  if (completedCount >= 50) return "見習い";
+  if (completedCount >= 500) return "RF賢者";
+  if (completedCount >= 400) return "研究者";
+  if (completedCount >= 300) return "玄人";
+  if (completedCount >= 200) return "実務者";
+  if (completedCount >= 100) return "見習い";
   return "初心者";
 }
 
@@ -181,7 +181,8 @@ function StageMap({
   progress: ProgressMap;
   onSelect: (lesson: QuestLesson) => void;
 }) {
-  const chapters = [1, 2, 3, 4, 5].map((chapter) => {
+  const chapterCount = Math.ceil(lessons.length / 10);
+  const chapters = Array.from({ length: chapterCount }, (_, index) => index + 1).map((chapter) => {
     const from = (chapter - 1) * 10 + 1;
     const to = chapter * 10;
     return {
@@ -196,9 +197,9 @@ function StageMap({
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-slate-950">ステージ選択</h2>
-        <span className="text-xs font-semibold text-slate-400">5章×10問</span>
+        <span className="text-xs font-semibold text-slate-400">{chapterCount}章×10問</span>
       </div>
-      <div className="mt-3 space-y-3">
+      <div className="mt-3 max-h-[68vh] space-y-3 overflow-y-auto pr-1">
         {chapters.map((chapter) => {
           const completed = chapter.lessons.filter((lesson) => progress[lesson.id]).length;
 
@@ -246,21 +247,29 @@ function LessonBattle({
   lesson,
   selectedChoice,
   isCompleted,
-  onAnswer
+  nextLesson,
+  onAnswer,
+  onNext
 }: {
   lesson: QuestLesson;
   selectedChoice?: number;
   isCompleted: boolean;
+  nextLesson: QuestLesson;
   onAnswer: (choiceIndex: number) => void;
+  onNext: () => void;
 }) {
   const answered = selectedChoice !== undefined;
   const correct = selectedChoice === lesson.correctIndex;
+  const chapter = Math.ceil(lesson.stage / 10);
+  const isBossStage = lesson.stage % 10 === 0;
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-bold text-slate-400">STAGE {lesson.stage}</p>
+          <p className="text-xs font-bold text-slate-400">
+            第{chapter}章 / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
+          </p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">{lesson.title}</h2>
           <p className="mt-1 text-sm font-semibold text-slate-500">対戦相手：{lesson.enemy}</p>
         </div>
@@ -329,6 +338,20 @@ function LessonBattle({
               {lesson.appLink.label}
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
+            <div className="mt-3 rounded-md border border-slate-200 bg-white/80 p-3">
+              <p className="text-xs font-bold text-slate-500">次の討伐</p>
+              <p className="mt-1 text-sm font-bold text-slate-950">
+                STAGE {nextLesson.stage}：{nextLesson.title}
+              </p>
+              <button
+                type="button"
+                className="mt-2 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-sm font-bold text-staf transition hover:bg-staf-light"
+                onClick={onNext}
+              >
+                次の問題へ
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
+              </button>
+            </div>
           </section>
 
           <details open className="rounded-lg border border-slate-200 bg-white p-4">
@@ -363,6 +386,7 @@ export function RfLearningQuestClient() {
   const [activeMode, setActiveMode] = useState<QuestModeId>("beginner");
   const [activeLessonId, setActiveLessonId] = useState<string>("beginner-db-3db");
   const [levelUp, setLevelUp] = useState<LevelUpState | null>(null);
+  const [streak, setStreak] = useState(0);
 
   const completedCount = useMemo(
     () => rfQuestLessons.filter((lesson) => progress[lesson.id]).length,
@@ -380,6 +404,30 @@ export function RfLearningQuestClient() {
     lessonsInMode[0];
   const activeModeMeta = questModes.find((mode) => mode.id === activeMode) ?? questModes[0];
   const completedInMode = lessonsInMode.filter((lesson) => progress[lesson.id]).length;
+  const nextLevelAt = currentLevel * 5;
+  const remainingToNextLevel =
+    completedCount >= rfQuestLessons.length ? 0 : Math.max(1, nextLevelAt - completedCount);
+  const nextLesson = useMemo(() => {
+    const nextInMode = lessonsInMode.find((lesson) => lesson.stage > activeLesson.stage);
+
+    if (nextInMode) {
+      return nextInMode;
+    }
+
+    const activeModeIndex = questModes.findIndex((mode) => mode.id === activeMode);
+    for (let offset = 1; offset <= questModes.length; offset += 1) {
+      const nextMode = questModes[(activeModeIndex + offset + questModes.length) % questModes.length].id;
+      const firstInNextMode = rfQuestLessons
+        .filter((lesson) => lesson.mode === nextMode)
+        .sort((a, b) => a.stage - b.stage)[0];
+
+      if (firstInNextMode) {
+        return firstInNextMode;
+      }
+    }
+
+    return activeLesson;
+  }, [activeLesson, activeMode, lessonsInMode]);
 
   useEffect(() => {
     const stored = loadProgress();
@@ -396,10 +444,16 @@ export function RfLearningQuestClient() {
   function answerLesson(lesson: QuestLesson, choiceIndex: number) {
     setAnswers((current) => ({ ...current, [lesson.id]: choiceIndex }));
 
-    if (choiceIndex !== lesson.correctIndex || progress[lesson.id]) {
+    if (choiceIndex !== lesson.correctIndex) {
+      setStreak(0);
       return;
     }
 
+    if (progress[lesson.id]) {
+      return;
+    }
+
+    setStreak((current) => current + 1);
     setProgress((current) => {
       const beforeCount = rfQuestLessons.filter((item) => current[item.id]).length;
       const next = { ...current, [lesson.id]: true };
@@ -414,7 +468,7 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全250問を攻略しました。リンク設計の基礎、実務、研究動向までひと通り確認済みです。"
+              ? "全500問を攻略しました。リンク設計の基礎、実務、研究動向、掲示板で定番の誤解までひと通り確認済みです。"
               : `${afterCount}問クリア。次のモードや未攻略ステージへ進めます。`
         });
       }
@@ -428,8 +482,15 @@ export function RfLearningQuestClient() {
     setAnswers({});
     saveProgress({});
     setLevelUp(null);
+    setStreak(0);
     setActiveMode("beginner");
     setActiveLessonId("beginner-db-3db");
+  }
+
+  function goToLesson(lesson: QuestLesson) {
+    setActiveMode(lesson.mode);
+    setActiveLessonId(lesson.id);
+    setLevelUp(null);
   }
 
   return (
@@ -445,8 +506,8 @@ export function RfLearningQuestClient() {
               問題を倒して、リンク設計の勘を育てる
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              初心者、見習い、実務者、玄人、研究者の5モードで合計250問。1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
-              進捗はこのブラウザに保存されます。
+              初心者、見習い、実務者、玄人、研究者の5モードで合計500問。1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
+              掲示板でよくある誤解、現場の豆知識、最新研究の読み方まで、進捗はこのブラウザに保存されます。
             </p>
           </div>
           <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
@@ -457,6 +518,16 @@ export function RfLearningQuestClient() {
             <p className="text-xs font-semibold">
               Lv.{currentLevel} {rankName(completedCount)} / XP {xp}
             </p>
+            <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
+              <div className="rounded-md bg-white/70 p-2">
+                <p className="text-slate-500">連続正解</p>
+                <p className="text-base text-staf">{streak}</p>
+              </div>
+              <div className="rounded-md bg-white/70 p-2">
+                <p className="text-slate-500">次Lvまで</p>
+                <p className="text-base text-staf">{remainingToNextLevel}問</p>
+              </div>
+            </div>
             <div className="mt-3">
               <ProgressBar value={completedCount} max={rfQuestLessons.length} />
             </div>
@@ -508,7 +579,9 @@ export function RfLearningQuestClient() {
           lesson={activeLesson}
           selectedChoice={answers[activeLesson.id]}
           isCompleted={Boolean(progress[activeLesson.id])}
+          nextLesson={nextLesson}
           onAnswer={(choiceIndex) => answerLesson(activeLesson, choiceIndex)}
+          onNext={() => goToLesson(nextLesson)}
         />
       </section>
     </main>

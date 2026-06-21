@@ -188,8 +188,9 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(
     page.getByRole("heading", { level: 1, name: "問題を倒して、リンク設計の勘を育てる" })
   ).toBeVisible();
-  await expect(page.getByText("初心者、見習い、実務者、玄人、研究者の5モードで合計250問")).toBeVisible();
+  await expect(page.getByText("初心者、見習い、実務者、玄人、研究者の5モードで合計500問")).toBeVisible();
   await expect(page.getByText("第1章 STAGE 1-10")).toBeVisible();
+  await expect(page.getByText("10章×10問")).toBeVisible();
   await expect(page.getByRole("button", { name: /研究者モード/ })).toBeVisible();
 
   await page.getByRole("button", { name: "約2倍" }).click();
@@ -197,10 +198,11 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(page.getByText("+3dBは電力で約2倍です。")).toBeVisible();
   await expect(page.getByRole("link", { name: /dBを体感する/ })).toBeVisible();
   await expect(page.getByText("現場コラム").first()).toBeVisible();
-  await expect(page.getByText("1/250")).toBeVisible();
+  await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
+  await expect(page.getByText("1/500")).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/250")).toBeVisible();
+  await expect(page.getByText("1/500")).toBeVisible();
   await page.getByRole("button", { name: /ステージ1 dBのものさし/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
 });
@@ -232,5 +234,5 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
 
   await expect(page.getByText("レベルアップ")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lv.2 初心者" })).toBeVisible();
-  await expect(page.getByText("5/250")).toBeVisible();
+  await expect(page.getByText("5/500")).toBeVisible();
 });

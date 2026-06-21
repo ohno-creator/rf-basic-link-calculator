@@ -2,13 +2,13 @@ import { describe, expect, it } from "vitest";
 import { questModes, rfQuestLessons } from "@/data/rfLearningQuestLessons";
 
 describe("RF learning quest lessons", () => {
-  it("contains exactly 50 lessons for each mode", () => {
-    expect(rfQuestLessons).toHaveLength(250);
+  it("contains exactly 100 lessons for each mode", () => {
+    expect(rfQuestLessons).toHaveLength(500);
 
     for (const mode of questModes) {
       const lessons = rfQuestLessons.filter((lesson) => lesson.mode === mode.id);
-      expect(lessons).toHaveLength(50);
-      expect(lessons.map((lesson) => lesson.stage)).toEqual(Array.from({ length: 50 }, (_, index) => index + 1));
+      expect(lessons).toHaveLength(100);
+      expect(lessons.map((lesson) => lesson.stage)).toEqual(Array.from({ length: 100 }, (_, index) => index + 1));
     }
   });
 
