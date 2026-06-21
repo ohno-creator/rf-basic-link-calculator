@@ -68,16 +68,18 @@ function levelFromCompleted(completedCount: number): number {
 }
 
 function rankName(completedCount: number): string {
-  if (completedCount >= 50) return "RF賢者";
-  if (completedCount >= 40) return "研究者";
-  if (completedCount >= 30) return "玄人";
-  if (completedCount >= 20) return "実務者";
-  if (completedCount >= 10) return "見習い";
+  if (completedCount >= 250) return "RF賢者";
+  if (completedCount >= 200) return "研究者";
+  if (completedCount >= 150) return "玄人";
+  if (completedCount >= 100) return "実務者";
+  if (completedCount >= 50) return "見習い";
   return "初心者";
 }
 
 function nextIncompleteLesson(modeId: QuestModeId, progress: ProgressMap): QuestLesson {
-  const lessons = rfQuestLessons.filter((lesson) => lesson.mode === modeId);
+  const lessons = rfQuestLessons
+    .filter((lesson) => lesson.mode === modeId)
+    .sort((a, b) => a.stage - b.stage);
   return lessons.find((lesson) => !progress[lesson.id]) ?? lessons[0];
 }
 
@@ -179,33 +181,60 @@ function StageMap({
   progress: ProgressMap;
   onSelect: (lesson: QuestLesson) => void;
 }) {
+  const chapters = [1, 2, 3, 4, 5].map((chapter) => {
+    const from = (chapter - 1) * 10 + 1;
+    const to = chapter * 10;
+    return {
+      chapter,
+      from,
+      to,
+      lessons: lessons.filter((lesson) => lesson.stage >= from && lesson.stage <= to)
+    };
+  });
+
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-slate-950">ステージ選択</h2>
-        <span className="text-xs font-semibold text-slate-400">1問ずつ攻略</span>
+        <span className="text-xs font-semibold text-slate-400">5章×10問</span>
       </div>
-      <div className="mt-3 grid grid-cols-5 gap-2">
-        {lessons.map((lesson) => {
-          const done = Boolean(progress[lesson.id]);
-          const selected = lesson.id === activeLesson.id;
+      <div className="mt-3 space-y-3">
+        {chapters.map((chapter) => {
+          const completed = chapter.lessons.filter((lesson) => progress[lesson.id]).length;
 
           return (
-            <button
-              key={lesson.id}
-              type="button"
-              className={`aspect-square rounded-md border text-sm font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
-                selected
-                  ? "border-staf bg-staf text-white"
-                  : done
-                    ? "border-emerald-200 bg-emerald-50 text-emerald-800"
-                    : "border-slate-200 bg-slate-50 text-slate-500 hover:border-staf/30"
-              }`}
-              onClick={() => onSelect(lesson)}
-              aria-label={`ステージ${lesson.stage} ${lesson.title}`}
-            >
-              {done ? "✓" : lesson.stage}
-            </button>
+            <div key={chapter.chapter} className="rounded-md border border-slate-100 bg-slate-50 p-2">
+              <div className="flex items-center justify-between gap-2 px-1">
+                <p className="text-[11px] font-bold text-slate-600">
+                  第{chapter.chapter}章 STAGE {chapter.from}-{chapter.to}
+                </p>
+                <p className="text-[11px] font-bold text-slate-400">{completed}/10</p>
+              </div>
+              <div className="mt-2 grid grid-cols-5 gap-1.5">
+                {chapter.lessons.map((lesson) => {
+                  const done = Boolean(progress[lesson.id]);
+                  const selected = lesson.id === activeLesson.id;
+
+                  return (
+                    <button
+                      key={lesson.id}
+                      type="button"
+                      className={`aspect-square rounded-md border text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
+                        selected
+                          ? "border-staf bg-staf text-white"
+                          : done
+                            ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+                            : "border-slate-200 bg-white text-slate-500 hover:border-staf/30"
+                      }`}
+                      onClick={() => onSelect(lesson)}
+                      aria-label={`ステージ${lesson.stage} ${lesson.title}`}
+                    >
+                      {done ? "✓" : lesson.stage}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           );
         })}
       </div>
@@ -343,7 +372,7 @@ export function RfLearningQuestClient() {
   const xp = completedCount * 120;
 
   const lessonsInMode = useMemo(
-    () => rfQuestLessons.filter((lesson) => lesson.mode === activeMode),
+    () => rfQuestLessons.filter((lesson) => lesson.mode === activeMode).sort((a, b) => a.stage - b.stage),
     [activeMode]
   );
   const activeLesson =
@@ -385,7 +414,7 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全50問を攻略しました。リンク設計の基礎、実務、研究動向までひと通り確認済みです。"
+              ? "全250問を攻略しました。リンク設計の基礎、実務、研究動向までひと通り確認済みです。"
               : `${afterCount}問クリア。次のモードや未攻略ステージへ進めます。`
         });
       }
@@ -416,7 +445,7 @@ export function RfLearningQuestClient() {
               問題を倒して、リンク設計の勘を育てる
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              初心者、見習い、実務者、玄人、研究者の5モードで合計50問。1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
+              初心者、見習い、実務者、玄人、研究者の5モードで合計250問。1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
               進捗はこのブラウザに保存されます。
             </p>
           </div>
