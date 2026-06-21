@@ -100,6 +100,41 @@ describe("research distance calculations", () => {
     expect(narrow).toBeGreaterThan(wide);
   });
 
+  it("increases COST231 Walfisch-Ikegami loss as the base antenna drops below the rooftop", () => {
+    const base = {
+      ...defaultResearchDistanceInput,
+      model: "cost231_wi_nlos" as const,
+      frequencyGHz: 1.8,
+      rxAntennaHeightM: 1.5,
+      averageBuildingHeightM: 20
+    };
+    const distanceM = 500;
+    const atRoof = calculateResearchPathLossDb({ ...base, txAntennaHeightM: 20 }, distanceM);
+    const belowRoof = calculateResearchPathLossDb({ ...base, txAntennaHeightM: 12 }, distanceM);
+    const deepBelowRoof = calculateResearchPathLossDb({ ...base, txAntennaHeightM: 6 }, distanceM);
+
+    // ka/kd の符号が正準どおりなら、屋根より低い基地局ほど多重回折損は増える。
+    expect(belowRoof).toBeGreaterThan(atRoof);
+    expect(deepBelowRoof).toBeGreaterThan(belowRoof);
+  });
+
+  it("keeps COST231 Walfisch-Ikegami path loss monotonic in distance for a below-rooftop base", () => {
+    const input = {
+      ...defaultResearchDistanceInput,
+      model: "cost231_wi_nlos" as const,
+      frequencyGHz: 1.8,
+      txAntennaHeightM: 10,
+      averageBuildingHeightM: 12,
+      rxAntennaHeightM: 1.5
+    };
+    const distancesM = [50, 100, 200, 300, 400, 500, 700, 1000, 2000, 5000];
+    const losses = distancesM.map((d) => calculateResearchPathLossDb(input, d));
+
+    for (let index = 1; index < losses.length; index += 1) {
+      expect(losses[index]).toBeGreaterThan(losses[index - 1]);
+    }
+  });
+
   it("warns when 3GPP UMa is used outside height assumptions", () => {
     const result = calculateResearchDistance({
       ...defaultResearchDistanceInput,

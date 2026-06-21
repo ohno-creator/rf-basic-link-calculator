@@ -307,13 +307,19 @@ function calculateCost231WalfischIkegamiNlosDb(input: ResearchDistanceInput, dis
   const baseAboveRoofM = baseHeightM - roofHeightM;
   const baseBelowRoofM = roofHeightM - baseHeightM;
   const baseStationHeightLossDb = baseAboveRoofM > 0 ? -18 * log10(1 + baseAboveRoofM) : 0;
+  // 基地局が屋根より低い(baseBelowRoofM>0)ほど ka・kd は増加し、多重回折損が大きくなる。
+  // 正準式（COST231-WI、Δhb=baseHeight-roofHeight<0）:
+  //   ka = 54 - 0.8·Δhb           (d ≥ 0.5km)
+  //   ka = 54 - 0.8·Δhb·(d/0.5)   (d < 0.5km)
+  //   kd = 18 - 15·Δhb/hRoof
+  // ここでは Δhb = -baseBelowRoofM なので、符号反転して +baseBelowRoofM で表す。
   const ka =
     baseAboveRoofM > 0
       ? 54
       : distanceKm >= 0.5
-        ? 54 - 0.8 * baseBelowRoofM
-        : 54 - 0.8 * baseBelowRoofM * (distanceKm / 0.5);
-  const kd = baseAboveRoofM > 0 ? 18 : 18 - (15 * baseBelowRoofM) / roofHeightM;
+        ? 54 + 0.8 * baseBelowRoofM
+        : 54 + 0.8 * baseBelowRoofM * (distanceKm / 0.5);
+  const kd = baseAboveRoofM > 0 ? 18 : 18 + (15 * baseBelowRoofM) / roofHeightM;
   const kf = -4 + 0.7 * (frequencyMHz / 925 - 1);
   const multiscreenLossDb =
     baseStationHeightLossDb +
