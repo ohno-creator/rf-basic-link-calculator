@@ -95,6 +95,20 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
   await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
 });
 
+test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByLabel("伝搬モデル").selectOption("iot_hata_calibrated");
+
+  await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
+  await expect(page.getByLabel("実測アンカー距離")).toBeVisible();
+  const measuredPower = page.getByRole("spinbutton", { name: "実測受信電力" });
+  await expect(measuredPower).toBeVisible();
+  await expect(page.getByText("Urban LoRa大規模測定")).toBeVisible();
+
+  await measuredPower.fill("-100");
+  await expect(page.getByText(/実測受信電力から、基準モデルに対して/)).toBeVisible();
+});
+
 test("microstrip impedance reacts to trace width", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   await expect(page.getByText("50.8 Ω").first()).toBeVisible();

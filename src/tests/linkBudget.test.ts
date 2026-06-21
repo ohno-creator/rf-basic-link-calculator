@@ -8,6 +8,10 @@ const baseInput: LinkBudgetInput = {
   propagationModel: "free_space",
   propagationArea: "urbanMedium",
   pathLossExponent: 3,
+  iotCalibrationDistance: 1,
+  iotCalibrationDistanceUnit: "km",
+  iotMeasuredReceivedPowerDbm: -80,
+  iotSlopeCorrectionDbPerDecade: 0,
   frequencyMHz: 800,
   distance: 1,
   distanceUnit: "km",
@@ -126,5 +130,54 @@ describe("link budget calculations", () => {
     });
 
     expect(open.pathLossDb).toBeLessThan(urban.pathLossDb);
+  });
+
+  it("calibrates Hata to a measured IoT anchor point", () => {
+    const reference = calculateLinkBudget({
+      ...baseInput,
+      propagationModel: "okumura_hata",
+      propagationArea: "urbanMedium"
+    });
+    const measuredReceivedPowerDbm =
+      baseInput.txPowerDbm +
+      baseInput.txAntennaGainDbi +
+      baseInput.rxAntennaGainDbi -
+      reference.pathLossDb -
+      baseInput.cableLossDb -
+      baseInput.environmentLossDb -
+      10;
+    const calibrated = calculateLinkBudget({
+      ...baseInput,
+      propagationModel: "iot_hata_calibrated",
+      iotCalibrationDistance: 1,
+      iotCalibrationDistanceUnit: "km",
+      iotMeasuredReceivedPowerDbm: measuredReceivedPowerDbm
+    });
+
+    expect(calibrated.iotCalibration?.modelOffsetDb).toBeCloseTo(10, 6);
+    expect(calibrated.pathLossDb).toBeCloseTo(reference.pathLossDb + 10, 6);
+    expect(calibrated.receivedPowerDbm).toBeCloseTo(measuredReceivedPowerDbm, 6);
+  });
+
+  it("applies the IoT Hata distance-slope correction around the anchor", () => {
+    const withoutSlope = calculateLinkBudget({
+      ...baseInput,
+      distance: 10,
+      propagationModel: "iot_hata_calibrated",
+      iotCalibrationDistance: 1,
+      iotCalibrationDistanceUnit: "km",
+      iotSlopeCorrectionDbPerDecade: 0
+    });
+    const withSlope = calculateLinkBudget({
+      ...baseInput,
+      distance: 10,
+      propagationModel: "iot_hata_calibrated",
+      iotCalibrationDistance: 1,
+      iotCalibrationDistanceUnit: "km",
+      iotSlopeCorrectionDbPerDecade: 5
+    });
+
+    expect(withSlope.iotCalibration?.slopeCorrectionDb).toBeCloseTo(5, 6);
+    expect(withSlope.pathLossDb).toBeCloseTo(withoutSlope.pathLossDb + 5, 6);
   });
 });

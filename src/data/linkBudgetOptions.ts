@@ -59,6 +59,11 @@ export const propagationModelOptions: Array<{
     description: "自由空間損失を基準に、現地RSSI/RSRPとの差分を実測補正値として加えます。"
   },
   {
+    value: "iot_hata_calibrated",
+    label: "IoT実測補正Hataモード",
+    description: "奥村・秦/COST231-Hataを基準に、現地のRSSIまたはRSRP実測点でオフセットと距離勾配を補正します。"
+  },
+  {
     value: "okumura_hata",
     label: "奥村・秦モデル（参考）",
     description: "高所基地局と移動局間の広域平均伝搬損失を評価する経験式です。低高度端末では参考値扱いにします。"

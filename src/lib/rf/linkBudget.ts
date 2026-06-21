@@ -21,6 +21,7 @@ export type LinkPropagationModel =
   | "two_ray"
   | "log_distance"
   | "measured_correction"
+  | "iot_hata_calibrated"
   | "okumura_hata"
   | "cost231_hata";
 
@@ -30,6 +31,10 @@ export type LinkBudgetInput = {
   propagationModel: LinkPropagationModel;
   propagationArea: AreaType;
   pathLossExponent: number;
+  iotCalibrationDistance: number;
+  iotCalibrationDistanceUnit: DistanceUnit;
+  iotMeasuredReceivedPowerDbm: number;
+  iotSlopeCorrectionDbPerDecade: number;
   frequencyMHz: number;
   distance: number;
   distanceUnit: DistanceUnit;
@@ -61,10 +66,20 @@ export type LinkBudgetResult = {
   propagationModelLabel: string;
   communicationMode: CommunicationMode;
   nearTerminalLossDb: number;
+  iotCalibration: IotHataCalibrationResult | null;
   receivedPowerDbm: number;
   linkMarginDb: number;
   warnings: PropagationWarning[];
   judgement: LinkJudgement;
+};
+
+export type IotHataCalibrationResult = {
+  anchorDistanceKm: number;
+  measuredPathLossDb: number;
+  referencePathLossDb: number;
+  modelOffsetDb: number;
+  slopeCorrectionDb: number;
+  correctedReferenceModel: "Hata" | "COST231-Hata";
 };
 
 export type ValidationErrors = Partial<Record<keyof LinkBudgetInput, string>>;
@@ -77,6 +92,10 @@ export const defaultLinkBudgetInput: LinkBudgetInput = {
   propagationModel: "free_space",
   propagationArea: "urbanMedium",
   pathLossExponent: 3,
+  iotCalibrationDistance: 1,
+  iotCalibrationDistanceUnit: "km",
+  iotMeasuredReceivedPowerDbm: -95,
+  iotSlopeCorrectionDbPerDecade: 0,
   frequencyMHz: 920,
   distance: 1,
   distanceUnit: "km",
@@ -150,6 +169,26 @@ export function validateLinkBudgetInput(input: LinkBudgetInput): ValidationError
 
   if (isMissingNumber(input.pathLossExponent) || input.pathLossExponent < 1 || input.pathLossExponent > 6) {
     errors.pathLossExponent = "Log-distanceの距離損失指数は1〜6の範囲で入力してください。";
+  }
+
+  if (isMissingNumber(input.iotCalibrationDistance) || input.iotCalibrationDistance <= 0) {
+    errors.iotCalibrationDistance = "IoT実測アンカー距離は0より大きい値を入力してください。";
+  }
+
+  if (input.iotCalibrationDistanceUnit !== "m" && input.iotCalibrationDistanceUnit !== "km") {
+    errors.iotCalibrationDistanceUnit = "IoT実測アンカー距離の単位を選択してください。";
+  }
+
+  if (isMissingNumber(input.iotMeasuredReceivedPowerDbm)) {
+    errors.iotMeasuredReceivedPowerDbm = "IoT実測受信電力をdBmで入力してください。";
+  }
+
+  if (
+    isMissingNumber(input.iotSlopeCorrectionDbPerDecade) ||
+    input.iotSlopeCorrectionDbPerDecade < -40 ||
+    input.iotSlopeCorrectionDbPerDecade > 40
+  ) {
+    errors.iotSlopeCorrectionDbPerDecade = "距離勾配補正は-40〜40dB/decadeの範囲で入力してください。";
   }
 
   if (isMissingNumber(input.frequencyMHz) || input.frequencyMHz <= 0) {
@@ -277,6 +316,8 @@ function getPropagationModelLabel(model: LinkPropagationModel): string {
       return "Log-distanceモデル";
     case "measured_correction":
       return "実測補正モデル";
+    case "iot_hata_calibrated":
+      return "IoT実測補正Hataモード";
     case "okumura_hata":
       return "奥村・秦モデル（参考）";
     case "cost231_hata":
@@ -298,10 +339,69 @@ function getPropagationAreaLabel(area: AreaType): string {
 }
 
 function isHataFamily(model: LinkPropagationModel): boolean {
-  return model === "okumura_hata" || model === "cost231_hata";
+  return model === "okumura_hata" || model === "cost231_hata" || model === "iot_hata_calibrated";
 }
 
-function calculatePathLoss(input: LinkBudgetInput, distanceKm: number, fsplDb: number) {
+function calculateHataReferenceLoss(input: LinkBudgetInput, distanceKm: number) {
+  return calculatePropagationLoss({
+    frequencyMHz: input.frequencyMHz,
+    baseHeightM: input.txAntennaHeightM,
+    mobileHeightM: input.rxAntennaHeightM,
+    distanceKm,
+    area: input.propagationArea,
+    preferredModel:
+      input.propagationModel === "okumura_hata"
+        ? "Hata"
+        : input.propagationModel === "cost231_hata"
+          ? "COST231-Hata"
+          : undefined
+  });
+}
+
+function calculateMeasuredPathLossAtAnchorDb(input: LinkBudgetInput) {
+  return (
+    input.txPowerDbm +
+    input.txAntennaGainDbi +
+    input.rxAntennaGainDbi -
+    input.cableLossDb -
+    input.environmentLossDb -
+    calculateNearTerminalLossDb(input) -
+    input.iotMeasuredReceivedPowerDbm
+  );
+}
+
+function calculateIotHataCalibratedPathLoss(
+  input: LinkBudgetInput,
+  distanceKm: number
+): { pathLossDb: number; iotCalibration: IotHataCalibrationResult } {
+  const anchorDistanceKm = normalizeDistanceKm(
+    input.iotCalibrationDistance,
+    input.iotCalibrationDistanceUnit
+  );
+  const currentReference = calculateHataReferenceLoss(input, distanceKm);
+  const anchorReference = calculateHataReferenceLoss(input, anchorDistanceKm);
+  const measuredPathLossDb = calculateMeasuredPathLossAtAnchorDb(input);
+  const modelOffsetDb = measuredPathLossDb - anchorReference.pathLossDb;
+  const slopeCorrectionDb = input.iotSlopeCorrectionDbPerDecade * Math.log10(distanceKm / anchorDistanceKm);
+
+  return {
+    pathLossDb: currentReference.pathLossDb + modelOffsetDb + slopeCorrectionDb,
+    iotCalibration: {
+      anchorDistanceKm,
+      measuredPathLossDb,
+      referencePathLossDb: anchorReference.pathLossDb,
+      modelOffsetDb,
+      slopeCorrectionDb,
+      correctedReferenceModel: anchorReference.model
+    }
+  };
+}
+
+function calculatePathLoss(
+  input: LinkBudgetInput,
+  distanceKm: number,
+  fsplDb: number
+): { pathLossDb: number; propagationModelLabel: string; iotCalibration: IotHataCalibrationResult | null } {
   if (input.propagationModel === "two_ray") {
     return {
       pathLossDb: calculateTwoRayPathLossDb(
@@ -310,7 +410,8 @@ function calculatePathLoss(input: LinkBudgetInput, distanceKm: number, fsplDb: n
         input.txAntennaHeightM,
         input.rxAntennaHeightM
       ),
-      propagationModelLabel: getPropagationModelLabel(input.propagationModel)
+      propagationModelLabel: getPropagationModelLabel(input.propagationModel),
+      iotCalibration: null
     };
   }
 
@@ -321,34 +422,43 @@ function calculatePathLoss(input: LinkBudgetInput, distanceKm: number, fsplDb: n
         distanceKm,
         input.pathLossExponent
       ),
-      propagationModelLabel: getPropagationModelLabel(input.propagationModel)
+      propagationModelLabel: getPropagationModelLabel(input.propagationModel),
+      iotCalibration: null
+    };
+  }
+
+  if (input.propagationModel === "iot_hata_calibrated") {
+    const calibrated = calculateIotHataCalibratedPathLoss(input, distanceKm);
+
+    return {
+      pathLossDb: calibrated.pathLossDb,
+      propagationModelLabel: getPropagationModelLabel(input.propagationModel),
+      iotCalibration: calibrated.iotCalibration
     };
   }
 
   if (input.propagationModel === "okumura_hata" || input.propagationModel === "cost231_hata") {
-    const propagation = calculatePropagationLoss({
-      frequencyMHz: input.frequencyMHz,
-      baseHeightM: input.txAntennaHeightM,
-      mobileHeightM: input.rxAntennaHeightM,
-      distanceKm,
-      area: input.propagationArea,
-      preferredModel: input.propagationModel === "okumura_hata" ? "Hata" : "COST231-Hata"
-    });
+    const propagation = calculateHataReferenceLoss(input, distanceKm);
 
     return {
       pathLossDb: propagation.pathLossDb,
-      propagationModelLabel: getPropagationModelLabel(input.propagationModel)
+      propagationModelLabel: getPropagationModelLabel(input.propagationModel),
+      iotCalibration: null
     };
   }
 
   return {
     pathLossDb: fsplDb,
-    propagationModelLabel: getPropagationModelLabel(input.propagationModel)
+    propagationModelLabel: getPropagationModelLabel(input.propagationModel),
+    iotCalibration: null
   };
 }
 
 function isHataRangeOutside(input: LinkBudgetInput, distanceKm: number): boolean {
-  if (input.propagationModel === "okumura_hata") {
+  if (
+    input.propagationModel === "okumura_hata" ||
+    (input.propagationModel === "iot_hata_calibrated" && input.frequencyMHz < 1500)
+  ) {
     return (
       input.frequencyMHz < 150 ||
       input.frequencyMHz > 1500 ||
@@ -361,7 +471,10 @@ function isHataRangeOutside(input: LinkBudgetInput, distanceKm: number): boolean
     );
   }
 
-  if (input.propagationModel === "cost231_hata") {
+  if (
+    input.propagationModel === "cost231_hata" ||
+    (input.propagationModel === "iot_hata_calibrated" && input.frequencyMHz >= 1500)
+  ) {
     return (
       input.frequencyMHz < 1500 ||
       input.frequencyMHz > 2000 ||
@@ -389,6 +502,46 @@ function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): P
       message:
         "注意：奥村・秦モデルは、主に高所基地局と移動局間の広域セルラー通信を想定した経験式です。現在の入力条件は、モデルの一般的な適用範囲外です。計算結果は参考値として扱い、通信可否判定にはリンクバジェット、端末近傍損失、実測補正を併用してください。"
     });
+  }
+
+  if (input.propagationModel === "iot_hata_calibrated") {
+    const anchorDistanceKm = normalizeDistanceKm(
+      input.iotCalibrationDistance,
+      input.iotCalibrationDistanceUnit
+    );
+    const extrapolationRatio = Math.max(distanceKm, anchorDistanceKm) / Math.min(distanceKm, anchorDistanceKm);
+    const calibration = calculateIotHataCalibratedPathLoss(input, distanceKm).iotCalibration;
+
+    warnings.push({
+      id: "iot-hata-calibrated-basis",
+      message:
+        "IoT実測補正Hataモードは、奥村・秦/COST231-Hataの中央値損失を基準に、現地のRSSIまたはRSRP実測値からモデルオフセットを校正するモードです。近年のLPWA/NB-IoT測定研究では、固定の経験式だけでなく、現地測定によるオフセット、距離勾配、環境特徴量の補正が重要であることが示されています。"
+    });
+
+    if (Math.abs(calibration.modelOffsetDb) >= 25) {
+      warnings.push({
+        id: "iot-hata-large-offset",
+        message: `実測から推定したHata補正量が${calibration.modelOffsetDb.toFixed(
+          1
+        )}dBです。25dB以上の差は、周波数・距離・アンテナ高・送信電力・アンテナ利得・端末近傍損失の入力違い、またはHataモデルの適用外条件を疑ってください。`
+      });
+    }
+
+    if (extrapolationRatio >= 10) {
+      warnings.push({
+        id: "iot-hata-anchor-extrapolation",
+        message:
+          "実測アンカー距離と現在の通信距離が10倍以上離れています。1点補正はアンカー近傍では有効ですが、遠い距離への外挿では距離勾配補正や複数地点の実測確認を推奨します。"
+      });
+    }
+
+    if (input.calibrationOffsetDb !== 0) {
+      warnings.push({
+        id: "iot-hata-double-calibration",
+        message:
+          "IoT実測補正Hataモードに加えて、実測補正値も入力されています。意図した追加補正であれば問題ありませんが、同じ測定差分を二重に入れていないか確認してください。"
+      });
+    }
   }
 
   if (
@@ -460,7 +613,7 @@ function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): P
     });
   }
 
-  if (input.calibrationOffsetDb === 0) {
+  if (input.calibrationOffsetDb === 0 && input.propagationModel !== "iot_hata_calibrated") {
     warnings.push({
       id: "missing-calibration",
       message:
@@ -512,7 +665,7 @@ export function calculateLinkBudget(input: LinkBudgetInput): LinkBudgetResult {
 
   const distanceKm = normalizeDistanceKm(input.distance, input.distanceUnit);
   const fsplDb = calculateFsplDb(input.frequencyMHz, distanceKm);
-  const { pathLossDb, propagationModelLabel } = calculatePathLoss(input, distanceKm, fsplDb);
+  const { pathLossDb, propagationModelLabel, iotCalibration } = calculatePathLoss(input, distanceKm, fsplDb);
   const nearTerminalLossDb = calculateNearTerminalLossDb(input);
   const receivedPowerDbm = calculateReceivedPowerDbm({
     txPowerDbm: input.txPowerDbm,
@@ -536,6 +689,7 @@ export function calculateLinkBudget(input: LinkBudgetInput): LinkBudgetResult {
     propagationModelLabel,
     communicationMode: getCommunicationMode(input.linkType),
     nearTerminalLossDb,
+    iotCalibration,
     receivedPowerDbm,
     linkMarginDb,
     warnings: buildPropagationWarnings(input, distanceKm),
@@ -552,6 +706,9 @@ export function buildConsultationText(input: LinkBudgetInput, result: LinkBudget
 伝搬モデル：${result.propagationModelLabel}
 Hataエリア種別：${getPropagationAreaLabel(input.propagationArea)}
 距離損失指数：${input.pathLossExponent}
+IoT実測アンカー距離：${input.iotCalibrationDistance} ${input.iotCalibrationDistanceUnit}
+IoT実測受信電力：${input.iotMeasuredReceivedPowerDbm} dBm
+IoT距離勾配補正：${input.iotSlopeCorrectionDbPerDecade} dB/decade
 周波数：${input.frequencyMHz} MHz
 通信距離：${input.distance} ${input.distanceUnit}
 送信電力：${input.txPowerDbm} dBm

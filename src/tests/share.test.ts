@@ -14,6 +14,10 @@ const sample: LinkBudgetInput = {
   propagationModel: "free_space",
   propagationArea: "suburban",
   pathLossExponent: 3.2,
+  iotCalibrationDistance: 750,
+  iotCalibrationDistanceUnit: "m",
+  iotMeasuredReceivedPowerDbm: -97,
+  iotSlopeCorrectionDbPerDecade: 4,
   frequencyMHz: 920,
   distance: 1.5,
   distanceUnit: "km",
@@ -57,6 +61,10 @@ describe("share encode/decode", () => {
     expect(decoded?.propagationModel).toBe(defaultLinkBudgetInput.propagationModel);
     expect(decoded?.propagationArea).toBe(defaultLinkBudgetInput.propagationArea);
     expect(decoded?.pathLossExponent).toBe(defaultLinkBudgetInput.pathLossExponent);
+    expect(decoded?.iotCalibrationDistance).toBe(defaultLinkBudgetInput.iotCalibrationDistance);
+    expect(decoded?.iotCalibrationDistanceUnit).toBe(defaultLinkBudgetInput.iotCalibrationDistanceUnit);
+    expect(decoded?.iotMeasuredReceivedPowerDbm).toBe(defaultLinkBudgetInput.iotMeasuredReceivedPowerDbm);
+    expect(decoded?.iotSlopeCorrectionDbPerDecade).toBe(defaultLinkBudgetInput.iotSlopeCorrectionDbPerDecade);
     expect(decoded?.txPowerDbm).toBe(defaultLinkBudgetInput.txPowerDbm);
   });
 
@@ -68,17 +76,25 @@ describe("share encode/decode", () => {
       distanceUnit: "km",
       txPowerDbm: "15",
       linkType: "terminal_to_terminal",
-      propagationModel: "two_ray",
+      propagationModel: "iot_hata_calibrated",
       propagationArea: "open",
       pathLossExponent: "2.7",
+      iotCalibrationDistance: "500",
+      iotCalibrationDistanceUnit: "m",
+      iotMeasuredReceivedPowerDbm: "-90",
+      iotSlopeCorrectionDbPerDecade: "3",
       receiverSensitivityDbm: -75
     });
 
     expect(sanitized.system).toBe("Wi-Fi");
     expect(sanitized.linkType).toBe("terminal_to_terminal");
-    expect(sanitized.propagationModel).toBe("two_ray");
+    expect(sanitized.propagationModel).toBe("iot_hata_calibrated");
     expect(sanitized.propagationArea).toBe("open");
     expect(sanitized.pathLossExponent).toBe(2.7);
+    expect(sanitized.iotCalibrationDistance).toBe(500);
+    expect(sanitized.iotCalibrationDistanceUnit).toBe("m");
+    expect(sanitized.iotMeasuredReceivedPowerDbm).toBe(-90);
+    expect(sanitized.iotSlopeCorrectionDbPerDecade).toBe(3);
     expect(sanitized.frequencyMHz).toBe(2400);
     expect(sanitized.distance).toBe(defaultLinkBudgetInput.distance);
     expect(sanitized.txPowerDbm).toBe(15);

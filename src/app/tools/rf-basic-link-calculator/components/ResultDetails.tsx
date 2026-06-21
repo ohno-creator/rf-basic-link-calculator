@@ -75,6 +75,15 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
             エリア種別は「{propagationArea.label}」として計算しています。
           </p>
         ) : null}
+        {result.iotCalibration ? (
+          <p className="mt-2">
+            IoT実測補正では、アンカー距離 {(result.iotCalibration.anchorDistanceKm).toFixed(3)}km の
+            実測受信電力から、基準モデルに対して{" "}
+            {formatSigned(result.iotCalibration.modelOffsetDb, "dB")} のオフセットを推定しました。
+            現在距離への距離勾配補正は{" "}
+            {formatSigned(result.iotCalibration.slopeCorrectionDb, "dB")} です。
+          </p>
+        ) : null}
       </Accordion>
 
       <ResultTabs input={input} result={result} />

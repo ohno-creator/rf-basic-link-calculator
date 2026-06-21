@@ -22,6 +22,10 @@ const QUERY_KEYS = {
   propagationModel: "pm",
   propagationArea: "pa",
   pathLossExponent: "n",
+  iotCalibrationDistance: "icd",
+  iotCalibrationDistanceUnit: "icu",
+  iotMeasuredReceivedPowerDbm: "irp",
+  iotSlopeCorrectionDbPerDecade: "isc",
   frequencyMHz: "f",
   distance: "d",
   distanceUnit: "du",
@@ -79,6 +83,7 @@ function toPropagationModel(value: unknown): LinkPropagationModel {
     "two_ray",
     "log_distance",
     "measured_correction",
+    "iot_hata_calibrated",
     "okumura_hata",
     "cost231_hata"
   ];
@@ -107,6 +112,19 @@ export function sanitizeInput(raw: Partial<Record<keyof LinkBudgetInput, unknown
     propagationModel: toPropagationModel(raw.propagationModel),
     propagationArea: toPropagationArea(raw.propagationArea),
     pathLossExponent: toFiniteNumber(raw.pathLossExponent, defaultLinkBudgetInput.pathLossExponent),
+    iotCalibrationDistance: toFiniteNumber(
+      raw.iotCalibrationDistance,
+      defaultLinkBudgetInput.iotCalibrationDistance
+    ),
+    iotCalibrationDistanceUnit: toDistanceUnit(raw.iotCalibrationDistanceUnit),
+    iotMeasuredReceivedPowerDbm: toFiniteNumber(
+      raw.iotMeasuredReceivedPowerDbm,
+      defaultLinkBudgetInput.iotMeasuredReceivedPowerDbm
+    ),
+    iotSlopeCorrectionDbPerDecade: toFiniteNumber(
+      raw.iotSlopeCorrectionDbPerDecade,
+      defaultLinkBudgetInput.iotSlopeCorrectionDbPerDecade
+    ),
     frequencyMHz: toFiniteNumber(raw.frequencyMHz, defaultLinkBudgetInput.frequencyMHz),
     distance: toFiniteNumber(raw.distance, defaultLinkBudgetInput.distance),
     distanceUnit: toDistanceUnit(raw.distanceUnit),
@@ -153,6 +171,10 @@ export function encodeInputToQuery(input: LinkBudgetInput): string {
   params.set(QUERY_KEYS.propagationModel, input.propagationModel);
   params.set(QUERY_KEYS.propagationArea, input.propagationArea);
   params.set(QUERY_KEYS.pathLossExponent, String(input.pathLossExponent));
+  params.set(QUERY_KEYS.iotCalibrationDistance, String(input.iotCalibrationDistance));
+  params.set(QUERY_KEYS.iotCalibrationDistanceUnit, input.iotCalibrationDistanceUnit);
+  params.set(QUERY_KEYS.iotMeasuredReceivedPowerDbm, String(input.iotMeasuredReceivedPowerDbm));
+  params.set(QUERY_KEYS.iotSlopeCorrectionDbPerDecade, String(input.iotSlopeCorrectionDbPerDecade));
   params.set(QUERY_KEYS.frequencyMHz, String(input.frequencyMHz));
   params.set(QUERY_KEYS.distance, String(input.distance));
   params.set(QUERY_KEYS.distanceUnit, input.distanceUnit);
@@ -190,6 +212,10 @@ export function decodeInputFromQuery(query: string): LinkBudgetInput | null {
     propagationModel: params.get(QUERY_KEYS.propagationModel) ?? undefined,
     propagationArea: params.get(QUERY_KEYS.propagationArea) ?? undefined,
     pathLossExponent: params.get(QUERY_KEYS.pathLossExponent) ?? undefined,
+    iotCalibrationDistance: params.get(QUERY_KEYS.iotCalibrationDistance) ?? undefined,
+    iotCalibrationDistanceUnit: params.get(QUERY_KEYS.iotCalibrationDistanceUnit) ?? undefined,
+    iotMeasuredReceivedPowerDbm: params.get(QUERY_KEYS.iotMeasuredReceivedPowerDbm) ?? undefined,
+    iotSlopeCorrectionDbPerDecade: params.get(QUERY_KEYS.iotSlopeCorrectionDbPerDecade) ?? undefined,
     frequencyMHz: params.get(QUERY_KEYS.frequencyMHz) ?? undefined,
     distance: params.get(QUERY_KEYS.distance) ?? undefined,
     distanceUnit: params.get(QUERY_KEYS.distanceUnit) ?? undefined,
