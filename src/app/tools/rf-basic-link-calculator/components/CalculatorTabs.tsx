@@ -9,6 +9,7 @@ import {
   validateLinkBudgetInput
 } from "@/lib/rf/linkBudget";
 import { HataColumn } from "./HataColumn";
+import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
 import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
@@ -129,6 +130,12 @@ export function CalculatorTabs({
               <ResultHero input={input} result={result} errors={errors} onStepSelect={jumpToInput} />
             </div>
           </div>
+
+          {result ? (
+            <div className="mt-6">
+              <LinkAssumptionDiagram input={input} result={result} />
+            </div>
+          ) : null}
 
           <div className="mt-6">
             <ResultDetails input={input} result={result} />

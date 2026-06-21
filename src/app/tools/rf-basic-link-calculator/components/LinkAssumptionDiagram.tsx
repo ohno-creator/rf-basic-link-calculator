@@ -13,11 +13,11 @@ type LinkAssumptionDiagramProps = {
 };
 
 const drawing = {
-  width: 860,
-  height: 330,
-  groundY: 248,
-  txX: 118,
-  rxX: 742
+  width: 980,
+  height: 430,
+  groundY: 318,
+  txX: 126,
+  rxX: 854
 };
 
 function formatDistance(input: LinkBudgetInput): string {
@@ -31,7 +31,7 @@ function formatDistance(input: LinkBudgetInput): string {
 
 function visualHeight(heightM: number, maxHeightM: number): number {
   const normalized = Math.sqrt(Math.max(0, heightM) / Math.max(1, maxHeightM));
-  return 42 + normalized * 128;
+  return 64 + normalized * 188;
 }
 
 function modelAssumption(input: LinkBudgetInput): string {
@@ -141,7 +141,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
   const showReflection = input.propagationModel === "two_ray" || result.communicationMode === "low_height_terminal_to_terminal";
 
   return (
-    <div className="mt-6 border-t border-slate-200 pt-5">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-staf">設定前提の2D図</p>
@@ -156,7 +156,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
         </span>
       </div>
 
-      <div className="mt-4 grid gap-5 xl:grid-cols-[1.25fr_0.75fr]">
+      <div className="mt-4 grid gap-5">
         <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
           <svg
             role="img"
@@ -177,7 +177,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
             <rect width={drawing.width} height={drawing.height} fill="url(#assumptionSky)" />
             <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill="#E2E8F0" />
             <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill="url(#groundPattern)" opacity="0.55" />
-            <line x1="56" x2="804" y1={drawing.groundY} y2={drawing.groundY} stroke="#64748B" strokeWidth="2" />
+            <line x1="70" x2="910" y1={drawing.groundY} y2={drawing.groundY} stroke="#64748B" strokeWidth="3" />
 
             <ellipse
               cx={midX}
@@ -189,7 +189,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
               stroke="#38BDF8"
               strokeDasharray="7 6"
             />
-            <text x={midX} y={fresnelCy - fresnelRy - 10} textAnchor="middle" className="fill-sky-700 text-[12px] font-semibold">
+            <text x={midX} y={fresnelCy - fresnelRy - 14} textAnchor="middle" className="fill-sky-700 text-[18px] font-bold">
               見通し・フレネルゾーンの概念
             </text>
 
@@ -199,9 +199,9 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
               y1={txAntennaY}
               y2={rxAntennaY}
               stroke="#0F172A"
-              strokeWidth="3"
+              strokeWidth="5"
             />
-            <text x={midX} y={(txAntennaY + rxAntennaY) / 2 - 12} textAnchor="middle" className="fill-slate-900 text-[13px] font-bold">
+            <text x={midX} y={(txAntennaY + rxAntennaY) / 2 - 20} textAnchor="middle" className="fill-slate-900 text-[20px] font-bold">
               2D距離 {formatDistance(input)}
             </text>
 
@@ -209,75 +209,73 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
               d={`M ${drawing.txX} ${txAntennaY} Q ${midX} ${reflectionY} ${drawing.rxX} ${rxAntennaY}`}
               fill="none"
               stroke={showReflection ? "#F97316" : "#94A3B8"}
-              strokeWidth={showReflection ? 3 : 2}
+              strokeWidth={showReflection ? 5 : 3}
               strokeDasharray={showReflection ? "0" : "8 6"}
               opacity={showReflection ? 0.9 : 0.55}
             />
-            <text x={midX} y={reflectionY - 13} textAnchor="middle" className={showReflection ? "fill-orange-700 text-[12px] font-bold" : "fill-slate-500 text-[12px] font-semibold"}>
+            <text x={midX} y={reflectionY - 20} textAnchor="middle" className={showReflection ? "fill-orange-700 text-[18px] font-bold" : "fill-slate-500 text-[18px] font-semibold"}>
               地面反射・低高度影響
             </text>
 
-            <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="7" strokeLinecap="round" />
-            <circle cx={drawing.txX} cy={txAntennaY} r="10" fill="#0071BD" stroke="#FFFFFF" strokeWidth="3" />
-            <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="7" strokeLinecap="round" />
-            <circle cx={drawing.rxX} cy={rxAntennaY} r="10" fill="#10B981" stroke="#FFFFFF" strokeWidth="3" />
+            <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="11" strokeLinecap="round" />
+            <circle cx={drawing.txX} cy={txAntennaY} r="16" fill="#0071BD" stroke="#FFFFFF" strokeWidth="4" />
+            <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="11" strokeLinecap="round" />
+            <circle cx={drawing.rxX} cy={rxAntennaY} r="16" fill="#10B981" stroke="#FFFFFF" strokeWidth="4" />
 
-            <rect x={drawing.txX - 54} y={drawing.groundY + 10} width="108" height="30" rx="6" fill="#FFFFFF" stroke="#CBD5E1" />
-            <text x={drawing.txX} y={drawing.groundY + 30} textAnchor="middle" className="fill-slate-800 text-[12px] font-bold">
+            <rect x={drawing.txX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+            <text x={drawing.txX} y={drawing.groundY + 43} textAnchor="middle" className="fill-slate-800 text-[18px] font-bold">
               送信側
             </text>
-            <rect x={drawing.rxX - 54} y={drawing.groundY + 10} width="108" height="30" rx="6" fill="#FFFFFF" stroke="#CBD5E1" />
-            <text x={drawing.rxX} y={drawing.groundY + 30} textAnchor="middle" className="fill-slate-800 text-[12px] font-bold">
+            <rect x={drawing.rxX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+            <text x={drawing.rxX} y={drawing.groundY + 43} textAnchor="middle" className="fill-slate-800 text-[18px] font-bold">
               受信側
             </text>
 
             <line x1={drawing.txX + 18} x2={drawing.txX + 18} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeDasharray="5 5" />
-            <text x={drawing.txX + 28} y={(drawing.groundY + txAntennaY) / 2} className="fill-staf text-[12px] font-bold">
+            <text x={drawing.txX + 34} y={(drawing.groundY + txAntennaY) / 2} className="fill-staf text-[18px] font-bold">
               Tx高 {input.txAntennaHeightM.toFixed(1)}m
             </text>
             <line x1={drawing.rxX - 18} x2={drawing.rxX - 18} y1={drawing.groundY} y2={rxAntennaY} stroke="#047857" strokeDasharray="5 5" />
-            <text x={drawing.rxX - 28} y={(drawing.groundY + rxAntennaY) / 2} textAnchor="end" className="fill-emerald-700 text-[12px] font-bold">
+            <text x={drawing.rxX - 34} y={(drawing.groundY + rxAntennaY) / 2} textAnchor="end" className="fill-emerald-700 text-[18px] font-bold">
               Rx高 {input.rxAntennaHeightM.toFixed(1)}m
             </text>
 
             <g>
-              <rect x="286" y="20" width="288" height="58" rx="10" fill="#FFFFFF" stroke="#CBD5E1" />
-              <text x="430" y="42" textAnchor="middle" className="fill-slate-950 text-[13px] font-bold">
+              <rect x="282" y="18" width="416" height="72" rx="12" fill="#FFFFFF" stroke="#CBD5E1" />
+              <text x="490" y="47" textAnchor="middle" className="fill-slate-950 text-[18px] font-bold">
                 {input.frequencyMHz.toFixed(0)} MHz / {result.propagationModelLabel}
               </text>
-              <text x="430" y="63" textAnchor="middle" className="fill-slate-600 text-[12px] font-semibold">
+              <text x="490" y="72" textAnchor="middle" className="fill-slate-600 text-[16px] font-semibold">
                 伝搬損失 {formatDb(result.pathLossDb)} ・ 受信電力 {formatDbm(result.receivedPowerDbm)}
               </text>
             </g>
           </svg>
         </div>
 
-        <div className="space-y-4">
-          <section>
-            <div className="flex items-center gap-2">
-              <Settings2 aria-hidden="true" className="h-4 w-4 text-staf" />
-              <h4 className="text-sm font-bold text-slate-950">指定パラメータ</h4>
-            </div>
-            <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 xl:grid-cols-1">
-              {parameterRows.map(([label, value]) => (
-                <div key={label} className="flex items-center justify-between gap-3 border-b border-slate-200 pb-2">
-                  <dt className="font-semibold text-slate-500">{label}</dt>
-                  <dd className="text-right font-bold text-slate-900">{value}</dd>
-                </div>
-              ))}
-            </dl>
-          </section>
-
-          <section className="rounded-lg border border-sky-200 bg-sky-50 p-4">
-            <div className="flex items-start gap-2">
-              <Ruler aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
-              <div>
-                <h4 className="text-sm font-bold text-sky-950">モデル前提</h4>
-                <p className="mt-1 text-xs leading-relaxed text-sky-900">{modelAssumption(input)}</p>
+        <section>
+          <div className="flex items-center gap-2">
+            <Settings2 aria-hidden="true" className="h-4 w-4 text-staf" />
+            <h4 className="text-sm font-bold text-slate-950">指定パラメータ</h4>
+          </div>
+          <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 2xl:grid-cols-3">
+            {parameterRows.map(([label, value]) => (
+              <div key={label} className="rounded-md border border-slate-200 bg-white p-3">
+                <dt className="font-semibold text-slate-500">{label}</dt>
+                <dd className="mt-1 font-bold text-slate-900">{value}</dd>
               </div>
+            ))}
+          </dl>
+        </section>
+
+        <section className="rounded-lg border border-sky-200 bg-sky-50 p-4">
+          <div className="flex items-start gap-2">
+            <Ruler aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
+            <div>
+              <h4 className="text-sm font-bold text-sky-950">モデル前提</h4>
+              <p className="mt-1 text-sm leading-relaxed text-sky-900">{modelAssumption(input)}</p>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
 
       <section className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
@@ -295,6 +293,6 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
           </div>
         </div>
       </section>
-    </div>
+    </section>
   );
 }
