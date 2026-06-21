@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Tooltip } from "@/components/Tooltip";
 import { cableAssemblies, referenceCables } from "@/data/coaxCables";
 import { cableAssemblyLoss, interpolateCableLoss } from "@/lib/rf/coax";
 import { formatNumber } from "@/lib/rf/format";
@@ -32,9 +33,14 @@ export function CoaxCableLossPanel() {
       </p>
 
       <div className="mt-4">
-        <label htmlFor="cablePart" className="text-sm font-semibold text-slate-950">
-          品番
-        </label>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <label htmlFor="cablePart" className="text-sm font-semibold text-slate-950">
+            品番
+          </label>
+          <Tooltip term="品番">
+            使う同軸ケーブルの品番を選択します。各選択肢は変換・延長用の標準品で、括弧内の「@2GHz ≈ ○○dB」は2GHz時の1本あたり実測挿入損失の目安（数値が小さいほど低損失）。003B / 015A / 016A は約0.4dBの低損失系、004A / 013A / 017A / 018A は数dBの延長系です。長尺・高周波の用途では損失の大きい品番に注意し、運用する周波数帯で比較してください。
+          </Tooltip>
+        </div>
         <select
           id="cablePart"
           value={cableIndex}
@@ -51,9 +57,14 @@ export function CoaxCableLossPanel() {
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="cableFreq" className="text-sm font-semibold text-slate-950">
-            周波数（MHz）
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="cableFreq" className="text-sm font-semibold text-slate-950">
+              周波数（MHz）
+            </label>
+            <Tooltip term="周波数">
+              損失を求めたい運用周波数をMHzで入力します。実測点は500〜8000MHzで、範囲外は線形外挿の参考値です。代表例: Wi-Fi 2.4GHz帯 → 2400、5GHz帯 → 5200。高周波ほど損失は増えます。
+            </Tooltip>
+          </div>
           <input
             id="cableFreq"
             type="number"
@@ -66,9 +77,14 @@ export function CoaxCableLossPanel() {
           />
         </div>
         <div>
-          <label htmlFor="cableQty" className="text-sm font-semibold text-slate-950">
-            本数（直列に繋ぐ数）
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="cableQty" className="text-sm font-semibold text-slate-950">
+              本数（直列に繋ぐ数）
+            </label>
+            <Tooltip term="本数">
+              同じ品番を直列に何本つなぐかを整数（1以上）で入力します。合計損失 ＝ 1本あたり × 本数。延長や中継で複数本使う場合に本数分の損失が加算されます。通常は1です。
+            </Tooltip>
+          </div>
           <input
             id="cableQty"
             type="number"
@@ -86,15 +102,30 @@ export function CoaxCableLossPanel() {
         <>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg bg-staf-light p-4">
-              <p className="text-xs font-semibold text-staf">1本あたり損失</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-semibold text-staf">1本あたり損失</p>
+                <Tooltip term="1本あたり損失">
+                  選択品番のケーブル1本を、指定周波数で通したときの挿入損失（dB）。実測値を周波数で補間した目安で、個体差・コネクタ・曲げ・温度で変動します。グラフの黒点と同じ値です。
+                </Tooltip>
+              </div>
               <p className="mt-1 text-2xl font-bold text-slate-950">{formatNumber(result.perPieceDb, 2)} dB</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">合計損失（{Number.isFinite(quantity) ? quantity : 1}本）</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-slate-500">合計損失（{Number.isFinite(quantity) ? quantity : 1}本）</p>
+                <Tooltip term="合計損失">
+                  1本あたり損失 × 本数の合計（dB）。この値をリンクバジェットの「ケーブル・コネクタ損失」に入力して使います。3dBで電力が半分、6dBで1/4になります。
+                </Tooltip>
+              </div>
               <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.totalDb, 2)} dB</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
-              <p className="text-xs text-slate-500">アンテナに残る電力</p>
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs text-slate-500">アンテナに残る電力</p>
+                <Tooltip term="残る電力">
+                  合計損失を電力比に直した残存率 ＝ 10^(−合計損失 / 10) × 100。ケーブルで失われずアンテナへ届く割合（%）です。例: 3dB → 約50%、6dB → 約25%。
+                </Tooltip>
+              </div>
               <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.powerRemainingPercent, 0)} %</p>
             </div>
           </div>
@@ -111,6 +142,7 @@ export function CoaxCableLossPanel() {
               points={cable.points}
               frequencyMHz={frequencyMHz}
               currentLossDb={result.perPieceDb}
+              quantity={quantity}
               referenceCables={referenceCables}
             />
           </div>

@@ -43,6 +43,8 @@ export function FresnelZoneDiagram({
   // SSRとクライアントで文字列を一致させるため丸める（ハイドレーション不一致防止）。
   const obstacleX = Number((X0 + (X1 - X0) * positionRatio).toFixed(2));
   const localOffset = Number((heightPx * shape(positionRatio)).toFixed(2));
+  // 60%クリアランスは r1 マーカーと同じ縦スケールで描く（数値表示と一致）。
+  const clearanceOffset = Number((localOffset * 0.6).toFixed(2));
 
   return (
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -70,7 +72,29 @@ export function FresnelZoneDiagram({
           </g>
         ))}
 
-        {/* 障害物位置の半径マーカー */}
+        {/* 60%クリアランス帯（LOSから0.6×r1まで＝確保すべき範囲） */}
+        <rect
+          x={X0}
+          y={LOS_Y}
+          width={X1 - X0}
+          height={clearanceOffset}
+          fill="rgba(22,163,74,0.10)"
+        />
+        {/* 60%クリアランスのライン（実務上の判断基準） */}
+        <line
+          x1={X0}
+          y1={LOS_Y + clearanceOffset}
+          x2={X1}
+          y2={LOS_Y + clearanceOffset}
+          stroke="#16a34a"
+          strokeWidth="1.5"
+          strokeDasharray="5 4"
+        />
+        <text x={X1 - 2} y={LOS_Y + clearanceOffset - 4} textAnchor="end" fontSize="10" fontWeight="700" fill="#15803d">
+          60%クリアランス
+        </text>
+
+        {/* 障害物位置の半径マーカー（100%＝r1） */}
         <line
           x1={obstacleX}
           y1={LOS_Y}
@@ -80,6 +104,8 @@ export function FresnelZoneDiagram({
           strokeWidth="2"
         />
         <circle cx={obstacleX} cy={LOS_Y + localOffset} r="3.5" fill="#e11d48" />
+        {/* 障害物位置での60%クリアランス点 */}
+        <circle cx={obstacleX} cy={LOS_Y + clearanceOffset} r="3" fill="#16a34a" />
         <text x={obstacleX} y={LOS_Y - 8} textAnchor="middle" fontSize="11" fontWeight="700" fill="#0071BD">
           r1
         </text>
@@ -97,7 +123,10 @@ export function FresnelZoneDiagram({
       </div>
 
       <p className="mt-2 text-xs leading-relaxed text-slate-600">
-        電波は送受信点を結ぶ直線だけでなく、その周囲の楕円体（フレネルゾーン）を通って伝わります。第1フレネルゾーンの60%以上を障害物から空けると、回り込みによる損失を抑えられます。周波数が高い・距離が長いほどゾーンの半径は変わります。
+        電波は送受信点を結ぶ直線だけでなく、その周囲の楕円体（フレネルゾーン）を通って伝わります。赤線が第1フレネルゾーン半径(r1)、緑の破線が60%クリアランスの目安です。第1フレネルゾーンの60%以上（緑の破線より上）を障害物から空けると、回り込みによる損失を抑えられます。周波数が高い・距離が長いほどゾーンの半径は変わります。
+      </p>
+      <p className="mt-1 text-[11px] leading-relaxed text-slate-400">
+        ※この図は模式図です。縦方向（半径）は見やすさのため強調・圧縮しており、実寸の縮尺ではありません。実際の寸法は上の数値をご確認ください。
       </p>
     </figure>
   );

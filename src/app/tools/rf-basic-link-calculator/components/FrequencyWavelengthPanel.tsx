@@ -11,10 +11,48 @@ import { formatMeters } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { WavelengthVisual } from "./WavelengthVisual";
 
+// 各結果（λ系）の用途を一言で補足するためのツールチップ定義。
+const RESULT_HINTS: Record<string, { term: string; description: string }> = {
+  "波長 λ": {
+    term: "波長 λ",
+    description:
+      "電波1周期分の長さ（λ=光速/周波数）です。アンテナ寸法の基準になります。例:920MHzで約33cm。"
+  },
+  "λ/2": {
+    term: "λ/2",
+    description:
+      "半波長。ダイポールなどが共振する基本アンテナ長の目安です。実際は端部効果で数%短くなります。"
+  },
+  "λ/4": {
+    term: "λ/4",
+    description:
+      "4分の1波長。モノポール/接地アンテナや整合スタブの基準長です。GND面を半波長の片側代わりに使う構成で用います。"
+  },
+  "λ/8": {
+    term: "λ/8",
+    description:
+      "8分の1波長。小型化アンテナや整合素子の寸法目安です。短いほど効率・帯域は犠牲になりやすくなります。"
+  }
+};
+
 export function FrequencyWavelengthPanel() {
   const [frequency, setFrequency] = useState(920);
   const [unit, setUnit] = useState<"MHz" | "GHz">("MHz");
   const frequencyMHz = unit === "GHz" ? frequency * 1000 : frequency;
+
+  // 単位切替時は表示値を等価換算し、物理周波数を保存する。
+  const handleUnitChange = (nextUnit: "MHz" | "GHz") => {
+    if (nextUnit === unit) {
+      return;
+    }
+    setFrequency((current) => {
+      if (!Number.isFinite(current)) {
+        return current;
+      }
+      return nextUnit === "GHz" ? current / 1000 : current * 1000;
+    });
+    setUnit(nextUnit);
+  };
 
   const result = useMemo(() => {
     try {
@@ -37,14 +75,19 @@ export function FrequencyWavelengthPanel() {
             <label htmlFor="waveFrequency" className="text-sm font-semibold text-slate-950">
               周波数
             </label>
-            <Tooltip term={glossary.wavelength.term}>{glossary.wavelength.description}</Tooltip>
+            <div className="flex flex-wrap items-center gap-2">
+              <Tooltip term={glossary.frequency.term}>{glossary.frequency.description}</Tooltip>
+              <Tooltip term="単位">
+                入力した数値の単位です。MHz=百万Hz、GHz=十億Hz（=1000MHz）。920は「MHz」、2.4や5.8は「GHz」を選びます。単位を切り替えると表示値は自動で換算され、実周波数は保たれます。
+              </Tooltip>
+            </div>
           </div>
           <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_120px]">
             <input
               id="waveFrequency"
               type="number"
               min={0.001}
-              step={unit === "GHz" ? 0.01 : 1}
+              step={unit === "GHz" ? 0.01 : 0.1}
               value={Number.isFinite(frequency) ? frequency : ""}
               className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
               onChange={(event) => setFrequency(event.target.value === "" ? Number.NaN : Number(event.target.value))}
@@ -52,11 +95,12 @@ export function FrequencyWavelengthPanel() {
             />
             <select
               value={unit}
+              aria-label="周波数の単位"
               className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-              onChange={(event) => setUnit(event.target.value as "MHz" | "GHz")}
+              onChange={(event) => handleUnitChange(event.target.value as "MHz" | "GHz")}
             >
-              <option value="MHz">MHz</option>
-              <option value="GHz">GHz</option>
+              <option value="MHz">MHz（百万ヘルツ。サブGHz帯：LPWA/RFID 920MHz等）</option>
+              <option value="GHz">GHz（十億ヘルツ＝1000MHz。WiFi/BLE 2.4/5/6GHz等）</option>
             </select>
           </div>
           {!result ? (
@@ -75,7 +119,12 @@ export function FrequencyWavelengthPanel() {
               ["λ/8", result.eighthM]
             ].map(([label, value]) => (
               <div key={label as string} className="rounded-lg bg-slate-50 p-4">
-                <p className="text-xs text-slate-500">{label as string}</p>
+                <div className="flex items-center justify-between gap-2">
+                  <p className="text-xs text-slate-500">{label as string}</p>
+                  <Tooltip term={RESULT_HINTS[label as string].term}>
+                    {RESULT_HINTS[label as string].description}
+                  </Tooltip>
+                </div>
                 <p className="mt-1 text-2xl font-bold text-staf">
                   {formatMeters(value as number)}
                 </p>
@@ -95,7 +144,7 @@ export function FrequencyWavelengthPanel() {
           </FormulaExplanationCard>
         </div>
       </div>
-      {result ? <WavelengthVisual frequencyMHz={frequencyMHz} /> : null}
+      <WavelengthVisual frequencyMHz={frequencyMHz} hasInput={Boolean(result)} />
     </section>
   );
 }

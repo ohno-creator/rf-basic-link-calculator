@@ -1,11 +1,18 @@
 // VSWRの本質＝整合が悪いほど反射波が増え、定在波の山(Vmax)と谷(Vmin)の差が広がる。
 // 入力（反射係数Γ）に連動して包絡線の波打ちが深くなる動的SVG。
 
+import { Tooltip } from "@/components/Tooltip";
+
 type VswrStandingWaveDiagramProps = {
   reflection: number;
   vswr: number;
   reflectedPowerPercent: number;
+  mismatchLossDb: number;
 };
+
+function formatInfinite(value: number, digits: number): string {
+  return Number.isFinite(value) ? value.toFixed(digits) : "∞";
+}
 
 const X0 = 40;
 const X1 = 520;
@@ -29,28 +36,42 @@ function envelopePath(gamma: number): string {
 export function VswrStandingWaveDiagram({
   reflection,
   vswr,
-  reflectedPowerPercent
+  reflectedPowerPercent,
+  mismatchLossDb
 }: VswrStandingWaveDiagramProps) {
   const gamma = Math.min(Math.max(reflection, 0), 0.999);
   // SSRとクライアントで文字列を一致させるため丸める（ハイドレーション不一致防止）。
   const vMaxY = Number((BASE - (1 + gamma) * SCALE).toFixed(2));
   const vMinY = Number((BASE - (1 - gamma) * SCALE).toFixed(2));
-  const vswrText = Number.isFinite(vswr) ? vswr.toFixed(2) : "∞";
+  // Γが小さいとVmax線とVmin線が接近し、右端固定の2ラベルが重なる。
+  // Vmaxは線の上、Vminは線の下に振り分け、近接時はさらに離してラベル重なりを防ぐ。
+  const labelGap = vMinY - vMaxY; // 常に正（VmaxはVminより上＝yが小さい）
+  const MIN_LABEL_GAP = 22;
+  const extraSpread = Math.max(0, (MIN_LABEL_GAP - labelGap) / 2);
+  const vMaxLabelY = Number((vMaxY - 4 - extraSpread).toFixed(2));
+  const vMinLabelY = Number((vMinY + 12 + extraSpread).toFixed(2));
+  const vswrText = formatInfinite(vswr, 2);
+  const mismatchLossText = formatInfinite(mismatchLossDb, 2);
   const reflectedWidth = Math.min(100, Math.max(0, reflectedPowerPercent));
 
   return (
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <figcaption className="text-sm font-semibold text-slate-950">
-        定在波で見るVSWR（電圧の大きさ）
-      </figcaption>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <figcaption className="text-sm font-semibold text-slate-950">
+          定在波で見るVSWR（電圧の大きさ）
+        </figcaption>
+        <Tooltip term="定在波図">
+          伝送線路上の電圧の山（Vmax=1+Γ）と谷（Vmin=1−Γ）の包絡線です。整合が悪いほど波打ちが深くなります。VSWR=Vmax/Vmin。
+        </Tooltip>
+      </div>
       <svg viewBox="0 0 560 200" role="img" aria-label="伝送線路上の電圧定在波。反射が大きいほど山と谷の差が広がる図。" className="mt-2 w-full">
         {/* Vmax / Vmin の基準線 */}
         <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth="1" strokeDasharray="4 4" />
         <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke="#93c5fd" strokeWidth="1" strokeDasharray="4 4" />
-        <text x={X1} y={vMaxY - 4} textAnchor="end" fontSize="11" fill="#dc2626">
+        <text x={X1} y={vMaxLabelY} textAnchor="end" fontSize="11" fill="#dc2626">
           Vmax = 1 + Γ
         </text>
-        <text x={X1} y={vMinY - 4} textAnchor="end" fontSize="11" fill="#2563eb">
+        <text x={X1} y={vMinLabelY} textAnchor="end" fontSize="11" fill="#2563eb">
           Vmin = 1 − Γ
         </text>
 
@@ -73,8 +94,17 @@ export function VswrStandingWaveDiagram({
           <p className="text-xs text-slate-500">VSWR = Vmax / Vmin</p>
           <p className="text-lg font-bold text-staf">{vswrText}</p>
         </div>
-        <div className="rounded-md bg-white p-2">
-          <p className="text-xs text-slate-500">反射電力（送信のうち戻る割合）</p>
+        <div className="rounded-md bg-white p-2 text-center">
+          <p className="text-xs text-slate-500">ミスマッチ損失（整合損失）</p>
+          <p className="text-lg font-bold text-staf">{mismatchLossText} dB</p>
+        </div>
+        <div className="rounded-md bg-white p-2 sm:col-span-2">
+          <div className="flex items-center justify-between gap-2">
+            <p className="text-xs text-slate-500">反射電力（送信のうち戻る割合）</p>
+            <Tooltip term="反射電力バー">
+              反射電力割合を0〜100%でバー表示します。送信のうち戻る分で、バーが短いほど効率が良い状態です。
+            </Tooltip>
+          </div>
           <div className="mt-1 flex items-center gap-2">
             <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
               <div className="h-full rounded-full bg-rose-400" style={{ width: `${reflectedWidth}%` }} />
@@ -86,7 +116,7 @@ export function VswrStandingWaveDiagram({
 
       <p className="mt-2 text-xs leading-relaxed text-slate-600">
         整合が悪い（Γが大きい）ほど反射波が増え、定在波の山(Vmax)と谷(Vmin)の差が広がります。VSWRはこの比 Vmax/Vmin
-        です。Γ=0（完全整合）なら波打たず一定で、反射電力は0になります。
+        です。Γ=0（完全整合）なら波打たず一定で、反射電力は0になります。反射した分はミスマッチ損失[dB]として負荷に伝わらず失われ、リンクバジェットへ直接効きます。
       </p>
     </figure>
   );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Tooltip } from "@/components/Tooltip";
 import { calculateFresnel } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
@@ -37,9 +38,14 @@ export function FresnelZonePanel() {
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div>
-          <label htmlFor="fresnelFreq" className="text-sm font-semibold text-slate-950">
-            周波数 MHz
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="fresnelFreq" className="text-sm font-semibold text-slate-950">
+              周波数 MHz
+            </label>
+            <Tooltip term="周波数">
+              電波の周波数です。高いほどフレネルゾーン半径は小さくなります（半径は波長の平方根に比例）。代表値: 920MHz=LPWA、2400MHz=Wi-Fi/BLE、5800MHz。MHz単位で入力してください。
+            </Tooltip>
+          </div>
           <input
             id="fresnelFreq"
             type="number"
@@ -52,9 +58,14 @@ export function FresnelZonePanel() {
           />
         </div>
         <div>
-          <label htmlFor="fresnelDist" className="text-sm font-semibold text-slate-950">
-            通信距離 km
-          </label>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <label htmlFor="fresnelDist" className="text-sm font-semibold text-slate-950">
+              通信距離 km
+            </label>
+            <Tooltip term="距離">
+              送信点と受信点の直線距離です。長いほどゾーン半径は大きくなります（経路の中央で最大）。屋内は0.01〜0.1km、屋外の見通しは数km程度が目安です。km単位で入力してください。
+            </Tooltip>
+          </div>
           <input
             id="fresnelDist"
             type="number"
@@ -69,10 +80,15 @@ export function FresnelZonePanel() {
       </div>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between">
-          <label htmlFor="fresnelPos" className="text-sm font-semibold text-slate-950">
-            障害物の位置
-          </label>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <label htmlFor="fresnelPos" className="text-sm font-semibold text-slate-950">
+              障害物の位置
+            </label>
+            <Tooltip term="障害物の位置">
+              障害物がある地点を送信側からの割合で指定します。50%（中央）でゾーン半径が最大、両端ほど小さくなります。5〜95%の範囲で指定できます。
+            </Tooltip>
+          </div>
           <span className="text-sm font-semibold text-staf">送信側から {positionPercent}%</span>
         </div>
         <input
@@ -91,15 +107,30 @@ export function FresnelZonePanel() {
       {result ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-lg bg-staf-light p-4">
-            <p className="text-xs font-semibold text-staf">第1フレネルゾーン半径</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs font-semibold text-staf">第1フレネルゾーン半径</p>
+              <Tooltip term="r1">
+                その地点での第1フレネルゾーンの半径です。電波が通る楕円体の太さの半分にあたり、この範囲に障害物が入ると損失が増えます。見通し通信では半径の60%以上を障害物から空けるのが目安です。
+              </Tooltip>
+            </div>
             <p className="mt-1 text-2xl font-bold text-slate-950">{formatMeters(result.firstZoneRadiusM)}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
-            <p className="text-xs text-slate-500">60%クリアランス</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-slate-500">60%クリアランス</p>
+              <Tooltip term="60%クリアランス">
+                第1フレネルゾーン半径(r1)の60%です。見通し通信では、この高さ以上を障害物から空けておけば回り込みによる損失をほぼ無視できる、という実務上の目安（≧60%が判断基準）です。
+              </Tooltip>
+            </div>
             <p className="mt-1 text-2xl font-bold text-staf">{formatMeters(result.clearance60M)}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
-            <p className="text-xs text-slate-500">波長</p>
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-slate-500">波長</p>
+              <Tooltip term="波長">
+                周波数に対応する電波の波長(λ=c/f)です。フレネルゾーン半径はλの平方根に比例します。周波数が高いほど波長は短く、ゾーン半径も小さくなります。
+              </Tooltip>
+            </div>
             <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.wavelengthM, 3)} m</p>
           </div>
         </div>

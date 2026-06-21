@@ -6,6 +6,8 @@ import { HalfWaveResonanceDiagram } from "./HalfWaveResonanceDiagram";
 
 type WavelengthVisualProps = {
   frequencyMHz: number;
+  // 入力が有効なときだけ「入力値」行を表示する。無効でもチャート枠と固定行は残す。
+  hasInput?: boolean;
 };
 
 const baseRows = [
@@ -15,8 +17,10 @@ const baseRows = [
   { label: "6GHz", frequencyMHz: 6000 }
 ];
 
-export function WavelengthVisual({ frequencyMHz }: WavelengthVisualProps) {
-  const rows = [...baseRows, { label: "入力値", frequencyMHz }].map((row) => {
+export function WavelengthVisual({ frequencyMHz, hasInput = true }: WavelengthVisualProps) {
+  const showInputRow = hasInput && Number.isFinite(frequencyMHz) && frequencyMHz > 0;
+  const inputRows = showInputRow ? [{ label: "入力値", frequencyMHz }] : [];
+  const rows = [...baseRows, ...inputRows].map((row) => {
     // アンテナの基準寸法は半波長（λ/2）なので、半波長を表示する。
     const halfWavelengthM = calculateWavelengthFromMHz(row.frequencyMHz) / 2;
     return { ...row, halfWavelengthM };
@@ -62,6 +66,12 @@ export function WavelengthVisual({ frequencyMHz }: WavelengthVisualProps) {
         })}
       </div>
 
+      {!showInputRow ? (
+        <p className="mt-3 text-xs font-medium text-rose-700">
+          有効な周波数を入力すると「入力値」のバーが追加されます。
+        </p>
+      ) : null}
+
       <p className="mt-4 text-sm leading-relaxed text-slate-600">
         周波数が高いほど半波長は短くなり、アンテナも小さくできます。表示値は理想的なλ/2で、実際の共振長は端部効果などで数%短くなります。
       </p>
@@ -71,6 +81,13 @@ export function WavelengthVisual({ frequencyMHz }: WavelengthVisualProps) {
         <p className="mt-2 text-sm leading-relaxed text-slate-700">
           アンテナが電波を効率よく放射するには、導体の長さが波長と釣り合っている必要があります。長さがちょうど半波長（λ/2）のとき、導体上の電流分布が定在波としてきれいに収まり「共振」します。共振時は給電点インピーダンスが純抵抗（半波長ダイポールで約73Ω）になり、反射が少なく、給電した電力を効率よく電波に変えられます。これが半波長がアンテナ設計の基準寸法になる本質的な理由です。
         </p>
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-baseline justify-between gap-2 border-t border-slate-100 pt-4">
+        <h4 className="text-sm font-semibold text-slate-950">一般解説（入力非依存）</h4>
+        <span className="text-xs font-medium text-slate-500">
+          以下の図・表は入力周波数では変わりません
+        </span>
       </div>
 
       <HalfWaveResonanceDiagram />

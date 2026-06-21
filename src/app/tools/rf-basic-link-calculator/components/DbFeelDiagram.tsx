@@ -1,17 +1,23 @@
 // dBの本質＝「掛け算を足し算にするものさし」を可視化する動的SVG。
 // 目盛りはdBで等間隔だが、倍率は ×2・×10・×100 と一気に増える。
 
+import { dbToPowerRatio } from "@/lib/rf/db";
+import { formatRatio } from "./DbFeelPanel";
+
 type DbFeelDiagramProps = {
   db: number;
+  /** チップ合計dB（任意）。指定すると同じものさし上に重ねて表示する。 */
+  stackTotalDb?: number;
 };
 
 const X0 = 44;
 const X1 = 516;
 const AXIS_Y = 58;
-const DB_MIN = -20;
-const DB_MAX = 20;
+const DB_MIN = -30;
+const DB_MAX = 30;
 
 const anchors = [
+  { db: -30, ratio: "÷1000" },
   { db: -20, ratio: "÷100" },
   { db: -10, ratio: "÷10" },
   { db: -6, ratio: "÷4" },
@@ -20,7 +26,8 @@ const anchors = [
   { db: 3, ratio: "×2" },
   { db: 6, ratio: "×4" },
   { db: 10, ratio: "×10" },
-  { db: 20, ratio: "×100" }
+  { db: 20, ratio: "×100" },
+  { db: 30, ratio: "×1000" }
 ];
 
 function xForDb(db: number): number {
@@ -28,16 +35,22 @@ function xForDb(db: number): number {
   return Number((X0 + ((clamped - DB_MIN) / (DB_MAX - DB_MIN)) * (X1 - X0)).toFixed(2));
 }
 
-export function DbFeelDiagram({ db }: DbFeelDiagramProps) {
+export function DbFeelDiagram({ db, stackTotalDb }: DbFeelDiagramProps) {
   const markerX = xForDb(db);
-  const ratio = 10 ** (db / 10);
-  const ratioLabel = ratio >= 1 ? `×${ratio < 100 ? ratio.toFixed(1) : Math.round(ratio)}` : `×${ratio.toFixed(3)}`;
+  const ratioLabel = formatRatio(dbToPowerRatio(db));
+  const showStack = stackTotalDb !== undefined && stackTotalDb !== db;
+  const stackX = showStack ? xForDb(stackTotalDb) : 0;
+  const stackLabel = showStack ? formatRatio(dbToPowerRatio(stackTotalDb)) : "";
 
   return (
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <figcaption className="text-sm font-semibold text-slate-950">
         dBの「ものさし」（足し算の目盛り＝掛け算の倍率）
       </figcaption>
+      <p className="mt-0.5 text-xs text-slate-500">
+        青い▼はスライダーのdB
+        {showStack ? "、グレーの▽はチップ合計dBを示します。" : "を示します（チップ合計はスライダーと同値のため重なっています）。"}
+      </p>
       <svg viewBox="0 0 560 116" role="img" aria-label="dBの目盛りと電力倍率の対応を示すものさし。等間隔のdBが2倍・10倍・100倍に対応する。" className="mt-2 w-full">
         {/* 軸 */}
         <line x1={X0} y1={AXIS_Y} x2={X1} y2={AXIS_Y} stroke="#94a3b8" strokeWidth="2" />
@@ -57,6 +70,17 @@ export function DbFeelDiagram({ db }: DbFeelDiagramProps) {
             </g>
           );
         })}
+
+        {/* チップ合計dBマーカー（任意・グレーで重ね描き） */}
+        {showStack ? (
+          <g>
+            <line x1={stackX} y1={AXIS_Y - 14} x2={stackX} y2={AXIS_Y + 30} stroke="#64748b" strokeWidth="2" strokeDasharray="4 3" />
+            <circle cx={stackX} cy={AXIS_Y} r="4" fill="#64748b" stroke="#ffffff" strokeWidth="2" />
+            <text x={stackX} y={AXIS_Y + 42} textAnchor="middle" fontSize="11" fontWeight="600" fill="#64748b">
+              合計 {stackTotalDb > 0 ? `+${stackTotalDb}` : stackTotalDb} dB → {stackLabel}
+            </text>
+          </g>
+        ) : null}
 
         {/* 現在のdBマーカー */}
         <line x1={markerX} y1={AXIS_Y - 26} x2={markerX} y2={AXIS_Y + 30} stroke="#0071BD" strokeWidth="2.5" />

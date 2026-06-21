@@ -1,6 +1,8 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { Tooltip } from "@/components/Tooltip";
 import { formatNumber } from "@/lib/rf/format";
 import {
   type BendSignificance,
@@ -19,10 +21,27 @@ import { MicrostripBendDiagram } from "./MicrostripBendDiagram";
 import { MicrostripCrossSectionDiagram } from "./MicrostripCrossSectionDiagram";
 
 const substratePresets = [
-  { label: "テフロン系", value: 2.1 },
-  { label: "Rogers RO4350B", value: 3.48 },
-  { label: "FR4", value: 4.4 },
-  { label: "ガラスエポキシ", value: 4.6 }
+  {
+    label: "テフロン系",
+    value: 2.1,
+    tooltip: "低誘電率・低損失材（PTFE系）。εr≈2.1。ミリ波・高周波の低損失基板向け。押すとεrを2.1に設定。"
+  },
+  {
+    label: "Rogers RO4350B",
+    value: 3.48,
+    tooltip: "高周波用低損失ラミネート。εr≈3.48。RF/マイクロ波で実用的な定番。押すとεrを3.48に設定。"
+  },
+  {
+    label: "FR4",
+    value: 4.4,
+    tooltip:
+      "汎用ガラスエポキシ。εr≈4.4（ロット・周波数で3.8〜4.6と変動・高周波で損失大）。一般基板の標準。押すとεrを4.4に設定。"
+  },
+  {
+    label: "ガラスエポキシ",
+    value: 4.6,
+    tooltip: "ガラスエポキシ系（FR4近縁の高め値）。εr≈4.6。低周波・コスト重視向け。押すとεrを4.6に設定。"
+  }
 ];
 
 const significanceMeta: Record<
@@ -76,7 +95,8 @@ function NumberInput({
   min,
   step,
   invalid,
-  onChange
+  onChange,
+  tooltip
 }: {
   id: string;
   label: string;
@@ -85,12 +105,16 @@ function NumberInput({
   step: number;
   invalid: boolean;
   onChange: (value: number) => void;
+  tooltip?: ReactNode;
 }) {
   return (
     <div>
-      <label htmlFor={id} className="text-sm font-semibold text-slate-950">
-        {label}
-      </label>
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <label htmlFor={id} className="text-sm font-semibold text-slate-950">
+          {label}
+        </label>
+        {tooltip}
+      </div>
       <input
         id={id}
         type="number"
@@ -105,10 +129,23 @@ function NumberInput({
   );
 }
 
-function ResultCard({ label, value, primary = false }: { label: string; value: string; primary?: boolean }) {
+function ResultCard({
+  label,
+  value,
+  primary = false,
+  tooltip
+}: {
+  label: string;
+  value: string;
+  primary?: boolean;
+  tooltip?: ReactNode;
+}) {
   return (
     <div className={`rounded-lg p-4 ${primary ? "bg-staf-light" : "bg-slate-50"}`}>
-      <p className={`text-xs ${primary ? "font-semibold text-staf" : "text-slate-500"}`}>{label}</p>
+      <div className="flex flex-wrap items-start justify-between gap-2">
+        <p className={`text-xs ${primary ? "font-semibold text-staf" : "text-slate-500"}`}>{label}</p>
+        {tooltip}
+      </div>
       <p className={`mt-1 text-2xl font-bold ${primary ? "text-slate-950" : "text-staf"}`}>{value}</p>
     </div>
   );
@@ -120,6 +157,14 @@ export function MicrostripLinePanel() {
   const [dielectricConstant, setDielectricConstant] = useState(4.4);
   const [frequencyMHz, setFrequencyMHz] = useState(2400);
   const [lengthMm, setLengthMm] = useState(25);
+
+  // 各入力欄は「自身の値の妥当性」で invalid を判定する。
+  // （W/h/εr が不正なときに、正しく入っている周波数・線路長まで赤枠になるのを防ぐ）
+  const widthValid = Number.isFinite(widthMm) && widthMm > 0;
+  const heightValid = Number.isFinite(heightMm) && heightMm > 0;
+  const dielectricValid = Number.isFinite(dielectricConstant) && dielectricConstant >= 1;
+  const frequencyValid = Number.isFinite(frequencyMHz) && frequencyMHz > 0;
+  const lengthValid = Number.isFinite(lengthMm) && lengthMm > 0;
 
   const result = useMemo(() => {
     try {
@@ -178,44 +223,160 @@ export function MicrostripLinePanel() {
       </p>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <NumberInput id="msW" label="線路幅 W（mm）" value={widthMm} min={0.05} step={0.05} invalid={!result} onChange={setWidthMm} />
-        <NumberInput id="msH" label="基板厚 h（mm）" value={heightMm} min={0.05} step={0.05} invalid={!result} onChange={setHeightMm} />
-        <NumberInput id="msEr" label="比誘電率 εr" value={dielectricConstant} min={1} step={0.1} invalid={!result} onChange={setDielectricConstant} />
+        <NumberInput
+          id="msW"
+          label="線路幅 W（mm）"
+          value={widthMm}
+          min={0.05}
+          step={0.05}
+          invalid={!widthValid}
+          onChange={setWidthMm}
+          tooltip={
+            <Tooltip term="線路幅 W">
+              基板上の信号導体の幅。広げるとZ0は下がる。50Ω狙いはεr・基板厚で変わり、FR4・h=1.6mmなら約2.9〜3.0mmが目安。最小0.05mm。
+            </Tooltip>
+          }
+        />
+        <NumberInput
+          id="msH"
+          label="基板厚 h（mm）"
+          value={heightMm}
+          min={0.05}
+          step={0.05}
+          invalid={!heightValid}
+          onChange={setHeightMm}
+          tooltip={
+            <Tooltip term="基板厚 h">
+              信号層とグラウンド面の間の誘電体厚。厚いほどZ0は上がる。両面FR4で1.6mm、薄基板で0.2〜0.8mmが代表。データシートのコア/プリプレグ厚を入力。
+            </Tooltip>
+          }
+        />
+        <NumberInput
+          id="msEr"
+          label="比誘電率 εr"
+          value={dielectricConstant}
+          min={1}
+          step={0.1}
+          invalid={!dielectricValid}
+          onChange={setDielectricConstant}
+          tooltip={
+            <Tooltip term="比誘電率 εr">
+              基板材料の比誘電率。高いほど波長が縮みZ0は下がる。FR4≈4.4、Rogers RO4350B≈3.48、テフロン系≈2.1。1以上で入力。下のプリセットも利用可。
+            </Tooltip>
+          }
+        />
       </div>
       <div className="mt-2 flex flex-wrap gap-2">
         {substratePresets.map((preset) => (
-          <button
-            key={preset.label}
-            type="button"
-            className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
-              dielectricConstant === preset.value
-                ? "border-staf bg-staf text-white"
-                : "border-slate-200 bg-white text-slate-600 hover:border-staf/40"
-            }`}
-            onClick={() => setDielectricConstant(preset.value)}
-          >
-            {preset.label}（{preset.value}）
-          </button>
+          <span key={preset.label} className="inline-flex items-center gap-1">
+            <button
+              type="button"
+              className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+                dielectricConstant === preset.value
+                  ? "border-staf bg-staf text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40"
+              }`}
+              onClick={() => setDielectricConstant(preset.value)}
+            >
+              {preset.label}（{preset.value}）
+            </button>
+            <Tooltip term={`${preset.label}（${preset.value}）`}>{preset.tooltip}</Tooltip>
+          </span>
         ))}
       </div>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <NumberInput id="msFreq" label="動作周波数（MHz）" value={frequencyMHz} min={1} step={10} invalid={!electrical} onChange={setFrequencyMHz} />
-        <NumberInput id="msLen" label="線路長 L（mm）" value={lengthMm} min={0.1} step={1} invalid={!electrical} onChange={setLengthMm} />
+        <NumberInput
+          id="msFreq"
+          label="動作周波数（MHz）"
+          value={frequencyMHz}
+          min={1}
+          step={10}
+          invalid={!frequencyValid}
+          onChange={setFrequencyMHz}
+          tooltip={
+            <Tooltip term="動作周波数">
+              対象信号の周波数。λg=c/(f√εeff) と電気長・ビアピッチ・曲げ影響判定に使用。例: Wi‑Fi 2400、Sub‑GHz 920、GPS 1575。0より大きい値。
+            </Tooltip>
+          }
+        />
+        <NumberInput
+          id="msLen"
+          label="線路長 L（mm）"
+          value={lengthMm}
+          min={0.1}
+          step={1}
+          invalid={!lengthValid}
+          onChange={setLengthMm}
+          tooltip={
+            <Tooltip term="線路長 L">
+              対象配線の物理長。電気長[度]=360·L/λg と波長比λを算出。λ/4変成器やスタブ設計の基準。0より大きい値で入力。
+            </Tooltip>
+          }
+        />
       </div>
 
       {result ? (
         <>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            <ResultCard label="特性インピーダンス" value={`${formatNumber(result.impedanceOhms, 1)} Ω`} primary />
-            <ResultCard label="実効比誘電率 εeff" value={formatNumber(result.effectiveDielectric, 2)} />
-            <ResultCard label="速度係数 VF（Vp）" value={formatNumber(result.velocityFactor, 3)} />
+            <ResultCard
+              label="特性インピーダンス"
+              value={`${formatNumber(result.impedanceOhms, 1)} Ω`}
+              primary
+              tooltip={
+                <Tooltip term="特性インピーダンス Z0">
+                  線路の特性インピーダンス。RFは50Ω、差動は片側で約45〜50Ω（差動100Ω）が基本。W・h・εrで決まる。
+                </Tooltip>
+              }
+            />
+            <ResultCard
+              label="実効比誘電率 εeff"
+              value={formatNumber(result.effectiveDielectric, 2)}
+              tooltip={
+                <Tooltip term="実効比誘電率 εeff">
+                  電界が基板と空気にまたがるための実効的なεr。1&lt;εeff&lt;εr。λgとVpを決める。値が大きいほど波長は縮む。
+                </Tooltip>
+              }
+            />
+            <ResultCard
+              label="速度係数 VF（Vp）"
+              value={formatNumber(result.velocityFactor, 3)}
+              tooltip={
+                <Tooltip term="速度係数 VF（Vp）">
+                  線路上の伝搬速度の真空比 Vp=1/√εeff。例εeff≈3.3→VF≈0.55。遅延=L/(c·VF)。配線遅延・長さ整合の計算に使う。
+                </Tooltip>
+              }
+            />
           </div>
 
           {electrical ? (
             <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              <ResultCard label="導波波長 λg" value={`${formatNumber(electrical.lambdaGMm, 1)} mm`} />
-              <ResultCard label={`電気長（L=${formatNumber(lengthMm, 1)}mm）`} value={`${formatNumber(electrical.electricalDeg, 1)}°`} />
-              <ResultCard label="電気長（波長比）" value={`${formatNumber(electrical.electricalLambda, 3)} λ`} />
+              <ResultCard
+                label="導波波長 λg"
+                value={`${formatNumber(electrical.lambdaGMm, 1)} mm`}
+                tooltip={
+                  <Tooltip term="導波波長 λg">
+                    線路上の1波長の物理長 λg=c/(f√εeff)。λ/4スタブやビアピッチ（λg/10）の基準。周波数が高いほど短い。
+                  </Tooltip>
+                }
+              />
+              <ResultCard
+                label={`電気長（L=${formatNumber(lengthMm, 1)}mm）`}
+                value={`${formatNumber(electrical.electricalDeg, 1)}°`}
+                tooltip={
+                  <Tooltip term="電気長（度）">
+                    物理長Lが何度に相当するか＝360·L/λg。90°=λ/4、180°=λ/2。整合回路・移相設計で重要。Lとλgで変化。
+                  </Tooltip>
+                }
+              />
+              <ResultCard
+                label="電気長（波長比）"
+                value={`${formatNumber(electrical.electricalLambda, 3)} λ`}
+                tooltip={
+                  <Tooltip term="電気長（波長比 λ）">
+                    物理長を波長単位で表したもの＝L/λg。0.25λ=λ/4変成器、0.5λ=半波長。配線が波長に対しどれだけ長いかの直感指標。
+                  </Tooltip>
+                }
+              />
             </div>
           ) : null}
 
@@ -237,6 +398,11 @@ export function MicrostripLinePanel() {
       )}
 
       <div className="mt-5">
+        <div className="mb-2 flex justify-end">
+          <Tooltip term="特性インピーダンス・電気長の式を見る">
+            Hammerstad-Wheeler近似式とλg・電気長の定義式を表示。計算の根拠を確認したいとき。
+          </Tooltip>
+        </div>
         <FormulaExplanationCard
           title="特性インピーダンス・電気長の式を見る"
           formula={
@@ -257,12 +423,34 @@ export function MicrostripLinePanel() {
 
         {electrical ? (
           <div className="mt-4 grid gap-3 sm:grid-cols-2">
-            <ResultCard label="推奨 最大ピッチ（λg/10）" value={`${formatNumber(electrical.viaPitchLooseMm, 2)} mm 以下`} primary />
-            <ResultCard label="より安全側（λg/20）" value={`${formatNumber(electrical.viaPitchTightMm, 2)} mm 以下`} />
+            <ResultCard
+              label="推奨 最大ピッチ（λg/10）"
+              value={`${formatNumber(electrical.viaPitchLooseMm, 2)} mm 以下`}
+              primary
+              tooltip={
+                <Tooltip term="推奨 最大ピッチ（λg/10）">
+                  スティッチングビアの一般的な最大間隔＝λg/10。これ以下なら共振・漏れを実用上抑えられる。コネクタ/境界近傍はより密に。
+                </Tooltip>
+              }
+            />
+            <ResultCard
+              label="より安全側（λg/20）"
+              value={`${formatNumber(electrical.viaPitchTightMm, 2)} mm 以下`}
+              tooltip={
+                <Tooltip term="より安全側（λg/20）">
+                  高アイソレーション要求時のビア間隔＝λg/20。シールド性を高めたい箇所・高周波で採用。製造コストと相談。
+                </Tooltip>
+              }
+            />
           </div>
         ) : null}
 
         <div className="mt-5">
+          <div className="mb-2 flex justify-end">
+            <Tooltip term="ビア（スルーホール）の考え方を見る">
+              スティッチングビアのピッチ目安（λg/10・λg/20）と配置すべき箇所の解説を表示。
+            </Tooltip>
+          </div>
           <FormulaExplanationCard
             title="ビア（スルーホール）の考え方を見る"
             formula={"スティッチングビアの最大ピッチ ≈ λg / 10（より安全側は λg / 20）"}
@@ -284,12 +472,20 @@ export function MicrostripLinePanel() {
         {bend ? (
           <>
             <div className={`mt-4 rounded-lg border p-4 ${significanceMeta[bend.significance].tone}`}>
-              <p className="text-xs font-semibold">曲げの影響</p>
+              <div className="flex flex-wrap items-start justify-between gap-2">
+                <p className="text-xs font-semibold">曲げの影響</p>
+                <Tooltip term="曲げの影響">
+                  W/λg比で曲げ反射の重要度を判定。&lt;1/20:ほぼ無視、1/20〜1/10:小さめ、&gt;1/10:要対策。周波数・W・εrで変化。
+                </Tooltip>
+              </div>
               <p className="mt-1 text-xl font-bold">{significanceMeta[bend.significance].label}</p>
               <p className="mt-1 text-sm leading-relaxed">{significanceMeta[bend.significance].lead}</p>
               <p className="mt-2 text-xs leading-relaxed">
                 導波波長 λg ≈ {formatNumber(bend.lambdaGMm, 1)} mm。線路幅 W（{formatNumber(widthMm, 2)}mm）は
-                λg の約 1/{Math.round(bend.ratioInverse)} です。目安：W が λg/20 より小さければほぼ無視でき、λg/10 を超えると無視できません。
+                {bend.ratioInverse >= 2
+                  ? ` λg の約 1/${Math.round(bend.ratioInverse)} です。`
+                  : ` λg と同等以上（W ≈ λg の ${formatNumber(bend.ratioInverse, 2)} 倍）で、波長に対して幅が広い領域です。`}
+                目安：W が λg/20 より小さければほぼ無視でき、λg/10 を超えると無視できません。
               </p>
             </div>
 
@@ -308,9 +504,35 @@ export function MicrostripLinePanel() {
             </div>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
-              <ResultCard label="90°マイター率" value={`${formatNumber(bend.miterPercent, 0)} %`} primary />
-              <ResultCard label="対角カット長" value={`${formatNumber(bend.cutbackMm, 2)} mm`} />
-              <ResultCard label="円弧の推奨最小R" value={`${formatNumber(bend.radiusMm, 1)} mm`} />
+              <ResultCard
+                label="90°マイター率"
+                value={`${formatNumber(bend.miterPercent, 0)} %`}
+                primary
+                tooltip={
+                  <Tooltip term="90°マイター率">
+                    直角の角を斜めにカットする割合 M[%]=52+65·exp(-1.35·W/h)（Douville-James）。50%前後が代表。W/h
+                    0.25〜2.75で妥当。
+                  </Tooltip>
+                }
+              />
+              <ResultCard
+                label="対角カット長"
+                value={`${formatNumber(bend.cutbackMm, 2)} mm`}
+                tooltip={
+                  <Tooltip term="対角カット長">
+                    マイターで角から斜めに切る対角長＝（率/100)·W·√2。基板CADでこの寸法だけ角を落とす。
+                  </Tooltip>
+                }
+              />
+              <ResultCard
+                label="円弧の推奨最小R"
+                value={`${formatNumber(bend.radiusMm, 1)} mm`}
+                tooltip={
+                  <Tooltip term="円弧の推奨最小R">
+                    円弧で曲げる場合の中心線推奨最小半径≈3·W。これより小さいと反射が増えやすい。緩い曲げほど良好。
+                  </Tooltip>
+                }
+              />
             </div>
 
             <div className="mt-5">
@@ -318,12 +540,18 @@ export function MicrostripLinePanel() {
                 angleDeg={90}
                 miterPercent={bend.miterPercent}
                 cutbackMm={bend.cutbackMm}
+                significance={bend.significance}
               />
             </div>
           </>
         ) : null}
 
         <div className="mt-5">
+          <div className="mb-2 flex justify-end">
+            <Tooltip term="曲げ対策の考え方を見る">
+              曲げ反射の原理とマイター/45°/円弧の対策、Douville-James式と適用範囲を表示。
+            </Tooltip>
+          </div>
           <FormulaExplanationCard
             title="曲げ対策の考え方を見る"
             formula={"効くかの目安: 線路幅W と 導波波長 λg = c/(f√εeff) を比較\n90°の最適マイター率 M[%] = 52 + 65 · exp(-1.35 · W/h)   （Douville-James）"}
