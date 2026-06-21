@@ -111,33 +111,97 @@ const sources = {
   loraRapidFading2020: {
     label: "2020 LoRa high-SF robustness caveat",
     href: "https://arxiv.org/abs/2009.01176"
+  },
+  stafMedia: {
+    label: "スタッフ株式会社 情報メディア",
+    href: "https://www.staf.co.jp/media/"
+  },
+  stafAntennaStructure: {
+    label: "スタッフ株式会社 アンテナの基本構造とサイズ",
+    href: "https://www.staf.co.jp/media/column/antenna-structure-size"
+  },
+  stafRadiationEfficiency: {
+    label: "スタッフ株式会社 放射効率とは",
+    href: "https://www.staf.co.jp/media/column/antenna-radiation-efficiency"
+  },
+  stafVswr: {
+    label: "スタッフ株式会社 VSWRとは",
+    href: "https://www.staf.co.jp/media/column/VSWR"
+  },
+  stafCableGuide: {
+    label: "スタッフ株式会社 ケーブル付きアンテナ設置ガイド",
+    href: "https://www.staf.co.jp/media/column/cable-antenna-install-guide"
+  },
+  stafIp67Whip: {
+    label: "スタッフ株式会社 IP67防水ホイップアンテナ",
+    href: "https://www.staf.co.jp/media/category02/new_IP67whip_Black"
+  },
+  stafReflector: {
+    label: "スタッフ株式会社 平面型反射板の新技術",
+    href: "https://www.staf.co.jp/media/category03/Antenna-Reflector202505"
   }
 } as const;
 
 const supplementalWrongChoices: Record<QuestModeId, string[]> = {
   intro: [
-    "言葉の意味を確認せず感覚だけで判断する",
-    "単位をそろえず数値だけを比べる"
+    "単位名だけで物理量を取り違える",
+    "周波数と電力を同じ量として扱う",
+    "測定条件を記録せず数値だけを比べる",
+    "アンテナを接続しなくても同じと考える",
+    "距離と損失の関係を見ない",
+    "通信方式と周波数帯を混同する",
+    "電波と音波を同じ現象として扱う",
+    "基準値を確認せずdB値だけを見る"
   ],
   beginner: [
-    "dB、dBm、dBiの違いを見ずに同じ単位として扱う",
-    "符号を確認せず損失を利得として足す"
+    "損失を利得として足し込む",
+    "dBmとdBを同じ絶対電力として扱う",
+    "距離や周波数の単位をそろえない",
+    "受信感度と受信電力の大小を逆に読む",
+    "リンクマージンを入力条件から切り離す",
+    "アンテナ利得だけで全損失を消せると考える",
+    "自由空間損失を屋内遮蔽まで含む値とみなす",
+    "共有リンクの入力条件を確認しない"
   ],
   apprentice: [
-    "地面反射や端末近傍損失を無視して平均損失だけで決める",
-    "筐体や人体遮蔽の影響を常にゼロとみなす"
+    "平均損失だけで局所的な山谷を無視する",
+    "端末近傍損失をモデルが自動で全て含むと考える",
+    "地面反射と壁反射を同じ単純式で扱う",
+    "実測補正の符号を確認しない",
+    "アンテナ高を変えても結果は変わらないと考える",
+    "フレネルゾーン欠損を見通し判定から外す",
+    "筐体や人体遮蔽の影響を常に無視する",
+    "一点のRSSIだけで距離特性を断定する"
   ],
   practitioner: [
-    "モデルの適用範囲を確認せず計算結果だけで判定する",
-    "実測補正と環境損失を重複して入れる"
+    "Hata系を低高度端末同士の主モデルにする",
+    "適用範囲外の警告を無視する",
+    "環境損失と近傍損失を二重計上する",
+    "実測補正なしで最終判定とする",
+    "通信形態を選ばず同じモデルで見る",
+    "信頼率マージンを平均値と同じ意味で扱う",
+    "測定アンカー点の距離を記録しない",
+    "モデル比較をせず一つの式だけで説明する"
   ],
   expert: [
-    "アンテナパターンや干渉を見ずに最大距離だけで設計する",
-    "セル容量や隣接セル干渉を距離計算から完全に切り離す"
+    "最大到達距離だけで基地局配置を決める",
+    "容量と干渉をカバレッジ計算から外す",
+    "アンテナチルトや方位を固定値として扱う",
+    "GIS入力の分類品質を確認しない",
+    "スキャナ測定と実端末性能を同一視する",
+    "隣接セルや近遠問題を無視する",
+    "アップリンクとダウンリンクを常に同条件とみなす",
+    "施工後のドライブテストを不要と考える"
   ],
   researcher: [
-    "検証データを分けず平均誤差だけで精度を判断する",
-    "論文の測定条件を確認せず別現場へそのまま外挿する"
+    "学習データだけで精度を判断する",
+    "平均RMSEだけでフェードリスクを決める",
+    "測定条件の違いを無視して外挿する",
+    "特徴量を増やせば必ず改善すると考える",
+    "信頼区間や残差分布を確認しない",
+    "測定メタデータなしでモデル化する",
+    "ベースライン比較なしで改善を主張する",
+    "現場校正なしで全環境へ一般化する"
   ]
 };
 
@@ -146,9 +210,13 @@ function lesson(lessonInput: QuestLesson): QuestLesson {
     return lessonInput;
   }
 
-  const supplementalChoice = supplementalWrongChoices[lessonInput.mode].find(
-    (choice) => !lessonInput.choices.includes(choice)
-  );
+  const candidates = supplementalWrongChoices[lessonInput.mode];
+  const startIndex =
+    [...lessonInput.id].reduce((sum, char) => sum + char.charCodeAt(0), lessonInput.stage) % candidates.length;
+  const supplementalChoice = candidates
+    .slice(startIndex)
+    .concat(candidates.slice(0, startIndex))
+    .find((choice) => !lessonInput.choices.includes(choice));
 
   return supplementalChoice ? { ...lessonInput, choices: [...lessonInput.choices, supplementalChoice] } : lessonInput;
 }
@@ -207,6 +275,7 @@ type IntroTermSeed = {
   explanation: string;
   column: string;
   appLink?: QuestLesson["appLink"];
+  sources?: QuestSource[];
 };
 
 function term(
@@ -219,9 +288,20 @@ function term(
   wrong3: string,
   explanation: string,
   column: string,
-  appLink: QuestLesson["appLink"] = toolLinks.calculator
+  appLink: QuestLesson["appLink"] = toolLinks.calculator,
+  sourcesForLesson?: QuestSource[]
 ): IntroTermSeed {
-  return { slug, title, prompt, correct, wrong: [wrong1, wrong2, wrong3], explanation, column, appLink };
+  return {
+    slug,
+    title,
+    prompt,
+    correct,
+    wrong: [wrong1, wrong2, wrong3],
+    explanation,
+    column,
+    appLink,
+    sources: sourcesForLesson
+  };
 }
 
 const introTermSeeds: IntroTermSeed[] = [
@@ -395,10 +475,28 @@ const introTermSeeds: IntroTermSeed[] = [
   term("harmonic", "高調波", "用語メモ：高調波は基本周波数の整数倍の成分です。920MHzの2倍高調波は？", "1840MHz", "460MHz", "920MHz", "92MHz", "高調波は送信機の非線形性などで生じる不要成分です。", "基本波だけ見て安心せず、2倍・3倍の周波数に不要放射がないかも確認します。"),
   term("intermodulation", "相互変調", "用語メモ：相互変調は複数信号が非線形で混ざり新しい周波数成分を作る現象です。起きやすい場所は？", "増幅器や接触不良などの非線形部", "PDF余白", "会社名", "電池容量", "強い信号が複数あると、思わぬ周波数に妨害が出ることがあります。", "錆びた金属接点が無線の謎ノイズ源になることもあります。RFは現場の物理に敏感です。"),
   term("pim", "PIM", "用語メモ：PIMはPassive Intermodulation、受動部品で起きる相互変調です。疑うものは？", "コネクタや金属接触部", "ソフトウェアの色", "電池残量", "PDF保存", "高出力基地局では、受動部品のわずかな非線形も問題になります。", "ボルトの締め方や錆まで電波品質に効く。基地局設計の世界はなかなか渋いです。"),
-  term("antenna-tuner", "アンテナチューナ", "用語メモ：アンテナチューナは送信機から見たインピーダンスを合わせる装置です。できないことは？", "悪い放射効率を必ず改善すること", "送信機の負荷を合わせること", "反射を見かけ上減らすこと", "整合範囲内で調整すること", "チューナは整合を取りますが、アンテナの物理的な効率や給電線損失を消すわけではありません。", "SWRが下がったのに飛ばないとき、チューナが『送信機を安心させただけ』かもしれません。"),
+  term("antenna-tuner", "アンテナチューナ", "用語メモ：アンテナチューナは送信機から見たインピーダンスを合わせる装置です。できないことは？", "放射効率や給電線損失まで自動で直すこと", "送信機の負荷を合わせること", "反射を見かけ上減らすこと", "整合範囲内で調整すること", "チューナは整合を取りますが、アンテナの物理的な効率や給電線損失を消すわけではありません。", "SWRが下がったのに飛ばないとき、チューナが『送信機を安心させただけ』かもしれません。"),
   term("resonance", "共振", "用語メモ：共振はアンテナや回路が特定周波数で反応しやすい状態です。アンテナで関係するものは？", "長さ、周囲材料、GND", "会社名", "PDF余白", "問題数", "アンテナの共振周波数は実装環境で動くことがあります。", "裸のアンテナ単体で合っていても、筐体や手で共振点がずれることがあります。"),
   term("bandwidth-antenna", "アンテナ帯域", "用語メモ：アンテナ帯域は使える周波数範囲です。小型化すると起きやすいことは？", "帯域が狭くなりやすい", "必ず広帯域になる", "周波数が消える", "受信感度が不要になる", "アンテナを小型化すると効率や帯域とのトレードオフが出ます。", "小さく、広帯域で、高効率。アンテナ設計で全部欲しいと言うと、設計者が遠い目をします。"),
   term("efficiency", "アンテナ効率", "用語メモ：アンテナ効率は入力電力のうち電波として放射される割合です。SWRと違う点は？", "整合ではなく実際の放射割合を見る", "同じ意味", "PDFの品質", "会社名", "SWRが良くても効率が悪いアンテナはよく飛びません。", "ダミーロードは整合が良いですが、通信距離を伸ばすアンテナではありません。ここがSWR神話の核心です。"),
+  term("staf-antenna-conductor", "アンテナ材料", "用語メモ：スタッフ株式会社の基礎コラムでは、アンテナの基本材料として導体を扱っています。アンテナの基本構造として近いものは？", "電気を通す導体で電波と電気信号を変換する", "絶縁体だけで電波を増幅する", "電池だけで周波数を決める", "塗装色だけで利得を決める", "アンテナは導体に流れる高周波電流と空間の電磁波をつなぐ部品です。材料、形状、周辺構造が性能に効きます。", "当社メディアでは、アンテナを難しい箱ではなく『導体と電流と波長』から理解する導入を置いています。まず構造を知ると、サイズや設置の話もつながります。", toolLinks.wavelength, [sources.stafAntennaStructure]),
+  term("staf-frequency-size", "周波数とサイズ", "用語メモ：アンテナサイズは使用周波数の波長に強く依存します。周波数が高くなると一般にアンテナサイズは？", "小さくしやすい", "必ず大きくなる", "送信電力と同じになる", "受信感度の単位になる", "周波数が高いほど波長は短くなり、半波長や1/4波長の基準寸法も短くなります。", "当社メディアでは、低い周波数ほどアンテナが大きく、高い周波数ほど小さくなりやすいという入口を重視しています。IoT端末の筐体設計にも直結します。", toolLinks.wavelength, [sources.stafAntennaStructure]),
+  term("staf-lpwa-920-size", "920MHzのサイズ感", "用語メモ：当社メディアではLPWA 920MHzの波長を約32.6cm、半波長を約16.3cmの目安として紹介しています。920MHzアンテナ設計でまず意識するものは？", "波長から来る物理サイズの目安", "PDFの余白", "会社ロゴの色", "IPアドレスの桁数", "920MHz帯はIoTで便利ですが、2.4GHzよりアンテナ寸法が大きくなりやすい帯域です。", "『小型端末にSub-GHzを入れる』ときは、通信距離だけでなくアンテナスペースとの相談になります。ここは現場でとても効く設計条件です。", toolLinks.wavelength, [sources.stafAntennaStructure]),
+  term("staf-iot-antenna-types", "IoTアンテナ種類", "用語メモ：IoT機器ではチップ、FPC、板金、PCBなど複数のアンテナ実装があります。選び方で最初に見るべきものは？", "周波数帯、設置環境、スペース、性能要求", "天気だけ", "ボタンの色だけ", "HTML構造だけ", "アンテナタイプは、周波数、筐体、金属近接、防水、コスト、量産性で向き不向きが変わります。", "当社メディアでは、FPC、板金、PCB、チップなどを用途に応じて選ぶ考え方を示しています。アンテナは部品単体ではなく、製品の置かれ方まで含めて選びます。", toolLinks.calculator, [sources.stafAntennaStructure]),
+  term("staf-fpc-antenna", "FPCアンテナ", "用語メモ：FPCアンテナは柔軟性のある基板上に導体パターンを形成したアンテナです。得意なこととして近いものは？", "筐体内面など形状に合わせて配置しやすい", "必ず金属面に直接貼る", "ケーブル損失をゼロにする", "周波数を自動選択する", "FPCは薄く柔らかいため、筐体内の限られた空間に配置しやすい一方、貼付位置や周辺材料の影響を受けます。", "『貼れる』ことと『どこでも同じ性能』は別です。筐体、電池、金属、人体との距離を見ながら評価します。", toolLinks.calculator, [sources.stafAntennaStructure]),
+  term("staf-pcb-antenna", "PCBアンテナ", "用語メモ：PCBアンテナは基板上の導体パターンとして作るアンテナです。注意点として近いものは？", "基板サイズやGND、周辺部品に性能が左右される", "外付けケーブルが必ず不要になる", "周波数と無関係に使える", "受信感度を消せる", "PCBアンテナはコストや実装性に利点がありますが、基板レイアウトとGND条件が性能に強く効きます。", "当社メディアの小型化の話ともつながります。アンテナ単体の図面ではなく、基板全体をアンテナシステムとして見ます。", toolLinks.calculator, [sources.stafAntennaStructure]),
+  term("staf-sheet-metal-antenna", "板金アンテナ", "用語メモ：板金アンテナは金属板を加工して作る実装アンテナです。特徴として近いものは？", "耐久性や放射効率を狙いやすい実装形態", "紙だけで作るアンテナ", "ソフトウェアの暗号方式", "受信感度の単位", "板金アンテナは形状自由度と機械的強度を活かし、LTE/LPWAなどの実装で使われることがあります。", "筐体内蔵では、性能だけでなく量産組立、固定方法、ばらつきも大切です。板金アンテナはその現実的な選択肢になります。", toolLinks.calculator, [sources.stafAntennaStructure]),
+  term("staf-miniaturization", "アンテナ小型化", "用語メモ：当社メディアでは、ミアンダ、ローディング、高誘電率材料などを小型化の工夫として紹介しています。小型化で注意すべきことは？", "帯域・効率・コストとのトレードオフ", "必ず全性能が上がる", "法規が不要になる", "距離が無限になる", "アンテナを小さくするほど、帯域幅や効率、調整難易度にしわ寄せが出ることがあります。", "小型化は魔法ではなく設計の交換条件です。筐体に入ること、十分飛ぶこと、量産で再現することを同時に見ます。", toolLinks.wavelength, [sources.stafAntennaStructure]),
+  term("staf-ground-use", "GND活用", "用語メモ：小型アンテナでは基板GNDをアンテナシステムの一部として使うことがあります。設計で重要なのは？", "給電部だけでなく基板全体を見ること", "GNDを必ず切り離すこと", "受信感度を0dBmにすること", "距離を固定すること", "モノポールや内蔵アンテナでは、基板GNDの大きさや形が放射に影響します。", "当社メディアでも、グラウンド面の活用は小型化の重要な考え方として扱われています。端末の基板は単なる土台ではありません。", toolLinks.wavelength, [sources.stafAntennaStructure]),
+  term("staf-efficiency-vs-gain", "放射効率と利得", "用語メモ：当社メディアでは、放射効率と利得は別物として説明しています。放射効率が見るものは？", "入力電力のうち実際に電波として放射された割合", "最大方向へどれだけ集中するかだけ", "周波数の単位", "通信事業者名", "利得は方向性を含む強さ、放射効率はアンテナ内部でどれだけ失わず放射できたかを見る指標です。", "無指向性端末では、最大利得だけを見ても全体像を外すことがあります。VSWR、効率、放射パターンを組み合わせて見ます。", toolLinks.calculator, [sources.stafRadiationEfficiency]),
+  term("staf-efficiency-db", "放射効率dB", "用語メモ：放射効率はdBで表されることがあります。0dBに近いほど一般にどう見ますか？", "損失が少なく効率が良い", "反射が必ず100%になる", "周波数が0になる", "アンテナサイズが無限になる", "放射効率は0dBを理想に近い基準として、値が低いほど損失が大きい方向に読みます。", "入門では『0dBに近いほど良い、マイナスが大きいほど損失が大きい』という読み方から始めると十分です。", toolLinks.dbFeel, [sources.stafRadiationEfficiency]),
+  term("staf-vswr-unitless", "VSWRの単位", "用語メモ：当社メディアではVSWRを電波の流れのムダを見える化する指標として説明しています。VSWRの単位は？", "単位なしの比率", "dBm", "MHz", "cm", "VSWRは電圧定在波比で、反射の度合いを表す比率です。1に近いほど反射が少ない理想に近づきます。", "VSWRは便利な入口ですが、低VSWRだけで『よく飛ぶ』とは限りません。放射効率や設置状態も一緒に見ます。", toolLinks.calculator, [sources.stafVswr]),
+  term("staf-vswr-cable-mask", "ケーブルとVSWR", "用語メモ：ケーブルが長いと、損失のためにVSWRが良く見える場合があります。これは何を意味しますか？", "改善ではなく信号が減衰して見え方が変わることがある", "アンテナ効率が必ず上がる", "周波数が低くなる", "受信感度が不要になる", "ケーブル損失で反射波も減ると、測定上のVSWRが良く見えることがあります。リンクバジェットでは損失として扱います。", "『VSWRが下がった』だけで喜ばず、ケーブル損失、放射効率、実際のRSSIを合わせて見るのが現場向きです。", toolLinks.calculator, [sources.stafVswr]),
+  term("staf-cable-install", "ケーブル付きアンテナ設置", "用語メモ：当社のケーブル付きアンテナ設置ガイドでは、金属筐体やケーブル曲げによるトラブルを扱っています。設置で最初に確認したいことは？", "金属近接、貼付位置、ケーブル曲げ、固定状態", "会社名だけ", "問題数だけ", "画面幅だけ", "ケーブル付きアンテナは、アンテナ本体だけでなく取り付け位置、曲げ、固定、周辺金属が通信品質に効きます。", "通信品質は部品性能だけで決まりません。設置・選定が効くという当社メディアの観点は、リンクバジェットの端末近傍損失にも直結します。", toolLinks.calculator, [sources.stafCableGuide]),
+  term("staf-metal-enclosure", "金属筐体近接", "用語メモ：金属筐体にアンテナを近づけると感度が大きく落ちることがあります。主な理由は？", "アンテナの共振・効率・放射方向が変わるため", "電池容量が増えるため", "周波数単位が変わるため", "PDFが重くなるため", "金属は反射・遮蔽・電流分布の変化を起こし、アンテナ性能を変えます。対金属用や設置位置の検討が必要です。", "現場で『同じアンテナなのに筐体に入れたら飛ばない』は珍しくありません。アンテナは周囲込みで評価します。", toolLinks.calculator, [sources.stafCableGuide, sources.stafAntennaStructure]),
+  term("staf-ip67", "IP67", "用語メモ：当社メディアでは屋外設置向けIP67防水ホイップアンテナを紹介しています。IP67で主に示すものは？", "防塵・防水の保護等級", "アンテナ利得の単位", "受信感度の単位", "周波数の倍率", "IP67は屋外設置で重要な防塵・防水の目安です。ただし防水構造や水膜がRF性能へ影響する場合もあります。", "屋外IoTでは『電波が届く』だけでなく、雨、紫外線、取り付け、保守性まで含めて考えます。RFと機構の境目が大事です。", toolLinks.calculator, [sources.stafIp67Whip]),
+  term("staf-whip-lambda", "ホイップλ/2・λ/4", "用語メモ：当社メディアでは920MHz用λ/2ホイップやλ/4ホイップなどを紹介しています。λ/2やλ/4が表すものは？", "波長に対するアンテナ長の目安", "防水等級", "会社の設立年", "受信感度の単位", "ホイップアンテナでは、半波長や1/4波長が基本寸法の目安になります。実製品では整合や構造で調整します。", "λ/2は効率を狙いやすく、λ/4はコンパクトにしやすいなど、サイズと性能の見方につながります。", toolLinks.wavelength, [sources.stafIp67Whip, sources.stafAntennaStructure]),
+  term("staf-planar-reflector", "平面型反射板", "用語メモ：当社メディアでは、屋内ローカル5Gなどで電波の死角を減らす平面型反射板の研究を紹介しています。反射板の狙いは？", "届きにくい方向へ電波の経路を作る", "送信電力の法規を消す", "受信感度を不要にする", "アンテナを電池に変える", "反射板やメタサーフェス的な構造は、遮蔽や曲がり角で電波経路を補う設計手段になります。", "リンク計算は距離だけを見がちですが、屋内では『どう回り込ませるか』も重要です。反射・遮蔽を味方にする発想です。", toolLinks.propagation, [sources.stafReflector]),
   term("realized-gain", "実現利得", "用語メモ：実現利得はアンテナ利得に整合損失なども含めた実効的な利得です。実務で便利な理由は？", "実装後の実効性能に近い", "会社名を決める", "PDFを作る", "電池を増やす", "実現利得はカタログ利得だけより現実に近い見方です。", "アンテナ単体の利得より、実機に入れた実現利得を見る方が通信距離には効きます。"),
   term("ota", "OTA評価", "用語メモ：OTA評価はOver-The-Air、空中線込みの無線性能評価です。何を見る評価ですか？", "実機全体の放射・受信性能", "ケーブルだけの損失", "PDFだけ", "会社名だけ", "OTA評価では筐体、アンテナ、基板を含めた実機性能を測ります。", "RF製品はケーブル直結で良くても、OTAで悪いことがあります。最後は空中で測るのが大事です。"),
   term("anechoic-chamber", "電波暗室", "用語メモ：電波暗室は反射を抑えた測定室です。目的は？", "アンテナや無線性能を再現性よく測る", "通信距離を無限にする", "電池を増やす", "PDFを作る", "壁の反射を抑えることで、アンテナパターンや感度を測りやすくします。", "現場の反射だらけの世界と違い、暗室はアンテナそのものを見るための静かな部屋です。"),
@@ -502,7 +600,8 @@ const introQuestLessons: QuestLesson[] = introTermSeeds.slice(0, 200).map((seed,
     immediateAnswer: `${seed.correct} が正解です。`,
     explanation: seed.explanation,
     appLink: seed.appLink ?? toolLinks.calculator,
-    column: seed.column
+    column: seed.column,
+    sources: seed.sources
   })
 );
 
