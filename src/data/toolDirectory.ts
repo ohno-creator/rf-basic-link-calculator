@@ -42,8 +42,8 @@ export const toolDirectory: DirectoryTool[] = [
   },
   {
     href: "/tools/propagation-loss",
-    name: "伝搬損失（奥村-秦）",
-    tagline: "市街地・郊外の損失を推定",
+    name: "伝搬損失モデル比較",
+    tagline: "自由空間〜Hata系を一括比較",
     icon: "building",
     category: "link"
   },

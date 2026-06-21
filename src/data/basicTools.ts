@@ -58,12 +58,12 @@ export const basicTools: BasicToolMeta[] = [
   },
   {
     slug: "propagation-loss",
-    title: "伝搬損失（奥村-秦）",
-    metaTitle: "伝搬損失計算ツール｜奥村-秦・COST 231-Hata モデル",
+    title: "伝搬損失モデル比較",
+    metaTitle: "伝搬損失モデル比較ツール｜自由空間・2波・Log-distance・奥村-秦/COST231-Hata",
     description:
-      "市街地・郊外などの実環境の伝搬損失を、奥村-秦／COST 231-Hata モデルで推定します。距離に対する損失カーブで、エリアと距離の効きを確認できます。",
-    formula: "L = 69.55 + 26.16·log10(f) − 13.82·log10(hb) − a(hm) + …",
-    essenceLead: "実環境の損失は、自由空間損失に建物や地形の影響を足したものです。",
+      "自由空間損失、2波モデル、Log-distance、奥村-秦／COST 231-Hata を同じ条件で並べて比較できます。距離・周波数・アンテナ高を変えながら、2D断面図と距離カーブでモデルごとの伝搬損失を確認できます。",
+    formula: "FSPL = 32.44 + 20·log10(f) + 20·log10(d) ／ Hata = 69.55 + 26.16·log10(f) − …",
+    essenceLead: "同じ条件でも、選ぶモデルで伝搬損失の見積もりは大きく変わります。",
     canonical: `${SITE_TOOLS}/propagation-loss`
   },
   {

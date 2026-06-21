@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { HataColumn } from "@/app/tools/rf-basic-link-calculator/components/HataColumn";
-import { PropagationLossPanel } from "@/app/tools/rf-basic-link-calculator/components/PropagationLossPanel";
+import { PropagationExplorer } from "@/app/tools/rf-basic-link-calculator/components/PropagationExplorer";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";
@@ -24,7 +24,7 @@ export default function PropagationLossPage() {
   return (
     <ToolLayout>
       <BasicToolPageShell tool={tool}>
-        <PropagationLossPanel />
+        <PropagationExplorer />
         <HataColumn />
       </BasicToolPageShell>
     </ToolLayout>
