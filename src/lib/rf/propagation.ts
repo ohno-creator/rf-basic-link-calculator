@@ -45,6 +45,9 @@ function assertPositiveFinite(value: number, label: string) {
 }
 
 function largeCityCorrection(frequencyMHz: number, mobileHeightM: number): number {
+  // 大都市の移動局補正 a(hm)。原典は f≤200MHz と f≥400MHz の2式のみで、
+  // 200<f<400MHz は未定義。ここでは f>200 を高周波式(≥400用)で外挿する
+  // （典型 hm≤3m では2式の差は0.5dB以下）。
   if (frequencyMHz <= 200) {
     return 8.29 * Math.log10(1.54 * mobileHeightM) ** 2 - 1.1;
   }
@@ -81,6 +84,9 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
   const logD = Math.log10(d);
   const distanceTerm = (44.9 - 6.55 * logHb) * logD;
 
+  // preferredModel を指定すると周波数によらずそのモデルを使う。例: 'Hata' を 1500–2000MHz で
+  // 強制すると Hata 本来の上限(1500MHz)を超える外挿になるが、outOfRange は f>2000 でしか立たない
+  // 点に注意（範囲警告はモデル選択と非連動）。
   const model: PropagationModel = input.preferredModel ?? (f >= 1500 ? "COST231-Hata" : "Hata");
 
   let urbanLoss: number;
@@ -96,6 +102,8 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
     urbanLoss = 69.55 + 26.16 * logF - 13.82 * logHb - correction + distanceTerm;
   }
 
+  // 郊外・開放地補正は元来 Okumura-Hata（≤1500MHz）由来。COST231-Hata原典は Cm のみで
+  // 郊外/開放地補正を定義しないため、1500–2000MHz では実用上の外挿として適用している。
   let pathLossDb = urbanLoss;
   if (area === "suburban") {
     pathLossDb = urbanLoss - 2 * Math.log10(f / 28) ** 2 - 5.4;

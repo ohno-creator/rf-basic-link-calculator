@@ -85,11 +85,13 @@ export type IotHataCalibrationResult = {
 export type ValidationErrors = Partial<Record<keyof LinkBudgetInput, string>>;
 
 // 初期表示はLoRa（920MHz LPWA）プリセットを既定にする。
-// quickStartPresets の "lpwa-920" と近い値（循環import回避のためここでは値を直書き）。
+// quickStartPresets の "lpwa-920" と同値（循環import回避のためここでは値を直書き）。
+// 地上付近1kmのNLOS距離減衰は log_distance(n=3) で見込み、環境損失は端末ローカル分のみとする
+// （free_space はNLOS損を含まず、環境損失で代替すると役割が曖昧になるため）。
 export const defaultLinkBudgetInput: LinkBudgetInput = {
   system: "LoRa / LoRaWAN",
   linkType: "gateway_to_low_height_terminal",
-  propagationModel: "free_space",
+  propagationModel: "log_distance",
   propagationArea: "urbanMedium",
   pathLossExponent: 3,
   iotCalibrationDistance: 1,
@@ -100,12 +102,12 @@ export const defaultLinkBudgetInput: LinkBudgetInput = {
   distance: 1,
   distanceUnit: "km",
   txPowerDbm: 13,
-  txAntennaGainDbi: -6,
+  txAntennaGainDbi: 2, // ゲートウェイ側の現実的なアンテナ利得
   rxAntennaGainDbi: -6,
   txAntennaHeightM: 10,
   rxAntennaHeightM: 1.5,
   cableLossDb: 1,
-  environmentLossDb: 20, // 環境補正プリセット「金属近接」
+  environmentLossDb: 3, // 端末ローカル損のみ（距離減衰は log_distance 側で計上）
   groundProximityLossDb: 0,
   enclosureLossDb: 0,
   polarizationMismatchLossDb: 0,

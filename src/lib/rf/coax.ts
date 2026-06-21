@@ -28,6 +28,8 @@ const REFERENCE_FREQUENCIES_MHZ = [500, 800, 2000, 3000, 4000, 5000, 6000, 7000,
  * 一般的なケーブルの参考損失カーブを生成する。
  * 表皮効果が支配的な範囲を想定し、2.4GHzの代表減衰量[dB/m]から √f でスケールする目安。
  *   loss(f)[dB] = α(2.4GHz) × √(f/2400) × 長さ[m]
+ * 注: 誘電損（∝f）を無視した近似のため、数GHz以上では実損失を過小評価しうる
+ *     （実リンク計算には実測補間値 cableAssemblies を使う）。
  */
 export function referenceLossPoints(attenuationAt2400DbPerM: number, lengthM: number): LossPoint[] {
   assertPositiveFinite(attenuationAt2400DbPerM, "代表減衰量");
