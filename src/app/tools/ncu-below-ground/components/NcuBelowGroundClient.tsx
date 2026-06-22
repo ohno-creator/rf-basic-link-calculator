@@ -207,14 +207,25 @@ function formatDistance(distanceM: number) {
   return `${distanceM.toFixed(distanceM >= 100 ? 0 : 1)} m`;
 }
 
+// ネイティブの title は表示が遅く出ないことがあるため、ホバー／フォーカスで確実に出る
+// スタイル付きツールチップにする（title も残してフォールバックにする）。
 function FieldHint({ text }: { text: string }) {
   return (
-    <span
-      className="inline-flex h-5 w-5 items-center justify-center rounded-full border border-sky-200 bg-sky-50 text-[11px] font-bold text-sky-700"
-      title={text}
-      aria-label={text}
-    >
-      ?
+    <span className="group/hint relative inline-flex align-middle">
+      <button
+        type="button"
+        aria-label={`説明: ${text}`}
+        title={text}
+        className="inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full border border-sky-300 bg-sky-50 text-[11px] font-bold text-sky-700 transition hover:bg-sky-100 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-300"
+      >
+        ?
+      </button>
+      <span
+        role="tooltip"
+        className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-left text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl group-hover/hint:block group-focus-within/hint:block sm:w-72"
+      >
+        {text}
+      </span>
     </span>
   );
 }
@@ -426,7 +437,7 @@ function DistanceField({
         <FieldHint text="地上側のゲートウェイ・基地局から、BOX付近までの水平距離です。" />
       </span>
       <span className="mt-1 block text-xs leading-relaxed text-slate-500">
-        GW・基地局からBOX付近までの水平距離。数値はキーボードで直接入力できます。
+        地上側距離＝GW・基地局からBOX付近までの水平の直線距離。距離が伸びるほど電波は弱まります（自由空間では距離2倍で約6dB増）。右で単位（m/km）を切替。数値はキーボードで直接入力できます。
       </span>
       <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/15">
         <input
@@ -485,6 +496,140 @@ function TextField({
         onChange={(event) => onChange(event.target.value)}
       />
     </label>
+  );
+}
+
+// 代表的な通信方式プリセット（選ぶと周波数も連動）。電力NCU・水道テレメータでよく使う帯を中心に。
+const systemPresets: Array<{ system: string; frequencyMHz: number }> = [
+  { system: "Wi-SUN（920MHz帯・スマートメーター標準）", frequencyMHz: 920 },
+  { system: "920MHz帯 LPWA（LoRaWAN／特定小電力）", frequencyMHz: 920 },
+  { system: "Sigfox（923MHz帯）", frequencyMHz: 923 },
+  { system: "LTE-M（Band18/26・約800〜900MHz）", frequencyMHz: 800 },
+  { system: "NB-IoT（Band18等・約800MHz）", frequencyMHz: 800 },
+  { system: "特定小電力 429MHz帯（テレメータ／テレコントロール）", frequencyMHz: 429 },
+  { system: "426MHz帯 特定小電力", frequencyMHz: 426 },
+  { system: "2.4GHz帯（Wi-Fi／BLE／Zigbee）", frequencyMHz: 2400 }
+];
+
+const commonFrequencies: Array<{ value: number; label: string }> = [
+  { value: 426, label: "426 MHz（特定小電力）" },
+  { value: 429, label: "429 MHz（テレメータ）" },
+  { value: 800, label: "800 MHz（LTE-M／NB-IoT Band18等）" },
+  { value: 868, label: "868 MHz（欧州LPWA）" },
+  { value: 920, label: "920 MHz（Wi-SUN／LoRa／特定小電力）" },
+  { value: 923, label: "923 MHz（Sigfox）" },
+  { value: 2400, label: "2400 MHz（2.4GHz帯）" }
+];
+
+const selectClass =
+  "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15";
+
+// 通信方式・周波数をプリセットのプルダウンで選べる。正確な値は手入力欄でキーボード入力も可能。
+function CommPresetFields({
+  system,
+  frequencyMHz,
+  onSystemChange,
+  onFrequencyChange
+}: {
+  system: string;
+  frequencyMHz: number;
+  onSystemChange: (value: string) => void;
+  onFrequencyChange: (value: number) => void;
+}) {
+  const isCustomSystem = !systemPresets.some((preset) => preset.system === system);
+  const isCommonFreq = commonFrequencies.some((freq) => freq.value === frequencyMHz);
+
+  return (
+    <div className="space-y-4">
+      <div className="grid gap-4 sm:grid-cols-2">
+        <label className="block" htmlFor="ncu-system-preset">
+          <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            通信方式（プリセット）
+            <FieldHint text="使う無線方式を選ぶと、代表的な周波数も自動でセットされます。電力NCU・水道テレメータでは429MHz帯やWi-SUN／LPWA（920MHz）、LTE-M／NB-IoTが代表例。一覧にない場合は『その他（手入力）』を選んで自由に入力できます。" />
+          </span>
+          <span className="mt-1 block text-xs leading-relaxed text-slate-500">
+            代表的な通信方式から選ぶと、周波数も連動してセットされます。
+          </span>
+          <select
+            id="ncu-system-preset"
+            className={selectClass}
+            value={isCustomSystem ? "__custom__" : system}
+            onChange={(event) => {
+              const value = event.target.value;
+              if (value === "__custom__") {
+                if (!isCustomSystem) {
+                  onSystemChange("");
+                }
+                return;
+              }
+              const preset = systemPresets.find((item) => item.system === value);
+              if (preset) {
+                onSystemChange(preset.system);
+                onFrequencyChange(preset.frequencyMHz);
+              }
+            }}
+          >
+            {systemPresets.map((preset) => (
+              <option key={preset.system} value={preset.system}>
+                {preset.system}
+              </option>
+            ))}
+            <option value="__custom__">その他（手入力）</option>
+          </select>
+        </label>
+
+        <label className="block" htmlFor="ncu-freq-preset">
+          <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+            周波数（よく使う帯）
+            <FieldHint text="よく使う周波数帯をプルダウンで選べます。正確な値は下の『周波数（手入力）』にキーボードで入力できます。周波数が高いほど直進しやすく、障害物には弱めになります。" />
+          </span>
+          <span className="mt-1 block text-xs leading-relaxed text-slate-500">
+            代表帯を選択。細かい値は下の手入力欄で調整できます。
+          </span>
+          <select
+            id="ncu-freq-preset"
+            className={selectClass}
+            value={isCommonFreq ? String(frequencyMHz) : "__custom__"}
+            onChange={(event) => {
+              const value = event.target.value;
+              if (value !== "__custom__") {
+                onFrequencyChange(Number(value));
+              }
+            }}
+          >
+            {commonFrequencies.map((freq) => (
+              <option key={freq.value} value={freq.value}>
+                {freq.label}
+              </option>
+            ))}
+            <option value="__custom__">その他（手入力）</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2">
+        {isCustomSystem ? (
+          <TextField
+            id="ncu-system"
+            label="通信方式（手入力）"
+            help="プリセットにない方式名・現場名を自由に入力できます（例：920MHz NCU、自営無線）。図・記録用のラベルで、計算には影響しません。"
+            value={system}
+            placeholder="例：920MHz NCU / LPWA"
+            onChange={onSystemChange}
+          />
+        ) : null}
+        <NumberField
+          id="ncu-frequencyMHz"
+          label="周波数（手入力・正確な値）"
+          help="周波数＝1秒間に電波が振動する回数（MHz＝百万回/秒）。プルダウンの代表値でよければそのまま、機器仕様の正確な値があればここに半角で入力します。高いほど直進しやすく障害物に弱め。"
+          unit="MHz"
+          value={frequencyMHz}
+          min={1}
+          step={1}
+          onChange={onFrequencyChange}
+        />
+      </div>
+    </div>
   );
 }
 
@@ -596,6 +741,7 @@ function ChoiceChips<T extends string>({
               key={option.value}
               type="button"
               aria-pressed={isSelected}
+              title={option.description}
               onClick={() => onChange(option.value)}
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                 isSelected
@@ -792,19 +938,31 @@ function NcuCrossSectionDiagram({
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-bold">
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-sky-700">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-sky-700"
+          title="信号経路＝電波の通り道。地上は青い破線（GW→地表）、地中は実線（蓋・開口を通ってNCUアンテナへ）で表します。"
+        >
           <span className="h-1.5 w-4 rounded-full bg-sky-500" aria-hidden="true" />
           信号経路
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-rose-700">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-rose-700"
+          title="深さ寸法＝地表面（GL）からNCUアンテナまでの深さを示す赤い破線の寸法線です。"
+        >
           <span className="h-0 w-4 border-t-2 border-dashed border-rose-500" aria-hidden="true" />
           深さ寸法
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700"
+          title="緑の丸＝BOX内のNCUアンテナの位置。配置（蓋直下/中央/底面/金属近傍）で図中の位置が動きます。"
+        >
           <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
           NCUアンテナ
         </span>
-        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 text-slate-600">
+        <span
+          className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 text-slate-600"
+          title="右の積み上げバーの色は、その損失の大きさ（標準dB）を表します。緑=小（〜4dB）／黄=中（4〜10dB）／橙=大（10〜18dB）／赤=支配的（18dB〜）。"
+        >
           損失の大きさ
           <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />小
           <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />中
@@ -1045,12 +1203,14 @@ function MetricCard({
   label,
   value,
   sub,
-  tone = "slate"
+  tone = "slate",
+  tip
 }: {
   label: string;
   value: string;
   sub: string;
   tone?: "slate" | "sky" | "rose" | "emerald";
+  tip?: string;
 }) {
   const toneClass = {
     slate: "border-slate-200 bg-white text-slate-950",
@@ -1060,8 +1220,11 @@ function MetricCard({
   }[tone];
 
   return (
-    <div className={`rounded-lg border p-4 ${toneClass}`}>
-      <p className="text-xs font-bold uppercase tracking-wider opacity-70">{label}</p>
+    <div className={`rounded-lg border p-4 ${toneClass}`} title={tip}>
+      <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider opacity-70">
+        {label}
+        {tip ? <FieldHint text={tip} /> : null}
+      </p>
       <p className="mt-2 text-2xl font-bold tracking-tight">{value}</p>
       <p className="mt-1 text-xs leading-relaxed opacity-80">{sub}</p>
     </div>
@@ -1086,15 +1249,15 @@ function RangeTriplet({
     <div className="rounded-lg border border-slate-200 bg-white p-4">
       <p className="text-sm font-bold text-slate-900">{title}</p>
       <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg bg-emerald-50 p-2">
+        <div className="rounded-lg bg-emerald-50 p-2" title="楽観＝好条件がそろった最良ケース（材質・水分・配置などが有利な側）。ここまで良くなる可能性の上限の目安です。">
           <p className="text-[11px] font-bold text-emerald-700">楽観</p>
           <p className="text-sm font-bold text-emerald-950">{optimistic.toFixed(1)} {unit}</p>
         </div>
-        <div className="rounded-lg bg-sky-50 p-2">
+        <div className="rounded-lg bg-sky-50 p-2" title="標準＝平均的・代表的な見積もり。まずはこの値で判断し、実測で補正していきます。">
           <p className="text-[11px] font-bold text-sky-700">標準</p>
           <p className="text-sm font-bold text-sky-950">{range.typical.toFixed(1)} {unit}</p>
         </div>
-        <div className="rounded-lg bg-rose-50 p-2">
+        <div className="rounded-lg bg-rose-50 p-2" title="厳しめ＝悪条件が重なった最悪ケース（金属蓋・水溜まり・底面配置・駐車車両など）。ここでも成立すれば安心という下限の目安です。">
           <p className="text-[11px] font-bold text-rose-700">厳しめ</p>
           <p className="text-sm font-bold text-rose-950">{severe.toFixed(1)} {unit}</p>
         </div>
@@ -1145,6 +1308,7 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
           return (
             <details
               key={item.id}
+              title={`${item.label}（${item.valueLabel}）：${item.note}`}
               className="rounded-lg border border-slate-200 bg-slate-50 p-3"
               open={index === 0}
             >
@@ -1246,12 +1410,14 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
         <MetricCard
           label="標準リンクマージン"
+          tip="リンクマージン＝受信電力 − 受信感度（dB）。通信の『余裕』です。プラスなら届く見込み、0付近はギリギリ、マイナスは不足。一般に数dB〜10dB以上の余裕を確保すると安定します。"
           value={formatSigned(result.linkMarginRangeDb.typical)}
           sub={`楽観 ${formatSigned(result.linkMarginRangeDb.max)} / 厳しめ ${formatSigned(result.linkMarginRangeDb.min)}`}
           tone={result.linkMarginRangeDb.typical >= 0 ? "emerald" : "rose"}
         />
         <MetricCard
           label="標準受信電力"
+          tip="受信電力＝相手に届くと推定される電波の強さ（dBm）。送信出力＋利得から各損失を差し引いた結果。これが受信感度より上なら通信成立です。"
           value={`${result.receivedPowerRangeDbm.typical.toFixed(1)} dBm`}
           sub={`受信感度 ${input.receiverSensitivityDbm.toFixed(1)} dBm との比較`}
           tone="sky"
@@ -1614,6 +1780,7 @@ function PurposeSwitch({
               type="button"
               role="tab"
               aria-selected={selected}
+              title={card.description}
               className={`rounded-md p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/20 ${
                 selected ? "bg-staf text-white shadow-sm" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
               }`}
@@ -2008,6 +2175,7 @@ export function NcuBelowGroundClient() {
                 <button
                   key={preset.label}
                   type="button"
+                  title={`${preset.description}｜${preset.operatorHint} クリックすると、この典型条件が各入力欄に一括セットされます（あとから個別に微調整できます）。`}
                   className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-staf/50 hover:bg-white"
                   onClick={() => setInput((current) => ({ ...current, ...preset.values }))}
                 >
@@ -2036,25 +2204,14 @@ export function NcuBelowGroundClient() {
             <SectionTitle icon={Waves} eyebrow="Ground link" title="地上側の無線リンク">
               地上側の距離減衰を計算したうえで、GL以下の追加損失を積み上げます。
             </SectionTitle>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <TextField
-                id="ncu-system"
-                label="通信方式・メモ"
-                help="920MHz NCU、LTE-M、NB-IoT、LoRaWANなど。図・記録用のラベルです（計算には影響しません）。"
-                value={input.system}
-                placeholder="例：920MHz NCU / LPWA"
-                onChange={(value) => update("system", value)}
-              />
-              <NumberField
-                id="ncu-frequencyMHz"
-                label="周波数"
-                help="NCUの通信周波数です。920MHz帯、LTE-M/NB-IoTなどに合わせます。キーボードで直接入力できます。"
-                unit="MHz"
-                value={input.frequencyMHz}
-                min={1}
-                step={1}
-                onChange={(value) => update("frequencyMHz", value)}
-              />
+            <CommPresetFields
+              system={input.system}
+              frequencyMHz={input.frequencyMHz}
+              onSystemChange={(value) => update("system", value)}
+              onFrequencyChange={(value) => update("frequencyMHz", value)}
+            />
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <DistanceField
                 value={input.distance}
                 unit={input.distanceUnit}
@@ -2072,7 +2229,7 @@ export function NcuBelowGroundClient() {
               <NumberField
                 id="ncu-pathLossExponent"
                 label="距離損失指数 n"
-                help="Log-distanceモデルのnです。開放地で2前後、市街地・遮蔽ありで3以上になりやすい値です。"
+                help="距離損失指数 n＝距離が2倍になるごとに電波がどれだけ弱まるかの『効き具合』。自由空間はn=2、市街地・遮蔽が多いほどn=3〜4が目安。大きいほど距離で急に弱まります。現地RSSI実測に合わせて微調整します。"
                 unit="n"
                 value={input.pathLossExponent}
                 min={1}
@@ -2091,7 +2248,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-txPowerDbm"
                   label="送信出力（通信モジュール）"
-                  help="送信機・通信モジュールの空中線端での出力です。下り（GW→NCU）はGW送信出力、上り（NCU→GW）評価ではNCUモジュール出力に置き換えます。"
+                  help="送信出力＝送信機・モジュールがアンテナ端に出す電波の強さ（dBm＝電力の単位。0dBm=1mW、+10dBmで10倍、+3dBmで約2倍）。機器仕様の『送信出力』を入力。下り（GW→NCU）はGW出力、上り（NCU→GW）評価ではNCUモジュール出力に置き換えます。"
                   unit="dBm"
                   value={input.txPowerDbm}
                   step={0.1}
@@ -2100,7 +2257,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-sensitivity"
                   label="受信感度"
-                  help="受信側の最小受信電力です。通信方式・データレート・帯域幅で決まります（例：NB-IoTで-120〜-135dBm前後）。"
+                  help="受信感度＝受信機がぎりぎり受け取れる最小の電波の強さ（dBm。−の数字が大きいほど高性能）。受信電力がこの値より上なら通信成立。通信方式・速度・帯域で決まり、例としてNB-IoTで−120〜−135dBm前後。仕様書の値を入力します。"
                   unit="dBm"
                   value={input.receiverSensitivityDbm}
                   step={0.1}
@@ -2109,7 +2266,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-gatewayGain"
                   label="送信アンテナ利得（GW/基地局側）"
-                  help="送信側アンテナの利得です。ケーブル損は別項目に入れます。上り評価ではNCU側アンテナ利得に読み替えます。"
+                  help="アンテナ利得＝電波を特定方向に集める強さ（dBi＝全方向に均一に出す理想点波源との比較）。大きいほど遠くへ届きます。ケーブル損はここに含めず別欄へ。上り評価ではNCU側アンテナ利得に読み替えます。"
                   unit="dBi"
                   value={input.gatewayAntennaGainDbi}
                   step={0.1}
@@ -2118,7 +2275,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-ncuGain"
                   label="受信アンテナ利得（NCU側）"
-                  help="BOX内アンテナの実効利得です。小型・筐体内・金属近傍ではマイナスになりやすい値です。上り評価ではGW側アンテナ利得に読み替えます。"
+                  help="受信アンテナ利得＝BOX内アンテナが実装後に実際に出せる利得（dBi）。小型・筐体内・金属の近くでは効率が落ち、マイナス（−数dBi）になりがち。カタログ値より実装後は下がる点に注意。上り評価ではGW側アンテナ利得に読み替えます。"
                   unit="dBi"
                   value={input.ncuAntennaGainDbi}
                   step={0.1}
@@ -2127,7 +2284,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-cableLoss"
                   label="ケーブル・コネクタ損失"
-                  help="送信側・受信側の給電系（同軸ケーブル・コネクタ）で失う電力の合計です。"
+                  help="ケーブル・コネクタ損失＝同軸ケーブルやコネクタを通る間に失う電力（dB）。長いほど・周波数が高いほど大きくなります。送信側＋受信側の合計を入力。短い配線なら数dB程度が目安です。"
                   unit="dB"
                   value={input.cableLossDb}
                   min={0}
@@ -2137,7 +2294,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-clutterLoss"
                   label="地上側クラッタ損失（障害物）"
-                  help="BOXとは別に、建物・樹木・地形・車両など地上側の遮蔽を入れます。『障害物ぶんの何dB』はここに入れます。"
+                  help="地上側クラッタ損失（dB）＝BOX以外の地上の遮蔽（建物・樹木・地形・車など）でどれだけ弱まるか。『障害物ぶんで大体何dB』という職人の目分量はここに入れます。見通しが悪いほど大きく。"
                   unit="dB"
                   value={input.aboveGroundClutterLossDb}
                   min={0}
@@ -2163,7 +2320,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-depth"
                   label="GL下深さ"
-                  help="地表面からNCUアンテナ付近までの深さです。負のアンテナ高ではなく追加損失として扱います。"
+                  help="GL下深さ（m）＝地表面（GL）からNCUアンテナまでの深さ。マイナスのアンテナ高としては入れず、地表へ抜けるまでの追加損失として扱います。0=地表設置、水道BOXは0.3〜1m程度が一般的です。"
                   unit="m"
                   value={input.depthBelowGroundM}
                   min={0}
@@ -2174,7 +2331,7 @@ export function NcuBelowGroundClient() {
                 <NumberField
                   id="ncu-measuredCorrection"
                   label="実測補正値"
-                  help="現地RSSI/RSRPと計算値との差分です。+なら計算より良い、-なら悪い条件として補正します。"
+                  help="実測補正値（dB）＝現地で測ったRSSI/RSRPと、この計算値との差。+なら計算より良い、−なら悪い現場として全体を補正します。1地点でも実測を入れると一気に精度が上がります。"
                   unit="dB"
                   value={input.measuredCorrectionDb}
                   min={-60}

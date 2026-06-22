@@ -180,11 +180,11 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-1.5 text-[11px] font-bold sm:grid-cols-3">
-          <span className="rounded-full bg-staf-light px-2.5 py-1 text-staf">開始・利得</span>
-          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600">地上損失</span>
-          <span className="rounded-full bg-orange-50 px-2.5 py-1 text-orange-700">地下損失</span>
-          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-rose-700">受信感度</span>
-          <span className="rounded-full bg-slate-800 px-2.5 py-1 text-white">受信電力</span>
+          <span className="rounded-full bg-staf-light px-2.5 py-1 text-staf" title="送信出力とアンテナ利得＝電波を増やす要素。青＝送信出力（スタート）、緑＝利得で上に積み上がります。">開始・利得</span>
+          <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600" title="地上側の損失（青グレー）＝距離による伝搬損失・ケーブル損・地上クラッタ。電波を弱める分だけ下に伸びます。">地上損失</span>
+          <span className="rounded-full bg-orange-50 px-2.5 py-1 text-orange-700" title="地下の追加損失（暖色）＝蓋・BOX・深さ・水分・アンテナ位置・開口・地表遮蔽。色が濃い（赤に近い）ほど大きな損失です。">地下損失</span>
+          <span className="rounded-full bg-rose-50 px-2.5 py-1 text-rose-700" title="受信感度＝受信機がぎりぎり受け取れる強さ（赤い破線）。最後の受信電力がこの線より上なら通信成立です。">受信感度</span>
+          <span className="rounded-full bg-slate-800 px-2.5 py-1 text-white" title="受信電力＝すべての増減を足し引きした最終結果（dBm）。縦のヒゲは楽観〜厳しめのレンジを表します。">受信電力</span>
         </div>
       </div>
 

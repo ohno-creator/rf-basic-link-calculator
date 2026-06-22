@@ -142,62 +142,62 @@ export const ncuOutdoorModelOptions: NcuOption<NcuOutdoorModel>[] = [
     value: "log_distance",
     label: "Log-distanceモデル",
     description:
-      "地上側の距離減衰を距離損失指数 n で調整する経験モデルです。現地RSSIでnや補正値を調整する前提に向きます。"
+      "Log-distance（ログディスタンス）：距離が2倍になるごとに何dB弱まるかを『距離損失指数 n』で決める経験式です。nが大きいほど距離で急に弱まります（開けた場所n≈2、市街地・遮蔽ありn≈3〜4が目安）。迷ったらこちらを選び、現地RSSIに合うようnを調整します。"
   },
   {
     value: "free_space",
     label: "自由空間損失モデル",
     description:
-      "障害物のない見通し基準値です。GL以下NCUでは楽観的になりやすいため、クラッタ損失とBOX損失を必ず別途見ます。"
+      "自由空間損失：障害物がまったく無い理想状態の最小損失（基準値）です。実際の地下設置では必ずこれより悪くなるので、楽観値として使い、建物・地形の遮蔽はクラッタ損失、蓋・BOXの損失は別項目で必ず足してください。"
   }
 ];
 
 export const ncuCoverMaterialOptions: NcuOption<NcuCoverMaterial>[] = [
-  { value: "open", label: "開放・蓋なし", description: "蓋による遮蔽がほぼない状態です。" },
-  { value: "resin", label: "樹脂蓋", description: "金属蓋よりは軽いものの、厚み・水分・汚れで差が出ます。" },
-  { value: "concrete", label: "コンクリート蓋", description: "含水状態や鉄筋・金具の有無で損失幅が大きくなります。" },
-  { value: "cast_iron", label: "鋳鉄蓋", description: "水道BOXやマンホールで強い遮蔽要因になりやすい条件です。" },
-  { value: "steel", label: "鋼板・金属蓋", description: "金属面で開口が少ない場合、非常に厳しい条件として扱います。" },
-  { value: "unknown", label: "不明", description: "材質が未確定の場合は幅を広めに見ます。" }
+  { value: "open", label: "開放・蓋なし", description: "NCUの上に蓋がなく、電波を遮るものがほぼない状態。最も有利で追加損失はわずかです。" },
+  { value: "resin", label: "樹脂蓋", description: "プラスチック・複合材の蓋。電波を比較的よく通します。ただし厚み・水濡れ・泥汚れで通りにくくなることがあります（金属蓋より大幅に有利）。" },
+  { value: "concrete", label: "コンクリート蓋", description: "そこそこ電波を弱めます。中の鉄筋・金具や、雨で濡れているかで損失が大きく変わります（おおむね10〜20dB級）。" },
+  { value: "cast_iron", label: "鋳鉄蓋", description: "鋳鉄（ちゅうてつ）＝水道BOXやマンホールで最も多い金属の蓋。電波を強く反射・遮断し、閉めた瞬間に20〜30dBほど落ちることがある厳しい条件です。" },
+  { value: "steel", label: "鋼板・金属蓋", description: "金属で開口がほとんどない蓋。鋳鉄以上に厳しいことがあり、外部アンテナ化や蓋直下配置を強く検討します。" },
+  { value: "unknown", label: "不明", description: "材質が分からないとき。安全側に損失を広いレンジ（楽観〜厳しめ）で見ます。現地写真で材質を確認できると精度が上がります。" }
 ];
 
 export const ncuBoxMaterialOptions: NcuOption<NcuBoxMaterial>[] = [
-  { value: "resin", label: "樹脂BOX", description: "BOX自体の遮蔽は比較的小さめですが、水分や配置の影響は残ります。" },
-  { value: "concrete", label: "コンクリートBOX", description: "壁厚・含水・鉄筋で損失が増えやすい条件です。" },
-  { value: "metal", label: "金属BOX", description: "開口以外が金属に囲まれるため、アンテナ配置の影響が強く出ます。" },
-  { value: "unknown", label: "不明", description: "BOX材質が未確定の場合は、追加損失を広いレンジで扱います。" }
+  { value: "resin", label: "樹脂BOX", description: "箱自体は電波を比較的通します。遮蔽は小さめですが、中の水分やアンテナの置き場所の影響は残ります。" },
+  { value: "concrete", label: "コンクリートBOX", description: "壁が厚い・濡れている・鉄筋が入っているほど電波を弱めます。地下ピットで一般的な条件です。" },
+  { value: "metal", label: "金属BOX", description: "開口以外が金属で囲まれ電波が閉じ込められます。アンテナの向き・位置で結果が大きく変わるため、外部アンテナ化が有効なことが多いです。" },
+  { value: "unknown", label: "不明", description: "BOX材質が分からないとき。追加損失を広いレンジで見積もります。" }
 ];
 
 export const ncuMoistureOptions: NcuOption<NcuMoistureCondition>[] = [
-  { value: "dry", label: "乾燥", description: "水分による追加減衰は小さめです。" },
-  { value: "damp", label: "湿り気あり", description: "土壌・コンクリート・蓋の含水でばらつきが増えます。" },
-  { value: "wet", label: "濡れている", description: "水膜・湿潤土・濡れたコンクリートで損失が増えます。" },
-  { value: "standing_water", label: "水が溜まる", description: "水没気味の設置は、アンテナ detuning と吸収を強く疑います。" }
+  { value: "dry", label: "乾燥", description: "晴天続きで土・コンクリート・蓋が乾いている状態。水による追加の弱まりは小さめです。" },
+  { value: "damp", label: "湿り気あり", description: "うっすら湿っている状態。水を含むと電波は通りにくくなるため、乾燥時よりばらつきが増えます。" },
+  { value: "wet", label: "濡れている", description: "雨上がりや水膜がある状態。水は電波を強く吸収するため、損失がはっきり増えます。" },
+  { value: "standing_water", label: "水が溜まる", description: "BOX内に水たまり/水没気味の状態。吸収に加えアンテナの同調（共振点）もずれて性能が落ちる、最も厳しい水分条件です。乾燥時と雨天後の両方で実測を。" }
 ];
 
 export const ncuAntennaPositionOptions: NcuOption<NcuAntennaPosition>[] = [
-  { value: "near_lid", label: "蓋の直下", description: "地表開口に最も近く、比較的有利になりやすい配置です。" },
-  { value: "middle", label: "BOX中央付近", description: "標準的な配置として扱います。" },
-  { value: "bottom", label: "BOX底面付近", description: "GLから遠く、湿潤・遮蔽・フレネル欠損の影響が増えます。" },
-  { value: "near_metal", label: "金属近傍", description: "金属面の近くで整合・放射効率・偏波が崩れやすい配置です。" }
+  { value: "near_lid", label: "蓋の直下", description: "アンテナを地表の開口（蓋）にいちばん近づけた配置。電波が外へ抜けやすく比較的有利。改善の目標位置にもなります。" },
+  { value: "middle", label: "BOX中央付近", description: "標準的な置き方。可もなく不可もない基準条件として扱います。" },
+  { value: "bottom", label: "BOX底面付近", description: "地表から遠く、底の水分・遮蔽・見通しの欠け（フレネル欠損）の影響を受けやすい不利な配置です。" },
+  { value: "near_metal", label: "金属近傍", description: "金属の壁・金具のすぐ近く。アンテナの整合（インピーダンス）・放射効率・偏波が崩れ利得が大きく落ちることがあります。数cm離すだけで改善する場合も。" }
 ];
 
 export const ncuOpeningOptions: NcuOption<NcuOpeningCondition>[] = [
-  { value: "open", label: "開口がある", description: "地表側へ抜ける隙間・樹脂窓・非金属部がある条件です。" },
-  { value: "narrow_gap", label: "小さな隙間のみ", description: "隙間から漏れる成分に依存するため、向きや位置で差が出ます。" },
-  { value: "sealed", label: "ほぼ密閉", description: "蓋・筐体・地面による閉じ込めを強めに見ます。" },
-  { value: "metal_frame", label: "金属枠が強い", description: "金属枠や金属蓋で開口が狭い条件です。" }
+  { value: "open", label: "開口がある", description: "地表側へ電波が抜ける隙間・樹脂窓・非金属部がある状態。電波の『出口』があるほど有利です。" },
+  { value: "narrow_gap", label: "小さな隙間のみ", description: "わずかな隙間から漏れる成分に頼る状態。アンテナの向き・位置で結果が変わりやすくなります。" },
+  { value: "sealed", label: "ほぼ密閉", description: "蓋・筐体・地面で電波が閉じ込められた状態。出口が乏しく厳しい条件として扱います。" },
+  { value: "metal_frame", label: "金属枠が強い", description: "金属の枠や蓋で開口が狭い状態。金属が出口をふさぐため、密閉に近い厳しさになります。" }
 ];
 
 export const ncuSurfaceObstructionOptions: NcuOption<NcuSurfaceObstruction>[] = [
-  { value: "none", label: "特になし", description: "地表面上の追加遮蔽が少ない条件です。" },
-  { value: "pedestrian", label: "人の通行あり", description: "人体遮蔽や一時的なフェージングを少し見込みます。" },
-  { value: "vehicle", label: "車両通過あり", description: "車両遮蔽で短時間の大きな落ち込みが起きやすい条件です。" },
-  { value: "parked_vehicle", label: "駐車車両で覆われる", description: "長時間にわたり地表側が金属体で覆われる厳しい条件です。" }
+  { value: "none", label: "特になし", description: "地表面の上に電波を遮るもの（車・人）が少ない状態。" },
+  { value: "pedestrian", label: "人の通行あり", description: "人体は水分が多く電波を吸収します。通行のたびに一時的に弱まる（フェージング）ことを少し見込みます。" },
+  { value: "vehicle", label: "車両通過あり", description: "金属の車体が上を通ると短時間に大きく落ち込みます。瞬断の原因になり得ます。" },
+  { value: "parked_vehicle", label: "駐車車両で覆われる", description: "金属の車体が長時間ふたをする最も厳しい地表条件。通信断の主因になりやすく、設置位置をずらす検討を。" }
 ];
 
 export const defaultNcuBelowGroundInput: NcuBelowGroundInput = {
-  system: "920MHz NCU / LPWA",
+  system: "920MHz帯 LPWA（LoRaWAN／特定小電力）",
   outdoorModel: "log_distance",
   frequencyMHz: 920,
   distance: 300,
