@@ -1,0 +1,190 @@
+"use client";
+
+import Link from "next/link";
+import { useMemo, useState } from "react";
+import {
+  Activity,
+  ArrowUpRight,
+  BookOpenCheck,
+  Box,
+  Building2,
+  Cable,
+  CircuitBoard,
+  Gauge,
+  type LucideIcon,
+  RadioTower,
+  Repeat,
+  Ruler,
+  Search,
+  Spline,
+  Waves,
+  X
+} from "lucide-react";
+import { toolCategories, toolDirectory } from "@/data/toolDirectory";
+
+const iconMap: Record<string, LucideIcon> = {
+  gauge: Gauge,
+  waves: Waves,
+  spline: Spline,
+  building: Building2,
+  book: BookOpenCheck,
+  radio: RadioTower,
+  repeat: Repeat,
+  ruler: Ruler,
+  activity: Activity,
+  cable: Cable,
+  circuit: CircuitBoard,
+  box: Box
+};
+
+// 検索＋カテゴリ絞り込みでツールを探せるようにする（発見性: 一覧が増えても破綻しない）。
+export function ToolDirectoryBrowser() {
+  const [query, setQuery] = useState("");
+  const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const normalizedQuery = query.trim().toLowerCase();
+
+  const filtered = useMemo(
+    () =>
+      toolDirectory.filter((tool) => {
+        const matchesQuery =
+          !normalizedQuery ||
+          tool.name.toLowerCase().includes(normalizedQuery) ||
+          tool.tagline.toLowerCase().includes(normalizedQuery);
+        const matchesCategory = activeCategory === "all" || tool.category === activeCategory;
+        return matchesQuery && matchesCategory;
+      }),
+    [normalizedQuery, activeCategory]
+  );
+
+  const groups = toolCategories
+    .map((category) => ({
+      ...category,
+      tools: filtered.filter((tool) => tool.category === category.id)
+    }))
+    .filter((group) => group.tools.length > 0);
+
+  const resetFilters = () => {
+    setQuery("");
+    setActiveCategory("all");
+  };
+
+  return (
+    <div id="tools" className="scroll-mt-24">
+      <div className="mx-auto max-w-6xl px-6">
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="relative w-full lg:max-w-sm">
+            <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="ツールを検索（例：VSWR、損失、距離）"
+              aria-label="ツールを検索"
+              className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm text-slate-900 outline-none transition focus:border-staf/50 focus:ring-2 focus:ring-staf/20"
+            />
+            {query ? (
+              <button
+                type="button"
+                onClick={() => setQuery("")}
+                aria-label="検索をクリア"
+                className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+              >
+                <X aria-hidden="true" className="h-4 w-4" />
+              </button>
+            ) : null}
+          </div>
+
+          <div role="group" aria-label="カテゴリで絞り込み" className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              aria-pressed={activeCategory === "all"}
+              onClick={() => setActiveCategory("all")}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+                activeCategory === "all"
+                  ? "border-staf bg-staf text-white"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf"
+              }`}
+            >
+              すべて
+              <span className={activeCategory === "all" ? "text-white/80" : "text-slate-400"}>{toolDirectory.length}</span>
+            </button>
+            {toolCategories.map((category) => {
+              const count = toolDirectory.filter((tool) => tool.category === category.id).length;
+              const active = activeCategory === category.id;
+              return (
+                <button
+                  key={category.id}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() => setActiveCategory(active ? "all" : category.id)}
+                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+                    active
+                      ? "border-staf bg-staf text-white"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf"
+                  }`}
+                >
+                  {category.label}
+                  <span className={active ? "text-white/80" : "text-slate-400"}>{count}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      {filtered.length === 0 ? (
+        <div className="mx-auto mt-10 max-w-6xl px-6">
+          <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
+            <p className="text-sm font-semibold text-slate-700">「{query}」に一致するツールは見つかりませんでした。</p>
+            <button
+              type="button"
+              onClick={resetFilters}
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf"
+            >
+              <X aria-hidden="true" className="h-4 w-4" />
+              検索・絞り込みをクリア
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="mt-8 space-y-10">
+          {groups.map((group) => (
+            <section key={group.id} className="mx-auto max-w-6xl px-6">
+              <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
+                {group.label}
+                <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
+              </h2>
+              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {group.tools.map((tool) => {
+                  const Icon = iconMap[tool.icon] ?? Gauge;
+                  return (
+                    <Link
+                      key={tool.href}
+                      href={tool.href}
+                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                    >
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf transition group-hover:bg-staf group-hover:text-white">
+                        <Icon aria-hidden="true" className="h-5 w-5" />
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf">
+                          {tool.name}
+                          <ArrowUpRight
+                            aria-hidden="true"
+                            className="h-4 w-4 shrink-0 text-staf opacity-0 transition group-hover:opacity-100"
+                          />
+                        </span>
+                        <span className="mt-1.5 block text-sm leading-relaxed text-slate-600">{tool.tagline}</span>
+                      </span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

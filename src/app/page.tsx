@@ -1,24 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import {
-  Activity,
-  ArrowUpRight,
-  BookOpenCheck,
-  Box,
-  Building2,
-  Cable,
-  CircuitBoard,
-  Gauge,
-  type LucideIcon,
-  RadioTower,
-  Repeat,
-  Ruler,
-  Spline,
-  Waves
-} from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { CONTACT_URL } from "@/lib/rf/presets";
-import { toolCategories, toolDirectory } from "@/data/toolDirectory";
+import { toolDirectory } from "@/data/toolDirectory";
+import { ToolDirectoryBrowser } from "./components/ToolDirectoryBrowser";
 
 export const metadata: Metadata = {
   title: {
@@ -28,25 +14,10 @@ export const metadata: Metadata = {
     "周波数・損失・整合・伝搬など、無線設計でよく使う基礎計算を1ツール1ページでまとめたツール集です。入力するとその場で図と意味がわかります。スタッフ株式会社。"
 };
 
-const iconMap: Record<string, LucideIcon> = {
-  gauge: Gauge,
-  waves: Waves,
-  spline: Spline,
-  building: Building2,
-  book: BookOpenCheck,
-  radio: RadioTower,
-  repeat: Repeat,
-  ruler: Ruler,
-  activity: Activity,
-  cable: Cable,
-  circuit: CircuitBoard,
-  box: Box
-};
-
 export default function HomePage() {
   return (
     <ToolLayout>
-      <section className="mx-auto max-w-6xl px-6 pb-12 pt-16 sm:pb-16 sm:pt-24">
+      <section className="mx-auto max-w-6xl px-6 pb-10 pt-16 sm:pb-12 sm:pt-24">
         <p className="text-sm font-semibold text-staf">アンテナ・無線 基礎計算ツール</p>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
           無線設計の計算を、ひとつずつ。
@@ -71,50 +42,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <div id="tools" className="space-y-10 pb-16 scroll-mt-20">
-        {toolCategories.map((category) => {
-          const tools = toolDirectory.filter((tool) => tool.category === category.id);
+      <div className="pb-16">
+        <ToolDirectoryBrowser />
 
-          return (
-            <section key={category.id} className="mx-auto max-w-6xl px-6">
-              <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
-                {category.label}
-                <span className="text-xs font-semibold text-slate-400">{tools.length}件</span>
-              </h2>
-              <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {tools.map((tool) => {
-                  const Icon = iconMap[tool.icon] ?? Gauge;
-
-                  return (
-                    <Link
-                      key={tool.href}
-                      href={tool.href}
-                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-                    >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf transition group-hover:bg-staf group-hover:text-white">
-                        <Icon aria-hidden="true" className="h-5 w-5" />
-                      </span>
-                      <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf">
-                          {tool.name}
-                          <ArrowUpRight
-                            aria-hidden="true"
-                            className="h-4 w-4 shrink-0 text-staf opacity-0 transition group-hover:opacity-100"
-                          />
-                        </span>
-                        <span className="mt-1.5 block text-sm leading-relaxed text-slate-600">
-                          {tool.tagline}
-                        </span>
-                      </span>
-                    </Link>
-                  );
-                })}
-              </div>
-            </section>
-          );
-        })}
-
-        <section className="mx-auto max-w-6xl px-6">
+        <section className="mx-auto mt-12 max-w-6xl px-6">
           <div className="rounded-2xl border border-slate-200/70 bg-slate-50 px-6 py-8 sm:px-10 sm:py-10">
             <h2 className="text-xl font-semibold tracking-tight text-slate-950">
               実機評価・アンテナ選定でお困りですか？
@@ -123,7 +54,7 @@ export default function HomePage() {
               計算は初期検討の目安です。筐体・基板GND・設置環境を含む実機評価は、スタッフ株式会社にご相談ください。
             </p>
             <a
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-staf px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-staf-dark"
+              className="mt-5 inline-flex items-center gap-2 rounded-full bg-staf px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               href={CONTACT_URL}
             >
               相談する

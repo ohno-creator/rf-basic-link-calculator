@@ -43,13 +43,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
       "@type": "BreadcrumbList",
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "ホーム", item: "https://www.staf.co.jp/" },
-        {
-          "@type": "ListItem",
-          position: 2,
-          name: "アンテナ・無線 基礎計算ツール",
-          item: "https://www.staf.co.jp/tools/rf-basic-link-calculator"
-        },
-        { "@type": "ListItem", position: 3, name: tool.title, item: tool.canonical }
+        { "@type": "ListItem", position: 2, name: tool.title, item: tool.canonical }
       ]
     }
   ];
