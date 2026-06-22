@@ -484,7 +484,7 @@ export function MicrostripLinePanel() {
                 導波波長 λg ≈ {formatNumber(bend.lambdaGMm, 1)} mm。線路幅 W（{formatNumber(widthMm, 2)}mm）は
                 {bend.ratioInverse >= 2
                   ? ` λg の約 1/${Math.round(bend.ratioInverse)} です。`
-                  : ` λg と同等以上（W ≈ λg の ${formatNumber(bend.ratioInverse, 2)} 倍）で、波長に対して幅が広い領域です。`}
+                  : ` λg と同等以上（W ≈ λg の ${formatNumber(widthMm / bend.lambdaGMm, 2)} 倍）で、波長に対して幅が広い領域です。`}
                 目安：W が λg/20 より小さければほぼ無視でき、λg/10 を超えると無視できません。
               </p>
             </div>

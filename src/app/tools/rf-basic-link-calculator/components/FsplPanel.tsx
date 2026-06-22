@@ -15,7 +15,10 @@ export function FsplPanel() {
 
   const result = useMemo(() => {
     try {
-      return calculateFsplDb(frequencyMHz, distanceKm);
+      const fspl = calculateFsplDb(frequencyMHz, distanceKm);
+      // FSPLが負になるのは、遠方界前提のFSPL式が崩れる極端な近距離・低周波の領域。
+      // 非物理な負の損失は表示せず、無効（注記表示）として扱う。
+      return fspl >= 0 ? fspl : null;
     } catch {
       return null;
     }
@@ -24,10 +27,8 @@ export function FsplPanel() {
   const sampleDistances = useMemo(() => {
     return [0.01, 0.1, 1, 10].map((distanceValue) => {
       try {
-        return {
-          distance: distanceValue,
-          fspl: calculateFsplDb(frequencyMHz, distanceValue)
-        };
+        const fspl = calculateFsplDb(frequencyMHz, distanceValue);
+        return { distance: distanceValue, fspl: fspl >= 0 ? fspl : Number.NaN };
       } catch {
         return { distance: distanceValue, fspl: Number.NaN };
       }
@@ -123,7 +124,7 @@ export function FsplPanel() {
           </div>
         ) : (
           <p className="mt-4 text-sm font-medium text-rose-700">
-            周波数と距離は0より大きい値を入力してください。
+            周波数・距離は0より大きい値を入力してください。距離が波長に対して極端に短い（近距離×低周波）組み合わせでは、遠方界を前提とする自由空間損失の式が成立しません。
           </p>
         )}
 

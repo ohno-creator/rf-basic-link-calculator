@@ -209,10 +209,14 @@ function MetricCard({ label, value, description }: { label: string; value: strin
 function CalculationFlow({ input, result }: { input: ResearchDistanceInput; result: ReturnType<typeof calculateResearchDistance> }) {
   const steps = [
     {
-      label: "送信余力",
-      value: `${(input.txPowerDbm + input.txAntennaGainDbi + input.rxAntennaGainDbi - input.receiverSensitivityDbm).toFixed(
-        1
-      )}dB`,
+      label: "送信余力＋実測補正",
+      value: `${(
+        input.txPowerDbm +
+        input.txAntennaGainDbi +
+        input.rxAntennaGainDbi -
+        input.receiverSensitivityDbm +
+        input.calibrationOffsetDb
+      ).toFixed(1)}dB`,
       tone: "bg-sky-50 border-sky-200 text-sky-950"
     },
     {
