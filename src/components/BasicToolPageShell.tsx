@@ -56,7 +56,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
       />
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <header>
-          <p className="text-sm font-semibold text-staf-dark">基本計算ツール（単機能）</p>
+          <p className="text-sm font-semibold text-staf-dark">RF計算ツール</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">{tool.title}</h1>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-700">
             {tool.description}

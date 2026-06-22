@@ -497,6 +497,12 @@ function buildNcuBelowGroundWarnings(
       message:
         "楽観条件では成立余地がありますが、標準条件では受信感度を下回ります。蓋・開口・アンテナ位置の改善でどの損失を減らせるかを優先的に確認してください。"
     });
+  } else if (result.linkMarginRangeDb.typical >= 0 && result.linkMarginRangeDb.min < 0) {
+    warnings.push({
+      id: "range-crosses-threshold-pessimistic",
+      message:
+        "標準条件では成立しますが、厳しめ条件（金属蓋・水溜まり・底面配置・駐車車両など）が重なると受信感度を下回る余地があります。雨天後や車両ありなど悪条件での実測確認を推奨します。"
+    });
   }
 
   return warnings;

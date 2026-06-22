@@ -410,7 +410,9 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
   const isCost231WiModel = input.model === "cost231_wi_nlos";
   const isUmi = input.model.includes("umi");
   const isUma = input.model.includes("uma");
-  const representativeDistanceM = result.maximumDistanceM ?? result.minimumDistanceM;
+  // 成立する最大距離を距離レンジ警告の代表値にする。不成立(=null)時は下限へフォールバックせず、
+  // 距離レンジ警告自体をスキップする（不成立は not-feasible-at-minimum 等で別途示す）。
+  const representativeDistanceM = result.maximumDistanceM;
 
   if (input.shadowFadingStdDb === 0) {
     warnings.push({
@@ -453,7 +455,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
       });
     }
 
-    if (representativeDistanceM < 100 || representativeDistanceM > 8000) {
+    if (representativeDistanceM != null && (representativeDistanceM < 100 || representativeDistanceM > 8000)) {
       warnings.push({
         id: "sui-distance-range",
         message:
@@ -485,7 +487,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
       });
     }
 
-    if (representativeDistanceM < 20 || representativeDistanceM > 5000) {
+    if (representativeDistanceM != null && (representativeDistanceM < 20 || representativeDistanceM > 5000)) {
       warnings.push({
         id: "cost231-wi-distance-range",
         message:
@@ -517,7 +519,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
       });
     }
 
-    if (representativeDistanceM < 10 || representativeDistanceM > 5000) {
+    if (representativeDistanceM != null && (representativeDistanceM < 10 || representativeDistanceM > 5000)) {
       warnings.push({
         id: "tr38901-distance-range",
         message:

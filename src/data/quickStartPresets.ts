@@ -172,7 +172,7 @@ export const quickStartPresets: QuickStartPreset[] = [
     description:
       "金属近接や筐体内蔵の影響で、リンクマージンが小さくなりやすい例です。アンテナ配置や筐体条件の重要性を理解するためのサンプルです。",
     input: {
-      system: "BLE",
+      system: "BLE / Wi-Fi",
       linkType: "terminal_to_terminal",
       propagationModel: "log_distance",
       propagationArea: "urbanMedium",

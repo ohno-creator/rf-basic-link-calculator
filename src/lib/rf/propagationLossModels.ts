@@ -49,8 +49,18 @@ function log10(value: number): number {
   return Math.log10(value);
 }
 
+// 公開純関数も fspl/propagation と同じ防御レベルに揃える。0や負・非有限の入力で
+// ±Infinity/NaN を黙って下流へ流さないようにする。
+function assertPositiveFinite(value: number, label: string): void {
+  if (!Number.isFinite(value) || value <= 0) {
+    throw new Error(`${label}は0より大きい値を入力してください。`);
+  }
+}
+
 /** 平面大地2波の遠方近似。ブレークポイント手前では自由空間損失に張り付く。 */
 function twoRayPathLossDb(params: PropagationLossParams): number {
+  assertPositiveFinite(params.txHeightM, "送信側アンテナ高");
+  assertPositiveFinite(params.rxHeightM, "受信側アンテナ高");
   const distanceM = params.distanceKm * 1000;
   const fsplDb = calculateFsplDb(params.frequencyMHz, params.distanceKm);
   const twoRayDb =
@@ -61,6 +71,8 @@ function twoRayPathLossDb(params: PropagationLossParams): number {
 
 /** 1m基準（close-in）の Log-distance：L = FSPL(1m) + 10·n·log10(d[m])。 */
 function logDistancePathLossDb(params: PropagationLossParams): number {
+  assertPositiveFinite(params.distanceKm, "距離");
+  assertPositiveFinite(params.pathLossExponent, "距離損失指数n");
   const distanceM = params.distanceKm * 1000;
   const referenceLossDb = calculateFsplDb(params.frequencyMHz, 0.001);
 

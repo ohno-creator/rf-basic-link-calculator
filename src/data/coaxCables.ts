@@ -15,7 +15,8 @@ export type ReferenceCable = {
 
 /**
  * 比較用：一般的な同軸ケーブルの参考ロス曲線（1m相当の目安）。
- * 代表減衰量[dB/m]から √f でスケールした概算（各社データシートの代表値ベース・非実測）。
+ * 2.4GHzでの代表減衰量[dB/m]を基準に √(f/2400) でスケールした概算
+ * （各社データシートの代表値ベース・非実測）。
  */
 export const referenceCables: ReferenceCable[] = [
   { label: "一般 細径 RG-178 相当（参考・1m）", color: "#f59e0b", points: referenceLossPoints(1.7, 1) },
