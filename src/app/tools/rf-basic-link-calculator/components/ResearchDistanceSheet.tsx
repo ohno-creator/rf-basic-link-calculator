@@ -681,7 +681,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           </section>
         </div>
 
-        <div className="space-y-5 lg:sticky lg:top-6">
+        <div className="space-y-5 lg:sticky lg:top-20">
           <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-2">
               <Route className="h-5 w-5 text-staf" aria-hidden="true" />

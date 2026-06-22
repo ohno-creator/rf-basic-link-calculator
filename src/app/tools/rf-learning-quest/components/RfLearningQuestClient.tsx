@@ -2025,7 +2025,7 @@ export function RfLearningQuestClient() {
       </div>
 
       <section className="mt-5 grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
-        <aside className="space-y-4 lg:sticky lg:top-6">
+        <aside className="space-y-4 lg:sticky lg:top-20">
           <ModeReviewPanel mode={activeModeMeta} completed={completedInMode} total={lessonsInMode.length} />
 
           <StageMap

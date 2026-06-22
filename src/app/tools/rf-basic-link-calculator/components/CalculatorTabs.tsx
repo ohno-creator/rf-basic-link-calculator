@@ -131,7 +131,7 @@ export function CalculatorTabs({
             <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
             <div
               id={RESULT_ANCHOR_ID}
-              className="scroll-mt-24 lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:overflow-y-auto lg:pr-1"
+              className="scroll-mt-24 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1"
             >
               <ResultHero input={input} result={result} errors={errors} onStepSelect={jumpToInput} />
             </div>

@@ -28,6 +28,14 @@ body {
   background: rgba(0, 113, 189, 0.18);
 }
 
+/* キーボード操作時のフォーカスを全体で明確に可視化（アクセシビリティ: WCAG 2.4.7）。
+   個別に focus-visible:ring を持つ要素はそちらが優先され、持たない要素の保険になる。 */
+:where(a, button, select, summary, [tabindex]):focus-visible {
+  outline: 2px solid #0071bd;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
 input[type="range"] {
   accent-color: #0071bd;
 }

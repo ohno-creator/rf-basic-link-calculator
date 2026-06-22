@@ -54,16 +54,32 @@ export default function HomePage() {
         <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-500">
           周波数、損失、整合、伝搬。よく使う基礎計算を、1ツール1ページで。入力すると、その場で図と意味がわかります。
         </p>
+        <div className="mt-8 flex flex-wrap items-center gap-3">
+          <Link
+            href="/tools/rf-basic-link-calculator"
+            className="inline-flex items-center gap-2 rounded-full bg-staf px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+          >
+            リンクバジェット診断をはじめる
+            <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+          </Link>
+          <a
+            href="#tools"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+          >
+            全{toolDirectory.length}ツールを見る
+          </a>
+        </div>
       </section>
 
-      <div className="space-y-10 pb-16">
+      <div id="tools" className="space-y-10 pb-16 scroll-mt-20">
         {toolCategories.map((category) => {
           const tools = toolDirectory.filter((tool) => tool.category === category.id);
 
           return (
             <section key={category.id} className="mx-auto max-w-6xl px-6">
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-slate-400">
+              <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
                 {category.label}
+                <span className="text-xs font-semibold text-slate-400">{tools.length}件</span>
               </h2>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {tools.map((tool) => {
@@ -73,20 +89,20 @@ export default function HomePage() {
                     <Link
                       key={tool.href}
                       href={tool.href}
-                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60"
+                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf transition group-hover:bg-staf group-hover:text-white">
                         <Icon aria-hidden="true" className="h-5 w-5" />
                       </span>
-                      <span className="min-w-0">
-                        <span className="flex items-center gap-1 text-base font-semibold text-slate-900">
+                      <span className="min-w-0 flex-1">
+                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf">
                           {tool.name}
                           <ArrowUpRight
                             aria-hidden="true"
-                            className="h-4 w-4 text-slate-300 transition group-hover:text-staf"
+                            className="h-4 w-4 shrink-0 text-staf opacity-0 transition group-hover:opacity-100"
                           />
                         </span>
-                        <span className="mt-1 block text-sm leading-relaxed text-slate-500">
+                        <span className="mt-1.5 block text-sm leading-relaxed text-slate-600">
                           {tool.tagline}
                         </span>
                       </span>

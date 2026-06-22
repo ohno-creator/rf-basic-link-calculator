@@ -1368,7 +1368,7 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
   const dominantHint = bottleneckHintById[dominant.id];
 
   return (
-    <aside className="space-y-4 lg:sticky lg:top-6">
+    <aside className="space-y-4 lg:sticky lg:top-20">
       <section className={`rounded-lg border p-5 shadow-sm ${judgementTone[result.judgement.level]}`}>
         <div className="flex items-start justify-between gap-4">
           <div>

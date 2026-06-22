@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, ChevronRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { ConsultationCta } from "@/app/tools/rf-basic-link-calculator/components/ConsultationCta";
-import { basicTools, type BasicToolMeta } from "@/data/basicTools";
+import type { BasicToolMeta } from "@/data/basicTools";
+import { toolDirectory } from "@/data/toolDirectory";
 import { COLUMN_URL } from "@/lib/rf/presets";
 
 type BasicToolPageShellProps = {
@@ -10,8 +11,16 @@ type BasicToolPageShellProps = {
   children: ReactNode;
 };
 
+// 看板ツール（リンクバジェット診断・RF学習クエスト）は必ず関連導線に含める。
+const flagshipHrefs = ["/tools/rf-basic-link-calculator", "/tools/rf-learning-quest"];
+
 export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) {
-  const related = basicTools.filter((item) => item.slug !== tool.slug).slice(0, 6);
+  const currentHref = `/tools/${tool.slug}`;
+  const others = toolDirectory.filter((item) => item.href !== currentHref);
+  const related = [
+    ...others.filter((item) => flagshipHrefs.includes(item.href)),
+    ...others.filter((item) => !flagshipHrefs.includes(item.href))
+  ].slice(0, 6);
 
   const jsonLd = [
     {
@@ -51,16 +60,8 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-5xl px-4 py-10 sm:px-6 lg:px-8">
-        <nav aria-label="パンくず" className="flex flex-wrap items-center gap-1 text-xs text-slate-500">
-          <Link className="hover:text-staf" href="/">
-            ツール一覧
-          </Link>
-          <ChevronRight aria-hidden="true" className="h-3 w-3" />
-          <span className="font-medium text-slate-700">{tool.title}</span>
-        </nav>
-
-        <header className="mt-4">
+      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+        <header>
           <p className="text-sm font-semibold text-staf">基本計算ツール（単機能）</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">{tool.title}</h1>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-700">
@@ -71,19 +72,19 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         <div className="mt-8 space-y-6">{children}</div>
 
         <section className="mt-10">
-          <h2 className="text-base font-semibold text-slate-950">ほかの基本計算ツール</h2>
+          <h2 className="text-base font-semibold text-slate-950">ほかのツール</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {related.map((item) => (
               <Link
-                key={item.slug}
-                href={`/tools/${item.slug}`}
-                className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:border-staf/40 hover:shadow-sm"
+                key={item.href}
+                href={item.href}
+                className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:border-staf/40 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
                 <p className="text-sm font-semibold text-slate-900 group-hover:text-staf">
-                  {item.title}
+                  {item.name}
                 </p>
-                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-500">
-                  {item.essenceLead}
+                <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
+                  {item.tagline}
                 </p>
                 <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-staf">
                   開く

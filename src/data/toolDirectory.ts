@@ -5,9 +5,9 @@ export type ToolCategory = {
 
 export const toolCategories: ToolCategory[] = [
   { id: "link", label: "リンク設計" },
-  { id: "learning", label: "学習クエスト" },
   { id: "basics", label: "単位・基礎" },
-  { id: "line", label: "線路・整合" }
+  { id: "line", label: "線路・整合" },
+  { id: "learning", label: "学習クエスト" }
 ];
 
 export type DirectoryTool = {
