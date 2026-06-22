@@ -1,3 +1,4 @@
+import { chartTheme } from "@/lib/chartTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { NcuBelowGroundInput, NcuBelowGroundResult } from "@/lib/rf/ncuBelowGround";
 
@@ -46,20 +47,22 @@ function belowGroundTone(abs: number): { fill: string; stroke: string } {
 }
 
 function stepTone(step: WaterfallStep): { fill: string; stroke: string } {
+  // 系列色は chartTheme を単一ソースに（リンクバジェット滝グラフと双子に揃える）。
+  // ground（スレート）と below（重症度ヒート）はNCU固有のドメイン表現として個別に保つ。
   switch (step.group) {
     case "source":
-      return { fill: "#0071BD", stroke: "#005A95" };
+      return { fill: chartTheme.series.source, stroke: "#005A95" };
     case "gain":
     case "correction":
       return step.delta >= 0
-        ? { fill: "#10b981", stroke: "#047857" }
-        : { fill: "#fb7185", stroke: "#be123c" };
+        ? { fill: chartTheme.series.gain, stroke: "#047857" }
+        : { fill: chartTheme.series.loss, stroke: "#be123c" };
     case "ground":
       return { fill: "#94a3b8", stroke: "#64748b" };
     case "below":
       return belowGroundTone(Math.abs(step.delta));
     case "total":
-      return { fill: "#1e293b", stroke: "#0f172a" };
+      return { fill: chartTheme.series.total, stroke: "#0f172a" };
   }
 }
 
@@ -168,7 +171,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
   const marginPass = marginTypical >= 0;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm" data-testid="ncu-budget-waterfall">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card" data-testid="ncu-budget-waterfall">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-staf-dark">滝グラフ</p>
@@ -245,11 +248,9 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
 
             return (
               <g key={step.key}>
-                <title>
-                  {step.label}：{valueLabel}
-                  {"\n"}
-                  {step.note}
-                </title>
+                {/* SVG<title>は特殊コンテンツモデルのため、子を分割するとReactの区切りコメントが
+                    ブラウザ解析で併合されハイドレーション不一致になる。単一テキストノードにまとめる。 */}
+                <title>{`${step.label}：${valueLabel}\n${step.note}`}</title>
                 {index > 0 ? (
                   <line
                     x1={x(index - 1) + chart.barWidth}

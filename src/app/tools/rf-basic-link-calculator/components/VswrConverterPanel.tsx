@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { formatNumber } from "@/lib/rf/format";
 import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
@@ -47,7 +48,7 @@ export function VswrConverterPanel() {
   const activeMode = modes.find((item) => item.id === mode);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h3 className="text-lg font-bold text-slate-950">VSWR・リターンロス変換</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         アンテナや線路の整合の良さを表す指標を相互変換します。どれか1つを入力してください。
@@ -115,7 +116,7 @@ export function VswrConverterPanel() {
                 算出されたVSWR（Vmax/Vmin）。1に近いほど整合が良い状態です。Γ=1（全反射）では∞表示になります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-slate-950">{formatInfinite(result.vswr, 2)}</p>
+            <Stat className="mt-1" value={formatInfinite(result.vswr, 2)} tone="neutral" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -124,7 +125,7 @@ export function VswrConverterPanel() {
                 算出されたリターンロス -20log10(Γ)。大きいほど整合良好です。完全整合（Γ=0）では∞dBになります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatInfinite(result.returnLossDb, 1)} dB</p>
+            <Stat className="mt-1" value={formatInfinite(result.returnLossDb, 1)} unit="dB" tone="staf" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -133,7 +134,7 @@ export function VswrConverterPanel() {
                 算出された反射係数。0＝無反射、1に近いほど反射大。VSWR・リターンロスの基準量です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.reflectionCoefficient, 3)}</p>
+            <Stat className="mt-1" value={formatNumber(result.reflectionCoefficient, 3)} tone="staf" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -142,7 +143,7 @@ export function VswrConverterPanel() {
                 送信電力のうち負荷で反射して戻る割合 Γ²×100。小さいほど効率的です。例：Γ=0.2で4%。残りが負荷へ伝わる電力です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.reflectedPowerPercent, 1)} %</p>
+            <Stat className="mt-1" value={formatNumber(result.reflectedPowerPercent, 1)} unit="%" tone="staf" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4 sm:col-span-2">
             <div className="flex items-start justify-between gap-2">
@@ -151,7 +152,7 @@ export function VswrConverterPanel() {
                 不整合により負荷へ伝わらず失われる電力 -10log10(1−Γ²)。小さいほど良好で、リンクバジェットへ直接効きます。完全整合（Γ=0）では0dB、全反射（Γ=1）では∞dB。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatInfinite(result.mismatchLossDb, 2)} dB</p>
+            <Stat className="mt-1" value={formatInfinite(result.mismatchLossDb, 2)} unit="dB" tone="staf" size="md" />
           </div>
         </div>
       ) : (

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { dbToDistanceRatio, dbToPowerRatio } from "@/lib/rf/db";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DbFeelDiagram } from "./DbFeelDiagram";
@@ -40,7 +41,7 @@ export function DbFeelPanel() {
   }
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h2 className="text-xl font-bold text-slate-950">dBを体感する</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         dBは「掛け算を足し算にするものさし」です。スライダーを動かして、dBが電力の倍率・到達距離の倍率にどう効くかを体感してください。
@@ -86,8 +87,13 @@ export function DbFeelPanel() {
               10^(dB/10)。dBが示す電力の倍率です。+10dB=×10、+3dB≒×2、-3dB≒1/2。送信電力や利得の効きを表します。距離の倍率は10^(dB/20)で、指数の分母が異なる点に注意してください。
             </Tooltip>
           </div>
-          <p className="mt-1 text-3xl font-bold text-slate-950">{formatRatio(powerRatio)}</p>
-          <p className="mt-1 text-xs text-slate-500">+10dBで10倍、+3dBで約2倍</p>
+          <Stat
+            className="mt-1"
+            value={formatRatio(powerRatio)}
+            tone="neutral"
+            size="lg"
+            note="+10dBで10倍、+3dBで約2倍"
+          />
         </div>
         <div className="rounded-lg bg-slate-50 p-4">
           <div className="flex items-center justify-between gap-2">
@@ -96,8 +102,13 @@ export function DbFeelPanel() {
               10^(dB/20)。自由空間損失は距離の2乗（20log）で効くため、電力(10log)より緩やかに伸び、+6dBで距離2倍／+20dBで10倍になります。屋内や障害物では目安より短くなります。
             </Tooltip>
           </div>
-          <p className="mt-1 text-3xl font-bold text-staf-dark">{formatRatio(distanceRatio)}</p>
-          <p className="mt-1 text-xs text-slate-500">+6dBで距離2倍、+20dBで距離10倍</p>
+          <Stat
+            className="mt-1"
+            value={formatRatio(distanceRatio)}
+            tone="staf"
+            size="lg"
+            note="+6dBで距離2倍、+20dBで距離10倍"
+          />
         </div>
       </div>
 

@@ -1,10 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
 import { calculateFsplDb } from "@/lib/rf/fspl";
-import { formatDb } from "@/lib/rf/format";
+import { formatDb, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
 export function FsplPanel() {
@@ -46,9 +47,15 @@ export function FsplPanel() {
     return Math.min(100, Math.max(2, ratio * 100));
   };
 
+  // 入力距離がサンプル距離（10m/100m/1km/10km）に一致するときは、サンプル行側が
+  // ハイライトされるため専用の「入力距離」行は出さない（同じ値の二重表示を避ける）。
+  const inputMatchesSample = sampleDistances.some(
+    (item) => Number.isFinite(distanceKm) && Math.abs(distanceKm - item.distance) < item.distance * 0.001
+  );
+
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-xl font-bold text-slate-950">自由空間損失 FSPL 計算</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           障害物や反射がない理想的な空間で、距離により電波が弱くなる量を計算します。
@@ -120,7 +127,7 @@ export function FsplPanel() {
                 理想空間での距離による減衰量[dB]です。実環境では壁・人体・マルチパス等で更に増えます。値が大きいほど電波は届きにくくなります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-4xl font-bold text-slate-950">{formatDb(result)}</p>
+            <Stat className="mt-1" value={formatNumber(result)} unit="dB" tone="neutral" size="lg" />
           </div>
         ) : (
           <p className="mt-4 text-sm font-medium text-rose-700">
@@ -146,7 +153,7 @@ export function FsplPanel() {
         </div>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h3 className="text-base font-semibold text-slate-950">FSPL Visual</h3>
         <div className="mt-4 rounded-lg bg-slate-50 p-5 text-center text-sm text-slate-700">
           <div className="flex items-center justify-between gap-2">
@@ -157,7 +164,7 @@ export function FsplPanel() {
           </div>
           <div className="mt-4 grid gap-2 text-left sm:grid-cols-4">
             {["距離が伸びる", "電波が広がる", "受信点で小さくなる", "損失が大きくなる"].map((item) => (
-              <div key={item} className="rounded-md bg-white p-3 text-center shadow-sm">
+              <div key={item} className="rounded-md bg-white p-3 text-center shadow-card">
                 {item}
               </div>
             ))}
@@ -206,7 +213,7 @@ export function FsplPanel() {
                 })}
               </div>
 
-              {result && Number.isFinite(distanceKm) ? (
+              {result && Number.isFinite(distanceKm) && !inputMatchesSample ? (
                 <div className="mt-4 grid grid-cols-[80px_1fr_80px] items-center gap-3 rounded-md border border-staf/40 bg-staf-light px-2 py-2 text-sm">
                   <span className="font-semibold text-staf-dark">入力距離</span>
                   <div className="h-3 rounded-full bg-white/70">
@@ -220,8 +227,8 @@ export function FsplPanel() {
               ) : null}
 
               <p className="mt-3 text-xs text-slate-500">
-                バー幅は損失60〜140dBを0〜100%に正規化した相対表示です。上のサンプルは固定基準で、
-                <span className="font-semibold text-staf-dark">入力距離</span>の行があなたの条件の損失です。
+                バー幅は損失60〜140dBを0〜100%に正規化した相対表示です。
+                <span className="font-semibold text-staf-dark">色付きの行</span>があなたの入力距離での損失です。
               </p>
             </>
           ) : (

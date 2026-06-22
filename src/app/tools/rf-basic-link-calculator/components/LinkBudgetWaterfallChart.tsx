@@ -1,3 +1,4 @@
+import { chartTheme } from "@/lib/chartTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -30,11 +31,12 @@ const chart = {
   barWidth: 54
 };
 
+// 系列色は chartTheme を単一ソースとして参照（NCU滝グラフと双子に揃える）。
 export const stepStyles = {
-  source: { fill: "#0071BD", stroke: "#005A95", text: "#005A95" },
-  gain: { fill: "#10B981", stroke: "#047857", text: "#047857" },
-  loss: { fill: "#FB7185", stroke: "#BE123C", text: "#BE123C" },
-  total: { fill: "#334155", stroke: "#0F172A", text: "#0F172A" }
+  source: { fill: chartTheme.series.source, stroke: "#005A95", text: "#005A95" },
+  gain: { fill: chartTheme.series.gain, stroke: "#047857", text: "#047857" },
+  loss: { fill: chartTheme.series.loss, stroke: "#BE123C", text: "#BE123C" },
+  total: { fill: chartTheme.series.total, stroke: "#0F172A", text: "#0F172A" }
 };
 
 function buildSteps(input: LinkBudgetInput, result: LinkBudgetResult): WaterfallStep[] {
@@ -151,7 +153,7 @@ export function LinkBudgetWaterfallChart({
   const sensitivityY = y(input.receiverSensitivityDbm);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">滝グラフ</p>

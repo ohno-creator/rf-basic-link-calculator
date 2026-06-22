@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { calculateFresnel } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
@@ -30,7 +31,7 @@ export function FresnelZonePanel() {
   }, [frequencyMHz, distanceKm]);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h3 className="text-lg font-bold text-slate-950">フレネルゾーン半径</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         見通し通信で「どれだけ障害物を空けるべきか」の目安になる、第1フレネルゾーンの半径を計算します。
@@ -113,7 +114,7 @@ export function FresnelZonePanel() {
                 その地点での第1フレネルゾーンの半径です。電波が通る楕円体の太さの半分にあたり、この範囲に障害物が入ると損失が増えます。見通し通信では半径の60%以上を障害物から空けるのが目安です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-slate-950">{formatMeters(result.firstZoneRadiusM)}</p>
+            <Stat className="mt-1" value={formatMeters(result.firstZoneRadiusM)} tone="neutral" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -122,7 +123,7 @@ export function FresnelZonePanel() {
                 第1フレネルゾーン半径(r1)の60%です。見通し通信では、この高さ以上を障害物から空けておけば回り込みによる損失をほぼ無視できる、という実務上の目安（≧60%が判断基準）です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatMeters(result.clearance60M)}</p>
+            <Stat className="mt-1" value={formatMeters(result.clearance60M)} tone="staf" size="md" />
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -131,7 +132,7 @@ export function FresnelZonePanel() {
                 周波数に対応する電波の波長(λ=c/f)です。フレネルゾーン半径はλの平方根に比例します。周波数が高いほど波長は短く、ゾーン半径も小さくなります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.wavelengthM, 3)} m</p>
+            <Stat className="mt-1" value={formatNumber(result.wavelengthM, 3)} unit="m" tone="staf" size="md" />
           </div>
         </div>
       ) : (

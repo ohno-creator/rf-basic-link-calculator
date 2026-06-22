@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { formatNumber } from "@/lib/rf/format";
 import {
@@ -146,7 +147,7 @@ function ResultCard({
         <p className={`text-xs ${primary ? "font-semibold text-staf-dark" : "text-slate-500"}`}>{label}</p>
         {tooltip}
       </div>
-      <p className={`mt-1 text-2xl font-bold ${primary ? "text-slate-950" : "text-staf-dark"}`}>{value}</p>
+      <Stat className="mt-1" value={value} tone={primary ? "neutral" : "staf"} size="md" />
     </div>
   );
 }
@@ -216,7 +217,7 @@ export function MicrostripLinePanel() {
   }, [result, widthMm, heightMm, dielectricConstant, frequencyMHz]);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h2 className="text-xl font-bold text-slate-950">マイクロストリップ線路シミュレーション</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         基板上の配線（マイクロストリップ）の特性インピーダンス・実効比誘電率・電気長を計算し、曲げ（マイター）やグラウンドのスルーホール（ビア）の設計目安まで確認できます。

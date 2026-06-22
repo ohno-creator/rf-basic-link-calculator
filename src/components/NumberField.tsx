@@ -67,7 +67,7 @@ export function NumberField({
 
   return (
     <label className="block" htmlFor={id}>
-      <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+      <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
         {label}
         {help ? <HelpHint text={help} /> : null}
       </span>

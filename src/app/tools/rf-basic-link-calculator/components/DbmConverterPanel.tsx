@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
 import { dbmToMw, mwToDbm, mwToW, wToDbm, wToMw } from "@/lib/rf/db";
@@ -91,7 +92,7 @@ export function DbmConverterPanel() {
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-xl font-bold text-slate-950">dBm / mW / W 変換</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           どれか1つを入力すると、他の単位へ自動変換します。
@@ -147,7 +148,7 @@ export function DbmConverterPanel() {
                   入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.dbm)}</p>
+              <Stat className="mt-1" value={formatPower(result.dbm)} tone="staf" size="md" />
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-1">
@@ -156,7 +157,7 @@ export function DbmConverterPanel() {
                   入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.mw)}</p>
+              <Stat className="mt-1" value={formatPower(result.mw)} tone="staf" size="md" />
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-1">
@@ -165,7 +166,7 @@ export function DbmConverterPanel() {
                   入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.w)}</p>
+              <Stat className="mt-1" value={formatPower(result.w)} tone="staf" size="md" />
             </div>
           </div>
         ) : null}

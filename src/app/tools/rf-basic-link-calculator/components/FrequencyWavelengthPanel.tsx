@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
 import {
@@ -64,7 +65,7 @@ export function FrequencyWavelengthPanel() {
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-xl font-bold text-slate-950">周波数・波長計算</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           周波数から波長 λ、λ/2、λ/4、λ/8 を計算します。
@@ -125,9 +126,7 @@ export function FrequencyWavelengthPanel() {
                     {RESULT_HINTS[label as string].description}
                   </Tooltip>
                 </div>
-                <p className="mt-1 text-2xl font-bold text-staf-dark">
-                  {formatMeters(value as number)}
-                </p>
+                <Stat className="mt-1" value={formatMeters(value as number)} tone="staf" size="md" />
               </div>
             ))}
           </div>
