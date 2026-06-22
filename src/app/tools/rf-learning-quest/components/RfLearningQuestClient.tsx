@@ -644,7 +644,7 @@ function LevelUpPanel({ levelUp, onClose }: { levelUp: LevelUpState; onClose: ()
           className="rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100"
           onClick={onClose}
         >
-          クエストへ戻る
+          冒険へ戻る
         </button>
       </div>
     </section>
@@ -891,9 +891,9 @@ function AntennaGuildPanel({
             <Radio aria-hidden="true" className="h-4 w-4" />
             アンテナ設計室
           </p>
-          <h2 className="mt-1 text-xl font-bold text-slate-950">今日のレビュー課題と実績</h2>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">今日の修行と実績</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-            アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日のレビュー課題から始めてください。
+            アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日の修行から始めてください。各バトルには設計レビューの観点も付くので、遊びながら実務目線が身につきます。
           </p>
         </div>
         <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-3">
@@ -1040,10 +1040,10 @@ function LessonBattle({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-slate-400">
-            第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・章レビュー" : "・確認問題"}
+            第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
           </p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">{lesson.title}</h2>
-          <p className="mt-1 text-sm font-semibold text-slate-500">レビュー対象：{lesson.enemy}</p>
+          <p className="mt-1 text-sm font-semibold text-slate-500">対戦相手：{lesson.enemy}</p>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
           <span className="inline-flex items-center gap-1 rounded-full bg-staf-light px-3 py-1 text-xs font-bold text-staf">
@@ -1060,7 +1060,7 @@ function LessonBattle({
             ) : (
               <CircleHelp aria-hidden="true" className="h-3.5 w-3.5" />
             )}
-            {isCompleted ? "確認済み" : "レビュー中"}
+            {isCompleted ? "攻略済み" : "挑戦中"}
           </span>
         </div>
       </div>
@@ -1185,7 +1185,7 @@ function LessonBattle({
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
             <div className="mt-3 rounded-md border border-slate-200 bg-white/80 p-3">
-              <p className="text-xs font-bold text-slate-500">次のレビュー</p>
+              <p className="text-xs font-bold text-slate-500">次の修行</p>
               <p className="mt-1 text-sm font-bold text-slate-950">
                 STAGE {nextLesson.stage}：{nextLesson.title}
               </p>
@@ -1957,7 +1957,7 @@ export function RfLearningQuestClient() {
             </div>
           </div>
           <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
-            <p className="text-xs font-bold">学習進捗</p>
+            <p className="text-xs font-bold">冒険進捗</p>
             <p className="mt-1 text-2xl font-bold">
               {completedCount}/{rfQuestLessons.length}
             </p>
