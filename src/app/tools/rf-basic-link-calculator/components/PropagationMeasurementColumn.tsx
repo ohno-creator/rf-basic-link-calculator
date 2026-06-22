@@ -4,7 +4,7 @@ import { Globe } from "lucide-react";
 
 export function PropagationMeasurementColumn() {
   return (
-    <section className="rounded-lg border border-sky-200 bg-sky-50 p-5 shadow-sm">
+    <section className="rounded-lg border border-sky-200 bg-sky-50 p-5 shadow-card">
       <div className="flex items-center gap-2">
         <Globe aria-hidden="true" className="h-5 w-5 text-sky-700" />
         <h2 className="text-lg font-bold text-sky-950">コラム：実測で深掘りする — Google Earth × モデル比較</h2>

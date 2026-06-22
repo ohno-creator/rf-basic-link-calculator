@@ -43,7 +43,7 @@ export function Tooltip({ term, children }: TooltipProps) {
         aria-describedby={tooltipId}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
-        className="inline-flex items-center gap-1 rounded-full border border-staf/30 bg-white px-2 py-0.5 text-xs font-semibold text-staf-dark shadow-sm transition hover:border-staf/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+        className="inline-flex items-center gap-1 rounded-full border border-staf/30 bg-white px-2 py-0.5 text-xs font-semibold text-staf-dark shadow-card transition hover:border-staf/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
       >
         {term}
         <span aria-hidden="true" className="text-[10px]">

@@ -36,7 +36,7 @@ export function ConsultationCta({
   }
 
   return (
-    <section className="rounded-lg border border-staf/20 bg-staf-light p-5 shadow-sm">
+    <section className="rounded-lg border border-staf/20 bg-staf-light p-5 shadow-card">
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h3 className="text-lg font-bold text-slate-950">{title}</h3>

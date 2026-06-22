@@ -25,7 +25,7 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
   const left = markerPosition(result.linkMarginDb);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">リンクマージンゲージ</h3>
@@ -53,7 +53,7 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
             style={{ left: `${left}%` }}
           >
             <span className="h-0 w-0 border-x-[7px] border-b-[10px] border-x-transparent border-b-staf" />
-            <span className="mt-1 rounded-full bg-staf px-2 py-1 text-xs font-semibold text-white shadow-sm">
+            <span className="mt-1 rounded-full bg-staf px-2 py-1 text-xs font-semibold text-white shadow-card">
               {result.judgement.label}
             </span>
           </div>

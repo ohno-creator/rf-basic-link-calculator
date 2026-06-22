@@ -72,7 +72,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
               <Link
                 key={item.href}
                 href={item.href}
-                className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:border-staf/40 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
                 <p className="text-sm font-semibold text-slate-900 group-hover:text-staf">
                   {item.name}

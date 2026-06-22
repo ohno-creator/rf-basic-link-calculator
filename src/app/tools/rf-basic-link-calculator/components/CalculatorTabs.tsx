@@ -100,7 +100,7 @@ export function CalculatorTabs({
         <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
       </div>
 
-      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
+      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
         <div role="tablist" aria-label="計算シート" className="grid gap-2 sm:grid-cols-2">
           {sheets.map((sheet) => {
             const selected = activeSheet === sheet.id;
@@ -111,7 +111,7 @@ export function CalculatorTabs({
                 role="tab"
                 aria-selected={selected}
                 className={`rounded-md px-4 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
-                  selected ? "bg-staf text-white shadow-sm" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                  selected ? "bg-staf text-white shadow-card" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
                 }`}
                 onClick={() => setActiveSheet(sheet.id)}
               >

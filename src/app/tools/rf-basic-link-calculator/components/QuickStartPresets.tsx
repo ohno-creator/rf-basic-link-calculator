@@ -25,7 +25,7 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
         {quickStartPresets.map((preset) => (
           <article
             key={preset.id}
-            className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
+            className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card"
           >
             <span className="w-fit rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
               {preset.label}

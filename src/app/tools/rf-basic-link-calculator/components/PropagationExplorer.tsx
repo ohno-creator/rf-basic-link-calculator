@@ -248,7 +248,7 @@ export function PropagationExplorer() {
   };
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div>
         <h3 className="text-lg font-bold text-slate-950">伝搬損失モデル比較</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -280,7 +280,7 @@ export function PropagationExplorer() {
                 onClick={() => toggleModel(model)}
                 className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                   isOn
-                    ? "border-staf bg-white text-slate-900 shadow-sm"
+                    ? "border-staf bg-white text-slate-900 shadow-card"
                     : "border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600"
                 }`}
               >

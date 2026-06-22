@@ -4,7 +4,7 @@ import { BookOpen } from "lucide-react";
 
 export function HataColumn() {
   return (
-    <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-sm">
+    <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-card">
       <div className="flex items-center gap-2">
         <BookOpen aria-hidden="true" className="h-5 w-5 text-amber-700" />
         <h2 className="text-lg font-bold text-amber-950">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>

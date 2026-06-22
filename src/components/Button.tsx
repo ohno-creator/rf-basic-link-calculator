@@ -8,7 +8,7 @@ const base =
   "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 disabled:cursor-not-allowed disabled:opacity-60";
 
 const variantClass: Record<Variant, string> = {
-  primary: "bg-staf text-white shadow-sm hover:bg-staf-dark",
+  primary: "bg-staf text-white shadow-card hover:bg-staf-dark",
   secondary: "border border-slate-300 bg-white text-slate-700 hover:border-staf/40 hover:text-staf",
   ghost: "text-slate-700 hover:bg-slate-100 hover:text-staf"
 };

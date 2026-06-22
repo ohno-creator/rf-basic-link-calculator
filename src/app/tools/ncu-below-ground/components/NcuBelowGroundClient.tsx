@@ -825,7 +825,7 @@ function NcuCrossSectionDiagram({
   ];
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm" data-testid="ncu-assumption-diagram">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card" data-testid="ncu-assumption-diagram">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-bold text-staf-dark">シミュレーション結果の2D図</p>
@@ -1199,7 +1199,7 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
   const max = Math.max(...items.map((item) => item.range.max), 1);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <SectionTitle icon={Layers} eyebrow="Loss decomposition" title="BOX・地下まわりの追加損失を分解">
         効いている順に並べています。いちばん上（主因）から現場で潰すと、いちばん少ない手間で通信余裕を稼げます。
       </SectionTitle>
@@ -1272,7 +1272,7 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
 
   return (
     <aside className="space-y-4 lg:sticky lg:top-20">
-      <section className={`rounded-lg border p-5 shadow-sm ${judgementTone[result.judgement.level]}`}>
+      <section className={`rounded-lg border p-5 shadow-card ${judgementTone[result.judgement.level]}`}>
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm font-bold opacity-80">標準条件の判定</p>
@@ -1327,7 +1327,7 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
         />
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-lg font-bold text-slate-950">計算の流れ</h2>
         <div className="mt-4 space-y-2 text-sm">
           <Row label="送信電力 + アンテナ利得" value={`${(input.txPowerDbm + input.gatewayAntennaGainDbi + input.ncuAntennaGainDbi).toFixed(1)} dBm`} />
@@ -1639,7 +1639,7 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
   const steps = mode === "estimate" ? estimateSteps : fieldSteps;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex items-center gap-2">
         <Compass aria-hidden="true" className="h-5 w-5 text-staf-dark" />
         <h2 className="text-lg font-bold text-slate-950">迷わない入力順</h2>
@@ -1673,7 +1673,7 @@ function PurposeSwitch({
   onChange: (mode: WorkMode) => void;
 }) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-2 shadow-card">
       <div className="grid gap-2 md:grid-cols-2" role="group" aria-label="GL以下NCU診断の目的">
         {purposeCards.map((card) => {
           const selected = activeMode === card.id;
@@ -1684,7 +1684,7 @@ function PurposeSwitch({
               aria-pressed={selected}
               title={card.description}
               className={`rounded-md p-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
-                selected ? "bg-staf text-white shadow-sm" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
+                selected ? "bg-staf text-white shadow-card" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
               }`}
               onClick={() => onChange(card.id)}
             >
@@ -1758,7 +1758,7 @@ function RadioMetricsDiagnosisPanel({
   const summaryTone = metricSeverityClass(diagnosis.overallSeverity);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <SectionTitle icon={Gauge} eyebrow="Radio metrics" title="RSRQ・SNRなど通信品質指標の簡易診断">
         機器ログで分かる項目だけ入力してください。電界不足、品質劣化、実通信成功率のどこが怪しいかを簡易的に切り分けます。
       </SectionTitle>
@@ -1870,7 +1870,7 @@ function FieldAnalysisPanel({
 
   return (
     <section className="space-y-5" data-testid="ncu-field-analysis">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <SectionTitle icon={Search} eyebrow="Field analysis" title="現場RSSI/RSRPから原因を追い込む">
           すべてを完璧に測らなくても大丈夫です。まずはBOX外、蓋開け、蓋閉めの3点だけで、地上側・BOX内・蓋のどこが怪しいか見えます。
         </SectionTitle>
@@ -1957,7 +1957,7 @@ function FieldAnalysisPanel({
         onMetricChange={onRadioMetricChange}
       />
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <SectionTitle icon={Target} eyebrow="Root cause ranking" title="原因候補ランキング">
           値が大きい順に見れば、現場で何から潰すべきかが分かります。差分が小さい項目は、主因ではない可能性が高いです。
         </SectionTitle>
@@ -1968,7 +1968,7 @@ function FieldAnalysisPanel({
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <div className="flex items-center gap-2">
           <ClipboardList aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現場で使う簡易チェックシート</h2>
@@ -2029,7 +2029,7 @@ export function NcuBelowGroundClient() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
             <p className="text-sm font-bold text-staf-dark">GL以下NCU専用</p>
@@ -2068,7 +2068,7 @@ export function NcuBelowGroundClient() {
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         <div className="space-y-5">
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <SectionTitle icon={RadioTower} eyebrow="Preset" title="現場条件プリセット">
               最初は近い条件を選び、写真・図面・実測値が分かったら細かく調整してください。
             </SectionTitle>
@@ -2116,7 +2116,7 @@ export function NcuBelowGroundClient() {
             </button>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <SectionTitle icon={Waves} eyebrow="Ground link" title="地上側の無線リンク">
               地上側の距離減衰を計算したうえで、GL以下の追加損失を積み上げます。
             </SectionTitle>
@@ -2221,7 +2221,7 @@ export function NcuBelowGroundClient() {
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <SectionTitle icon={Box} eyebrow="Below ground" title="GL以下・BOXまわりの条件">
               蓋、BOX、深さ、水分、アンテナ位置、地表上の遮蔽を、端末近傍損失として分けて入力します。
             </SectionTitle>
@@ -2311,7 +2311,7 @@ export function NcuBelowGroundClient() {
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
         <LossBreakdown result={result} />
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
           <SectionTitle icon={Gauge} eyebrow="Range result" title="レンジで見る通信余裕">
             GL以下の条件は一点値で断言しにくいため、楽観・標準・厳しめを並べて確認します。
           </SectionTitle>
@@ -2323,7 +2323,7 @@ export function NcuBelowGroundClient() {
         </section>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <div className="flex items-center gap-2">
           <Info aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">入力の前提をどう説明するか</h2>
@@ -2370,7 +2370,7 @@ export function NcuBelowGroundClient() {
         </div>
       </section>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <div className="flex items-center gap-2">
           <Ruler aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現地で最低限メモしたい項目</h2>

@@ -19,7 +19,7 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
   const sensitivityTop = position(input.receiverSensitivityDbm);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h3 className="text-base font-semibold text-slate-950">Sensitivity Line Visual</h3>
       <p className="mt-1 text-sm leading-relaxed text-slate-600">
         受信感度は「ここまで弱い電波なら受け取れる」という最低ラインです。受信電力がこのラインより上にあれば、通信できる可能性があります。
@@ -46,7 +46,7 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
             className="absolute left-0 right-0 border-t-2 border-dashed border-rose-500"
             style={{ top: `${sensitivityTop}%` }}
           >
-            <span className="absolute top-1 left-3 rounded-full bg-white px-2 py-1 text-xs font-semibold text-rose-700 shadow-sm">
+            <span className="absolute top-1 left-3 rounded-full bg-white px-2 py-1 text-xs font-semibold text-rose-700 shadow-card">
               受信感度 {formatDbm(input.receiverSensitivityDbm)}
             </span>
           </div>

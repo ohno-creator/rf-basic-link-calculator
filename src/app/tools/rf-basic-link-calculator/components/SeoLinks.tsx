@@ -32,7 +32,7 @@ export function SeoLinks() {
           return (
             <a
               key={card.title}
-              className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-soft"
+              className="rounded-lg border border-slate-200 bg-white p-5 shadow-card transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-card-hover"
               href={card.href}
             >
               <Icon aria-hidden="true" className="h-6 w-6 text-staf-dark" />

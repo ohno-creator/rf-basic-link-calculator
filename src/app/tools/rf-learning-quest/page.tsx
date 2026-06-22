@@ -44,7 +44,7 @@ export default function RfLearningQuestPage() {
     <ToolLayout>
       <RfLearningQuestClient />
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
           <p className="text-sm font-bold text-staf-dark">アンテナ設計・選定の関連ページ</p>
           <h2 className="mt-1 text-xl font-bold text-slate-950">学んだ内容を製品選定と相談につなげる</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">

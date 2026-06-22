@@ -22,7 +22,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
   const isAbove = hasMarker && currentDbm > SCALE_MAX;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h3 className="text-base font-semibold text-slate-950">Decibel Scale Visual</h3>
 
       {hasMarker ? (

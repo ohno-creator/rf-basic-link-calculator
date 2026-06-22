@@ -175,7 +175,7 @@ function NumberField({
           max={max}
           step={step}
           value={inputValue}
-          className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-sm focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
           onChange={(event) => onChange(event.target.value === "" ? 0 : Number(event.target.value))}
         />
         <span className="flex h-10 items-center justify-center rounded-md bg-slate-50 text-sm font-semibold text-slate-700">
@@ -265,7 +265,7 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
   }, []);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">距離別リンク余裕</h3>
@@ -333,7 +333,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
 
   return (
     <section className="space-y-5">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold text-staf-dark">
@@ -360,7 +360,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         <div className="space-y-5">
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <div className="flex items-center gap-2">
               <Calculator className="h-5 w-5 text-staf-dark" aria-hidden="true" />
               <h3 className="text-base font-bold text-slate-950">モデルと信頼率</h3>
@@ -446,7 +446,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <h3 className="text-base font-bold text-slate-950">送受信条件と追加損失</h3>
             <div className="mt-4 grid gap-4">
               <NumberField
@@ -568,7 +568,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <h3 className="text-base font-bold text-slate-950">CI / Dual-slope用パラメータ</h3>
             <div className="mt-4 grid gap-4">
               <NumberField
@@ -631,7 +631,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <h3 className="text-base font-bold text-slate-950">基地局・街路設計用パラメータ</h3>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
               COST231 Walfisch-Ikegamiで使う都市街路の平均条件です。実際のキャリア設計では、地図・建物高・道路幅・クラッタをGISやレイトレースに渡しますが、このシートでは簡易入力で比較します。
@@ -686,7 +686,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
         </div>
 
         <div className="space-y-5 lg:sticky lg:top-20">
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <div className="flex items-center gap-2">
               <Route className="h-5 w-5 text-staf-dark" aria-hidden="true" />
               <h3 className="text-base font-bold text-slate-950">距離逆算結果</h3>
@@ -715,7 +715,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
             </div>
           </section>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <h3 className="text-base font-bold text-slate-950">計算の流れ</h3>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
               送信余力から追加損失と信頼率マージンを引き、残った許容伝搬損失に到達する距離を逆算します。
@@ -726,7 +726,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           </section>
 
           {result.warnings.length > 0 ? (
-            <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-sm">
+            <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-card">
               <div className="flex items-center gap-2">
                 <AlertTriangle className="h-5 w-5 text-amber-700" aria-hidden="true" />
                 <h3 className="text-base font-bold text-amber-950">適用範囲と注意</h3>
@@ -743,7 +743,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
 
           <DistanceCurve input={input} result={result} />
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
             <h3 className="text-base font-bold text-slate-950">このシートで反映した考え方</h3>
             <div className="mt-3 space-y-3 text-sm leading-relaxed text-slate-600">
               <p>

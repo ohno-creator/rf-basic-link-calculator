@@ -90,7 +90,7 @@ export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
   ];
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap justify-between gap-4">
         <div>
           <h3 className="text-base font-semibold text-slate-950">信号フロー図</h3>

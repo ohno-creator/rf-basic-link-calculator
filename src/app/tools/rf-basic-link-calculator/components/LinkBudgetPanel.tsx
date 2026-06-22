@@ -133,7 +133,7 @@ function NumberField({
           min={min}
           max={max}
           step={step}
-          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-sm focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
           onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
           aria-invalid={Boolean(error)}
         />
@@ -509,7 +509,7 @@ function IotHataCalibrationPanel({
               min={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.001}
               step={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.01}
               value={Number.isFinite(input.iotCalibrationDistance) ? input.iotCalibrationDistance : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-sm focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
               onChange={(event) =>
                 update("iotCalibrationDistance", event.target.value === "" ? Number.NaN : Number(event.target.value))
               }
@@ -662,7 +662,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
   return (
     <section className="space-y-4">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-xl font-bold text-slate-950">リンクバジェット簡易診断</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           送信電力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。スライダーを動かすと、右の滝グラフがその場で変わります。
@@ -881,7 +881,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               min={distanceMin}
               max={distanceMax}
               step={input.distanceUnit === "m" ? 1 : 0.01}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-sm focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
               onChange={(event) => update("distance", event.target.value === "" ? Number.NaN : Number(event.target.value))}
               aria-invalid={Boolean(errors.distance)}
             />

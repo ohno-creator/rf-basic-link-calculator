@@ -144,7 +144,7 @@ export function Header() {
           </a>
           <a
             href={CONTACT_URL}
-            className="ml-1 rounded-md bg-staf px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            className="ml-1 rounded-md bg-staf px-4 py-2 text-sm font-semibold text-white shadow-card transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
           >
             相談する
           </a>

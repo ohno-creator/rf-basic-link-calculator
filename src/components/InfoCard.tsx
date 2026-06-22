@@ -16,7 +16,7 @@ const toneClasses = {
 
 export function InfoCard({ title, children, tone = "neutral" }: InfoCardProps) {
   return (
-    <div className={`rounded-lg border p-5 shadow-sm ${toneClasses[tone]}`}>
+    <div className={`rounded-lg border p-5 shadow-card ${toneClasses[tone]}`}>
       <h3 className="text-base font-semibold text-slate-950">{title}</h3>
       <div className="mt-2 text-sm leading-relaxed text-slate-600">
         {children}

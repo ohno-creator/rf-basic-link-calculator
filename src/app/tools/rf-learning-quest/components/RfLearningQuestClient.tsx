@@ -629,7 +629,7 @@ function ProgressBar({ value, max }: { value: number; max: number }) {
 
 function LevelUpPanel({ levelUp, onClose }: { levelUp: LevelUpState; onClose: () => void }) {
   return (
-    <section className="rounded-lg border border-amber-300 bg-amber-50 p-5 shadow-sm">
+    <section className="rounded-lg border border-amber-300 bg-amber-50 p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-amber-900">
@@ -653,7 +653,7 @@ function LevelUpPanel({ levelUp, onClose }: { levelUp: LevelUpState; onClose: ()
 
 function ManufacturerWorkflowPanel() {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
@@ -714,7 +714,7 @@ function ModeSelector({
             type="button"
             className={`rounded-lg border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
               selected
-                ? "border-staf bg-staf text-white shadow-sm"
+                ? "border-staf bg-staf text-white shadow-card"
                 : "border-slate-200 bg-white text-slate-700 hover:border-staf/30 hover:bg-slate-50"
             }`}
             onClick={() => onSelect(mode.id)}
@@ -761,7 +761,7 @@ function ModeReviewPanel({
   const Icon = guide.icon;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
       <p className="flex items-center gap-2 text-xs font-bold text-staf-dark">
         <Icon aria-hidden="true" className="h-4 w-4" />
         {guide.reviewName}
@@ -817,7 +817,7 @@ function StageMap({
   });
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-slate-950">ステージ選択</h2>
         <span className="text-xs font-semibold text-slate-400">{chapterCount}章×10問</span>
@@ -884,7 +884,7 @@ function AntennaGuildPanel({
   const nextMissionLesson = rfQuestLessons.find((lesson) => lesson.id === nextMission.lessonId);
 
   return (
-    <section className="rounded-lg border border-staf/20 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-staf/20 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
@@ -1036,7 +1036,7 @@ function LessonBattle({
   const reviewSummary = lessonReviewSummary(lesson);
 
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-slate-400">
@@ -1268,7 +1268,7 @@ function CertificateView({
   }).format(new Date(certificate.issuedAt));
 
   return (
-    <section className={`${printTarget ? "rf-certificate-print" : ""} rounded-lg border-4 border-staf bg-white p-8 text-center shadow-sm`}>
+    <section className={`${printTarget ? "rf-certificate-print" : ""} rounded-lg border-4 border-staf bg-white p-8 text-center shadow-card`}>
       <p className="text-xs font-bold uppercase tracking-[0.32em] text-staf-dark">RF Learning Quest</p>
       <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">修了証明書</h2>
       <p className="mt-5 text-sm font-semibold text-slate-500">Certificate of Completion</p>
@@ -1353,7 +1353,7 @@ function CertificationPanel({
   const modeNotice = notice?.mode === mode.id ? notice : null;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
@@ -1921,7 +1921,7 @@ export function RfLearningQuestClient() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-card">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
             <p className="flex items-center gap-2 text-sm font-semibold text-staf-dark">

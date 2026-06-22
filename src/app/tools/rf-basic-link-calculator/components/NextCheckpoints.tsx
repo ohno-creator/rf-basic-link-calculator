@@ -17,7 +17,7 @@ const checkpoints = [
 
 export function NextCheckpoints() {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <h3 className="text-base font-semibold text-slate-950">次に確認すること</h3>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {checkpoints.map((checkpoint) => (

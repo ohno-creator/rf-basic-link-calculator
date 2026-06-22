@@ -137,7 +137,7 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
           <article
             key={row.model}
             className={`rounded-lg border p-4 ${
-              row.active ? "border-staf bg-staf/5 shadow-sm" : "border-slate-200 bg-white"
+              row.active ? "border-staf bg-staf/5 shadow-card" : "border-slate-200 bg-white"
             }`}
           >
             <div className="flex flex-wrap items-center justify-between gap-2">

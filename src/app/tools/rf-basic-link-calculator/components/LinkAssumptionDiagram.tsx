@@ -144,7 +144,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
     result.communicationMode === "gateway_to_low_height_terminal";
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-staf-dark">設定前提の2D図</p>

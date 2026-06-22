@@ -31,7 +31,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
         <div className="mt-7 flex flex-wrap gap-3">
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full bg-staf px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark"
+            className="inline-flex items-center gap-2 rounded-full bg-staf px-5 py-3 text-sm font-semibold text-white shadow-card transition hover:bg-staf-dark"
             onClick={onStart}
           >
             <PlayCircle aria-hidden="true" className="h-4 w-4" />

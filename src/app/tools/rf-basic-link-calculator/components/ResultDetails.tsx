@@ -92,7 +92,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
 
       <ResultTabs input={input} result={result} />
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h3 className="text-base font-semibold text-slate-950">主なリスク</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           {riskItems(input, result).map((risk) => (

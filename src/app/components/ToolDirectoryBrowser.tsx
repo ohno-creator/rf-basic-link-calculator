@@ -162,7 +162,7 @@ export function ToolDirectoryBrowser() {
                     <Link
                       key={tool.href}
                       href={tool.href}
-                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                      className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                     >
                       <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf-dark transition group-hover:bg-staf group-hover:text-white">
                         <Icon aria-hidden="true" className="h-5 w-5" />

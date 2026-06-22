@@ -48,7 +48,7 @@ export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
   ];
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-sm font-semibold text-staf-dark">結果の読み方</p>

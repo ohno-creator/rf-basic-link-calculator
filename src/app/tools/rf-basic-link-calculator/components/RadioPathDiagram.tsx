@@ -14,7 +14,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
       : `${input.distance} m`;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">経路図</p>

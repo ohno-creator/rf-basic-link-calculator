@@ -54,7 +54,7 @@ export function BeginnerRoadmap() {
           return (
             <article
               key={step.title}
-              className={`rounded-lg border p-4 shadow-sm ${step.tone}`}
+              className={`rounded-lg border p-4 shadow-card ${step.tone}`}
             >
               <Icon aria-hidden="true" className="h-7 w-7" />
               <h3 className="mt-3 text-base font-bold text-slate-950">{step.title}</h3>
