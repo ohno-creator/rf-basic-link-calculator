@@ -138,7 +138,10 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
   const fresnelRy = input.propagationModel === "two_ray" ? 54 : 38;
   const parameterRows = buildParameterRows(input, result);
   const cautionItems = buildCautionItems(input, result);
-  const showReflection = input.propagationModel === "two_ray" || result.communicationMode === "low_height_terminal_to_terminal";
+  const showReflection =
+    input.propagationModel === "two_ray" ||
+    result.communicationMode === "low_height_terminal_to_terminal" ||
+    result.communicationMode === "gateway_to_low_height_terminal";
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">

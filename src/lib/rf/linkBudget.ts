@@ -14,6 +14,7 @@ export type LinkType =
 
 export type CommunicationMode =
   | "high_base_station_to_iot_terminal"
+  | "gateway_to_low_height_terminal"
   | "low_height_terminal_to_terminal"
   | "custom";
 
@@ -134,7 +135,11 @@ export function getCommunicationMode(linkType: LinkType): CommunicationMode {
     return "high_base_station_to_iot_terminal";
   }
 
-  if (linkType === "terminal_to_terminal" || linkType === "gateway_to_low_height_terminal") {
+  if (linkType === "gateway_to_low_height_terminal") {
+    return "gateway_to_low_height_terminal";
+  }
+
+  if (linkType === "terminal_to_terminal") {
     return "low_height_terminal_to_terminal";
   }
 
@@ -471,40 +476,50 @@ function calculatePathLoss(
   };
 }
 
-function isHataRangeOutside(input: LinkBudgetInput, distanceKm: number): boolean {
+function getHataRangeIssueLabels(input: LinkBudgetInput, distanceKm: number): string[] {
+  const issues: string[] = [];
+
   if (
     input.propagationModel === "okumura_hata" ||
     (input.propagationModel === "iot_hata_calibrated" && input.frequencyMHz < 1500)
   ) {
-    return (
-      input.frequencyMHz < 150 ||
-      input.frequencyMHz > 1500 ||
-      distanceKm < 1 ||
-      distanceKm > 20 ||
-      input.txAntennaHeightM < 30 ||
-      input.txAntennaHeightM > 200 ||
-      input.rxAntennaHeightM < 1 ||
-      input.rxAntennaHeightM > 10
-    );
+    if (input.frequencyMHz < 150 || input.frequencyMHz > 1500) {
+      issues.push(`周波数 ${input.frequencyMHz.toFixed(0)}MHz（目安150〜1500MHz）`);
+    }
+    if (distanceKm < 1 || distanceKm > 20) {
+      issues.push(`通信距離 ${distanceKm.toFixed(distanceKm < 10 ? 2 : 1)}km（目安1〜20km）`);
+    }
+    if (input.txAntennaHeightM < 30 || input.txAntennaHeightM > 200) {
+      issues.push(`送信側空中線地上高 ${input.txAntennaHeightM.toFixed(1)}m（基地局高hbの目安30〜200m）`);
+    }
+    if (input.rxAntennaHeightM < 1 || input.rxAntennaHeightM > 10) {
+      issues.push(`受信側空中線地上高 ${input.rxAntennaHeightM.toFixed(1)}m（移動局高hmの目安1〜10m）`);
+    }
+
+    return issues;
   }
 
   if (
     input.propagationModel === "cost231_hata" ||
     (input.propagationModel === "iot_hata_calibrated" && input.frequencyMHz >= 1500)
   ) {
-    return (
-      input.frequencyMHz < 1500 ||
-      input.frequencyMHz > 2000 ||
-      distanceKm < 1 ||
-      distanceKm > 20 ||
-      input.txAntennaHeightM < 30 ||
-      input.txAntennaHeightM > 200 ||
-      input.rxAntennaHeightM < 1 ||
-      input.rxAntennaHeightM > 10
-    );
+    if (input.frequencyMHz < 1500 || input.frequencyMHz > 2000) {
+      issues.push(`周波数 ${input.frequencyMHz.toFixed(0)}MHz（COST231-Hataの目安1500〜2000MHz）`);
+    }
+    if (distanceKm < 1 || distanceKm > 20) {
+      issues.push(`通信距離 ${distanceKm.toFixed(distanceKm < 10 ? 2 : 1)}km（目安1〜20km）`);
+    }
+    if (input.txAntennaHeightM < 30 || input.txAntennaHeightM > 200) {
+      issues.push(`送信側空中線地上高 ${input.txAntennaHeightM.toFixed(1)}m（基地局高hbの目安30〜200m）`);
+    }
+    if (input.rxAntennaHeightM < 1 || input.rxAntennaHeightM > 10) {
+      issues.push(`受信側空中線地上高 ${input.rxAntennaHeightM.toFixed(1)}m（移動局高hmの目安1〜10m）`);
+    }
+
+    return issues;
   }
 
-  return false;
+  return issues;
 }
 
 function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): PropagationWarning[] {
@@ -513,11 +528,14 @@ function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): P
   const distanceM = distanceKm * 1000;
   const nearTerminalLossDb = calculateNearTerminalLossDb(input);
 
-  if (isHataFamily(input.propagationModel) && isHataRangeOutside(input, distanceKm)) {
+  const hataRangeIssueLabels = getHataRangeIssueLabels(input, distanceKm);
+
+  if (isHataFamily(input.propagationModel) && hataRangeIssueLabels.length > 0) {
     warnings.push({
       id: "hata-out-of-range",
-      message:
-        "注意：奥村・秦モデルは、主に高所基地局と移動局間の広域セルラー通信を想定した経験式です。現在の入力条件は、モデルの一般的な適用範囲外です。計算結果は参考値として扱い、通信可否判定にはリンクバジェット、端末近傍損失、実測補正を併用してください。"
+      message: `注意：奥村・秦モデルは、主に高所基地局と移動局間の広域セルラー通信を想定した経験式です。現在の入力条件は、モデルの一般的な適用範囲外です（${hataRangeIssueLabels.join(
+        "、"
+      )}）。計算結果は参考値として扱い、通信可否判定にはリンクバジェット、端末近傍損失、実測補正を併用してください。`
     });
   }
 
@@ -582,9 +600,18 @@ function buildPropagationWarnings(input: LinkBudgetInput, distanceKm: number): P
     });
   }
 
+  if (isHataFamily(input.propagationModel) && communicationMode === "gateway_to_low_height_terminal") {
+    warnings.push({
+      id: "low-gateway-hata",
+      message:
+        "注意：比較的低い位置のゲートウェイと低高度端末の通信では、奥村・秦モデルは主モデルとして推奨しません。この通信形態では、自由空間損失、2波モデル、Log-distanceモデル、実測補正モデルを中心に評価し、Hata系は参考値として扱ってください。"
+    });
+  }
+
   if (
     input.propagationModel === "free_space" &&
-    communicationMode === "low_height_terminal_to_terminal" &&
+    (communicationMode === "low_height_terminal_to_terminal" ||
+      communicationMode === "gateway_to_low_height_terminal") &&
     (input.txAntennaHeightM <= 2 || input.rxAntennaHeightM <= 2 || nearTerminalLossDb === 0)
   ) {
     warnings.push({

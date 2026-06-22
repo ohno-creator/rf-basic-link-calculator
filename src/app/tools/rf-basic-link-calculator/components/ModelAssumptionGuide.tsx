@@ -86,9 +86,17 @@ function selectedModeSummary(input: LinkBudgetInput) {
     };
   }
 
+  if (communicationMode === "gateway_to_low_height_terminal") {
+    return {
+      title: "ゲートウェイ → 低高度端末",
+      text:
+        "低い位置のゲートウェイでは、地面反射、フレネルゾーン欠損、周辺遮蔽物、アンテナ高の影響が大きくなります。自由空間、2波、Log-distance、実測補正を主に見て、Hata系は参考値として扱います。"
+    };
+  }
+
   if (communicationMode === "low_height_terminal_to_terminal") {
     return {
-      title: "低高度端末を含む通信",
+      title: "低高度端末 ↔ 低高度端末",
       text:
         "地面反射、フレネルゾーン欠損、アンテナ高、周辺遮蔽物の影響が支配的です。自由空間、2波、Log-distance、実測補正を主に見て、Hata系は参考値として扱います。"
     };

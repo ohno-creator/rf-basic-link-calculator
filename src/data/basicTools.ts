@@ -67,6 +67,16 @@ export const basicTools: BasicToolMeta[] = [
     canonical: `${SITE_TOOLS}/propagation-loss`
   },
   {
+    slug: "ncu-below-ground",
+    title: "GL以下NCU・水道BOX診断",
+    metaTitle: "GL以下NCU・水道BOX通信診断｜地下・メーターボックス内端末の追加損失を評価",
+    description:
+      "水道BOX、メーターボックス、マンホール、地下ピット内のNCU端末について、地上側伝搬と蓋・BOX・水分・アンテナ位置による追加損失を分けて、通信余裕をレンジで簡易評価します。",
+    formula: "受信電力 = 送信電力 + 利得 − 地上側伝搬損失 − BOX追加損失 ± 実測補正",
+    essenceLead: "GL以下の端末は、アンテナ高をマイナスにせず、蓋・BOX・水分・配置の追加損失として分けて評価します。",
+    canonical: `${SITE_TOOLS}/ncu-below-ground`
+  },
+  {
     slug: "frequency-wavelength",
     title: "周波数・波長",
     metaTitle: "周波数・波長 計算ツール｜λ・λ/2・λ/4 とアンテナサイズ",

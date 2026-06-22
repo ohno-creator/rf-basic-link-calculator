@@ -167,6 +167,10 @@ function modeDescription(input: LinkBudgetInput): string {
     return "携帯基地局や高所基地局と、地上近傍に設置されたIoT端末との通信を評価するモードです。奥村・秦モデルやCOST231-Hataモデルは、基地局から端末までの広域平均伝搬損失の参考値として利用できます。ただし、端末側が地上近傍にある場合は、地面反射、筐体、車両・人体遮蔽、設置方向などの影響が大きくなるため、端末近傍損失を別途加算して評価します。";
   }
 
+  if (mode === "gateway_to_low_height_terminal") {
+    return "比較的低い位置に設置されたゲートウェイと、地上近傍端末との通信を評価するモードです。地面反射、フレネルゾーン欠損、設置高さ、周辺遮蔽物の影響が大きくなるため、自由空間損失、2波モデル、Log-distanceモデル、実測補正モデルを中心に評価します。奥村・秦モデルは主モデルではなく参考値として扱います。";
+  }
+
   if (mode === "low_height_terminal_to_terminal") {
     return "送信機・受信機の双方が地上近傍にある通信を評価するモードです。低高度端末同士の通信では、地面反射、フレネルゾーン欠損、設置高さ、周辺遮蔽物の影響が大きくなります。そのため、奥村・秦モデルは主モデルとして使用せず、自由空間損失、2波モデル、Log-distanceモデル、実測補正モデルを中心に評価します。";
   }
@@ -320,7 +324,9 @@ function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
   const model = getPropagationModelOption(input.propagationModel);
   const distanceKm = normalizeDistanceKm(input.distance, input.distanceUnit);
   const nearLossDb = calculateNearTerminalLossDb(input);
-  const isLowTerminalPair = getCommunicationMode(input.linkType) === "low_height_terminal_to_terminal";
+  const communicationMode = getCommunicationMode(input.linkType);
+  const isLowTerminalPair = communicationMode === "low_height_terminal_to_terminal";
+  const isLowGatewayLink = communicationMode === "gateway_to_low_height_terminal";
   const lossBucketRows = [
     {
       label: "環境損失",
@@ -368,6 +374,11 @@ function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
             {isLowTerminalPair && isHataFamily(input.propagationModel) ? (
               <p className="rounded-md border border-amber-200 bg-amber-50 p-2 font-semibold text-amber-900">
                 低高度端末同士でHata系を選んでいます。結果は比較値として扱い、2波、Log-distance、実測補正を主に見てください。
+              </p>
+            ) : null}
+            {isLowGatewayLink && isHataFamily(input.propagationModel) ? (
+              <p className="rounded-md border border-amber-200 bg-amber-50 p-2 font-semibold text-amber-900">
+                低い位置のゲートウェイと低高度端末でHata系を選んでいます。結果は比較値として扱い、2波、Log-distance、実測補正を主に見てください。
               </p>
             ) : null}
           </div>

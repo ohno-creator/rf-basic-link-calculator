@@ -49,6 +49,13 @@ export const toolDirectory: DirectoryTool[] = [
     category: "link"
   },
   {
+    href: "/tools/ncu-below-ground",
+    name: "GL以下NCU・水道BOX診断",
+    tagline: "地下・BOX内端末の追加損失を分解",
+    icon: "box",
+    category: "link"
+  },
+  {
     href: "/tools/rf-learning-quest",
     name: "RF学習クエスト",
     tagline: "700問のアンテナ設計RPG",

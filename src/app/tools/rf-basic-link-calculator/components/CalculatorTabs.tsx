@@ -28,6 +28,7 @@ type CalculatorTabsProps = {
 const RESULT_ANCHOR_ID = "link-budget-result";
 
 const relatedTools = [
+  { href: "/tools/ncu-below-ground", label: "GL以下NCU診断" },
   { href: "/tools/frequency-wavelength", label: "周波数・波長" },
   { href: "/tools/dbm-converter", label: "dBm 変換" },
   { href: "/tools/free-space-loss", label: "自由空間損失" }

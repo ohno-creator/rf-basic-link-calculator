@@ -86,6 +86,41 @@ describe("link budget calculations", () => {
     expect(result.warnings.some((warning) => warning.id === "hata-out-of-range")).toBe(true);
   });
 
+  it("does not show the Hata out-of-range warning when Hata inputs are inside the general range", () => {
+    const result = calculateLinkBudget({
+      ...baseInput,
+      linkType: "cellular_base_station_to_iot_terminal",
+      propagationModel: "okumura_hata",
+      frequencyMHz: 920,
+      distance: 1,
+      distanceUnit: "km",
+      txAntennaHeightM: 30,
+      rxAntennaHeightM: 1.5
+    });
+
+    expect(result.warnings.some((warning) => warning.id === "hata-out-of-range")).toBe(false);
+    expect(result.warnings.some((warning) => warning.id === "low-terminal-near-base")).toBe(true);
+  });
+
+  it("uses a gateway-specific Hata warning and reports the range issue details", () => {
+    const result = calculateLinkBudget({
+      ...baseInput,
+      linkType: "gateway_to_low_height_terminal",
+      propagationModel: "okumura_hata",
+      frequencyMHz: 920,
+      distance: 1,
+      distanceUnit: "km",
+      txAntennaHeightM: 10,
+      rxAntennaHeightM: 1.5
+    });
+    const rangeWarning = result.warnings.find((warning) => warning.id === "hata-out-of-range");
+
+    expect(result.communicationMode).toBe("gateway_to_low_height_terminal");
+    expect(rangeWarning?.message).toContain("送信側空中線地上高 10.0m");
+    expect(result.warnings.some((warning) => warning.id === "low-gateway-hata")).toBe(true);
+    expect(result.warnings.some((warning) => warning.id === "low-terminal-hata")).toBe(false);
+  });
+
   it("warns when two-ray is used before the breakpoint", () => {
     const result = calculateLinkBudget({
       ...baseInput,

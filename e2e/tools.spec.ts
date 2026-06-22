@@ -6,6 +6,7 @@ const ALL_SLUGS = [
   "free-space-loss",
   "fresnel-zone",
   "propagation-loss",
+  "ncu-below-ground",
   "rf-learning-quest",
   "frequency-wavelength",
   "dbm-converter",
@@ -35,6 +36,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
     { slug: "propagation-loss", h1: "伝搬損失モデル比較", fig: "現在距離" },
+    { slug: "ncu-below-ground", h1: "GL以下NCU・水道BOX診断", fig: "NCUが地面より下にある場合" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
@@ -92,13 +94,19 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
 
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#propagationModel").selectOption("okumura_hata");
-
-  await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではありません")).toBeVisible();
-  await expect(page.getByText(/送信側アンテナ高 .*基地局高 hb/).first()).toBeVisible();
   await expect(page.locator("#propagationArea")).toBeVisible();
+
+  await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではなく、入力パラメータです")).toBeVisible();
+  await expect(page.getByText(/送信側 空中線地上高 .*基地局高 hb/).first()).toBeVisible();
+  await expect(page.getByText(/送信側空中線地上高 10\.0m/).first()).toBeVisible();
+  await expect(page.getByText(/低い位置のゲートウェイと低高度端末/).first()).toBeVisible();
   await page.locator("#propagationArea").selectOption("open");
   await expect(page.getByText("遮蔽物の少ない開放地として評価します。")).toBeVisible();
+  await page.locator('input[name="linkType"][value="cellular_base_station_to_iot_terminal"]').check({ force: true });
+  await page.locator("#txAntennaHeightM").fill("30");
+  await expect(page.getByText(/現在の入力条件は、モデルの一般的な適用範囲外/)).not.toBeVisible();
   await expect(page.getByRole("button", { name: "送信側アンテナ高を確認" })).toBeVisible();
 });
 
@@ -121,9 +129,10 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
 
 test("RF calculator diagrams show the two-ray interference lab synced with inputs", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
-  await page.getByRole("spinbutton", { name: "周波数" }).fill("1500");
-  await page.getByRole("spinbutton", { name: "送信側アンテナ高" }).fill("20");
-  await page.getByRole("spinbutton", { name: "受信側アンテナ高" }).fill("2");
+  await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
+  await page.locator("#frequencyMHz").fill("1500");
+  await page.locator("#txAntennaHeightM").fill("20");
+  await page.locator("#rxAntennaHeightM").fill("2");
   await page.getByRole("tab", { name: /図解で詳しく/ }).click();
 
   await expect(page.getByText("2波モデル実験室：干渉で波打つ様子を見る")).toBeVisible();
@@ -149,6 +158,66 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 
   await page.getByRole("spinbutton", { name: "実測補正値" }).fill("5");
   await expect(page.getByText("実測補正値との二重計上を確認してください")).toBeVisible();
+});
+
+test("NCU below-ground page updates warnings and diagram from BOX conditions", async ({ page }) => {
+  await page.goto("/tools/ncu-below-ground/");
+
+  await expect(page.getByRole("tab", { name: /現場前に見積もる/ })).toBeVisible();
+  await expect(page.getByText("迷わない入力順")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "NCUが地面より下にある場合の設定パラメータ図" })).toBeVisible();
+  await expect(page.getByText("設定サマリ")).toBeVisible();
+  await expect(page.getByText("GL以下のNCUは、奥村・秦モデルや2波モデルのアンテナ高にマイナス値")).toBeVisible();
+  await expect(page.getByText("リンクマージンレンジ")).toBeVisible();
+
+  await page.locator("#ncu-frequencyMHz").fill("915");
+  await page.locator("#ncu-distance").fill("600");
+  await page.locator("#ncu-coverMaterial").selectOption("cast_iron");
+  await page.locator("#ncu-moisture").selectOption("standing_water");
+  await page.locator("#ncu-depth").fill("1.2");
+  await page.locator("#ncu-opening").selectOption("metal_frame");
+  await page.locator("#ncu-surfaceObstruction").selectOption("parked_vehicle");
+
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("915 MHz");
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("600 m");
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("鋳鉄蓋 / 22.0dB");
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("水が溜まる / 20.0dB");
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("金属枠が強い / 18.0dB");
+  await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("駐車車両で覆われる / 20.0dB");
+  await expect(page.getByText("金属蓋は強い遮蔽")).toBeVisible();
+  await expect(page.getByText("GL下深さが1m以上")).toBeVisible();
+  await expect(page.getByText("GL下 1.20m")).toBeVisible();
+  await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
+});
+
+test("NCU field analysis ranks causes from measurement deltas", async ({ page }) => {
+  await page.goto("/tools/ncu-below-ground/");
+
+  await page.getByRole("tab", { name: /現場で原因を追い込む/ }).click();
+  await expect(page.getByTestId("ncu-field-analysis")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "現場RSSI/RSRPから原因を追い込む" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "RSRQ・SNRなど通信品質指標の簡易診断" })).toBeVisible();
+
+  await page.locator("#field-outsideBoxDbm").fill("-90");
+  await page.locator("#field-boxOpenDbm").fill("-98");
+  await page.locator("#field-boxClosedDryDbm").fill("-122");
+  await page.locator("#field-boxClosedWetDbm").fill("-128");
+  await page.locator("#field-vehicleCoveredDbm").fill("-136");
+
+  await expect(page.getByText("#1 主因級").first()).toBeVisible();
+  await expect(page.getByText("蓋・金属枠").first()).toBeVisible();
+  await expect(page.getByText("実測補正値に反映")).toBeVisible();
+  await page.getByRole("button", { name: /実測補正値に反映/ }).click();
+  await expect(page.locator("#ncu-measuredCorrection")).not.toHaveValue("0");
+
+  await page.locator("#metric-rsrpDbm").fill("-91");
+  await page.locator("#metric-rsrqDb").fill("-18");
+  await page.locator("#metric-sinrDb").fill("-3");
+  await page.locator("#metric-packetSuccessPercent").fill("97");
+  await page.locator("#metric-retryCount").fill("1");
+  await expect(page.getByText("品質・干渉側が主因候補です")).toBeVisible();
+  await expect(page.getByText("RSRQ").first()).toBeVisible();
+  await expect(page.getByText("要対策").first()).toBeVisible();
 });
 
 test("microstrip impedance reacts to trace width", async ({ page }) => {

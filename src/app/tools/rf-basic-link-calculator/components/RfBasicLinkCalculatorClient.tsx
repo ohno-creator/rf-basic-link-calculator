@@ -27,6 +27,7 @@ import { SeoLinks } from "./SeoLinks";
 
 export function RfBasicLinkCalculatorClient() {
   const [input, setInput] = useState(defaultLinkBudgetInput);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [shareState, setShareState] = useState<"idle" | "copied" | "error">("idle");
   const calculatorRef = useRef<HTMLDivElement | null>(null);
   const presetRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +60,7 @@ export function RfBasicLinkCalculatorClient() {
     if (fromQuery) {
       setInput(fromQuery);
       hydratedRef.current = true;
+      setIsHydrated(true);
       scrollToCalculator();
       return;
     }
@@ -68,6 +70,7 @@ export function RfBasicLinkCalculatorClient() {
       setInput(stored);
     }
     hydratedRef.current = true;
+    setIsHydrated(true);
   }, []);
 
   // 入力が変わるたびにlocalStorageとURLへ反映する（共有・リロード復元のため）。
@@ -131,7 +134,7 @@ export function RfBasicLinkCalculatorClient() {
       <div ref={presetRef}>
         <QuickStartPresets onSelect={selectPreset} />
       </div>
-      <div ref={calculatorRef}>
+      <div ref={calculatorRef} data-testid="rf-calculator-shell" data-hydrated={isHydrated ? "true" : "false"}>
         <CalculatorTabs
           input={input}
           onInputChange={setInput}

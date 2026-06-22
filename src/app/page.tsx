@@ -4,6 +4,7 @@ import {
   Activity,
   ArrowUpRight,
   BookOpenCheck,
+  Box,
   Building2,
   Cable,
   CircuitBoard,
@@ -38,7 +39,8 @@ const iconMap: Record<string, LucideIcon> = {
   ruler: Ruler,
   activity: Activity,
   cable: Cable,
-  circuit: CircuitBoard
+  circuit: CircuitBoard,
+  box: Box
 };
 
 export default function HomePage() {
