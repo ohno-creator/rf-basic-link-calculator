@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { NcuBudgetWaterfall } from "./NcuBudgetWaterfall";
 import {
   AlertTriangle,
@@ -207,22 +207,53 @@ function formatDistance(distanceM: number) {
   return `${distanceM.toFixed(distanceM >= 100 ? 0 : 1)} m`;
 }
 
-// ネイティブの title は表示が遅く出ないことがあるため、ホバー／フォーカスで確実に出る
-// スタイル付きツールチップにする（title も残してフォールバックにする）。
+// ヘルプのツールチップ。デスクトップはホバー/フォーカス、タッチ端末はタップで開閉。
+// タッチターゲットを実質40px以上に拡張し、aria-describedbyで本文をSRに渡す。
 function FieldHint({ text }: { text: string }) {
+  const [open, setOpen] = useState(false);
+  const tooltipId = useId();
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+    const onPointer = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", onPointer);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onPointer);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
   return (
-    <span className="group/hint relative inline-flex align-middle">
+    <span ref={ref} className="group/hint relative inline-flex align-middle">
       <button
         type="button"
-        aria-label={`説明: ${text}`}
-        title={text}
-        className="inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full border border-sky-300 bg-sky-50 text-[11px] font-bold text-sky-700 transition hover:bg-sky-100 hover:text-sky-900 focus:outline-none focus:ring-2 focus:ring-sky-300"
+        aria-label="説明を表示"
+        aria-describedby={tooltipId}
+        aria-expanded={open}
+        onClick={() => setOpen((value) => !value)}
+        className="relative inline-flex h-5 w-5 cursor-help items-center justify-center rounded-full border border-sky-300 bg-sky-50 text-[11px] font-bold text-sky-700 transition before:absolute before:-inset-2.5 before:content-[''] hover:bg-sky-100 hover:text-sky-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
       >
         ?
       </button>
       <span
+        id={tooltipId}
         role="tooltip"
-        className="pointer-events-none absolute left-1/2 top-full z-50 mt-2 hidden w-64 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-left text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl group-hover/hint:block group-focus-within/hint:block sm:w-72"
+        className={`pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-left text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl group-hover/hint:block group-focus-within/hint:block sm:w-72 ${
+          open ? "block" : "hidden"
+        }`}
       >
         {text}
       </span>
@@ -1771,17 +1802,16 @@ function PurposeSwitch({
 }) {
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-2 shadow-sm">
-      <div className="grid gap-2 md:grid-cols-2" role="tablist" aria-label="GL以下NCU診断の目的">
+      <div className="grid gap-2 md:grid-cols-2" role="group" aria-label="GL以下NCU診断の目的">
         {purposeCards.map((card) => {
           const selected = activeMode === card.id;
           return (
             <button
               key={card.id}
               type="button"
-              role="tab"
-              aria-selected={selected}
+              aria-pressed={selected}
               title={card.description}
-              className={`rounded-md p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/20 ${
+              className={`rounded-md p-4 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
                 selected ? "bg-staf text-white shadow-sm" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
               }`}
               onClick={() => onChange(card.id)}
