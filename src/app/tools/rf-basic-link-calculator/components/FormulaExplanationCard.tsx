@@ -21,7 +21,7 @@ export function FormulaExplanationCard({
         </pre>
         <div className="mt-3">{children}</div>
       </Accordion>
-      <a className="text-sm font-semibold text-staf hover:text-staf-dark" href={COLUMN_URL}>
+      <a className="text-sm font-semibold text-staf-dark hover:text-staf-dark" href={COLUMN_URL}>
         この計算の詳しい解説を読む
       </a>
     </div>

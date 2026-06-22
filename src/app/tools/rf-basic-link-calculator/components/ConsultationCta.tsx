@@ -48,7 +48,7 @@ export function ConsultationCta({
           {input && result ? (
             <button
               type="button"
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-staf bg-white px-4 py-3 text-sm font-semibold text-staf transition hover:bg-white/70"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-staf bg-white px-4 py-3 text-sm font-semibold text-staf-dark transition hover:bg-white/70"
               onClick={handleCopy}
             >
               <Clipboard aria-hidden="true" className="h-4 w-4" />

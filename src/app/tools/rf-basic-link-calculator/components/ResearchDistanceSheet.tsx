@@ -349,7 +349,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-md border border-staf/30 bg-staf-light px-3 py-2 text-sm font-semibold text-staf transition hover:bg-staf/10 focus:outline-none focus:ring-2 focus:ring-staf/25"
+            className="inline-flex items-center gap-2 rounded-md border border-staf/30 bg-staf-light px-3 py-2 text-sm font-semibold text-staf-dark transition hover:bg-staf/10 focus:outline-none focus:ring-2 focus:ring-staf/25"
             onClick={copyMainConditions}
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
@@ -761,37 +761,37 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               <div className="flex flex-wrap gap-2 pt-1">
                 <a
                   href="https://www.3gpp.org/ftp/Specs/archive/38_series/38.901/38901-j20.zip"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   3GPP TR 38.901 Release 19
                 </a>
                 <a
                   href="https://arxiv.org/abs/2507.19266"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   Rel-19概要論文
                 </a>
                 <a
                   href="https://arxiv.org/abs/2603.25927"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   7〜24GHz測定・フィット資料
                 </a>
                 <a
                   href="https://arxiv.org/abs/1708.02557"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   IEEE TAP mmWave伝搬モデル概説
                 </a>
                 <a
                   href="https://arxiv.org/abs/2407.16528"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   5G工場RT/3GPP比較
                 </a>
                 <a
                   href="https://arxiv.org/abs/2110.01848"
-                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf transition hover:border-staf/40"
+                  className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-staf-dark transition hover:border-staf/40"
                 >
                   CNN伝搬推定
                 </a>

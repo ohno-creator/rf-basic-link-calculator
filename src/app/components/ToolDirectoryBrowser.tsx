@@ -164,7 +164,7 @@ export function ToolDirectoryBrowser() {
                       href={tool.href}
                       className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-lg hover:shadow-slate-200/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf transition group-hover:bg-staf group-hover:text-white">
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf-dark transition group-hover:bg-staf group-hover:text-white">
                         <Icon aria-hidden="true" className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
@@ -172,7 +172,7 @@ export function ToolDirectoryBrowser() {
                           {tool.name}
                           <ArrowUpRight
                             aria-hidden="true"
-                            className="h-4 w-4 shrink-0 text-staf opacity-0 transition group-hover:opacity-100"
+                            className="h-4 w-4 shrink-0 text-staf-dark opacity-0 transition group-hover:opacity-100"
                           />
                         </span>
                         <span className="mt-1.5 block text-sm leading-relaxed text-slate-600">{tool.tagline}</span>

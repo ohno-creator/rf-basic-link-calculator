@@ -94,7 +94,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         </div>
 
         <p className="mt-6 text-sm">
-          <a className="font-semibold text-staf hover:text-staf-dark" href={COLUMN_URL}>
+          <a className="font-semibold text-staf-dark hover:text-staf-dark" href={COLUMN_URL}>
             アンテナ・無線設計の詳しい解説コラムを読む
           </a>
         </p>

@@ -25,7 +25,7 @@ export const referenceCables: ReferenceCable[] = [
 
 /**
  * 標準品（変換・延長用）同軸ケーブルの挿入損失 実測値。
- * 測定：スタッフ株式会社、100〜9000MHz の S12（マーカー読み値）、2026/5/11。
+ * 測定：スタッフ株式会社、500〜8000MHz の S12（マーカー読み値）、2026/5/11。
  */
 export const cableAssemblies: CableAssembly[] = [
   {

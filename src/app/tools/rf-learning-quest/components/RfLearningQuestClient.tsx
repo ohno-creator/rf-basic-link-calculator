@@ -966,7 +966,7 @@ function AntennaGuildPanel({
           {nextMissionLesson ? (
             <button
               type="button"
-              className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-xs font-bold text-staf transition hover:bg-staf-light"
+              className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-xs font-bold text-staf-dark transition hover:bg-staf-light"
               onClick={() => onJump(nextMissionLesson)}
             >
               次の課題へ
@@ -981,7 +981,7 @@ function AntennaGuildPanel({
           <a
             key={link.href}
             href={link.href}
-            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-staf transition hover:border-staf/40 hover:bg-staf-light"
+            className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-staf-dark transition hover:border-staf/40 hover:bg-staf-light"
           >
             {link.label}
             <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />
@@ -1191,7 +1191,7 @@ function LessonBattle({
               </p>
               <button
                 type="button"
-                className="mt-2 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-sm font-bold text-staf transition hover:bg-staf-light"
+                className="mt-2 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-sm font-bold text-staf-dark transition hover:bg-staf-light"
                 onClick={onNext}
               >
                 次の問題へ
@@ -1219,7 +1219,7 @@ function LessonBattle({
                   <a
                     key={source.href}
                     href={source.href}
-                    className="rounded-full border border-slate-200 px-2.5 py-1 text-xs font-bold text-staf transition hover:border-staf/40"
+                    className="rounded-full border border-slate-200 px-2.5 py-1 text-xs font-bold text-staf-dark transition hover:border-staf/40"
                   >
                     {source.label}
                   </a>
@@ -1239,7 +1239,7 @@ function LessonBattle({
                   <a
                     key={link.href}
                     href={link.href}
-                    className="inline-flex items-center gap-1 rounded-full border border-staf/25 bg-white px-2.5 py-1 text-xs font-bold text-staf transition hover:bg-white/70"
+                    className="inline-flex items-center gap-1 rounded-full border border-staf/25 bg-white px-2.5 py-1 text-xs font-bold text-staf-dark transition hover:bg-white/70"
                   >
                     {link.label}
                     <ExternalLink aria-hidden="true" className="h-3.5 w-3.5" />

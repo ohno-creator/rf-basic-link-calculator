@@ -61,7 +61,7 @@ export default function RfLearningQuestPage() {
               <a
                 key={link.href}
                 href={link.href}
-                className="rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-bold text-staf transition hover:border-staf/40 hover:bg-staf-light"
+                className="rounded-md border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-bold text-staf-dark transition hover:border-staf/40 hover:bg-staf-light"
               >
                 {link.label}
               </a>
