@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ButtonLink } from "@/components/Button";
 import { COLUMN_URL, CONTACT_URL } from "@/lib/rf/presets";
 import { toolCategories, toolDirectory } from "@/data/toolDirectory";
 
@@ -20,18 +21,12 @@ export function Footer() {
               IoTアンテナ、LTE/LPWA/5G/Wi-Fi/BLE向けアンテナ、小型内蔵アンテナ、FPC/SMDアンテナ、宇宙用パッチアンテナ、ヒンジ・機構部品の技術支援を行います。
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
-              <a
-                href={CONTACT_URL}
-                className="rounded-md bg-staf px-4 py-2 text-sm font-semibold text-white transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-              >
+              <ButtonLink href={CONTACT_URL} variant="primary" size="sm">
                 お問い合わせ
-              </a>
-              <a
-                href={COLUMN_URL}
-                className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-              >
+              </ButtonLink>
+              <ButtonLink href={COLUMN_URL} variant="secondary" size="sm">
                 解説コラム
-              </a>
+              </ButtonLink>
             </div>
           </div>
 

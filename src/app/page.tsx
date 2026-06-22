@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
+import { ButtonLink, buttonClasses } from "@/components/Button";
 import { ToolLayout } from "@/components/ToolLayout";
 import { CONTACT_URL } from "@/lib/rf/presets";
 import { toolDirectory } from "@/data/toolDirectory";
@@ -26,17 +26,11 @@ export default function HomePage() {
           周波数、損失、整合、伝搬。よく使う基礎計算を、1ツール1ページで。入力すると、その場で図と意味がわかります。
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-3">
-          <Link
-            href="/tools/rf-basic-link-calculator"
-            className="inline-flex items-center gap-2 rounded-full bg-staf px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-          >
+          <ButtonLink href="/tools/rf-basic-link-calculator" variant="primary">
             リンクバジェット診断をはじめる
             <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-          </Link>
-          <a
-            href="#tools"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-          >
+          </ButtonLink>
+          <a href="#tools" className={buttonClasses("secondary")}>
             全{toolDirectory.length}ツールを見る
           </a>
         </div>
@@ -53,13 +47,10 @@ export default function HomePage() {
             <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500">
               計算は初期検討の目安です。筐体・基板GND・設置環境を含む実機評価は、スタッフ株式会社にご相談ください。
             </p>
-            <a
-              className="mt-5 inline-flex items-center gap-2 rounded-full bg-staf px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-              href={CONTACT_URL}
-            >
+            <ButtonLink href={CONTACT_URL} variant="primary" className="mt-5">
               相談する
               <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-            </a>
+            </ButtonLink>
           </div>
         </section>
       </div>
