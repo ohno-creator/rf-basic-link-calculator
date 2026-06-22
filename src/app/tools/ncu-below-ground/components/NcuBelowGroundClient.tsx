@@ -2079,7 +2079,21 @@ export function NcuBelowGroundClient() {
                   type="button"
                   title={`${preset.description}｜${preset.operatorHint} クリックすると、この典型条件が各入力欄に一括セットされます（あとから個別に微調整できます）。`}
                   className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-staf/50 hover:bg-white"
-                  onClick={() => setInput((current) => ({ ...current, ...preset.values }))}
+                  onClick={() =>
+                    // プリセットは「既定値 → プリセット」で適用し、順番に依存しない確定状態にする。
+                    // 通信モジュール/アンテナのスペックは現場条件プリセットでは変えず、現在値を保持する。
+                    setInput((current) => ({
+                      ...defaultNcuBelowGroundInput,
+                      ...preset.values,
+                      system: current.system,
+                      frequencyMHz: current.frequencyMHz,
+                      txPowerDbm: current.txPowerDbm,
+                      gatewayAntennaGainDbi: current.gatewayAntennaGainDbi,
+                      ncuAntennaGainDbi: current.ncuAntennaGainDbi,
+                      receiverSensitivityDbm: current.receiverSensitivityDbm,
+                      cableLossDb: current.cableLossDb
+                    }))
+                  }
                 >
                   <span className="inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-staf-dark">
                     {preset.category}
