@@ -620,7 +620,7 @@ const introQuestLessons: QuestLesson[] = introTermSeeds.slice(0, 200).map((seed,
     mode: "intro",
     stage: index + 1,
     title: seed.title,
-    enemy: `${index % 10 === 9 ? "用語ボス" : "用語スライム"}：${seed.title}`,
+    enemy: `${index % 10 === 9 ? "章末用語レビュー" : "用語確認レビュー"}：${seed.title}`,
     reward: `${seed.title}の言葉カード`,
     question: seed.prompt,
     choices: [seed.correct, ...seed.wrong],
@@ -1544,12 +1544,12 @@ function q(
 }
 
 const enemyPrefixes: Record<QuestModeId, string[]> = {
-  intro: ["用語の村", "単位の道場", "アンテナ広場", "整合の工房", "受信指標の酒場", "伝搬の森", "IoT通信の港", "測定の書庫", "研究語の塔", "現場用語の城"],
-  beginner: ["単位の小部屋", "距離の草原", "アンテナ工房", "判定の広場", "掲示板の酒場", "SWRの橋", "設置あるある横丁", "LoRa小径", "測定メモの広場", "誤解退治の門"],
-  apprentice: ["反射洞窟", "近傍損失の沼", "実測の祠", "設置ばらつきの谷", "多重波の水路", "フレネル峠", "筐体実装の工房", "RSSI観測所", "整合と給電線の橋", "現場判断の門"],
-  practitioner: ["モデル選択の砦", "Hata審問室", "信頼率の城壁", "校正の作戦室", "損失仕分け所", "規格と法規の門", "品質指標の広場", "実測計画の幕舎", "説明責任の書庫", "設計レビューの間"],
-  expert: ["基地局設計の迷宮", "都市街路の屋根上", "GISの地図塔", "容量干渉の戦場", "アンテナ方位の塔", "ドライブテスト街道", "アップリンクの要塞", "MIMO散乱の庭", "運用最適化の城", "玄人豆知識の間"],
-  researcher: ["測定論文の書庫", "環境特徴量の研究棟", "残差分布の実験室", "標準化会議の塔", "再現性の図書館", "LoRa測定の温室", "統計検証の天文台", "地理データの鉱山", "6Gチャネルの回廊", "研究者トリビアの塔"]
+  intro: ["用語レビュー", "単位レビュー", "アンテナ構造レビュー", "整合レビュー", "受信指標レビュー", "伝搬用語レビュー", "IoT通信レビュー", "測定用語レビュー", "研究用語レビュー", "現場用語レビュー"],
+  beginner: ["単位レビュー", "距離レビュー", "アンテナ利得レビュー", "判定レビュー", "質問整理レビュー", "SWRレビュー", "設置条件レビュー", "LoRa基礎レビュー", "測定メモレビュー", "誤解防止レビュー"],
+  apprentice: ["反射レビュー", "近傍損失レビュー", "実測補正レビュー", "設置ばらつきレビュー", "多重波レビュー", "フレネルレビュー", "筐体実装レビュー", "RSSI観測レビュー", "整合と給電線レビュー", "現場判断レビュー"],
+  practitioner: ["モデル選択レビュー", "Hata適用範囲レビュー", "信頼率レビュー", "校正レビュー", "損失仕分けレビュー", "規格と法規レビュー", "品質指標レビュー", "実測計画レビュー", "説明責任レビュー", "設計レビュー"],
+  expert: ["基地局設計レビュー", "都市街路レビュー", "GISレビュー", "容量干渉レビュー", "アンテナ方位レビュー", "ドライブテストレビュー", "アップリンクレビュー", "MIMO散乱レビュー", "運用最適化レビュー", "玄人知識レビュー"],
+  researcher: ["測定論文レビュー", "環境特徴量レビュー", "残差分布レビュー", "標準化レビュー", "再現性レビュー", "LoRa測定レビュー", "統計検証レビュー", "地理データレビュー", "6Gチャネルレビュー", "研究知識レビュー"]
 };
 
 const defaultColumns: Record<QuestModeId, string> = {
@@ -1571,7 +1571,7 @@ function makeExpansionLessons(mode: QuestModeId, seeds: QuestExpansionSeed[], st
   return seeds.map((seed, index) => {
     const stage = startStage + index;
     const chapterIndex = Math.floor((stage - 1) / 10);
-    const boss = stage % 10 === 0 ? "章ボス" : enemyPrefixes[mode][chapterIndex] ?? "クエスト";
+    const boss = stage % 10 === 0 ? "章末レビュー" : enemyPrefixes[mode][chapterIndex] ?? "クエスト";
 
     return lesson({
       id: `${mode}-${seed.slug}`,

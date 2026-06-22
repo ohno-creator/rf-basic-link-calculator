@@ -3,25 +3,41 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
+  Antenna,
   ArrowRight,
   Award,
   BookOpen,
   CheckCircle2,
   CircleHelp,
+  ClipboardCheck,
+  ClipboardList,
+  ClipboardPenLine,
+  Compass,
   Crown,
   ExternalLink,
+  Factory,
   FileDown,
   FlaskConical,
   Gauge,
+  MapPinned,
+  Microscope,
+  NotebookText,
+  PencilRuler,
   Radio,
   RefreshCw,
   RotateCcw,
+  Ruler,
+  ScanLine,
+  Settings2,
   ShieldCheck,
   Shuffle,
+  SignalHigh,
   Sparkles,
   Swords,
   Target,
   Trophy,
+  Waves,
+  Wrench,
   XCircle,
   Zap,
   type LucideIcon
@@ -172,6 +188,195 @@ const finalAntennaAchievement = {
   title: "アンテナ賢者",
   description: "全700問を攻略し、研究と現場をつなげられます。"
 };
+
+type ManufacturerWorkflowStep = {
+  title: string;
+  caption: string;
+  detail: string;
+  icon: LucideIcon;
+};
+
+type ModeReviewGuide = {
+  icon: LucideIcon;
+  reviewName: string;
+  field: string;
+  shopFloor: string;
+  evidence: string;
+  output: string;
+};
+
+type LessonReviewLens = {
+  title: string;
+  badge: string;
+  focus: string;
+  why: string;
+  verify: string;
+  deliverable: string;
+  icon: LucideIcon;
+};
+
+const manufacturerWorkflow: ManufacturerWorkflowStep[] = [
+  {
+    title: "用語をそろえる",
+    caption: "仕様書・問い合わせの言葉を同じ意味で読む",
+    detail: "dB、dBm、dBi、VSWR、放射効率、GNDを混同しない土台を作ります。",
+    icon: BookOpen
+  },
+  {
+    title: "寸法と損失へ落とす",
+    caption: "周波数、波長、利得、損失を数字でつなぐ",
+    detail: "λ/4、EIRP、ケーブル損失、受信感度をリンク余裕へ変換します。",
+    icon: Ruler
+  },
+  {
+    title: "実装を疑う",
+    caption: "筐体、金属、ケーブル、姿勢をレビューする",
+    detail: "アンテナ単体の値ではなく、製品に組み込んだ状態で効く要因を分けます。",
+    icon: Wrench
+  },
+  {
+    title: "測定で閉じる",
+    caption: "OTA、RSSI/RSRP、SNR、現地差分で確認する",
+    detail: "計算値を保証値にせず、測定条件と補正理由を残して判断します。",
+    icon: ClipboardCheck
+  }
+];
+
+const modeReviewGuides: Record<QuestModeId, ModeReviewGuide> = {
+  intro: {
+    icon: Antenna,
+    reviewName: "用語・構造レビュー",
+    field: "波長、利得、VSWR、放射効率、GND、筐体影響",
+    shopFloor: "アンテナを部品名ではなく、導体・給電・周囲構造を含むRF部品として見る",
+    evidence: "仕様書の単位、使用周波数、アンテナ形状、設置面の材質",
+    output: "相談前に用語の意味と確認したい条件をそろえる"
+  },
+  beginner: {
+    icon: PencilRuler,
+    reviewName: "リンク計算レビュー",
+    field: "dB、dBm、EIRP、受信感度、ケーブル損失、リンクマージン",
+    shopFloor: "利得は足す、損失は引くという符号の流れを崩さない",
+    evidence: "送信電力、アンテナ利得、損失、距離、周波数、受信感度",
+    output: "一次見積もりとして、通信余裕と弱い入力項目を説明する"
+  },
+  apprentice: {
+    icon: MapPinned,
+    reviewName: "実装・設置レビュー",
+    field: "金属近接、地面反射、フレネル、偏波、人体遮蔽、筐体損失",
+    shopFloor: "机上の平均損失と、端末のすぐ近くで起きる悪化を分ける",
+    evidence: "取付位置、端末高、ケーブル曲げ、筐体材質、端末姿勢",
+    output: "改善すべき物理要因を、近傍損失として切り分ける"
+  },
+  practitioner: {
+    icon: Settings2,
+    reviewName: "モデル選定レビュー",
+    field: "Hata、COST231、Log-distance、2波、実測補正、信頼率",
+    shopFloor: "適用範囲、通信形態、補正の符号をセットで確認する",
+    evidence: "基地局高、端末高、エリア種別、実測アンカー点、警告内容",
+    output: "顧客や社内レビューで、数値の前提と限界を説明する"
+  },
+  expert: {
+    icon: Factory,
+    reviewName: "基地局・運用レビュー",
+    field: "GISクラッタ、チルト、方位、MIMO、干渉、容量、複数測定点",
+    shopFloor: "最大距離だけでなく、運用時の品質と干渉を同時に見る",
+    evidence: "地図情報、設置高、アンテナパターン、セル配置、測定ログ",
+    output: "カバレッジ、容量、施工後検証を一体で判断する"
+  },
+  researcher: {
+    icon: Microscope,
+    reviewName: "研究・校正レビュー",
+    field: "公開測定データ、環境特徴量、残差分布、検証方法、標準化",
+    shopFloor: "平均誤差だけでなく、悪い側の外れと再現性を見る",
+    evidence: "距離、高さ、時刻、環境、端末姿勢、RSSI/SNR、データ版",
+    output: "標準モデル、実測、統計的な不確かさをつないで説明する"
+  }
+};
+
+const defaultLessonReviewLens: LessonReviewLens = {
+  title: "RF判断レビュー",
+  badge: "前提確認",
+  focus: "問題文の単位、対象、前提条件を分けて読みます。",
+  why: "RFの判断は、用語、式、実装、測定条件のどこが論点かで答えが変わります。",
+  verify: "周波数、距離、利得、損失、測定条件のうち、この問題で効くものを一つ選びます。",
+  deliverable: "判断理由を一文で残し、必要なら関連ツールで同じ前提を再現します。",
+  icon: Compass
+};
+
+const lessonReviewRules: Array<{ pattern: RegExp; lens: LessonReviewLens }> = [
+  {
+    pattern: /用語メモ：(?:RF|電波|周波数|MHz|GHz)|Radio Frequency|電界と磁界|1秒間に波|周波数帯/,
+    lens: {
+      title: "RF基礎レビュー",
+      badge: "波の入口",
+      focus: "電波、周波数、波長、単位の関係を先にそろえます。",
+      why: "RFの入口で用語を取り違えると、アンテナ寸法、損失、規格条件の読み方までずれてしまいます。",
+      verify: "使用する無線方式、周波数帯、MHz/GHzの単位、波長のおおよそのサイズ感を確認します。",
+      deliverable: "使用周波数と、そこから見えるアンテナサイズ・伝搬傾向を一文で残します。",
+      icon: Waves
+    }
+  },
+  {
+    pattern: /RSSI|RSRP|SNR|OTA|TRP|TIS|実測|測定|補正|校正|暗室|伝導|放射試験|残差|RMSE|MAE|データ|メタデータ|ブートストラップ|カルマン/,
+    lens: {
+      title: "測定・校正レビュー",
+      badge: "実測で確認",
+      focus: "計算値と実測値の差、測定条件、記録したメタデータを見ます。",
+      why: "アンテナは実機状態と現場環境で結果が変わるため、測定条件なしの数値は再利用しにくくなります。",
+      verify: "測定距離、高さ、端末姿勢、時刻、RSSI/RSRP/SNR、補正の符号を確認します。",
+      deliverable: "現地差分を実測補正、近傍損失、環境損失のどこに入れたかを残します。",
+      icon: ScanLine
+    }
+  },
+  {
+    pattern: /VSWR|SWR|アンテナ|利得|放射|効率|GND|グランド|共振|λ|波長|FPC|PCB|板金|ホイップ|筐体|金属|偏波|チップ|実現利得|給電/,
+    lens: {
+      title: "アンテナ実装レビュー",
+      badge: "実機込みで見る",
+      focus: "アンテナ単体の値と、筐体・基板・金属・ケーブル込みの値を分けます。",
+      why: "同じアンテナでも、貼付位置、GND、近傍部品、姿勢で共振・効率・放射方向が変わります。",
+      verify: "使用周波数、アンテナ形状、GND面、金属距離、ケーブル取り回し、偏波を確認します。",
+      deliverable: "選定理由と、実機組込み後に再評価する項目をセットで残します。",
+      icon: Antenna
+    }
+  },
+  {
+    pattern: /FSPL|自由空間|伝搬|距離|Hata|奥村|COST|Log-distance|2波|フレネル|反射|遮蔽|クラッタ|地面|屋内|屋外|障害|損失|環境|フェード|マージン/,
+    lens: {
+      title: "伝搬・リンクレビュー",
+      badge: "損失を分ける",
+      focus: "距離で増える損失、経路環境の損失、端末近傍の損失を分けます。",
+      why: "同じdBでも原因が違えば対策が変わるため、二重計上を避けて分類する必要があります。",
+      verify: "距離、周波数、アンテナ高、見通し、フレネル、環境損失、端末近傍損失を確認します。",
+      deliverable: "リンクマージンと、余裕を削っている主因を説明できる形にします。",
+      icon: SignalHigh
+    }
+  },
+  {
+    pattern: /基地局|MIMO|3GPP|Rel-19|GIS|チルト|方位|干渉|容量|セル|標準|LoRa|AERPAW|P\.1812|クラスタ|レイ|近傍界/,
+    lens: {
+      title: "システム設計レビュー",
+      badge: "運用条件まで見る",
+      focus: "カバレッジ、容量、干渉、アンテナ配置、標準モデルの前提を同時に見ます。",
+      why: "最大距離だけで設計すると、実運用の品質、干渉、施工後のばらつきを見落とします。",
+      verify: "地図クラッタ、設置高、チルト、方位、端末分布、測定点、標準モデルの範囲を確認します。",
+      deliverable: "距離計算だけでなく、運用時に確認する測定計画とリスクを残します。",
+      icon: Factory
+    }
+  },
+  {
+    pattern: /dB|dBm|dBi|dBd|Hz|MHz|GHz|mW|W|EIRP|ERP|単位|符号|倍率|電力|感度/,
+    lens: {
+      title: "単位・符号レビュー",
+      badge: "桁と符号",
+      focus: "dBは比率、dBmは絶対電力、dBi/dBdはアンテナ利得として読み分けます。",
+      why: "単位や符号を取り違えると、悪い条件ほど良く見えるような危険な計算になります。",
+      verify: "MHz/GHz、m/km、利得と損失の符号、受信電力と受信感度の大小を確認します。",
+      deliverable: "入力値を同じ単位へそろえ、足す値と引く値を説明できる状態にします。",
+      icon: NotebookText
+    }
+  }
+];
 
 const antennaAchievementBadges = [
   { threshold: 20, title: "波長の羅針盤", description: "λ/2・λ/4のサイズ感が見えてきます。" },
@@ -326,6 +531,29 @@ function seoLinksForLesson(lesson: QuestLesson): QuestSource[] {
   return Array.from(links.values()).slice(0, 5);
 }
 
+function lessonReviewLensFor(lesson: QuestLesson): LessonReviewLens {
+  const lessonText = `${lesson.id} ${lesson.title} ${lesson.question} ${lesson.explanation} ${lesson.column}`;
+  return lessonReviewRules.find((rule) => rule.pattern.test(lessonText))?.lens ?? defaultLessonReviewLens;
+}
+
+function lessonPreparationSteps(lesson: QuestLesson): string[] {
+  const lens = lessonReviewLensFor(lesson);
+  return [
+    `まず「${lens.badge}」の問題として読みます。`,
+    lens.focus,
+    lens.verify
+  ];
+}
+
+function lessonReviewSummary(lesson: QuestLesson) {
+  const lens = lessonReviewLensFor(lesson);
+  return [
+    { label: "見る数字", value: lens.focus, icon: ClipboardList },
+    { label: "実機確認", value: lens.verify, icon: ScanLine },
+    { label: "残す情報", value: lens.deliverable, icon: ClipboardPenLine }
+  ];
+}
+
 function nextIncompleteLesson(modeId: QuestModeId, progress: ProgressMap): QuestLesson {
   const lessons = rfQuestLessons
     .filter((lesson) => lesson.mode === modeId)
@@ -416,8 +644,46 @@ function LevelUpPanel({ levelUp, onClose }: { levelUp: LevelUpState; onClose: ()
           className="rounded-md border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100"
           onClick={onClose}
         >
-          冒険へ戻る
+          クエストへ戻る
         </button>
+      </div>
+    </section>
+  );
+}
+
+function ManufacturerWorkflowPanel() {
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+            <Factory aria-hidden="true" className="h-4 w-4" />
+            アンテナメーカーの学習導線
+          </p>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">用語から実測レビューまで、同じ順番で考える</h2>
+        </div>
+        <p className="max-w-2xl text-sm leading-relaxed text-slate-600">
+          RFの知識を「暗記した言葉」で止めず、製品選定、筐体実装、設置条件、測定記録へ接続します。問題を解くたびに、実務で確認する観点も一緒に残します。
+        </p>
+      </div>
+      <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        {manufacturerWorkflow.map((step, index) => {
+          const Icon = step.icon;
+
+          return (
+            <article key={step.title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-center justify-between gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-staf">
+                  <Icon aria-hidden="true" className="h-4 w-4" />
+                </span>
+                <span className="text-xs font-bold text-slate-400">STEP {index + 1}</span>
+              </div>
+              <h3 className="mt-3 text-base font-bold text-slate-950">{step.title}</h3>
+              <p className="mt-1 text-xs font-bold text-staf">{step.caption}</p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">{step.detail}</p>
+            </article>
+          );
+        })}
       </div>
     </section>
   );
@@ -436,6 +702,8 @@ function ModeSelector({
     <section className="grid gap-3 lg:grid-cols-3 xl:grid-cols-6">
       {questModes.map((mode) => {
         const Icon = modeIconMap[mode.id];
+        const guide = modeReviewGuides[mode.id];
+        const GuideIcon = guide.icon;
         const lessons = rfQuestLessons.filter((lesson) => lesson.mode === mode.id);
         const completed = lessons.filter((lesson) => progress[lesson.id]).length;
         const selected = activeMode === mode.id;
@@ -463,6 +731,10 @@ function ModeSelector({
             <span className={`mt-2 block text-xs leading-relaxed ${selected ? "text-white/85" : "text-slate-500"}`}>
               {mode.description}
             </span>
+            <span className={`mt-3 flex items-center gap-1 text-[11px] font-bold ${selected ? "text-white" : "text-staf"}`}>
+              <GuideIcon aria-hidden="true" className="h-3.5 w-3.5" />
+              {guide.reviewName}
+            </span>
             <span className="mt-3 block">
               <ProgressBar value={completed} max={lessons.length} />
             </span>
@@ -472,6 +744,49 @@ function ModeSelector({
           </button>
         );
       })}
+    </section>
+  );
+}
+
+function ModeReviewPanel({
+  mode,
+  completed,
+  total
+}: {
+  mode: (typeof questModes)[number];
+  completed: number;
+  total: number;
+}) {
+  const guide = modeReviewGuides[mode.id];
+  const Icon = guide.icon;
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+      <p className="flex items-center gap-2 text-xs font-bold text-staf">
+        <Icon aria-hidden="true" className="h-4 w-4" />
+        {guide.reviewName}
+      </p>
+      <h2 className="mt-1 text-lg font-bold text-slate-950">{mode.title}</h2>
+      <p className="mt-2 text-xs leading-relaxed text-slate-600">{mode.description}</p>
+      <div className="mt-3">
+        <ProgressBar value={completed} max={total} />
+      </div>
+      <p className="mt-1 text-xs font-bold text-slate-500">
+        {completed}/{total} 問クリア
+      </p>
+      <div className="mt-4 grid gap-2">
+        {[
+          { label: "学ぶ領域", value: guide.field },
+          { label: "メーカー視点", value: guide.shopFloor },
+          { label: "確認資料", value: guide.evidence },
+          { label: "到達点", value: guide.output }
+        ].map((item) => (
+          <div key={item.label} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+            <p className="text-[11px] font-bold text-slate-400">{item.label}</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-700">{item.value}</p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
@@ -574,11 +889,11 @@ function AntennaGuildPanel({
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf">
             <Radio aria-hidden="true" className="h-4 w-4" />
-            アンテナギルド
+            アンテナ設計室
           </p>
-          <h2 className="mt-1 text-xl font-bold text-slate-950">今日の修行と実績</h2>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">今日のレビュー課題と実績</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-            アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日の修行から始めてください。
+            アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日のレビュー課題から始めてください。
           </p>
         </div>
         <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-3">
@@ -654,7 +969,7 @@ function AntennaGuildPanel({
               className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-3 py-2 text-xs font-bold text-staf transition hover:bg-staf-light"
               onClick={() => onJump(nextMissionLesson)}
             >
-              次の修行へ
+              次の課題へ
               <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
             </button>
           ) : null}
@@ -715,34 +1030,58 @@ function LessonBattle({
     }
   }, [lesson, selectedChoice]);
   const actionLinks = seoLinksForLesson(lesson);
+  const lessonLens = lessonReviewLensFor(lesson);
+  const LessonLensIcon = lessonLens.icon;
+  const preparationSteps = lessonPreparationSteps(lesson);
+  const reviewSummary = lessonReviewSummary(lesson);
 
   return (
     <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-slate-400">
-            第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
+            第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・章レビュー" : "・確認問題"}
           </p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">{lesson.title}</h2>
-          <p className="mt-1 text-sm font-semibold text-slate-500">対戦相手：{lesson.enemy}</p>
+          <p className="mt-1 text-sm font-semibold text-slate-500">レビュー対象：{lesson.enemy}</p>
         </div>
-        <span
-          className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
-            isCompleted ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
-          }`}
-        >
-          {isCompleted ? (
-            <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
-          ) : (
-            <CircleHelp aria-hidden="true" className="h-3.5 w-3.5" />
-          )}
-          {isCompleted ? "攻略済み" : "挑戦中"}
-        </span>
+        <div className="flex flex-wrap justify-end gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full bg-staf-light px-3 py-1 text-xs font-bold text-staf">
+            <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5" />
+            {lessonLens.badge}
+          </span>
+          <span
+            className={`inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold ${
+              isCompleted ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+            }`}
+          >
+            {isCompleted ? (
+              <CheckCircle2 aria-hidden="true" className="h-3.5 w-3.5" />
+            ) : (
+              <CircleHelp aria-hidden="true" className="h-3.5 w-3.5" />
+            )}
+            {isCompleted ? "確認済み" : "レビュー中"}
+          </span>
+        </div>
       </div>
 
       <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
         <p className="text-xs font-bold text-staf">QUESTION</p>
         <p className="mt-1 text-base font-bold leading-relaxed text-slate-950">{lesson.question}</p>
+        <div className="mt-4 rounded-md border border-slate-200 bg-white p-3">
+          <p className="flex items-center gap-2 text-xs font-bold text-slate-500">
+            <ClipboardList aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+            読み解きの順番
+          </p>
+          <div className="mt-3 grid gap-2 md:grid-cols-3">
+            {preparationSteps.map((step, index) => (
+              <div key={step} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+                <p className="text-[11px] font-bold text-staf">CHECK {index + 1}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-700">{step}</p>
+              </div>
+            ))}
+          </div>
+        </div>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
           {displayedChoices.map(({ choice, originalIndex }) => {
             const isSelected = selectedChoice === originalIndex;
@@ -782,8 +1121,29 @@ function LessonBattle({
             </p>
             <p className="mt-2 text-sm font-semibold text-slate-900">{lesson.immediateAnswer}</p>
             <p className="mt-2 text-sm leading-relaxed text-slate-700">{lesson.explanation}</p>
+            <div className="mt-3 rounded-md border border-white/70 bg-white/80 p-3">
+              <p className="flex items-center gap-2 text-xs font-bold text-slate-600">
+                <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                メーカーの判断メモ
+              </p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                {reviewSummary.map((item) => {
+                  const Icon = item.icon;
+
+                  return (
+                    <div key={item.label} className="rounded-md border border-slate-200 bg-white p-3">
+                      <p className="flex items-center gap-1 text-[11px] font-bold text-staf">
+                        <Icon aria-hidden="true" className="h-3.5 w-3.5" />
+                        {item.label}
+                      </p>
+                      <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.value}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
             <p className="mt-3 rounded-md border border-white/70 bg-white/70 p-2 text-xs font-bold text-slate-700">
-              獲得：{lesson.reward}
+              習得：{lesson.reward}
             </p>
             {correct ? (
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
@@ -825,7 +1185,7 @@ function LessonBattle({
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
             <div className="mt-3 rounded-md border border-slate-200 bg-white/80 p-3">
-              <p className="text-xs font-bold text-slate-500">次の討伐</p>
+              <p className="text-xs font-bold text-slate-500">次のレビュー</p>
               <p className="mt-1 text-sm font-bold text-slate-950">
                 STAGE {nextLesson.stage}：{nextLesson.title}
               </p>
@@ -843,9 +1203,16 @@ function LessonBattle({
           <details open className="rounded-lg border border-slate-200 bg-white p-4">
             <summary className="flex cursor-pointer items-center gap-2 text-sm font-bold text-slate-950">
               <BookOpen aria-hidden="true" className="h-4 w-4 text-staf" />
-              現場コラム
+              現場コラムと設計レビュー
             </summary>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">{lesson.column}</p>
+            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+              <p className="flex items-center gap-2 text-xs font-bold text-slate-700">
+                <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                {lessonLens.title}
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">{lessonLens.why}</p>
+            </div>
             {lesson.sources?.length ? (
               <div className="mt-3 flex flex-wrap gap-2">
                 {lesson.sources.map((source) => (
@@ -1562,15 +1929,35 @@ export function RfLearningQuestClient() {
               RF学習クエスト
             </p>
             <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950">
-              問題を倒して、アンテナ設計の勘を育てる
+              クエストで、アンテナ設計の判断を一つずつ固める
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問。選択肢は表示ごとにランダム化され、1問ごとに即答え、解説、関連ツール、現場コラムを確認できます。
-              波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究まで、アンテナメーカーの現場目線で進められます。
+              入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問。波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究まで、
+              問題ごとに「なぜそう見るか」「実機では何を確認するか」「相談時に何を残すか」を確認しながら進めます。
             </p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {[
+                { icon: Waves, label: "波長・周波数" },
+                { icon: Antenna, label: "アンテナ実装" },
+                { icon: SignalHigh, label: "リンク余裕" },
+                { icon: ScanLine, label: "OTA・現地測定" }
+              ].map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <span
+                    key={item.label}
+                    className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"
+                  >
+                    <Icon aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                    {item.label}
+                  </span>
+                );
+              })}
+            </div>
           </div>
           <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
-            <p className="text-xs font-bold">冒険進捗</p>
+            <p className="text-xs font-bold">学習進捗</p>
             <p className="mt-1 text-2xl font-bold">
               {completedCount}/{rfQuestLessons.length}
             </p>
@@ -1601,6 +1988,10 @@ export function RfLearningQuestClient() {
           </div>
         </div>
       </section>
+
+      <div className="mt-5">
+        <ManufacturerWorkflowPanel />
+      </div>
 
       {levelUp ? (
         <div className="mt-5">
@@ -1635,17 +2026,7 @@ export function RfLearningQuestClient() {
 
       <section className="mt-5 grid gap-5 lg:grid-cols-[280px_1fr] lg:items-start">
         <aside className="space-y-4 lg:sticky lg:top-6">
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <p className="text-xs font-bold text-slate-400">{activeModeMeta.label}</p>
-            <h2 className="mt-1 text-lg font-bold text-slate-950">{activeModeMeta.title}</h2>
-            <p className="mt-2 text-xs leading-relaxed text-slate-600">{activeModeMeta.description}</p>
-            <div className="mt-3">
-              <ProgressBar value={completedInMode} max={lessonsInMode.length} />
-            </div>
-            <p className="mt-1 text-xs font-bold text-slate-500">
-              {completedInMode}/{lessonsInMode.length} 問クリア
-            </p>
-          </section>
+          <ModeReviewPanel mode={activeModeMeta} completed={completedInMode} total={lessonsInMode.length} />
 
           <StageMap
             modeId={activeMode}

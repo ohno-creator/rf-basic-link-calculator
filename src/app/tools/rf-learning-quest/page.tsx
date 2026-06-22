@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import { ToolLayout } from "@/components/ToolLayout";
 import { RfLearningQuestClient } from "./components/RfLearningQuestClient";
 
-const title = "アンテナ設計RPG学習クエスト｜通信距離・VSWR・放射効率を学ぶ｜スタッフ株式会社";
+const title = "アンテナ設計学習クエスト｜VSWR・放射効率・実装レビューを学ぶ｜スタッフ株式会社";
 const description =
-  "入門、初心者、見習い、実務者、玄人、研究者の6モード合計700問で、アンテナ構造、波長、VSWR、放射効率、GND、筐体影響、通信距離、最新IoT伝搬研究をRPG形式で学べるページです。";
+  "入門、初心者、見習い、実務者、玄人、研究者の6モード合計700問で、アンテナ構造、波長、VSWR、放射効率、GND、筐体影響、通信距離、OTA測定、最新IoT伝搬研究をメーカーの設計レビュー目線で学べるページです。";
 const keywords = [
   "アンテナ 設計 学習",
   "アンテナ 選定",
