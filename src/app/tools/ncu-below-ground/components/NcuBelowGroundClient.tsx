@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { NcuBudgetWaterfall } from "./NcuBudgetWaterfall";
 import {
   AlertTriangle,
   ArrowRight,
@@ -206,20 +207,6 @@ function formatDistance(distanceM: number) {
   return `${distanceM.toFixed(distanceM >= 100 ? 0 : 1)} m`;
 }
 
-function updateNumber(value: string) {
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : 0;
-}
-
-function updateOptionalNumber(value: string) {
-  if (value.trim() === "") {
-    return null;
-  }
-
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
-}
-
 function FieldHint({ text }: { text: string }) {
   return (
     <span
@@ -255,6 +242,29 @@ function OptionalNumberField({
   step?: number;
   onChange: (value: number | null) => void;
 }) {
+  const [draft, setDraft] = useState(() => (value === null ? "" : String(value)));
+  const committedRef = useRef<number | null>(value);
+  useEffect(() => {
+    if (value !== committedRef.current) {
+      committedRef.current = value;
+      setDraft(value === null ? "" : String(value));
+    }
+  }, [value]);
+
+  const handleChange = (raw: string) => {
+    setDraft(raw);
+    if (raw.trim() === "") {
+      committedRef.current = null;
+      onChange(null);
+      return;
+    }
+    const parsed = Number(raw);
+    if (Number.isFinite(parsed)) {
+      committedRef.current = parsed;
+      onChange(parsed);
+    }
+  };
+
   return (
     <label className="block" htmlFor={id}>
       <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
@@ -266,13 +276,14 @@ function OptionalNumberField({
         <input
           id={id}
           className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
-          type="number"
-          value={value ?? ""}
-          placeholder={placeholder}
-          min={min}
-          max={max}
+          type="text"
+          inputMode={typeof min === "number" && min >= 0 ? "decimal" : "text"}
           step={step}
-          onChange={(event) => onChange(updateOptionalNumber(event.target.value))}
+          max={max}
+          value={draft}
+          placeholder={placeholder}
+          onChange={(event) => handleChange(event.target.value)}
+          onBlur={() => setDraft(committedRef.current === null ? "" : String(committedRef.current))}
         />
         <span className="flex min-w-20 items-center justify-center bg-slate-50 px-3 text-sm font-semibold text-slate-600">
           {unit}
@@ -318,6 +329,40 @@ function NumberField({
   step?: number;
   onChange: (value: number) => void;
 }) {
+  // 文字列ドラフトで保持し、クリア・「-」・「1.」など編集途中でも0に戻らずキーボード直接入力できるようにする。
+  const [draft, setDraft] = useState(() => String(value));
+  const committedRef = useRef(value);
+  useEffect(() => {
+    if (value !== committedRef.current) {
+      committedRef.current = value;
+      setDraft(String(value));
+    }
+  }, [value]);
+
+  const handleChange = (raw: string) => {
+    setDraft(raw);
+    const parsed = Number(raw);
+    if (raw.trim() !== "" && Number.isFinite(parsed)) {
+      committedRef.current = parsed;
+      onChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    let next = committedRef.current;
+    if (typeof min === "number" && next < min) {
+      next = min;
+    }
+    if (typeof max === "number" && next > max) {
+      next = max;
+    }
+    if (next !== committedRef.current) {
+      committedRef.current = next;
+      onChange(next);
+    }
+    setDraft(String(next));
+  };
+
   return (
     <label className="block" htmlFor={id}>
       <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
@@ -329,17 +374,116 @@ function NumberField({
         <input
           id={id}
           className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
-          type="number"
-          value={value}
-          min={min}
-          max={max}
+          type="text"
+          inputMode={typeof min === "number" && min >= 0 ? "decimal" : "text"}
           step={step}
-          onChange={(event) => onChange(updateNumber(event.target.value))}
+          value={draft}
+          onChange={(event) => handleChange(event.target.value)}
+          onBlur={handleBlur}
         />
         <span className="flex min-w-20 items-center justify-center bg-slate-50 px-3 text-sm font-semibold text-slate-600">
           {unit}
         </span>
       </span>
+    </label>
+  );
+}
+
+// 距離は単位選択つき。NumberFieldと同じくドラフトでキーボード直接入力に対応。
+function DistanceField({
+  value,
+  unit,
+  onValueChange,
+  onUnitChange
+}: {
+  value: number;
+  unit: NcuBelowGroundInput["distanceUnit"];
+  onValueChange: (value: number) => void;
+  onUnitChange: (unit: NcuBelowGroundInput["distanceUnit"]) => void;
+}) {
+  const [draft, setDraft] = useState(() => String(value));
+  const committedRef = useRef(value);
+  useEffect(() => {
+    if (value !== committedRef.current) {
+      committedRef.current = value;
+      setDraft(String(value));
+    }
+  }, [value]);
+
+  const handleChange = (raw: string) => {
+    setDraft(raw);
+    const parsed = Number(raw);
+    if (raw.trim() !== "" && Number.isFinite(parsed) && parsed > 0) {
+      committedRef.current = parsed;
+      onValueChange(parsed);
+    }
+  };
+
+  return (
+    <label className="block" htmlFor="ncu-distance">
+      <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+        地上側距離
+        <FieldHint text="地上側のゲートウェイ・基地局から、BOX付近までの水平距離です。" />
+      </span>
+      <span className="mt-1 block text-xs leading-relaxed text-slate-500">
+        GW・基地局からBOX付近までの水平距離。数値はキーボードで直接入力できます。
+      </span>
+      <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/15">
+        <input
+          id="ncu-distance"
+          className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
+          type="text"
+          inputMode="decimal"
+          value={draft}
+          onChange={(event) => handleChange(event.target.value)}
+          onBlur={() => setDraft(String(committedRef.current))}
+        />
+        <select
+          id="ncu-distanceUnit"
+          className="bg-slate-50 px-3 text-sm font-semibold text-slate-600 outline-none"
+          value={unit}
+          onChange={(event) => onUnitChange(event.target.value as NcuBelowGroundInput["distanceUnit"])}
+          aria-label="地上側距離の単位"
+        >
+          <option value="m">m</option>
+          <option value="km">km</option>
+        </select>
+      </span>
+    </label>
+  );
+}
+
+// 通信方式・メモなどの自由入力。
+function TextField({
+  id,
+  label,
+  help,
+  value,
+  placeholder,
+  onChange
+}: {
+  id: string;
+  label: string;
+  help: string;
+  value: string;
+  placeholder?: string;
+  onChange: (value: string) => void;
+}) {
+  return (
+    <label className="block" htmlFor={id}>
+      <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
+        {label}
+        <FieldHint text={help} />
+      </span>
+      <span className="mt-1 block text-xs leading-relaxed text-slate-500">{help}</span>
+      <input
+        id={id}
+        className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15"
+        type="text"
+        value={value}
+        placeholder={placeholder}
+        onChange={(event) => onChange(event.target.value)}
+      />
     </label>
   );
 }
@@ -386,6 +530,99 @@ function SelectField<T extends string>({
   );
 }
 
+type ChipSeverity = "ok" | "warn" | "bad" | "severe";
+
+// 各選択肢の「効きやすさ」目安。選択UIの色とドットに使う（数値計算はlib側が担当）。
+const chipSeverityByValue: Record<string, ChipSeverity> = {
+  open: "ok",
+  resin: "ok",
+  concrete: "warn",
+  cast_iron: "bad",
+  steel: "severe",
+  metal: "bad",
+  unknown: "warn",
+  dry: "ok",
+  damp: "warn",
+  wet: "bad",
+  standing_water: "severe",
+  near_lid: "ok",
+  middle: "warn",
+  bottom: "bad",
+  near_metal: "severe",
+  narrow_gap: "warn",
+  sealed: "bad",
+  metal_frame: "severe",
+  none: "ok",
+  pedestrian: "warn",
+  vehicle: "bad",
+  parked_vehicle: "severe"
+};
+
+const chipToneClass: Record<ChipSeverity, { selected: string; dot: string }> = {
+  ok: { selected: "border-emerald-300 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200", dot: "bg-emerald-500" },
+  warn: { selected: "border-amber-300 bg-amber-50 text-amber-900 ring-1 ring-amber-200", dot: "bg-amber-500" },
+  bad: { selected: "border-orange-300 bg-orange-50 text-orange-900 ring-1 ring-orange-200", dot: "bg-orange-500" },
+  severe: { selected: "border-rose-300 bg-rose-50 text-rose-900 ring-1 ring-rose-200", dot: "bg-rose-500" }
+};
+
+// ドロップダウンより速くタップで選べる、重症度カラー付きのチップ選択UI。
+function ChoiceChips<T extends string>({
+  label,
+  help,
+  value,
+  options,
+  onChange
+}: {
+  label: string;
+  help: string;
+  value: T;
+  options: Array<{ value: T; label: string; description: string }>;
+  onChange: (value: T) => void;
+}) {
+  const selected = options.find((option) => option.value === value);
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
+        {label}
+        <FieldHint text={help} />
+      </div>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {options.map((option) => {
+          const isSelected = option.value === value;
+          const tone = chipToneClass[chipSeverityByValue[option.value] ?? "warn"];
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={isSelected}
+              onClick={() => onChange(option.value)}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+                isSelected
+                  ? tone.selected
+                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-slate-900"
+              }`}
+            >
+              <span className={`h-2 w-2 rounded-full ${tone.dot}`} aria-hidden="true" />
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-2 rounded-md bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
+        {selected ? (
+          <>
+            <span className="font-bold text-slate-800">{selected.label}：</span>
+            {selected.description}
+          </>
+        ) : (
+          help
+        )}
+      </p>
+    </div>
+  );
+}
+
 function SectionTitle({
   icon: Icon,
   eyebrow,
@@ -415,6 +652,20 @@ function findOptionLabel<T extends string>(options: Array<{ value: T; label: str
   return options.find((option) => option.value === value)?.label ?? value;
 }
 
+// 損失[dB]の大きさ→色（緑=小〜赤=支配的）。断面図の損失スタックと凡例で共通言語にする。
+function sevHex(typical: number): { fill: string; stroke: string } {
+  if (typical >= 18) {
+    return { fill: "#e11d48", stroke: "#9f1239" };
+  }
+  if (typical >= 10) {
+    return { fill: "#f97316", stroke: "#c2410c" };
+  }
+  if (typical >= 4) {
+    return { fill: "#f59e0b", stroke: "#b45309" };
+  }
+  return { fill: "#10b981", stroke: "#047857" };
+}
+
 function NcuCrossSectionDiagram({
   input,
   result
@@ -439,32 +690,77 @@ function NcuCrossSectionDiagram({
   const depthRange = result.breakdown.find((item) => item.id === "depth")?.range;
   const isMetalCover = input.coverMaterial === "cast_iron" || input.coverMaterial === "steel";
   const isMetalBox = input.boxMaterial === "metal";
-  const isWet = input.moistureCondition === "wet" || input.moistureCondition === "standing_water";
   const hasWaterPool = input.moistureCondition === "standing_water";
   const hasVehicle = input.surfaceObstruction === "vehicle" || input.surfaceObstruction === "parked_vehicle";
   const hasPedestrian = input.surfaceObstruction === "pedestrian";
-  const boxTopY = 234;
-  const boxHeight = 134 + Math.min(92, input.depthBelowGroundM * 58);
-  const antennaY =
-    input.antennaPosition === "near_lid"
-      ? boxTopY + 36
-      : input.antennaPosition === "bottom"
-        ? boxTopY + boxHeight - 34
-        : input.antennaPosition === "near_metal"
-          ? boxTopY + Math.max(48, boxHeight * 0.36)
-          : boxTopY + boxHeight * 0.56;
-  const openingWidthByCondition: Record<NcuBelowGroundInput["openingCondition"], number> = {
-    open: 76,
-    narrow_gap: 34,
-    sealed: 8,
-    metal_frame: 22
-  };
-  const openingWidth = openingWidthByCondition[input.openingCondition];
-  const openingX = 686 - openingWidth / 2;
   const lidColor = isMetalCover ? "#475569" : input.coverMaterial === "resin" ? "#bae6fd" : "#cbd5e1";
   const boxStroke = isMetalBox ? "#334155" : input.boxMaterial === "resin" ? "#0ea5e9" : "#94a3b8";
-  const boxFill = isMetalBox ? "#cbd5e1" : input.boxMaterial === "resin" ? "#eff6ff" : "#f8fafc";
-  const ncuLinkColor = result.linkMarginRangeDb.typical >= 0 ? "#059669" : "#e11d48";
+  const boxFill = isMetalBox ? "#e2e8f0" : input.boxMaterial === "resin" ? "#eff6ff" : "#f8fafc";
+  const marginPass = result.linkMarginRangeDb.typical >= 0;
+
+  // ===== 断面ジオメトリ（深さで伸縮するが両端でクランプし破綻させない）=====
+  const GL_Y = 152;
+  const BOX_X = 448;
+  const BOX_W = 164;
+  const BOX_CX = BOX_X + BOX_W / 2;
+  const depthM = Math.min(5, Math.max(0, input.depthBelowGroundM));
+  const innerTop = GL_Y + 4;
+  const boxBottom = Math.min(GL_Y + Math.max(82, depthM * 62), 492);
+  const innerBottom = boxBottom - 8;
+  const innerH = Math.max(40, innerBottom - innerTop);
+  const antennaY = Math.min(
+    innerBottom - 18,
+    Math.max(
+      innerTop + 18,
+      input.antennaPosition === "near_lid"
+        ? innerTop + 22
+        : input.antennaPosition === "bottom"
+          ? innerBottom - 24
+          : (innerTop + innerBottom) / 2
+    )
+  );
+  const openWByCond: Record<NcuBelowGroundInput["openingCondition"], number> = {
+    open: 70,
+    narrow_gap: 30,
+    sealed: 0,
+    metal_frame: 20
+  };
+  const openW = openWByCond[input.openingCondition];
+  const openX = BOX_CX - openW / 2;
+  const waterFrac = hasWaterPool ? 0.42 : input.moistureCondition === "wet" ? 0.24 : input.moistureCondition === "damp" ? 0.1 : 0;
+  const waterH = waterFrac * innerH;
+  const pathOpacity = input.openingCondition === "sealed" || isMetalCover ? 0.45 : 1;
+  const rulerX = 636;
+
+  // ===== 右レール：地下追加損失の正規化スタック（重症度色・ラベル衝突回避）=====
+  const STK_X = 726;
+  const STK_W = 44;
+  const STK_TOP = 96;
+  const STK_H = 368;
+  const stackDefs = [
+    { id: "surface", short: "地表", typical: surfaceRange?.typical ?? 0 },
+    { id: "cover", short: "蓋", typical: coverRange?.typical ?? 0 },
+    { id: "opening", short: "開口", typical: openingRange?.typical ?? 0 },
+    { id: "depth", short: "深さ", typical: depthRange?.typical ?? 0 },
+    { id: "box", short: "BOX", typical: boxRange?.typical ?? 0 },
+    { id: "moisture", short: "水分", typical: moistureRange?.typical ?? 0 },
+    { id: "antenna", short: "位置", typical: antennaRange?.typical ?? 0 }
+  ].filter((d) => d.typical > 0.05);
+  const stackTotal = stackDefs.reduce((sum, d) => sum + d.typical, 0) || 1;
+  const dominantTypical = stackDefs.reduce((max, d) => Math.max(max, d.typical), 0);
+  let runY = STK_TOP;
+  let lastLabelY = STK_TOP - 6;
+  const stackSegs = stackDefs.map((d) => {
+    const h = Math.max(4, (d.typical / stackTotal) * STK_H);
+    const y0 = runY;
+    const y1 = runY + h;
+    runY = y1;
+    const midY = (y0 + y1) / 2;
+    const labelY = Math.max(midY, lastLabelY + 15);
+    lastLabelY = labelY;
+    return { ...d, y0, y1, midY, labelY, tone: sevHex(d.typical), isDominant: d.typical === dominantTypical };
+  });
+
   const parameterChips = [
     { label: "通信方式", value: input.system },
     { label: "周波数", value: `${input.frequencyMHz.toFixed(0)} MHz` },
@@ -485,9 +781,9 @@ function NcuCrossSectionDiagram({
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-bold text-staf">シミュレーション結果の2D図</p>
-          <h2 className="mt-1 text-xl font-bold text-slate-950">NCUが地面より下にある場合の設定パラメータ図</h2>
+          <h2 className="mt-1 text-xl font-bold text-slate-950">NCUが地面より下にある場合の断面図</h2>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            距離、周波数、蓋、BOX、深さ、水分、開口、地表遮蔽、損失レンジを同じ図に重ねています。入力を変えると、図中の形状・ラベル・損失値も連動します。
+            左は電波の通り道（GW→地表GL→蓋→BOX→NCUアンテナ）、右は地下で電波を弱める要因の積み上げです。入力を変えると形・色・損失値が連動します。
           </p>
         </div>
         <span className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700">
@@ -495,175 +791,236 @@ function NcuCrossSectionDiagram({
         </span>
       </div>
 
-      <div className="mt-5 grid gap-4 xl:grid-cols-[1fr_0.42fr] xl:items-stretch">
-        <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-          <svg
-            className="h-auto min-h-[380px] w-full"
-            viewBox="0 0 980 540"
-            role="img"
-            aria-label="GL以下NCU設置の2D断面図"
-          >
-            <defs>
-              <linearGradient id="ncuSky" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#eff6ff" />
-                <stop offset="100%" stopColor="#ffffff" />
-              </linearGradient>
-              <pattern id="ncuSoil" width="14" height="14" patternUnits="userSpaceOnUse">
-                <path d="M0 14 L14 0" stroke="#cbd5e1" strokeWidth="1" opacity="0.45" />
-              </pattern>
-              <filter id="softShadow">
-                <feDropShadow dx="0" dy="5" stdDeviation="6" floodColor="#0f172a" floodOpacity="0.16" />
-              </filter>
-              <marker id="arrowHeadBlue" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
-                <path d="M0 0 L8 4 L0 8 Z" fill="#0284c7" />
-              </marker>
-              <marker id="arrowHeadOrange" markerHeight="8" markerWidth="8" orient="auto" refX="7" refY="4">
-                <path d="M0 0 L8 4 L0 8 Z" fill="#f97316" />
-              </marker>
-            </defs>
-            <rect width="980" height="540" fill="url(#ncuSky)" />
-            <rect x="0" y="210" width="980" height="330" fill="#f8fafc" />
-            <rect x="0" y="210" width="980" height="330" fill="url(#ncuSoil)" />
-            <path d="M0 210 H980" stroke="#64748b" strokeWidth="4" />
-            <text x="28" y="192" fill="#334155" fontSize="17" fontWeight="700">
-              GL（地表面）
-            </text>
+      <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-bold">
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-2.5 py-1 text-sky-700">
+          <span className="h-1.5 w-4 rounded-full bg-sky-500" aria-hidden="true" />
+          信号経路
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-rose-50 px-2.5 py-1 text-rose-700">
+          <span className="h-0 w-4 border-t-2 border-dashed border-rose-500" aria-hidden="true" />
+          深さ寸法
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-emerald-700">
+          <span className="h-2.5 w-2.5 rounded-full bg-emerald-500" aria-hidden="true" />
+          NCUアンテナ
+        </span>
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2.5 py-1 text-slate-600">
+          損失の大きさ
+          <span className="h-2 w-2 rounded-full bg-emerald-500" aria-hidden="true" />小
+          <span className="h-2 w-2 rounded-full bg-amber-500" aria-hidden="true" />中
+          <span className="h-2 w-2 rounded-full bg-orange-500" aria-hidden="true" />大
+          <span className="h-2 w-2 rounded-full bg-rose-500" aria-hidden="true" />支配的
+        </span>
+      </div>
 
-            <g transform="translate(82 62)">
-              <path d="M42 125 V38" stroke="#0f766e" strokeWidth="9" strokeLinecap="round" />
-              <path d="M18 125 H66" stroke="#0f766e" strokeWidth="11" strokeLinecap="round" />
-              <circle cx="42" cy="28" r="12" fill="#0ea5e9" />
-              <path d="M20 25 Q42 2 64 25" fill="none" stroke="#0ea5e9" strokeWidth="4" strokeLinecap="round" />
-              <path d="M8 14 Q42 -18 76 14" fill="none" stroke="#0ea5e9" strokeWidth="3" strokeLinecap="round" opacity="0.68" />
-              <rect x="-30" y="146" width="146" height="54" rx="10" fill="#ffffff" stroke="#cbd5e1" />
-              <text x="-14" y="168" fill="#0f172a" fontSize="14" fontWeight="700">
-                地上側GW/基地局
-              </text>
-              <text x="-14" y="190" fill="#475569" fontSize="12">
-                Tx {input.txPowerDbm.toFixed(1)}dBm / Ant {input.gatewayAntennaGainDbi.toFixed(1)}dBi
+      <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50">
+        <svg
+          role="img"
+          aria-label="GL以下NCU設置の2D断面図と地下追加損失の積み上げ"
+          viewBox="0 0 920 520"
+          style={{ minWidth: 680 }}
+          className="h-auto w-full"
+        >
+          <defs>
+            <linearGradient id="ncuSky" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#eff6ff" />
+              <stop offset="100%" stopColor="#dbeafe" />
+            </linearGradient>
+            <linearGradient id="ncuSoilGrad" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stopColor="#f1f5f9" />
+              <stop offset="100%" stopColor="#e2e8f0" />
+            </linearGradient>
+            <pattern id="ncuSoil" width="16" height="16" patternUnits="userSpaceOnUse">
+              <rect width="16" height="16" fill="url(#ncuSoilGrad)" />
+              <path d="M0 16 L16 0" stroke="#cbd5e1" strokeWidth="1" opacity="0.5" />
+              <circle cx="4" cy="6" r="0.9" fill="#cbd5e1" opacity="0.6" />
+              <circle cx="11" cy="12" r="0.9" fill="#cbd5e1" opacity="0.6" />
+            </pattern>
+            <filter id="softShadow">
+              <feDropShadow dx="0" dy="4" stdDeviation="5" floodColor="#0f172a" floodOpacity="0.14" />
+            </filter>
+            <marker id="ncuArrowSignal" markerHeight="8" markerWidth="8" orient="auto" refX="6" refY="4">
+              <path d="M0 0 L8 4 L0 8 Z" fill="#0284c7" />
+            </marker>
+          </defs>
+
+          {/* 背景：空・土・GL */}
+          <rect x="0" y="0" width="690" height={GL_Y} fill="url(#ncuSky)" />
+          <rect x="0" y={GL_Y} width="690" height={520 - GL_Y} fill="url(#ncuSoil)" />
+          <line x1="0" x2="690" y1={GL_Y} y2={GL_Y} stroke="#64748b" strokeWidth="3" />
+          <text x="14" y={GL_Y - 8} fill="#475569" fontSize="13" fontWeight="700">
+            地表面 GL
+          </text>
+
+          {/* GW / 基地局 */}
+          <g transform="translate(36 44)">
+            <path d="M36 108 V30" stroke="#005A95" strokeWidth="4" />
+            <circle cx="36" cy="22" r="6" fill="#0071BD" />
+            <path d="M22 30 Q36 8 50 30" fill="none" stroke="#0071BD" strokeWidth="2.5" opacity="0.55" />
+            <path d="M14 38 Q36 4 58 38" fill="none" stroke="#0071BD" strokeWidth="2" opacity="0.35" />
+            <text x="36" y="124" textAnchor="middle" fill="#005A95" fontSize="11" fontWeight="700">
+              GW/基地局
+            </text>
+            <text x="36" y="139" textAnchor="middle" fill="#64748b" fontSize="10">
+              送信 {input.txPowerDbm.toFixed(0)}dBm
+            </text>
+          </g>
+
+          {/* 地上伝搬（青破線の弧）→ 開口で実線に切替えBOX内アンテナへ：1本の信号経路 */}
+          <path
+            d={`M78 70 C240 48 410 70 ${BOX_CX} ${GL_Y - 10}`}
+            fill="none"
+            stroke="#0284c7"
+            strokeWidth="3.5"
+            strokeDasharray="9 8"
+          />
+          <path
+            d={`M${BOX_CX} ${GL_Y - 2} L${BOX_CX} ${antennaY - 16}`}
+            fill="none"
+            stroke="#0284c7"
+            strokeWidth="3"
+            markerEnd="url(#ncuArrowSignal)"
+            opacity={pathOpacity}
+          />
+          <g>
+            <rect x="232" y="44" width="190" height="24" rx="8" fill="#ffffff" stroke="#bae6fd" />
+            <text x="240" y="60" fill="#0369a1" fontSize="12" fontWeight="700">
+              地上伝搬 {result.outdoorPathLossDb.toFixed(0)}dB・{modelLabel}
+            </text>
+          </g>
+
+          {/* 地表上の遮蔽（車両・人） */}
+          {hasVehicle ? (
+            <g transform={`translate(${BOX_CX - 66} ${GL_Y - 42})`}>
+              <rect x="0" y="18" width="120" height="26" rx="9" fill="#334155" />
+              <path d="M20 18 L38 2 H84 L102 18 Z" fill="#475569" />
+              <circle cx="28" cy="46" r="8" fill="#0f172a" />
+              <circle cx="92" cy="46" r="8" fill="#0f172a" />
+              <text x="60" y="12" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
+                {surfaceLabel}
               </text>
             </g>
-
-            <path
-              d="M170 92 C320 80 508 116 662 191"
-              fill="none"
-              markerEnd="url(#arrowHeadBlue)"
-              stroke="#0284c7"
-              strokeWidth="4"
-              strokeDasharray="9 9"
-            />
-            <path
-              d={`M174 106 C336 150 482 206 ${676 - openingWidth / 3} ${boxTopY + 34}`}
-              fill="none"
-              markerEnd="url(#arrowHeadOrange)"
-              stroke="#f97316"
-              strokeWidth="4"
-              opacity="0.88"
-            />
-            <rect x="312" y="46" width="290" height="76" rx="12" fill="#ffffff" stroke="#bae6fd" />
-            <text x="330" y="72" fill="#0369a1" fontSize="14" fontWeight="700">
-              地上側伝搬 {result.outdoorPathLossDb.toFixed(1)} dB
-            </text>
-            <text x="330" y="96" fill="#475569" fontSize="12">
-              {modelLabel} / 距離 {formatDistance(result.distanceM)}
-            </text>
-
-            {hasVehicle ? (
-              <g transform="translate(616 154)">
-                <rect x="0" y="20" width="132" height="34" rx="12" fill="#334155" />
-                <path d="M22 20 L42 0 H92 L112 20 Z" fill="#475569" />
-                <circle cx="30" cy="58" r="10" fill="#0f172a" />
-                <circle cx="102" cy="58" r="10" fill="#0f172a" />
-                <text x="6" y="-10" fill="#334155" fontSize="13" fontWeight="700">
-                  {surfaceLabel}
-                </text>
-              </g>
-            ) : null}
-
-            {hasPedestrian ? (
-              <g transform="translate(664 150)">
-                <circle cx="24" cy="8" r="9" fill="#64748b" />
-                <path d="M24 18 V52 M8 32 H40 M24 52 L10 76 M24 52 L42 76" stroke="#64748b" strokeWidth="6" strokeLinecap="round" />
-                <text x="-10" y="-10" fill="#334155" fontSize="13" fontWeight="700">
-                  {surfaceLabel}
-                </text>
-              </g>
-            ) : null}
-
-            <g filter="url(#softShadow)">
-              <rect x="598" y={boxTopY} width="176" height={boxHeight} rx="14" fill={boxFill} stroke={boxStroke} strokeWidth={isMetalBox ? 5 : 3} />
-              <rect x="558" y="192" width="256" height="28" rx="10" fill={lidColor} stroke={isMetalCover ? "#0f172a" : "#94a3b8"} strokeWidth={isMetalCover ? 3 : 2} />
-              <rect x={openingX} y="192" width={openingWidth} height="28" rx="7" fill={input.openingCondition === "sealed" ? "#94a3b8" : "#f8fafc"} stroke="#0ea5e9" strokeWidth="2" />
-              {input.openingCondition === "metal_frame" ? (
-                <rect x={openingX - 6} y="188" width={openingWidth + 12} height="36" rx="8" fill="none" stroke="#334155" strokeWidth="4" />
-              ) : null}
-              <rect x="616" y={boxTopY + 22} width="140" height={boxHeight - 44} rx="10" fill="#ffffff" stroke="#cbd5e1" strokeWidth="2" />
-              {isWet ? (
-                <path
-                  d={`M617 ${boxTopY + boxHeight - (hasWaterPool ? 64 : 42)} C650 ${boxTopY + boxHeight - 78} 702 ${boxTopY + boxHeight - 48} 756 ${boxTopY + boxHeight - 62} V${boxTopY + boxHeight - 22} H617 Z`}
-                  fill="#7dd3fc"
-                  opacity={hasWaterPool ? 0.86 : 0.58}
-                />
-              ) : null}
-              {input.antennaPosition === "near_metal" ? (
-                <rect x="604" y={antennaY - 40} width="18" height="92" rx="5" fill="#475569" opacity="0.85" />
-              ) : null}
-              <circle cx="686" cy={antennaY} r="15" fill="#10b981" />
-              <path d={`M686 ${antennaY} v-42`} stroke="#10b981" strokeWidth="6" strokeLinecap="round" />
-              <path d={`M686 ${antennaY - 42} Q672 ${antennaY - 58} 658 ${antennaY - 42}`} fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" />
-              <path d={`M686 ${antennaY - 42} Q701 ${antennaY - 58} 716 ${antennaY - 42}`} fill="none" stroke="#10b981" strokeWidth="3" strokeLinecap="round" />
+          ) : null}
+          {hasPedestrian ? (
+            <g transform={`translate(${BOX_CX - 8} ${GL_Y - 52})`}>
+              <circle cx="6" cy="6" r="7" fill="#64748b" />
+              <path d="M6 14 V40 M-7 24 H19 M6 40 L-5 56 M6 40 L17 56" stroke="#64748b" strokeWidth="5" strokeLinecap="round" />
+              <text x="6" y="-6" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
+                {surfaceLabel}
+              </text>
             </g>
+          ) : null}
 
-            <path d={`M828 210 V${antennaY}`} stroke="#ef4444" strokeWidth="3" strokeDasharray="6 6" />
-            <path d={`M818 210 H838 M818 ${antennaY} H838`} stroke="#ef4444" strokeWidth="3" />
-            <text x="842" y={(210 + antennaY) / 2 - 6} fill="#b91c1c" fontSize="15" fontWeight="700">
-              {depthLabel}
-            </text>
-            <text x="842" y={(210 + antennaY) / 2 + 16} fill="#64748b" fontSize="12">
-              深さ損失 {depthRange?.typical.toFixed(1) ?? "0.0"}dB
-            </text>
+          {/* BOX / ピット */}
+          <g filter="url(#softShadow)">
+            <rect x={BOX_X} y={GL_Y} width={BOX_W} height={boxBottom - GL_Y} rx="12" fill={boxFill} stroke={boxStroke} strokeWidth={isMetalBox ? 5 : 3} />
+            {/* 内部空洞 */}
+            <rect x={BOX_X + 12} y={innerTop} width={BOX_W - 24} height={innerBottom - innerTop} rx="8" fill="#ffffff" stroke="#e2e8f0" strokeWidth="1.5" />
+            {/* 水たまり */}
+            {waterH > 1 ? (
+              <rect x={BOX_X + 13} y={innerBottom - waterH} width={BOX_W - 26} height={waterH} rx="4" fill="#7dd3fc" opacity={hasWaterPool ? 0.85 : 0.55} />
+            ) : null}
+            {/* 金属近接板 */}
+            {input.antennaPosition === "near_metal" ? (
+              <rect x={BOX_X + 13} y={antennaY - 26} width="9" height="52" rx="3" fill="#475569" opacity="0.85" />
+            ) : null}
+            {/* NCUアンテナ */}
+            <circle cx={BOX_CX} cy={antennaY} r="13" fill="#10b981" />
+            <path d={`M${BOX_CX} ${antennaY} v-34`} stroke="#10b981" strokeWidth="5" strokeLinecap="round" />
+            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX - 12} ${antennaY - 48} ${BOX_CX - 24} ${antennaY - 34}`} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
+            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX + 12} ${antennaY - 48} ${BOX_CX + 24} ${antennaY - 34}`} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
+            {/* 蓋（材質で色・縁、金属は太枠）。開口は中央の隙間。密閉は×印 */}
+            <rect x={BOX_X - 28} y={GL_Y - 11} width={BOX_W + 56} height="22" rx="6" fill={lidColor} stroke={isMetalCover ? "#0f172a" : "#94a3b8"} strokeWidth={isMetalCover ? 3 : 2} />
+            {openW > 0 ? (
+              <rect x={openX} y={GL_Y - 11} width={openW} height="22" rx="4" fill="#eff6ff" stroke="#38bdf8" strokeWidth="2" />
+            ) : (
+              <path d={`M${BOX_CX - 9} ${GL_Y - 6} L${BOX_CX + 9} ${GL_Y + 6} M${BOX_CX + 9} ${GL_Y - 6} L${BOX_CX - 9} ${GL_Y + 6}`} stroke="#9f1239" strokeWidth="2.5" />
+            )}
+            {input.openingCondition === "metal_frame" ? (
+              <rect x={openX - 6} y={GL_Y - 15} width={openW + 12} height="30" rx="6" fill="none" stroke="#334155" strokeWidth="3.5" />
+            ) : null}
+          </g>
 
-            <rect x="590" y="128" width="270" height="52" rx="12" fill="#ffffff" stroke="#fecdd3" />
-            <text x="608" y="152" fill="#be123c" fontSize="14" fontWeight="700">
-              BOX・地下追加損失 {formatDbRange(result.belowGroundLossRangeDb)}
-            </text>
-            <text x="608" y="172" fill="#475569" fontSize="12">
-              蓋 {coverRange?.typical.toFixed(1) ?? "0.0"}dB / BOX {boxRange?.typical.toFixed(1) ?? "0.0"}dB / 開口 {openingRange?.typical.toFixed(1) ?? "0.0"}dB
-            </text>
+          {/* 深さ寸法（赤破線、GL→アンテナ）。極端値でも線が短くなりすぎない */}
+          <line x1={rulerX} x2={rulerX} y1={GL_Y} y2={antennaY} stroke="#ef4444" strokeWidth="2.5" strokeDasharray="6 5" />
+          <line x1={rulerX - 7} x2={rulerX + 7} y1={GL_Y} y2={GL_Y} stroke="#ef4444" strokeWidth="2.5" />
+          <line x1={rulerX - 7} x2={rulerX + 7} y1={antennaY} y2={antennaY} stroke="#ef4444" strokeWidth="2.5" />
+          <text x={rulerX - 12} y={(GL_Y + antennaY) / 2 - 4} textAnchor="end" fill="#b91c1c" fontSize="12.5" fontWeight="700">
+            {depthLabel}
+          </text>
+          <text x={rulerX - 12} y={(GL_Y + antennaY) / 2 + 13} textAnchor="end" fill="#64748b" fontSize="11">
+            深さ {formatSigned(-(depthRange?.typical ?? 0), "dB")}
+          </text>
 
-            <rect x="594" y={boxTopY + boxHeight + 12} width="184" height="54" rx="10" fill="#ffffff" stroke="#bbf7d0" />
-            <text x="610" y={boxTopY + boxHeight + 35} fill="#064e3b" fontSize="14" fontWeight="700">
-              NCUアンテナ {input.ncuAntennaGainDbi.toFixed(1)}dBi
-            </text>
-            <text x="610" y={boxTopY + boxHeight + 55} fill="#475569" fontSize="12">
-              {antennaLabel}
-            </text>
+          {/* NCUアンテナ利得の小ラベル */}
+          <text x={BOX_CX} y={Math.min(boxBottom + 20, 512)} textAnchor="middle" fill="#064e3b" fontSize="11.5" fontWeight="700">
+            NCU {input.ncuAntennaGainDbi.toFixed(0)}dBi・{antennaLabel}
+          </text>
 
-            <rect x="30" y="420" width="280" height="80" rx="14" fill="#ffffff" stroke="#cbd5e1" />
-            <text x="50" y="448" fill="#0f172a" fontSize="15" fontWeight="700">
-              受信電力 {result.receivedPowerRangeDbm.typical.toFixed(1)} dBm
+          {/* ===== 右レール：地下追加損失スタック ===== */}
+          <line x1="694" x2="694" y1="20" y2="500" stroke="#e2e8f0" strokeWidth="1.5" />
+          <text x={STK_X} y="46" fill="#0f172a" fontSize="13" fontWeight="700">
+            地下の追加損失
+          </text>
+          <text x={STK_X} y="66" fill="#be123c" fontSize="14" fontWeight="700">
+            合計 {result.belowGroundLossRangeDb.typical.toFixed(1)}dB
+          </text>
+          <rect x={STK_X - 4} y={STK_TOP - 4} width={STK_W + 8} height={STK_H + 8} rx="6" fill="#ffffff" stroke="#e2e8f0" />
+          {stackSegs.map((seg) => (
+            <g key={seg.id}>
+              <rect
+                x={STK_X}
+                y={seg.y0}
+                width={STK_W}
+                height={Math.max(2, seg.y1 - seg.y0 - 1.5)}
+                fill={seg.tone.fill}
+                stroke={seg.tone.stroke}
+                strokeWidth={seg.isDominant ? 2.5 : 1}
+              />
+              <line x1={STK_X + STK_W} x2={STK_X + STK_W + 10} y1={seg.midY} y2={seg.labelY} stroke="#cbd5e1" strokeWidth="1" />
+              {seg.isDominant ? (
+                <g>
+                  <rect x={STK_X + STK_W + 12} y={seg.labelY - 11} width="30" height="14" rx="7" fill="#e11d48" />
+                  <text x={STK_X + STK_W + 27} y={seg.labelY} textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">
+                    主因
+                  </text>
+                </g>
+              ) : null}
+              <text x={STK_X + STK_W + (seg.isDominant ? 48 : 12)} y={seg.labelY} fill="#0f172a" fontSize="11.5" fontWeight="700">
+                {seg.short} {seg.typical.toFixed(1)}dB
+              </text>
+            </g>
+          ))}
+          {stackSegs.length === 0 ? (
+            <text x={STK_X} y={STK_TOP + 30} fill="#64748b" fontSize="12">
+              地下の追加損失はほぼありません
             </text>
-            <text x="50" y="474" fill={ncuLinkColor} fontSize="15" fontWeight="700">
-              リンクマージン {formatSigned(result.linkMarginRangeDb.typical)}
-            </text>
-            <text x="50" y="496" fill="#64748b" fontSize="12">
-              受信感度 {input.receiverSensitivityDbm.toFixed(1)} dBm / 実測補正 {formatSigned(input.measuredCorrectionDb)}
-            </text>
-          </svg>
-        </div>
+          ) : null}
+        </svg>
+      </div>
 
-        <aside className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <p className="text-sm font-bold text-staf">設定サマリ</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">図に反映しているパラメータ</h3>
-          <div className="mt-3 grid gap-2">
-            {parameterChips.map((chip) => (
-              <div key={chip.label} className="flex items-start justify-between gap-3 rounded-md border border-slate-200 bg-white px-3 py-2">
-                <span className="text-xs font-bold text-slate-500">{chip.label}</span>
-                <span className="max-w-[12rem] text-right text-sm font-bold leading-snug text-slate-950">{chip.value}</span>
-              </div>
-            ))}
-          </div>
-        </aside>
+      {/* 結果ストリップ */}
+      <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
+        <span className="text-slate-600">
+          受信電力 <span className="font-bold text-slate-900">{result.receivedPowerRangeDbm.typical.toFixed(1)} dBm</span>
+        </span>
+        <span className="text-slate-600">
+          リンクマージン{" "}
+          <span className={`font-bold ${marginPass ? "text-emerald-700" : "text-rose-700"}`}>
+            {formatSigned(result.linkMarginRangeDb.typical)} dB
+          </span>
+        </span>
+        <span className="text-slate-500">受信感度 {input.receiverSensitivityDbm.toFixed(1)} dBm</span>
+      </div>
+
+      {/* 図に反映しているパラメータ（コンパクト） */}
+      <div className="mt-3 flex flex-wrap gap-2">
+        {parameterChips.map((chip) => (
+          <span key={chip.label} className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs">
+            <span className="font-bold text-slate-500">{chip.label}</span>
+            <span className="font-semibold text-slate-900">{chip.value}</span>
+          </span>
+        ))}
       </div>
 
       <div className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
@@ -746,36 +1103,96 @@ function RangeTriplet({
   );
 }
 
+// 標準損失[dB]の大きさで色分け。どの項目が支配的かを一目で分かるようにする。
+function lossBarSeverity(typicalDb: number): { bar: string; chip: string; label: string } {
+  if (typicalDb >= 18) {
+    return { bar: "bg-rose-500", chip: "bg-rose-100 text-rose-700", label: "支配的" };
+  }
+  if (typicalDb >= 10) {
+    return { bar: "bg-orange-500", chip: "bg-orange-100 text-orange-700", label: "大きい" };
+  }
+  if (typicalDb >= 4) {
+    return { bar: "bg-amber-500", chip: "bg-amber-100 text-amber-700", label: "中くらい" };
+  }
+  return { bar: "bg-emerald-500", chip: "bg-emerald-100 text-emerald-700", label: "小さい" };
+}
+
+// 主因ごとの「まず何をすると効くか」の一言。結果パネルと内訳の両方で使う。
+const bottleneckHintById: Record<string, string> = {
+  cover: "蓋を樹脂・複合材へ替える、または蓋直下・非金属部へアンテナを寄せると効きやすいです。",
+  box: "金属BOXは外部アンテナ化を検討し、アンテナを壁・取付金具から離します。",
+  depth: "アンテナを地表開口の近くまで引き上げる、または外部アンテナを地上へ出します。",
+  moisture: "排水・防水を行い、アンテナを想定水位より高く保ち、乾燥時と雨天後の両方で実測します。",
+  antenna: "アンテナを蓋直下・非金属部へ移し、金属から離して整合を確認します。",
+  opening: "樹脂窓・開口部・隙間の近くへアンテナを寄せ、地表側への抜け道をつくります。",
+  surface: "設置位置をずらし、駐車車両や金属体に覆われにくい場所を選びます。"
+};
+
 function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
-  const max = Math.max(...result.breakdown.map((item) => item.range.max), 1);
+  const items = [...result.breakdown].sort((a, b) => b.range.typical - a.range.typical);
+  const max = Math.max(...items.map((item) => item.range.max), 1);
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <SectionTitle icon={Layers} eyebrow="Loss decomposition" title="BOX・地下まわりの追加損失を分解">
-        どの条件がどれくらい効いているかを、項目別レンジで確認します。改善余地の大きい項目から現場で潰すと効率的です。
+        効いている順に並べています。いちばん上（主因）から現場で潰すと、いちばん少ない手間で通信余裕を稼げます。
       </SectionTitle>
 
       <div className="space-y-3">
-        {result.breakdown.map((item) => (
-          <details key={item.id} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
-            <summary className="cursor-pointer list-none">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                  <p className="text-sm font-bold text-slate-950">{item.label}</p>
-                  <p className="text-xs text-slate-500">{item.valueLabel}</p>
+        {items.map((item, index) => {
+          const severity = lossBarSeverity(item.range.typical);
+          const hint = bottleneckHintById[item.id];
+          return (
+            <details
+              key={item.id}
+              className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+              open={index === 0}
+            >
+              <summary className="cursor-pointer list-none">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-2">
+                    {index === 0 ? (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-600 px-2 py-0.5 text-[10px] font-bold text-white">
+                        <Target aria-hidden="true" className="h-3 w-3" />
+                        主因
+                      </span>
+                    ) : (
+                      <span className="inline-flex w-5 justify-center text-xs font-bold text-slate-400">
+                        {index + 1}
+                      </span>
+                    )}
+                    <div>
+                      <p className="text-sm font-bold text-slate-950">{item.label}</p>
+                      <p className="text-xs text-slate-500">{item.valueLabel}</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-bold text-slate-950">{formatDbRange(item.range)}</p>
+                    <span className={`mt-0.5 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold ${severity.chip}`}>
+                      標準 {item.range.typical.toFixed(1)}dB・{severity.label}
+                    </span>
+                  </div>
                 </div>
-                <p className="text-sm font-bold text-slate-950">{formatDbRange(item.range)}</p>
-              </div>
-              <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
-                <div
-                  className="h-full rounded-full bg-staf"
-                  style={{ width: `${Math.max(3, (item.range.typical / max) * 100)}%` }}
-                />
-              </div>
-            </summary>
-            <p className="mt-3 text-xs leading-relaxed text-slate-600">{item.note}</p>
-          </details>
-        ))}
+                <div className="mt-2 h-2 overflow-hidden rounded-full bg-white">
+                  <div
+                    className={`h-full rounded-full ${severity.bar}`}
+                    style={{ width: `${Math.max(3, (item.range.typical / max) * 100)}%` }}
+                  />
+                </div>
+              </summary>
+              <p className="mt-3 text-xs leading-relaxed text-slate-600">{item.note}</p>
+              {hint ? (
+                <p className="mt-2 flex items-start gap-1.5 rounded-md bg-white p-2 text-xs leading-relaxed text-slate-700">
+                  <Wrench aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-staf" />
+                  <span>
+                    <span className="font-bold">改善案：</span>
+                    {hint}
+                  </span>
+                </p>
+              ) : null}
+            </details>
+          );
+        })}
       </div>
     </section>
   );
@@ -783,6 +1200,8 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
 
 function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: NcuBelowGroundResult }) {
   const totalFixedLossDb = result.outdoorPathLossDb + input.cableLossDb + input.aboveGroundClutterLossDb;
+  const dominant = [...result.breakdown].sort((a, b) => b.range.typical - a.range.typical)[0];
+  const dominantHint = bottleneckHintById[dominant.id];
 
   return (
     <aside className="space-y-4 lg:sticky lg:top-6">
@@ -799,6 +1218,29 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
           )}
         </div>
         <p className="mt-3 text-sm leading-relaxed">{result.judgement.summary}</p>
+      </section>
+
+      <section className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+        <div className="flex items-center gap-2 text-rose-700">
+          <Target aria-hidden="true" className="h-4 w-4" />
+          <p className="text-xs font-bold uppercase tracking-wider">いちばん効いている損失（主因）</p>
+        </div>
+        <p className="mt-1 text-xl font-bold text-rose-950">
+          {dominant.label}
+          <span className="ml-2 text-base font-bold">標準 {dominant.range.typical.toFixed(1)} dB</span>
+        </p>
+        <p className="mt-0.5 text-xs leading-relaxed text-rose-900/80">
+          {dominant.valueLabel}（{formatDbRange(dominant.range)}）
+        </p>
+        {dominantHint ? (
+          <p className="mt-2 flex items-start gap-1.5 text-xs leading-relaxed text-rose-900">
+            <Wrench aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0" />
+            <span>
+              <span className="font-bold">まずここから：</span>
+              {dominantHint}
+            </span>
+          </p>
+        ) : null}
       </section>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
@@ -1595,43 +2037,30 @@ export function NcuBelowGroundClient() {
               地上側の距離減衰を計算したうえで、GL以下の追加損失を積み上げます。
             </SectionTitle>
             <div className="grid gap-4 sm:grid-cols-2">
+              <TextField
+                id="ncu-system"
+                label="通信方式・メモ"
+                help="920MHz NCU、LTE-M、NB-IoT、LoRaWANなど。図・記録用のラベルです（計算には影響しません）。"
+                value={input.system}
+                placeholder="例：920MHz NCU / LPWA"
+                onChange={(value) => update("system", value)}
+              />
               <NumberField
                 id="ncu-frequencyMHz"
                 label="周波数"
-                help="NCUの通信周波数です。920MHz帯、LTE-M/NB-IoTなどに合わせます。"
+                help="NCUの通信周波数です。920MHz帯、LTE-M/NB-IoTなどに合わせます。キーボードで直接入力できます。"
                 unit="MHz"
                 value={input.frequencyMHz}
                 min={1}
                 step={1}
                 onChange={(value) => update("frequencyMHz", value)}
               />
-              <label className="block">
-                <span className="flex items-center gap-2 text-sm font-bold text-slate-900">
-                  地上側距離
-                  <FieldHint text="地上側のゲートウェイ・基地局から、BOX付近までの水平距離です。" />
-                </span>
-                <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/15">
-                  <input
-                    id="ncu-distance"
-                    className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
-                    type="number"
-                    min={0.001}
-                    step={input.distanceUnit === "km" ? 0.01 : 1}
-                    value={input.distance}
-                    onChange={(event) => update("distance", updateNumber(event.target.value))}
-                  />
-                  <select
-                    id="ncu-distanceUnit"
-                    className="bg-slate-50 px-3 text-sm font-semibold text-slate-600 outline-none"
-                    value={input.distanceUnit}
-                    onChange={(event) => update("distanceUnit", event.target.value as NcuBelowGroundInput["distanceUnit"])}
-                    aria-label="地上側距離の単位"
-                  >
-                    <option value="m">m</option>
-                    <option value="km">km</option>
-                  </select>
-                </span>
-              </label>
+              <DistanceField
+                value={input.distance}
+                unit={input.distanceUnit}
+                onValueChange={(value) => update("distance", value)}
+                onUnitChange={(unit) => update("distanceUnit", unit)}
+              />
               <SelectField
                 id="ncu-outdoorModel"
                 label="地上側伝搬モデル"
@@ -1651,62 +2080,71 @@ export function NcuBelowGroundClient() {
                 step={0.1}
                 onChange={(value) => update("pathLossExponent", value)}
               />
-              <NumberField
-                id="ncu-txPowerDbm"
-                label="送信電力"
-                help="地上側からNCUへ送る向きの送信電力です。上り評価ではNCU側送信電力に置き換えてください。"
-                unit="dBm"
-                value={input.txPowerDbm}
-                step={0.1}
-                onChange={(value) => update("txPowerDbm", value)}
-              />
-              <NumberField
-                id="ncu-gatewayGain"
-                label="地上側アンテナ利得"
-                help="ゲートウェイ・基地局側アンテナの利得です。ケーブル損は別項目に入れます。"
-                unit="dBi"
-                value={input.gatewayAntennaGainDbi}
-                step={0.1}
-                onChange={(value) => update("gatewayAntennaGainDbi", value)}
-              />
-              <NumberField
-                id="ncu-ncuGain"
-                label="NCUアンテナ利得"
-                help="BOX内アンテナの実効利得です。小型・筐体内・金属近傍ではマイナスになりやすい値です。"
-                unit="dBi"
-                value={input.ncuAntennaGainDbi}
-                step={0.1}
-                onChange={(value) => update("ncuAntennaGainDbi", value)}
-              />
-              <NumberField
-                id="ncu-sensitivity"
-                label="受信感度"
-                help="通信方式・データレート・帯域幅で決まる受信側の限界値です。"
-                unit="dBm"
-                value={input.receiverSensitivityDbm}
-                step={0.1}
-                onChange={(value) => update("receiverSensitivityDbm", value)}
-              />
-              <NumberField
-                id="ncu-cableLoss"
-                label="ケーブル・コネクタ損失"
-                help="地上側・端末側の給電系で失う電力です。"
-                unit="dB"
-                value={input.cableLossDb}
-                min={0}
-                step={0.1}
-                onChange={(value) => update("cableLossDb", value)}
-              />
-              <NumberField
-                id="ncu-clutterLoss"
-                label="地上側クラッタ損失"
-                help="BOXとは別に、建物・樹木・地形・車両など地上側の遮蔽を入れます。"
-                unit="dB"
-                value={input.aboveGroundClutterLossDb}
-                min={0}
-                step={0.5}
-                onChange={(value) => update("aboveGroundClutterLossDb", value)}
-              />
+            </div>
+
+            <div className="mt-5">
+              <p className="text-sm font-bold text-slate-900">送信・受信パラメータ（リンクバジェット）</p>
+              <p className="mt-0.5 text-xs leading-relaxed text-slate-500">
+                通信モジュール出力・送受信アンテナ利得・受信感度・ケーブル損・地上クラッタ。各欄ともキーボードで直接入力できます。機器仕様が分かるときに合わせると精度が上がります。
+              </p>
+              <div className="mt-3 grid gap-4 sm:grid-cols-2">
+                <NumberField
+                  id="ncu-txPowerDbm"
+                  label="送信出力（通信モジュール）"
+                  help="送信機・通信モジュールの空中線端での出力です。下り（GW→NCU）はGW送信出力、上り（NCU→GW）評価ではNCUモジュール出力に置き換えます。"
+                  unit="dBm"
+                  value={input.txPowerDbm}
+                  step={0.1}
+                  onChange={(value) => update("txPowerDbm", value)}
+                />
+                <NumberField
+                  id="ncu-sensitivity"
+                  label="受信感度"
+                  help="受信側の最小受信電力です。通信方式・データレート・帯域幅で決まります（例：NB-IoTで-120〜-135dBm前後）。"
+                  unit="dBm"
+                  value={input.receiverSensitivityDbm}
+                  step={0.1}
+                  onChange={(value) => update("receiverSensitivityDbm", value)}
+                />
+                <NumberField
+                  id="ncu-gatewayGain"
+                  label="送信アンテナ利得（GW/基地局側）"
+                  help="送信側アンテナの利得です。ケーブル損は別項目に入れます。上り評価ではNCU側アンテナ利得に読み替えます。"
+                  unit="dBi"
+                  value={input.gatewayAntennaGainDbi}
+                  step={0.1}
+                  onChange={(value) => update("gatewayAntennaGainDbi", value)}
+                />
+                <NumberField
+                  id="ncu-ncuGain"
+                  label="受信アンテナ利得（NCU側）"
+                  help="BOX内アンテナの実効利得です。小型・筐体内・金属近傍ではマイナスになりやすい値です。上り評価ではGW側アンテナ利得に読み替えます。"
+                  unit="dBi"
+                  value={input.ncuAntennaGainDbi}
+                  step={0.1}
+                  onChange={(value) => update("ncuAntennaGainDbi", value)}
+                />
+                <NumberField
+                  id="ncu-cableLoss"
+                  label="ケーブル・コネクタ損失"
+                  help="送信側・受信側の給電系（同軸ケーブル・コネクタ）で失う電力の合計です。"
+                  unit="dB"
+                  value={input.cableLossDb}
+                  min={0}
+                  step={0.1}
+                  onChange={(value) => update("cableLossDb", value)}
+                />
+                <NumberField
+                  id="ncu-clutterLoss"
+                  label="地上側クラッタ損失（障害物）"
+                  help="BOXとは別に、建物・樹木・地形・車両など地上側の遮蔽を入れます。『障害物ぶんの何dB』はここに入れます。"
+                  unit="dB"
+                  value={input.aboveGroundClutterLossDb}
+                  min={0}
+                  step={0.5}
+                  onChange={(value) => update("aboveGroundClutterLossDb", value)}
+                />
+              </div>
             </div>
           </section>
 
@@ -1714,76 +2152,78 @@ export function NcuBelowGroundClient() {
             <SectionTitle icon={Box} eyebrow="Below ground" title="GL以下・BOXまわりの条件">
               蓋、BOX、深さ、水分、アンテナ位置、地表上の遮蔽を、端末近傍損失として分けて入力します。
             </SectionTitle>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <NumberField
-                id="ncu-depth"
-                label="GL下深さ"
-                help="地表面からNCUアンテナ付近までの深さです。負のアンテナ高ではなく追加損失として扱います。"
-                unit="m"
-                value={input.depthBelowGroundM}
-                min={0}
-                max={5}
-                step={0.05}
-                onChange={(value) => update("depthBelowGroundM", value)}
-              />
-              <SelectField
-                id="ncu-coverMaterial"
+            <div className="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/70 p-3 text-xs leading-relaxed text-amber-900">
+              <Target aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
+              <span>
+                ここがこのツールの肝です。まず<span className="font-bold">「深さ」と「蓋」</span>を現場写真に合わせ、続けて水分・アンテナ位置を選ぶと、結果パネルに主因が出ます。
+              </span>
+            </div>
+            <div className="space-y-5">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <NumberField
+                  id="ncu-depth"
+                  label="GL下深さ"
+                  help="地表面からNCUアンテナ付近までの深さです。負のアンテナ高ではなく追加損失として扱います。"
+                  unit="m"
+                  value={input.depthBelowGroundM}
+                  min={0}
+                  max={5}
+                  step={0.05}
+                  onChange={(value) => update("depthBelowGroundM", value)}
+                />
+                <NumberField
+                  id="ncu-measuredCorrection"
+                  label="実測補正値"
+                  help="現地RSSI/RSRPと計算値との差分です。+なら計算より良い、-なら悪い条件として補正します。"
+                  unit="dB"
+                  value={input.measuredCorrectionDb}
+                  min={-60}
+                  max={60}
+                  step={0.5}
+                  onChange={(value) => update("measuredCorrectionDb", value)}
+                />
+              </div>
+              <ChoiceChips
                 label="蓋・地表面"
-                help="NCUの上にある蓋・地表面の主な材質です。"
+                help="NCUの上にある蓋・地表面の主な材質です。金属（鋳鉄・鋼板）ほど遮蔽が強くなります。"
                 value={input.coverMaterial}
                 options={ncuCoverMaterialOptions}
                 onChange={(value) => update("coverMaterial", value)}
               />
-              <SelectField
-                id="ncu-boxMaterial"
+              <ChoiceChips
                 label="BOX・ピット材質"
                 help="NCUが入っているBOXやピットの主な材質です。"
                 value={input.boxMaterial}
                 options={ncuBoxMaterialOptions}
                 onChange={(value) => update("boxMaterial", value)}
               />
-              <SelectField
-                id="ncu-moisture"
+              <ChoiceChips
                 label="水分・湿潤状態"
                 help="雨天後、結露、水溜まりなどの状態を選びます。"
                 value={input.moistureCondition}
                 options={ncuMoistureOptions}
                 onChange={(value) => update("moistureCondition", value)}
               />
-              <SelectField
-                id="ncu-antennaPosition"
+              <ChoiceChips
                 label="アンテナ位置"
-                help="BOX内でアンテナがどこにあるかを選びます。"
+                help="BOX内でアンテナがどこにあるかを選びます。蓋直下が比較的有利です。"
                 value={input.antennaPosition}
                 options={ncuAntennaPositionOptions}
                 onChange={(value) => update("antennaPosition", value)}
               />
-              <SelectField
-                id="ncu-opening"
+              <ChoiceChips
                 label="開口・隙間"
                 help="地表側へ電波が抜ける経路の有無です。"
                 value={input.openingCondition}
                 options={ncuOpeningOptions}
                 onChange={(value) => update("openingCondition", value)}
               />
-              <SelectField
-                id="ncu-surfaceObstruction"
+              <ChoiceChips
                 label="地表上の遮蔽"
                 help="BOXの上に人や車両が来る可能性を見ます。"
                 value={input.surfaceObstruction}
                 options={ncuSurfaceObstructionOptions}
                 onChange={(value) => update("surfaceObstruction", value)}
-              />
-              <NumberField
-                id="ncu-measuredCorrection"
-                label="実測補正値"
-                help="現地RSSI/RSRPと計算値との差分です。+なら計算より良い、-なら悪い条件として補正します。"
-                unit="dB"
-                value={input.measuredCorrectionDb}
-                min={-60}
-                max={60}
-                step={0.5}
-                onChange={(value) => update("measuredCorrectionDb", value)}
               />
             </div>
           </section>
@@ -1791,6 +2231,8 @@ export function NcuBelowGroundClient() {
 
         <ResultPanel input={input} result={result} />
       </div>
+
+      <NcuBudgetWaterfall input={input} result={result} />
 
       <NcuCrossSectionDiagram input={input} result={result} />
 
