@@ -188,7 +188,8 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
         </div>
       </div>
 
-      <div className="mt-5 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50">
+      <p className="mt-5 text-[11px] font-medium text-slate-400 sm:hidden">← 横スクロールで全体を表示できます →</p>
+      <div className="mt-1.5 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 sm:mt-5">
         <svg
           role="img"
           aria-label="GL以下NCUのリンクバジェット滝グラフ。送信電力から受信電力までの増減と受信感度ラインを表示。"

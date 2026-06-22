@@ -1002,7 +1002,8 @@ function NcuCrossSectionDiagram({
         </span>
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50">
+      <p className="mt-4 text-[11px] font-medium text-slate-400 sm:hidden">← 横スクロールで全体を表示できます →</p>
+      <div className="mt-1.5 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 sm:mt-4">
         <svg
           role="img"
           aria-label="GL以下NCU設置の2D断面図と地下追加損失の積み上げ"
