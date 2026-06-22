@@ -147,7 +147,7 @@ export function DbmConverterPanel() {
                   入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatPower(result.dbm)}</p>
+              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.dbm)}</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-1">
@@ -156,7 +156,7 @@ export function DbmConverterPanel() {
                   入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatPower(result.mw)}</p>
+              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.mw)}</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-1">
@@ -165,7 +165,7 @@ export function DbmConverterPanel() {
                   入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatPower(result.w)}</p>
+              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatPower(result.w)}</p>
             </div>
           </div>
         ) : null}

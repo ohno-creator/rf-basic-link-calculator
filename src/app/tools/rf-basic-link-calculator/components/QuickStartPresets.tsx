@@ -11,7 +11,7 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
     <section className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-staf">まず試すプリセット</p>
+          <p className="text-sm font-semibold text-staf-dark">まず試すプリセット</p>
           <h2 className="mt-2 text-2xl font-bold text-slate-950">
             数値が分からなくても、代表条件から始められます
           </h2>
@@ -27,7 +27,7 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
             key={preset.id}
             className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-sm"
           >
-            <span className="w-fit rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf">
+            <span className="w-fit rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
               {preset.label}
             </span>
             <h3 className="mt-4 text-lg font-bold text-slate-950">{preset.system}</h3>

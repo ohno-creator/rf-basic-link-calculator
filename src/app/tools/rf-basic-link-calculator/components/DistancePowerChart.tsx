@@ -39,7 +39,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
           </p>
         </div>
         {current ? (
-          <span className="rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf">
+          <span className="rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
             現在: {current.distanceLabel}
           </span>
         ) : null}

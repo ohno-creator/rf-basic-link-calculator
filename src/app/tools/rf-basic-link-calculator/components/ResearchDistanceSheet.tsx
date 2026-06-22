@@ -269,7 +269,7 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
             0dBラインを下回る距離から、指定した信頼率では成立しにくくなります。
           </p>
         </div>
-        <span className="rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf">
+        <span className="rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
           目標信頼率 {input.reliabilityPercent}%
         </span>
       </div>
@@ -332,7 +332,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <p className="flex items-center gap-2 text-sm font-semibold text-staf">
+            <p className="flex items-center gap-2 text-sm font-semibold text-staf-dark">
               <BookOpen className="h-4 w-4" aria-hidden="true" />
               研究・標準ベースの距離逆算
             </p>
@@ -358,7 +358,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
         <div className="space-y-5">
           <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-2">
-              <Calculator className="h-5 w-5 text-staf" aria-hidden="true" />
+              <Calculator className="h-5 w-5 text-staf-dark" aria-hidden="true" />
               <h3 className="text-base font-bold text-slate-950">モデルと信頼率</h3>
             </div>
 
@@ -684,7 +684,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
         <div className="space-y-5 lg:sticky lg:top-20">
           <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
             <div className="flex items-center gap-2">
-              <Route className="h-5 w-5 text-staf" aria-hidden="true" />
+              <Route className="h-5 w-5 text-staf-dark" aria-hidden="true" />
               <h3 className="text-base font-bold text-slate-950">距離逆算結果</h3>
             </div>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">

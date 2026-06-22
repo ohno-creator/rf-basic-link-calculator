@@ -92,11 +92,11 @@ export function VswrStandingWaveDiagram({
       <div className="mt-2 grid gap-2 sm:grid-cols-2">
         <div className="rounded-md bg-white p-2 text-center">
           <p className="text-xs text-slate-500">VSWR = Vmax / Vmin</p>
-          <p className="text-lg font-bold text-staf">{vswrText}</p>
+          <p className="text-lg font-bold text-staf-dark">{vswrText}</p>
         </div>
         <div className="rounded-md bg-white p-2 text-center">
           <p className="text-xs text-slate-500">ミスマッチ損失（整合損失）</p>
-          <p className="text-lg font-bold text-staf">{mismatchLossText} dB</p>
+          <p className="text-lg font-bold text-staf-dark">{mismatchLossText} dB</p>
         </div>
         <div className="rounded-md bg-white p-2 sm:col-span-2">
           <div className="flex items-center justify-between gap-2">

@@ -17,7 +17,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
   return (
     <section className="mx-auto grid max-w-7xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-14">
       <div>
-        <p className="text-sm font-semibold text-staf">アンテナ・無線 基礎計算ツール</p>
+        <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
         <h1 className="mt-3 text-4xl font-bold tracking-normal text-slate-950 sm:text-5xl">
           通信距離・リンクバジェット簡易診断
         </h1>
@@ -64,7 +64,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
             <div key={item.label}>
               <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                 <span className="text-sm font-medium text-slate-700">{item.label}</span>
-                <span className="text-lg font-bold text-staf">{item.value}</span>
+                <span className="text-lg font-bold text-staf-dark">{item.value}</span>
               </div>
               {index < flow.length - 1 ? (
                 <div className="flex justify-center py-1 text-slate-400">↓</div>

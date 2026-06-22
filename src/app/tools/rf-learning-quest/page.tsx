@@ -45,7 +45,7 @@ export default function RfLearningQuestPage() {
       <RfLearningQuestClient />
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
         <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
-          <p className="text-sm font-bold text-staf">アンテナ設計・選定の関連ページ</p>
+          <p className="text-sm font-bold text-staf-dark">アンテナ設計・選定の関連ページ</p>
           <h2 className="mt-1 text-xl font-bold text-slate-950">学んだ内容を製品選定と相談につなげる</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             RPGレッスンで扱う波長、VSWR、放射効率、筐体実装、設置条件は、実際のアンテナ選定や通信距離検討とつながります。周波数帯や用途が決まっている場合は、関連ページも合わせて確認してください。

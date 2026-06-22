@@ -51,7 +51,7 @@ export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
         <div>
-          <p className="text-sm font-semibold text-staf">結果の読み方</p>
+          <p className="text-sm font-semibold text-staf-dark">結果の読み方</p>
           <h3 className="mt-1 text-lg font-bold text-slate-950">
             初心者はこの順番で見ればOK
           </h3>
@@ -79,7 +79,7 @@ export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
         {metrics.map((metric) => (
           <div key={metric.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="flex items-center gap-2">
-              <CircleDot aria-hidden="true" className="h-4 w-4 text-staf" />
+              <CircleDot aria-hidden="true" className="h-4 w-4 text-staf-dark" />
               <p className="text-xs font-semibold text-slate-500">{metric.label}</p>
             </div>
             <p className="mt-2 text-2xl font-bold text-slate-950">{metric.value}</p>

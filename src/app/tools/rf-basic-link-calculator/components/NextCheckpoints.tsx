@@ -22,7 +22,7 @@ export function NextCheckpoints() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {checkpoints.map((checkpoint) => (
           <div key={checkpoint} className="flex items-start gap-2 text-sm text-slate-700">
-            <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-staf" />
+            <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-staf-dark" />
             <span>{checkpoint}</span>
           </div>
         ))}

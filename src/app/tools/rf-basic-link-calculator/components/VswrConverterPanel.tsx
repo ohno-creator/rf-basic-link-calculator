@@ -110,7 +110,7 @@ export function VswrConverterPanel() {
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
           <div className="rounded-lg bg-staf-light p-4">
             <div className="flex items-start justify-between gap-2">
-              <p className="text-xs font-semibold text-staf">VSWR</p>
+              <p className="text-xs font-semibold text-staf-dark">VSWR</p>
               <Tooltip term="VSWR">
                 算出されたVSWR（Vmax/Vmin）。1に近いほど整合が良い状態です。Γ=1（全反射）では∞表示になります。
               </Tooltip>
@@ -124,7 +124,7 @@ export function VswrConverterPanel() {
                 算出されたリターンロス -20log10(Γ)。大きいほど整合良好です。完全整合（Γ=0）では∞dBになります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatInfinite(result.returnLossDb, 1)} dB</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatInfinite(result.returnLossDb, 1)} dB</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -133,7 +133,7 @@ export function VswrConverterPanel() {
                 算出された反射係数。0＝無反射、1に近いほど反射大。VSWR・リターンロスの基準量です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.reflectionCoefficient, 3)}</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.reflectionCoefficient, 3)}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex items-start justify-between gap-2">
@@ -142,7 +142,7 @@ export function VswrConverterPanel() {
                 送信電力のうち負荷で反射して戻る割合 Γ²×100。小さいほど効率的です。例：Γ=0.2で4%。残りが負荷へ伝わる電力です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.reflectedPowerPercent, 1)} %</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.reflectedPowerPercent, 1)} %</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4 sm:col-span-2">
             <div className="flex items-start justify-between gap-2">
@@ -151,7 +151,7 @@ export function VswrConverterPanel() {
                 不整合により負荷へ伝わらず失われる電力 -10log10(1−Γ²)。小さいほど良好で、リンクバジェットへ直接効きます。完全整合（Γ=0）では0dB、全反射（Γ=1）では∞dB。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatInfinite(result.mismatchLossDb, 2)} dB</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatInfinite(result.mismatchLossDb, 2)} dB</p>
           </div>
         </div>
       ) : (

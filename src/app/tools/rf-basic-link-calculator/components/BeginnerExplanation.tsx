@@ -24,7 +24,7 @@ export function BeginnerExplanation({ input, result }: BeginnerExplanationProps)
       </InfoCard>
       <InfoCard title="次に確認すること" tone="amber">
         <p>{result.judgement.recommendation}</p>
-        <a className="mt-3 inline-block font-semibold text-staf" href={COLUMN_URL}>
+        <a className="mt-3 inline-block font-semibold text-staf-dark" href={COLUMN_URL}>
           リンクバジェットの考え方を詳しく読む
         </a>
       </InfoCard>

@@ -656,7 +656,7 @@ function ManufacturerWorkflowPanel() {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+          <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
             <Factory aria-hidden="true" className="h-4 w-4" />
             アンテナメーカーの学習導線
           </p>
@@ -673,13 +673,13 @@ function ManufacturerWorkflowPanel() {
           return (
             <article key={step.title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
               <div className="flex items-center justify-between gap-3">
-                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-staf">
+                <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-staf-dark">
                   <Icon aria-hidden="true" className="h-4 w-4" />
                 </span>
                 <span className="text-xs font-bold text-slate-400">STEP {index + 1}</span>
               </div>
               <h3 className="mt-3 text-base font-bold text-slate-950">{step.title}</h3>
-              <p className="mt-1 text-xs font-bold text-staf">{step.caption}</p>
+              <p className="mt-1 text-xs font-bold text-staf-dark">{step.caption}</p>
               <p className="mt-2 text-xs leading-relaxed text-slate-600">{step.detail}</p>
             </article>
           );
@@ -731,7 +731,7 @@ function ModeSelector({
             <span className={`mt-2 block text-xs leading-relaxed ${selected ? "text-white/85" : "text-slate-500"}`}>
               {mode.description}
             </span>
-            <span className={`mt-3 flex items-center gap-1 text-[11px] font-bold ${selected ? "text-white" : "text-staf"}`}>
+            <span className={`mt-3 flex items-center gap-1 text-[11px] font-bold ${selected ? "text-white" : "text-staf-dark"}`}>
               <GuideIcon aria-hidden="true" className="h-3.5 w-3.5" />
               {guide.reviewName}
             </span>
@@ -762,7 +762,7 @@ function ModeReviewPanel({
 
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <p className="flex items-center gap-2 text-xs font-bold text-staf">
+      <p className="flex items-center gap-2 text-xs font-bold text-staf-dark">
         <Icon aria-hidden="true" className="h-4 w-4" />
         {guide.reviewName}
       </p>
@@ -834,7 +834,7 @@ function StageMap({
                 </p>
                 <p className="text-[11px] font-bold text-slate-400">{completed}/10</p>
               </div>
-              <p className="mt-0.5 px-1 text-[11px] font-semibold text-staf">
+              <p className="mt-0.5 px-1 text-[11px] font-semibold text-staf-dark">
                 {chapterTitleFor(modeId, chapter.chapter)}
               </p>
               <div className="mt-2 grid grid-cols-5 gap-1.5">
@@ -887,7 +887,7 @@ function AntennaGuildPanel({
     <section className="rounded-lg border border-staf/20 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+          <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
             <Radio aria-hidden="true" className="h-4 w-4" />
             アンテナ設計室
           </p>
@@ -897,7 +897,7 @@ function AntennaGuildPanel({
           </p>
         </div>
         <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-3">
-          <p className="text-xs font-bold text-staf">次の称号</p>
+          <p className="text-xs font-bold text-staf-dark">次の称号</p>
           <p className="mt-1 text-sm font-bold text-slate-950">{nextBadge.title}</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600">
             あと{Math.max(0, nextBadge.threshold - completedCount)}問で解放
@@ -926,7 +926,7 @@ function AntennaGuildPanel({
                   {done ? (
                     <CheckCircle2 aria-hidden="true" className="h-4 w-4 text-emerald-700" />
                   ) : (
-                    <Target aria-hidden="true" className="h-4 w-4 text-staf" />
+                    <Target aria-hidden="true" className="h-4 w-4 text-staf-dark" />
                   )}
                   {mission.title}
                 </span>
@@ -938,7 +938,7 @@ function AntennaGuildPanel({
 
         <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
           <p className="flex items-center gap-2 text-sm font-bold text-slate-950">
-            <Gauge aria-hidden="true" className="h-4 w-4 text-staf" />
+            <Gauge aria-hidden="true" className="h-4 w-4 text-staf-dark" />
             実績スロット
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
@@ -950,7 +950,7 @@ function AntennaGuildPanel({
                   title={badge.description}
                   className={`rounded-full border px-2.5 py-1 text-xs font-bold ${
                     earned
-                      ? "border-staf/30 bg-white text-staf"
+                      ? "border-staf/30 bg-white text-staf-dark"
                       : "border-slate-200 bg-white text-slate-400"
                   }`}
                 >
@@ -1046,7 +1046,7 @@ function LessonBattle({
           <p className="mt-1 text-sm font-semibold text-slate-500">対戦相手：{lesson.enemy}</p>
         </div>
         <div className="flex flex-wrap justify-end gap-2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-staf-light px-3 py-1 text-xs font-bold text-staf">
+          <span className="inline-flex items-center gap-1 rounded-full bg-staf-light px-3 py-1 text-xs font-bold text-staf-dark">
             <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5" />
             {lessonLens.badge}
           </span>
@@ -1066,17 +1066,17 @@ function LessonBattle({
       </div>
 
       <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
-        <p className="text-xs font-bold text-staf">QUESTION</p>
+        <p className="text-xs font-bold text-staf-dark">QUESTION</p>
         <p className="mt-1 text-base font-bold leading-relaxed text-slate-950">{lesson.question}</p>
         <div className="mt-4 rounded-md border border-slate-200 bg-white p-3">
           <p className="flex items-center gap-2 text-xs font-bold text-slate-500">
-            <ClipboardList aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+            <ClipboardList aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
             読み解きの順番
           </p>
           <div className="mt-3 grid gap-2 md:grid-cols-3">
             {preparationSteps.map((step, index) => (
               <div key={step} className="rounded-md border border-slate-200 bg-slate-50 p-3">
-                <p className="text-[11px] font-bold text-staf">CHECK {index + 1}</p>
+                <p className="text-[11px] font-bold text-staf-dark">CHECK {index + 1}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-700">{step}</p>
               </div>
             ))}
@@ -1123,7 +1123,7 @@ function LessonBattle({
             <p className="mt-2 text-sm leading-relaxed text-slate-700">{lesson.explanation}</p>
             <div className="mt-3 rounded-md border border-white/70 bg-white/80 p-3">
               <p className="flex items-center gap-2 text-xs font-bold text-slate-600">
-                <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
                 メーカーの判断メモ
               </p>
               <div className="mt-3 grid gap-2 sm:grid-cols-3">
@@ -1132,7 +1132,7 @@ function LessonBattle({
 
                   return (
                     <div key={item.label} className="rounded-md border border-slate-200 bg-white p-3">
-                      <p className="flex items-center gap-1 text-[11px] font-bold text-staf">
+                      <p className="flex items-center gap-1 text-[11px] font-bold text-staf-dark">
                         <Icon aria-hidden="true" className="h-3.5 w-3.5" />
                         {item.label}
                       </p>
@@ -1202,13 +1202,13 @@ function LessonBattle({
 
           <details open className="rounded-lg border border-slate-200 bg-white p-4">
             <summary className="flex cursor-pointer items-center gap-2 text-sm font-bold text-slate-950">
-              <BookOpen aria-hidden="true" className="h-4 w-4 text-staf" />
+              <BookOpen aria-hidden="true" className="h-4 w-4 text-staf-dark" />
               現場コラムと設計レビュー
             </summary>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">{lesson.column}</p>
             <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3">
               <p className="flex items-center gap-2 text-xs font-bold text-slate-700">
-                <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
                 {lessonLens.title}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">{lessonLens.why}</p>
@@ -1227,7 +1227,7 @@ function LessonBattle({
               </div>
             ) : null}
             <div className="mt-4 rounded-md border border-staf/20 bg-staf-light p-3">
-              <p className="flex items-center gap-2 text-xs font-bold text-staf">
+              <p className="flex items-center gap-2 text-xs font-bold text-staf-dark">
                 <Radio aria-hidden="true" className="h-3.5 w-3.5" />
                 アンテナ設計の次の一手
               </p>
@@ -1269,7 +1269,7 @@ function CertificateView({
 
   return (
     <section className={`${printTarget ? "rf-certificate-print" : ""} rounded-lg border-4 border-staf bg-white p-8 text-center shadow-sm`}>
-      <p className="text-xs font-bold uppercase tracking-[0.32em] text-staf">RF Learning Quest</p>
+      <p className="text-xs font-bold uppercase tracking-[0.32em] text-staf-dark">RF Learning Quest</p>
       <h2 className="mt-4 text-3xl font-bold tracking-tight text-slate-950">修了証明書</h2>
       <p className="mt-5 text-sm font-semibold text-slate-500">Certificate of Completion</p>
       <div className="mx-auto mt-6 max-w-2xl border-y border-slate-200 py-6">
@@ -1356,7 +1356,7 @@ function CertificationPanel({
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="flex items-center gap-2 text-sm font-bold text-staf">
+          <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
             <Award aria-hidden="true" className="h-4 w-4" />
             {mode.label} 修了試験
           </p>
@@ -1924,7 +1924,7 @@ export function RfLearningQuestClient() {
       <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex flex-wrap items-start justify-between gap-5">
           <div>
-            <p className="flex items-center gap-2 text-sm font-semibold text-staf">
+            <p className="flex items-center gap-2 text-sm font-semibold text-staf-dark">
               <Swords aria-hidden="true" className="h-4 w-4" />
               RF学習クエスト
             </p>
@@ -1949,14 +1949,14 @@ export function RfLearningQuestClient() {
                     key={item.label}
                     className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-bold text-slate-700"
                   >
-                    <Icon aria-hidden="true" className="h-3.5 w-3.5 text-staf" />
+                    <Icon aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
                     {item.label}
                   </span>
                 );
               })}
             </div>
           </div>
-          <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf">
+          <div className="min-w-56 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf-dark">
             <p className="text-xs font-bold">冒険進捗</p>
             <p className="mt-1 text-2xl font-bold">
               {completedCount}/{rfQuestLessons.length}
@@ -1967,11 +1967,11 @@ export function RfLearningQuestClient() {
             <div className="mt-3 grid grid-cols-2 gap-2 text-xs font-bold">
               <div className="rounded-md bg-white/70 p-2">
                 <p className="text-slate-500">連続正解</p>
-                <p className="text-base text-staf">{streak}</p>
+                <p className="text-base text-staf-dark">{streak}</p>
               </div>
               <div className="rounded-md bg-white/70 p-2">
                 <p className="text-slate-500">次Lvまで</p>
-                <p className="text-base text-staf">{remainingToNextLevel}問</p>
+                <p className="text-base text-staf-dark">{remainingToNextLevel}問</p>
               </div>
             </div>
             <div className="mt-3">
@@ -1979,7 +1979,7 @@ export function RfLearningQuestClient() {
             </div>
             <button
               type="button"
-              className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-2.5 py-1.5 text-xs font-bold text-staf"
+              className="mt-3 inline-flex items-center gap-1 rounded-md border border-staf/30 bg-white px-2.5 py-1.5 text-xs font-bold text-staf-dark"
               onClick={resetProgress}
             >
               <RotateCcw aria-hidden="true" className="h-3.5 w-3.5" />

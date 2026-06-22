@@ -14,7 +14,7 @@ export function SectionHeading({ icon: Icon, eyebrow, title, children, as: Headi
   return (
     <div className="mb-4 flex items-start gap-3">
       {Icon ? (
-        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-staf/10 text-staf">
+        <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-staf/10 text-staf-dark">
           <Icon aria-hidden="true" className="h-5 w-5" />
         </span>
       ) : null}

@@ -47,7 +47,7 @@ export function DielectricImpactTable() {
                   <span className="ml-1 text-xs text-slate-500">εr {row.er}</span>
                   <span className="block text-xs text-slate-400">{row.note}</span>
                 </td>
-                <td className="px-3 py-2 font-semibold text-staf">×{row.shortening.toFixed(2)}</td>
+                <td className="px-3 py-2 font-semibold text-staf-dark">×{row.shortening.toFixed(2)}</td>
                 <td className="px-3 py-2 text-slate-700">{Math.round(row.bandwidth * 100)}%</td>
                 <td className="py-2 pl-3">
                   <span

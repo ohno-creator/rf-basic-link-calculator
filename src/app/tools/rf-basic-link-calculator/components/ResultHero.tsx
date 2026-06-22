@@ -52,7 +52,7 @@ export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroPr
           </div>
           <div className="rounded-lg bg-white/75 px-5 py-4 text-right shadow-sm">
             <p className="text-xs font-semibold text-slate-500">リンクマージン</p>
-            <p className="text-4xl font-bold text-staf">{formatSigned(result.linkMarginDb, "dB")}</p>
+            <p className="text-4xl font-bold text-staf-dark">{formatSigned(result.linkMarginDb, "dB")}</p>
             <p className="mt-1 text-xs text-slate-600">受信電力 {formatDbm(result.receivedPowerDbm)}</p>
           </div>
         </div>

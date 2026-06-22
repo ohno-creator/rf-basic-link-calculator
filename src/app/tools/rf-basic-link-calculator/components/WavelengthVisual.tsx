@@ -49,7 +49,7 @@ export function WavelengthVisual({ frequencyMHz, hasInput = true }: WavelengthVi
               key={`${row.label}-${row.frequencyMHz}`}
               className="grid grid-cols-[80px_1fr_90px] items-center gap-3 text-sm"
             >
-              <span className={current ? "font-semibold text-staf" : "text-slate-600"}>
+              <span className={current ? "font-semibold text-staf-dark" : "text-slate-600"}>
                 {row.label}
               </span>
               <div className="h-3 overflow-hidden rounded-full bg-slate-100">

@@ -147,7 +147,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-semibold text-staf">設定前提の2D図</p>
+          <p className="text-sm font-semibold text-staf-dark">設定前提の2D図</p>
           <h3 className="mt-1 text-lg font-bold text-slate-950">計算・シミュレーション前提と指定パラメータ</h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             現在の入力を、送信側・受信側・地面・見通し線・反射経路の2D断面として整理します。
@@ -257,7 +257,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
 
         <section>
           <div className="flex items-center gap-2">
-            <Settings2 aria-hidden="true" className="h-4 w-4 text-staf" />
+            <Settings2 aria-hidden="true" className="h-4 w-4 text-staf-dark" />
             <h4 className="text-sm font-bold text-slate-950">指定パラメータ</h4>
           </div>
           <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 2xl:grid-cols-3">

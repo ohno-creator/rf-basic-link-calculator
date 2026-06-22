@@ -37,7 +37,7 @@ export function BeginnerRoadmap() {
     <section className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
       <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-staf">はじめてでも迷わない見方</p>
+          <p className="text-sm font-semibold text-staf-dark">はじめてでも迷わない見方</p>
           <h2 className="mt-2 text-2xl font-bold text-slate-950">
             入力から判断までを4ステップで追えます
           </h2>

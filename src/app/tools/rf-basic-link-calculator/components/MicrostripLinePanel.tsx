@@ -143,10 +143,10 @@ function ResultCard({
   return (
     <div className={`rounded-lg p-4 ${primary ? "bg-staf-light" : "bg-slate-50"}`}>
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <p className={`text-xs ${primary ? "font-semibold text-staf" : "text-slate-500"}`}>{label}</p>
+        <p className={`text-xs ${primary ? "font-semibold text-staf-dark" : "text-slate-500"}`}>{label}</p>
         {tooltip}
       </div>
-      <p className={`mt-1 text-2xl font-bold ${primary ? "text-slate-950" : "text-staf"}`}>{value}</p>
+      <p className={`mt-1 text-2xl font-bold ${primary ? "text-slate-950" : "text-staf-dark"}`}>{value}</p>
     </div>
   );
 }

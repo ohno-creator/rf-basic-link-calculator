@@ -18,7 +18,7 @@ export default function HomePage() {
   return (
     <ToolLayout>
       <section className="mx-auto max-w-6xl px-6 pb-10 pt-16 sm:pb-12 sm:pt-24">
-        <p className="text-sm font-semibold text-staf">アンテナ・無線 基礎計算ツール</p>
+        <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
         <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
           無線設計の計算を、ひとつずつ。
         </h1>

@@ -320,7 +320,7 @@ export function PropagationExplorer() {
                   onClick={() => setFrequencyMHz(mhz)}
                   className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition ${
                     frequencyMHz === mhz
-                      ? "border-staf bg-staf-light text-staf"
+                      ? "border-staf bg-staf-light text-staf-dark"
                       : "border-slate-200 text-slate-500 hover:border-slate-300"
                   }`}
                 >

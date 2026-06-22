@@ -28,7 +28,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
       {hasMarker ? (
         <p className="mt-1 text-sm text-slate-600">
           現在の入力は{" "}
-          <span className="font-bold text-staf">{currentDbm.toFixed(1)}dBm</span>{" "}
+          <span className="font-bold text-staf-dark">{currentDbm.toFixed(1)}dBm</span>{" "}
           付近です。
           {isBelow ? "（スケール下限0dBm未満）" : null}
           {isAbove ? "（スケール上限30dBm超）" : null}
@@ -75,7 +75,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
                   : "border-slate-200 bg-slate-50"
               }`}
             >
-              <p className="text-lg font-bold text-staf">{item.dbm}</p>
+              <p className="text-lg font-bold text-staf-dark">{item.dbm}</p>
               <p className="mt-1 text-sm font-medium text-slate-700">{item.mw}</p>
               {index < scaleItems.length - 1 ? (
                 <p className="mt-2 text-xs text-slate-500">次は +10dB = 10倍</p>

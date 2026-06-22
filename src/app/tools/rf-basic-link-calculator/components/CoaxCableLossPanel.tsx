@@ -103,7 +103,7 @@ export function CoaxCableLossPanel() {
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
             <div className="rounded-lg bg-staf-light p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold text-staf">1本あたり損失</p>
+                <p className="text-xs font-semibold text-staf-dark">1本あたり損失</p>
                 <Tooltip term="1本あたり損失">
                   選択品番のケーブル1本を、指定周波数で通したときの挿入損失（dB）。実測値を周波数で補間した目安で、個体差・コネクタ・曲げ・温度で変動します。グラフの黒点と同じ値です。
                 </Tooltip>
@@ -117,7 +117,7 @@ export function CoaxCableLossPanel() {
                   1本あたり損失 × 本数の合計（dB）。この値をリンクバジェットの「ケーブル・コネクタ損失」に入力して使います。3dBで電力が半分、6dBで1/4になります。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.totalDb, 2)} dB</p>
+              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.totalDb, 2)} dB</p>
             </div>
             <div className="rounded-lg bg-slate-50 p-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -126,7 +126,7 @@ export function CoaxCableLossPanel() {
                   合計損失を電力比に直した残存率 ＝ 10^(−合計損失 / 10) × 100。ケーブルで失われずアンテナへ届く割合（%）です。例: 3dB → 約50%、6dB → 約25%。
                 </Tooltip>
               </div>
-              <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.powerRemainingPercent, 0)} %</p>
+              <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.powerRemainingPercent, 0)} %</p>
             </div>
           </div>
 

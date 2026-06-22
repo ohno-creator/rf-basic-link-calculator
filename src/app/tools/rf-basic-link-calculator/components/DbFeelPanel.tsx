@@ -57,7 +57,7 @@ export function DbFeelPanel() {
             </Tooltip>
           </div>
           <span className="flex items-center gap-2">
-            <span className="text-lg font-bold text-staf">
+            <span className="text-lg font-bold text-staf-dark">
               {db > 0 ? `+${db}` : db} dB
             </span>
             <Tooltip term="現在のdB値">
@@ -81,7 +81,7 @@ export function DbFeelPanel() {
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-lg bg-staf-light p-4">
           <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold text-staf">電力の倍率</p>
+            <p className="text-xs font-semibold text-staf-dark">電力の倍率</p>
             <Tooltip term="電力の倍率">
               10^(dB/10)。dBが示す電力の倍率です。+10dB=×10、+3dB≒×2、-3dB≒1/2。送信電力や利得の効きを表します。距離の倍率は10^(dB/20)で、指数の分母が異なる点に注意してください。
             </Tooltip>
@@ -96,7 +96,7 @@ export function DbFeelPanel() {
               10^(dB/20)。自由空間損失は距離の2乗（20log）で効くため、電力(10log)より緩やかに伸び、+6dBで距離2倍／+20dBで10倍になります。屋内や障害物では目安より短くなります。
             </Tooltip>
           </div>
-          <p className="mt-1 text-3xl font-bold text-staf">{formatRatio(distanceRatio)}</p>
+          <p className="mt-1 text-3xl font-bold text-staf-dark">{formatRatio(distanceRatio)}</p>
           <p className="mt-1 text-xs text-slate-500">+6dBで距離2倍、+20dBで距離10倍</p>
         </div>
       </div>
@@ -139,9 +139,9 @@ export function DbFeelPanel() {
           <div className="flex items-start justify-between gap-2">
             <p className="text-sm text-slate-700">
               選んだdBの<span className="font-semibold">合計</span> ={" "}
-              <span className="font-bold text-staf">+{stackTotalDb} dB</span>
+              <span className="font-bold text-staf-dark">+{stackTotalDb} dB</span>
               <span className="mx-2 text-slate-400">→</span>
-              電力は <span className="font-bold text-staf">{formatRatio(stackRatio)}</span>
+              電力は <span className="font-bold text-staf-dark">{formatRatio(stackRatio)}</span>
             </p>
             <Tooltip term="合計dBと倍率">
               選択チップのdBを単純加算した合計と、その電力倍率10^(合計/10)です。dBは足し算、倍率は掛け算で増えます（例：+3と+10で+13dB=×20）。上の図にグレーの▽で重ねて表示されます。
@@ -184,7 +184,7 @@ export function DbFeelPanel() {
               {tableRows.map((value) => (
                 <tr key={value} className="border-b border-slate-100">
                   <td className="py-2 pr-3 font-semibold text-slate-900">+{value} dB</td>
-                  <td className="px-3 py-2 font-semibold text-staf">{formatRatio(dbToPowerRatio(value))}</td>
+                  <td className="px-3 py-2 font-semibold text-staf-dark">{formatRatio(dbToPowerRatio(value))}</td>
                   <td className="py-2 pl-3 text-slate-700">{formatRatio(dbToDistanceRatio(value))}</td>
                 </tr>
               ))}

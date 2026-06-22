@@ -72,7 +72,7 @@ export function StickyResultSummary({ result, input, targetId }: StickyResultSum
           <span className="flex items-center gap-2">
             <span className="text-right">
               <span className="block text-[10px] leading-none text-slate-500">リンクマージン</span>
-              <span className="text-lg font-bold text-staf">{formatSigned(result.linkMarginDb, "dB")}</span>
+              <span className="text-lg font-bold text-staf-dark">{formatSigned(result.linkMarginDb, "dB")}</span>
             </span>
             <ChevronDown aria-hidden="true" className="h-4 w-4 text-slate-400" />
           </span>

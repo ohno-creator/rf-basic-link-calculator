@@ -33,7 +33,7 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
             受信に必要な最低ラインに対して、どれくらい余裕があるかを示します。
           </p>
         </div>
-        <p className="text-2xl font-bold text-staf">
+        <p className="text-2xl font-bold text-staf-dark">
           {formatSigned(result.linkMarginDb, "dB")}
         </p>
       </div>

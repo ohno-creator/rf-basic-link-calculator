@@ -34,12 +34,12 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
           <div key={simulation.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-slate-950">{simulation.label}</p>
-              <ArrowRight aria-hidden="true" className="h-4 w-4 text-staf" />
+              <ArrowRight aria-hidden="true" className="h-4 w-4 text-staf-dark" />
             </div>
             <p className="mt-2 text-xs leading-relaxed text-slate-600">
               {simulation.description}
             </p>
-            <p className="mt-3 text-2xl font-bold text-staf">
+            <p className="mt-3 text-2xl font-bold text-staf-dark">
               {formatSigned(simulation.marginDb, "dB")}
             </p>
             <p className="text-xs font-medium text-slate-500">

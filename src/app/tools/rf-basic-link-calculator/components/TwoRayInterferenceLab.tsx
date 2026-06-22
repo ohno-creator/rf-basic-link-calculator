@@ -37,7 +37,7 @@ function LabSlider({ id, label, unit, min, max, step, value, onChange }: Slider)
         <label htmlFor={id} className="text-sm font-semibold text-slate-950">
           {label}
         </label>
-        <span className="text-sm font-bold text-staf">
+        <span className="text-sm font-bold text-staf-dark">
           {value}
           <span className="ml-0.5 text-xs font-medium text-slate-400">{unit}</span>
         </span>
@@ -178,7 +178,7 @@ export function TwoRayInterferenceLab({
 
       <p className="mt-2 text-xs leading-relaxed text-slate-600">
         縦軸は上ほど損失が小さい（届きやすい）向きです。<span className="font-semibold text-orange-700">オレンジの完全版</span>は山谷を持ち、
-        <span className="font-semibold text-staf">破線の平滑化線</span>は一点の山谷をならしたリンク判定用の近似です。
+        <span className="font-semibold text-staf-dark">破線の平滑化線</span>は一点の山谷をならしたリンク判定用の近似です。
         点線の縦線（ブレークポイント d_bp = 4·ht·hr/λ）付近から、平均的には 40·log10(d) の2波遠方近似へ寄っていきます。
         実機ではアンテナを少し動かすと数dB〜十数dB変わるのは、この干渉の谷を踏むためです。
       </p>

@@ -114,7 +114,7 @@ export function FsplPanel() {
         {result ? (
           <div className="mt-5 rounded-lg bg-staf-light p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-semibold text-staf">自由空間損失</p>
+              <p className="text-sm font-semibold text-staf-dark">自由空間損失</p>
               <Tooltip term="この値">
                 理想空間での距離による減衰量[dB]です。実環境では壁・人体・マルチパス等で更に増えます。値が大きいほど電波は届きにくくなります。
               </Tooltip>
@@ -188,7 +188,7 @@ export function FsplPanel() {
                         isCurrent ? "bg-staf-light ring-1 ring-staf/40" : ""
                       }`}
                     >
-                      <span className={isCurrent ? "font-semibold text-staf" : "text-slate-600"}>
+                      <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                         {item.distance < 1 ? `${item.distance * 1000}m` : `${item.distance}km`}
                       </span>
                       <div className="h-3 rounded-full bg-slate-100">
@@ -207,7 +207,7 @@ export function FsplPanel() {
 
               {result && Number.isFinite(distanceKm) ? (
                 <div className="mt-4 grid grid-cols-[80px_1fr_80px] items-center gap-3 rounded-md border border-staf/40 bg-staf-light px-2 py-2 text-sm">
-                  <span className="font-semibold text-staf">入力距離</span>
+                  <span className="font-semibold text-staf-dark">入力距離</span>
                   <div className="h-3 rounded-full bg-white/70">
                     <div
                       className="h-3 rounded-full bg-staf-dark"
@@ -220,7 +220,7 @@ export function FsplPanel() {
 
               <p className="mt-3 text-xs text-slate-500">
                 バー幅は損失60〜140dBを0〜100%に正規化した相対表示です。上のサンプルは固定基準で、
-                <span className="font-semibold text-staf">入力距離</span>の行があなたの条件の損失です。
+                <span className="font-semibold text-staf-dark">入力距離</span>の行があなたの条件の損失です。
               </p>
             </>
           ) : (

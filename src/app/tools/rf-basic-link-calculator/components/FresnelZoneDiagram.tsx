@@ -114,11 +114,11 @@ export function FresnelZoneDiagram({
       <div className="mt-2 grid gap-2 sm:grid-cols-2">
         <div className="rounded-md bg-white p-2 text-center">
           <p className="text-xs text-slate-500">この位置の第1フレネル半径</p>
-          <p className="text-lg font-bold text-staf">{formatMeters(firstZoneRadiusM)}</p>
+          <p className="text-lg font-bold text-staf-dark">{formatMeters(firstZoneRadiusM)}</p>
         </div>
         <div className="rounded-md bg-white p-2 text-center">
           <p className="text-xs text-slate-500">60%クリアランス目安</p>
-          <p className="text-lg font-bold text-staf">{formatMeters(clearance60M)}</p>
+          <p className="text-lg font-bold text-staf-dark">{formatMeters(clearance60M)}</p>
         </div>
       </div>
 

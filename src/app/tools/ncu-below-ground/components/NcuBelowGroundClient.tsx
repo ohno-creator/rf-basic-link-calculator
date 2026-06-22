@@ -762,11 +762,11 @@ function SectionTitle({
 }) {
   return (
     <div className="mb-4 flex items-start gap-3">
-      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-staf/10 text-staf">
+      <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-staf/10 text-staf-dark">
         <Icon aria-hidden="true" className="h-5 w-5" />
       </span>
       <div>
-        <p className="text-xs font-bold uppercase tracking-wider text-staf">{eyebrow}</p>
+        <p className="text-xs font-bold uppercase tracking-wider text-staf-dark">{eyebrow}</p>
         <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">{title}</h2>
         <p className="mt-1 text-sm leading-relaxed text-slate-600">{children}</p>
       </div>
@@ -906,7 +906,7 @@ function NcuCrossSectionDiagram({
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm" data-testid="ncu-assumption-diagram">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-bold text-staf">シミュレーション結果の2D図</p>
+          <p className="text-sm font-bold text-staf-dark">シミュレーション結果の2D図</p>
           <h2 className="mt-1 text-xl font-bold text-slate-950">NCUが地面より下にある場合の断面図</h2>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
             左は電波の通り道（GW→地表GL→蓋→BOX→NCUアンテナ）、右は地下で電波を弱める要因の積み上げです。入力を変えると形・色・損失値が連動します。
@@ -1328,7 +1328,7 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
               <p className="mt-3 text-xs leading-relaxed text-slate-600">{item.note}</p>
               {hint ? (
                 <p className="mt-2 flex items-start gap-1.5 rounded-md bg-white p-2 text-xs leading-relaxed text-slate-700">
-                  <Wrench aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-staf" />
+                  <Wrench aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-staf-dark" />
                   <span>
                     <span className="font-bold">改善案：</span>
                     {hint}
@@ -1719,7 +1719,7 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
   return (
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex items-center gap-2">
-        <Compass aria-hidden="true" className="h-5 w-5 text-staf" />
+        <Compass aria-hidden="true" className="h-5 w-5 text-staf-dark" />
         <h2 className="text-lg font-bold text-slate-950">迷わない入力順</h2>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-4">
@@ -1731,7 +1731,7 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-staf text-xs font-bold text-white">
                   {index + 1}
                 </span>
-                <Icon aria-hidden="true" className="h-4 w-4 text-staf" />
+                <Icon aria-hidden="true" className="h-4 w-4 text-staf-dark" />
               </div>
               <p className="mt-3 text-sm font-bold text-slate-950">{step.title}</p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">{step.text}</p>
@@ -1960,7 +1960,7 @@ function FieldAnalysisPanel({
               return (
                 <div key={item.key} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
                   <div className="mb-2 flex items-start gap-2">
-                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-staf">
+                    <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-staf-dark">
                       <Icon aria-hidden="true" className="h-4 w-4" />
                     </span>
                     <div>
@@ -1984,7 +1984,7 @@ function FieldAnalysisPanel({
 
           <aside className="space-y-3">
             <div className="rounded-lg border border-staf/20 bg-staf/5 p-4">
-              <p className="text-sm font-bold text-staf">計算値との照合</p>
+              <p className="text-sm font-bold text-staf-dark">計算値との照合</p>
               <p className="mt-2 text-sm leading-relaxed text-slate-700">
                 現在の見積もりでは、蓋閉め・乾燥時の標準受信電力を
                 <span className="font-bold text-slate-950"> {predictedReceivedPowerDbm.toFixed(1)} dBm </span>
@@ -2048,7 +2048,7 @@ function FieldAnalysisPanel({
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <ClipboardList aria-hidden="true" className="h-5 w-5 text-staf" />
+          <ClipboardList aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現場で使う簡易チェックシート</h2>
         </div>
         <div className="mt-3 grid gap-3 text-sm leading-relaxed text-slate-600 md:grid-cols-3">
@@ -2110,7 +2110,7 @@ export function NcuBelowGroundClient() {
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
-            <p className="text-sm font-bold text-staf">GL以下NCU専用</p>
+            <p className="text-sm font-bold text-staf-dark">GL以下NCU専用</p>
             <h2 className="mt-1 text-2xl font-bold tracking-tight text-slate-950">
               事前見積もりと現場原因解析をつなげて評価します
             </h2>
@@ -2159,7 +2159,7 @@ export function NcuBelowGroundClient() {
                   className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-staf/50 hover:bg-white"
                   onClick={() => setInput((current) => ({ ...current, ...preset.values }))}
                 >
-                  <span className="inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-staf">
+                  <span className="inline-flex rounded-full bg-white px-2 py-0.5 text-[11px] font-bold text-staf-dark">
                     {preset.category}
                   </span>
                   <span className="mt-2 block text-sm font-bold text-slate-950">{preset.label}</span>
@@ -2389,7 +2389,7 @@ export function NcuBelowGroundClient() {
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <Info aria-hidden="true" className="h-5 w-5 text-staf" />
+          <Info aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">入力の前提をどう説明するか</h2>
         </div>
         <div className="mt-3 grid gap-3 text-sm leading-relaxed text-slate-600 md:grid-cols-3">
@@ -2436,7 +2436,7 @@ export function NcuBelowGroundClient() {
 
       <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
         <div className="flex items-center gap-2">
-          <Ruler aria-hidden="true" className="h-5 w-5 text-staf" />
+          <Ruler aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現地で最低限メモしたい項目</h2>
         </div>
         <ul className="mt-3 grid gap-2 text-sm leading-relaxed text-slate-600 md:grid-cols-2">

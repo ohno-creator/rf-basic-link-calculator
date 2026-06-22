@@ -90,7 +90,7 @@ export function CalculatorTabs({
   return (
     <section className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6 lg:px-8 lg:pb-10">
       <div className="mb-5">
-        <p className="text-sm font-semibold text-staf">メイン診断</p>
+        <p className="text-sm font-semibold text-staf-dark">メイン診断</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
           リンクバジェットと研究ベース距離計算を切り替えて確認できます
         </h2>

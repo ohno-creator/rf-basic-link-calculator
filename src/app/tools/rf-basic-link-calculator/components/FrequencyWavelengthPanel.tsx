@@ -125,7 +125,7 @@ export function FrequencyWavelengthPanel() {
                     {RESULT_HINTS[label as string].description}
                   </Tooltip>
                 </div>
-                <p className="mt-1 text-2xl font-bold text-staf">
+                <p className="mt-1 text-2xl font-bold text-staf-dark">
                   {formatMeters(value as number)}
                 </p>
               </div>

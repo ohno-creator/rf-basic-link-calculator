@@ -114,7 +114,7 @@ export function Header() {
                                 href={tool.href}
                                 aria-current={active ? "page" : undefined}
                                 className={`block rounded-md px-2 py-1.5 transition ${
-                                  active ? "bg-staf-light text-staf" : "hover:bg-slate-50"
+                                  active ? "bg-staf-light text-staf-dark" : "hover:bg-slate-50"
                                 }`}
                               >
                                 <span className="block text-sm font-semibold text-slate-900">{tool.name}</span>
@@ -189,14 +189,14 @@ export function Header() {
                             href={tool.href}
                             aria-current={active ? "page" : undefined}
                             className={`flex min-h-[44px] items-center justify-between gap-3 py-2 ${
-                              active ? "text-staf" : "text-slate-800"
+                              active ? "text-staf-dark" : "text-slate-800"
                             }`}
                           >
                             <span>
                               <span className="block text-sm font-semibold">{tool.name}</span>
                               <span className="block text-xs leading-snug text-slate-500">{tool.tagline}</span>
                             </span>
-                            {active ? <span className="shrink-0 text-[10px] font-bold text-staf">現在地</span> : null}
+                            {active ? <span className="shrink-0 text-[10px] font-bold text-staf-dark">現在地</span> : null}
                           </Link>
                         </li>
                       );

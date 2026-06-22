@@ -171,7 +171,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm" data-testid="ncu-budget-waterfall">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-bold text-staf">滝グラフ</p>
+          <p className="text-sm font-bold text-staf-dark">滝グラフ</p>
           <h2 className="mt-1 text-xl font-bold text-slate-950">リンクバジェット滝グラフ（GL以下NCU）</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             送信電力からスタートし、利得で増え、地上側の損失（青グレー）と
@@ -180,7 +180,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
           </p>
         </div>
         <div className="grid grid-cols-2 gap-1.5 text-[11px] font-bold sm:grid-cols-3">
-          <span className="rounded-full bg-staf-light px-2.5 py-1 text-staf" title="送信出力とアンテナ利得＝電波を増やす要素。青＝送信出力（スタート）、緑＝利得で上に積み上がります。">開始・利得</span>
+          <span className="rounded-full bg-staf-light px-2.5 py-1 text-staf-dark" title="送信出力とアンテナ利得＝電波を増やす要素。青＝送信出力（スタート）、緑＝利得で上に積み上がります。">開始・利得</span>
           <span className="rounded-full bg-slate-100 px-2.5 py-1 text-slate-600" title="地上側の損失（青グレー）＝距離による伝搬損失・ケーブル損・地上クラッタ。電波を弱める分だけ下に伸びます。">地上損失</span>
           <span className="rounded-full bg-orange-50 px-2.5 py-1 text-orange-700" title="地下の追加損失（暖色）＝蓋・BOX・深さ・水分・アンテナ位置・開口・地表遮蔽。色が濃い（赤に近い）ほど大きな損失です。">地下損失</span>
           <span className="rounded-full bg-rose-50 px-2.5 py-1 text-rose-700" title="受信感度＝受信機がぎりぎり受け取れる強さ（赤い破線）。最後の受信電力がこの線より上なら通信成立です。">受信感度</span>

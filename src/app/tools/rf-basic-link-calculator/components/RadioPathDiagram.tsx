@@ -17,7 +17,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
     <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-staf">経路図</p>
+          <p className="text-sm font-semibold text-staf-dark">経路図</p>
           <h3 className="mt-1 text-lg font-bold text-slate-950">
             電波が弱くなる場所を分けて見る
           </h3>
@@ -26,7 +26,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
           </p>
         </div>
         <div className="rounded-lg bg-staf-light px-4 py-3 text-right">
-          <p className="text-xs font-semibold text-staf">受信電力</p>
+          <p className="text-xs font-semibold text-staf-dark">受信電力</p>
           <p className="text-2xl font-bold text-slate-950">{formatDbm(result.receivedPowerDbm)}</p>
         </div>
       </div>

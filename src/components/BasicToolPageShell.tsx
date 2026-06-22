@@ -56,7 +56,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
       />
       <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
         <header>
-          <p className="text-sm font-semibold text-staf">基本計算ツール（単機能）</p>
+          <p className="text-sm font-semibold text-staf-dark">基本計算ツール（単機能）</p>
           <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">{tool.title}</h1>
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-700">
             {tool.description}
@@ -80,7 +80,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
                 <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-slate-600">
                   {item.tagline}
                 </p>
-                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-staf">
+                <span className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-staf-dark">
                   開く
                   <ArrowRight aria-hidden="true" className="h-3 w-3" />
                 </span>

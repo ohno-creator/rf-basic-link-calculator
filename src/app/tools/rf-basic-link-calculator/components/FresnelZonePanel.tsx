@@ -89,7 +89,7 @@ export function FresnelZonePanel() {
               障害物がある地点を送信側からの割合で指定します。50%（中央）でゾーン半径が最大、両端ほど小さくなります。5〜95%の範囲で指定できます。
             </Tooltip>
           </div>
-          <span className="text-sm font-semibold text-staf">送信側から {positionPercent}%</span>
+          <span className="text-sm font-semibold text-staf-dark">送信側から {positionPercent}%</span>
         </div>
         <input
           id="fresnelPos"
@@ -108,7 +108,7 @@ export function FresnelZonePanel() {
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
           <div className="rounded-lg bg-staf-light p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-xs font-semibold text-staf">第1フレネルゾーン半径</p>
+              <p className="text-xs font-semibold text-staf-dark">第1フレネルゾーン半径</p>
               <Tooltip term="r1">
                 その地点での第1フレネルゾーンの半径です。電波が通る楕円体の太さの半分にあたり、この範囲に障害物が入ると損失が増えます。見通し通信では半径の60%以上を障害物から空けるのが目安です。
               </Tooltip>
@@ -122,7 +122,7 @@ export function FresnelZonePanel() {
                 第1フレネルゾーン半径(r1)の60%です。見通し通信では、この高さ以上を障害物から空けておけば回り込みによる損失をほぼ無視できる、という実務上の目安（≧60%が判断基準）です。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatMeters(result.clearance60M)}</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatMeters(result.clearance60M)}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -131,7 +131,7 @@ export function FresnelZonePanel() {
                 周波数に対応する電波の波長(λ=c/f)です。フレネルゾーン半径はλの平方根に比例します。周波数が高いほど波長は短く、ゾーン半径も小さくなります。
               </Tooltip>
             </div>
-            <p className="mt-1 text-2xl font-bold text-staf">{formatNumber(result.wavelengthM, 3)} m</p>
+            <p className="mt-1 text-2xl font-bold text-staf-dark">{formatNumber(result.wavelengthM, 3)} m</p>
           </div>
         </div>
       ) : (
