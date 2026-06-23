@@ -34,7 +34,17 @@ const iconMap: Record<string, LucideIcon> = {
   activity: Activity,
   cable: Cable,
   circuit: CircuitBoard,
-  box: Box
+  box: Box,
+  aperture: Spline,
+  satellite: RadioTower,
+  scan: Ruler,
+  radar: Waves,
+  panel: CircuitBoard,
+  refresh: Repeat,
+  antenna: RadioTower,
+  orbit: Activity,
+  grid: CircuitBoard,
+  mirror: Box
 };
 
 // 検索＋カテゴリ絞り込みでツールを探せるようにする（発見性: 一覧が増えても破綻しない）。

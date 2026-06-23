@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { NumberField } from "@/components/NumberField";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
+import { calculateEirp, dbiToDbd, dbiToLinear } from "@/lib/rf/antenna";
 import { dbmToMw, mwToDbm, mwToW, wToDbm, wToMw } from "@/lib/rf/db";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DecibelScaleVisual } from "./DecibelScaleVisual";
@@ -30,6 +32,8 @@ function formatPower(value: number): string {
 export function DbmConverterPanel() {
   const [mode, setMode] = useState<Mode>("dbm");
   const [value, setValue] = useState(20);
+  const [antennaGainDbi, setAntennaGainDbi] = useState(2.15);
+  const [cableLossDb, setCableLossDb] = useState(0.8);
 
   const result = useMemo(() => {
     try {
@@ -89,6 +93,13 @@ export function DbmConverterPanel() {
     mode === "dbm"
       ? "数値を入力してください。"
       : "0より大きい値を入力してください。";
+  const eirp = result
+    ? calculateEirp({
+        txPowerDbm: result.dbm,
+        antennaGainDbi,
+        cableLossDb
+      })
+    : null;
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
@@ -191,12 +202,121 @@ export function DbmConverterPanel() {
         <div className="mt-5">
           <FormulaExplanationCard
             title="dB/dBm/dBiの違いを見る"
-            formula={"mW = 10 ^ (dBm / 10)\ndBm = 10 × log10(mW)\nW = mW / 1000"}
+            formula={"mW = 10 ^ (dBm / 10)\ndBm = 10 × log10(mW)\nW = mW / 1000\nEIRP[dBm] = 送信電力[dBm] + 利得[dBi] - 損失[dB]"}
           >
             <p>
               dBmは電力そのもの、dBは比率や損失、dBiはアンテナ利得の単位です。リンクバジェットではこれらを足し算・引き算で扱います。
             </p>
           </FormulaExplanationCard>
+        </div>
+
+        {result && eirp ? (
+          <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-950">
+                  dBi / dBd / EIRP 計算
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                  入力電力を送信機出力として、アンテナ利得とケーブル損失を加味した実効放射電力を計算します。
+                </p>
+              </div>
+              <Tooltip term="EIRP / ERP">
+                EIRPは等方性アンテナ基準、ERPは半波長ダイポール基準の実効放射電力です。ERPはEIRPより2.15dB小さい値になります。
+              </Tooltip>
+            </div>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              <NumberField
+                id="dbmAntennaGain"
+                label="アンテナ利得"
+                unit="dBi"
+                value={antennaGainDbi}
+                step={0.1}
+                onChange={setAntennaGainDbi}
+              />
+              <NumberField
+                id="dbmCableLoss"
+                label="ケーブル・整合損失"
+                unit="dB"
+                value={cableLossDb}
+                min={0}
+                step={0.1}
+                onChange={setCableLossDb}
+              />
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-4">
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="dBd換算"
+                  value={formatPower(dbiToDbd(antennaGainDbi))}
+                  unit="dBd"
+                  tone="staf"
+                  size="sm"
+                  note={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
+                />
+              </div>
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="アンテナ端子電力"
+                  value={formatPower(eirp.antennaInputDbm)}
+                  unit="dBm"
+                  tone="neutral"
+                  size="sm"
+                />
+              </div>
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="EIRP"
+                  value={formatPower(eirp.eirpDbm)}
+                  unit="dBm"
+                  tone="emerald"
+                  size="sm"
+                  note={`${formatPower(eirp.eirpW)} W`}
+                />
+              </div>
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="ERP"
+                  value={formatPower(eirp.erpDbm)}
+                  unit="dBm"
+                  tone="staf"
+                  size="sm"
+                  note={`${formatPower(eirp.erpW)} W`}
+                />
+              </div>
+            </div>
+          </div>
+        ) : null}
+
+        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
+              <li>
+                <span className="font-semibold text-staf-dark">1.</span> 送信機出力や受信電力の単位に合わせて、dBm・mW・Wのいずれかを選びます。
+              </li>
+              <li>
+                <span className="font-semibold text-staf-dark">2.</span> アンテナ利得とケーブル損失を入れ、EIRP/ERPがどう変わるか確認します。
+              </li>
+              <li>
+                <span className="font-semibold text-staf-dark">3.</span> 法規確認やリンクバジェットへ渡す値として、dBmとWの両方を控えます。
+              </li>
+            </ol>
+            <dl className="grid gap-2 text-xs leading-relaxed text-slate-600">
+              <div>
+                <dt className="font-semibold text-slate-900">dBm</dt>
+                <dd>1mWを基準にした絶対電力です。0dBm=1mW、30dBm=1Wです。</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-slate-900">dBi / dBd</dt>
+                <dd>dBiは等方性基準、dBdは半波長ダイポール基準のアンテナ利得です。差は2.15dBです。</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-slate-900">EIRP / ERP</dt>
+                <dd>送信電力にアンテナ利得と損失を足し引きした実効放射電力です。</dd>
+              </div>
+            </dl>
+          </div>
         </div>
       </div>
       <DecibelScaleVisual currentDbm={result ? result.dbm : null} />

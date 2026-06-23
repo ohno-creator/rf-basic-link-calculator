@@ -1,9 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { NumberField } from "@/components/NumberField";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
+import { calculateAntennaLengths } from "@/lib/rf/antenna";
 import {
   calculateWavelengthFractions,
   calculateWavelengthFromMHz
@@ -39,6 +41,7 @@ const RESULT_HINTS: Record<string, { term: string; description: string }> = {
 export function FrequencyWavelengthPanel() {
   const [frequency, setFrequency] = useState(920);
   const [unit, setUnit] = useState<"MHz" | "GHz">("MHz");
+  const [velocityFactorPercent, setVelocityFactorPercent] = useState(95);
   const frequencyMHz = unit === "GHz" ? frequency * 1000 : frequency;
 
   // 単位切替時は表示値を等価換算し、物理周波数を保存する。
@@ -62,6 +65,14 @@ export function FrequencyWavelengthPanel() {
       return null;
     }
   }, [frequencyMHz]);
+
+  const antennaLengths = useMemo(() => {
+    try {
+      return calculateAntennaLengths(frequencyMHz, velocityFactorPercent);
+    } catch {
+      return null;
+    }
+  }, [frequencyMHz, velocityFactorPercent]);
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
@@ -132,10 +143,93 @@ export function FrequencyWavelengthPanel() {
           </div>
         ) : null}
 
+        {antennaLengths ? (
+          <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
+            <div className="flex flex-wrap items-start justify-between gap-2">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-950">
+                  アンテナ物理長・短縮率
+                </h3>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                  λ/4・λ/2・5/8λを、端部効果や誘電体・ヘリカル化を想定した短縮率込みで換算します。
+                </p>
+              </div>
+              <Tooltip term="短縮率">
+                理想波長に対する実際の物理長の比率です。外部ホイップなら90〜98%、誘電体や装荷コイルを使う小型アンテナではさらに短くなることがあります。
+              </Tooltip>
+            </div>
+            <div className="mt-3 max-w-xs">
+              <NumberField
+                id="antennaVelocityFactor"
+                label="短縮率"
+                unit="%"
+                value={velocityFactorPercent}
+                min={20}
+                max={100}
+                step={1}
+                showSlider
+                onChange={setVelocityFactorPercent}
+              />
+            </div>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {[
+                ["λ/4", antennaLengths.physical.quarterM, "モノポールやラジアルの基準"],
+                ["λ/2", antennaLengths.physical.halfM, "ダイポールや半波長ホイップの基準"],
+                ["5/8λ", antennaLengths.physical.fiveEighthM, "高めの打上げ角を抑える外部アンテナの目安"]
+              ].map(([label, length, help]) => (
+                <div key={label as string} className="rounded-lg bg-white p-3 shadow-card">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-semibold text-slate-500">{label as string}</p>
+                    <Tooltip term={label as string}>{help as string}</Tooltip>
+                  </div>
+                  <Stat className="mt-1" value={formatMeters(length as number)} tone="staf" size="sm" />
+                  <div className="mt-2 h-2 overflow-hidden rounded-full bg-slate-100">
+                    <div
+                      className="h-full rounded-full bg-staf"
+                      style={{ width: `${Math.max(10, Math.min(100, ((length as number) / antennaLengths.physical.fiveEighthM) * 100))}%` }}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : null}
+
+        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
+              <li>
+                <span className="font-semibold text-staf-dark">1.</span> まず周波数と単位を合わせます。920MHzならMHz、2.4GHzならGHzが便利です。
+              </li>
+              <li>
+                <span className="font-semibold text-staf-dark">2.</span> λ/4、λ/2、5/8λのどれが検討中のアンテナ形式に近いかを見ます。
+              </li>
+              <li>
+                <span className="font-semibold text-staf-dark">3.</span> 短縮率を動かして、実際の物理長が筐体に入るか確認します。
+              </li>
+            </ol>
+            <dl className="grid gap-2 text-xs leading-relaxed text-slate-600">
+              <div>
+                <dt className="font-semibold text-slate-900">短縮率</dt>
+                <dd>理想的な電気長に対する実際の物理長の割合です。端部効果、誘電体、ヘリカル化で短くなります。</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-slate-900">λ/4</dt>
+                <dd>モノポールやラジアル、接地型アンテナでよく使う基準長です。</dd>
+              </div>
+              <div>
+                <dt className="font-semibold text-slate-900">λ/2</dt>
+                <dd>ダイポールや半波長ホイップの基準です。スタッフ標準品の920MHz λ/2ホイップの理解にもつながります。</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+
         <div className="mt-5">
           <FormulaExplanationCard
             title="計算式を見る"
-            formula="λ[m] = 299,792,458 / 周波数[Hz]"
+            formula={"λ[m] = 299,792,458 / 周波数[Hz]\n物理長 = 電気長 × 短縮率"}
           >
             <p>
               920MHzの場合、波長は約{formatMeters(calculateWavelengthFromMHz(920))}です。アンテナ長は単純なλ/4だけでは決まらず、筐体やGND、誘電体の影響を受けます。

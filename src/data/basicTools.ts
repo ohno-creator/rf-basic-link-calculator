@@ -115,6 +115,106 @@ export const basicTools: BasicToolMeta[] = [
     formula: "FSPL[dB] = 32.44 + 20log10(距離[km]) + 20log10(周波数[MHz])",
     essenceLead: "距離が伸びるほど、また周波数が高いほど、自由空間損失は大きくなります。",
     canonical: `${SITE_TOOLS}/free-space-loss`
+  },
+  {
+    slug: "effective-aperture",
+    title: "有効開口面積・受信面積",
+    metaTitle: "有効開口面積 計算ツール｜アンテナ利得dBiを受信面積へ換算",
+    description:
+      "周波数とアンテナ利得から、有効開口面積 Ae を計算します。dBiを「電波を受ける面積」として理解でき、920MHz、Wi-Fi、Sub6などのサイズ感を比較できます。",
+    formula: "Ae = λ²G / (4π)",
+    essenceLead: "同じ利得でも、低い周波数ほど有効開口面積は大きくなります。",
+    canonical: `${SITE_TOOLS}/effective-aperture`
+  },
+  {
+    slug: "aperture-gain-beamwidth",
+    title: "開口アンテナ利得・ビーム幅",
+    metaTitle: "開口アンテナ利得・ビーム幅 計算ツール｜ホーン・レンズ・パラボラの概算",
+    description:
+      "開口径、周波数、開口効率から、ホーン・レンズ・パラボラなどの概算利得、半値ビーム幅、遠方界開始距離を計算します。",
+    formula: "G = η(πD/λ)²　HPBW≈70λ/D",
+    essenceLead: "開口が大きいほど利得は上がり、ビームは細くなります。",
+    canonical: `${SITE_TOOLS}/aperture-gain-beamwidth`
+  },
+  {
+    slug: "antenna-spacing",
+    title: "アンテナ間隔 λ換算",
+    metaTitle: "アンテナ間隔 λ換算ツール｜MIMO・複数アンテナ配置の基準",
+    description:
+      "アンテナ間隔を波長比 λ へ換算し、MIMOや複数アンテナ配置の距離感を周波数横断で比較します。",
+    formula: "間隔[λ] = 物理間隔[m] / λ[m]",
+    essenceLead: "アンテナ間隔はcmではなく、まずλで見ます。",
+    canonical: `${SITE_TOOLS}/antenna-spacing`
+  },
+  {
+    slug: "array-grating-lobe",
+    title: "アレイ素子間隔・グレーティングローブ",
+    metaTitle: "グレーティングローブ判定ツール｜アレイアンテナ素子間隔と走査角",
+    description:
+      "アレイアンテナの素子間隔とビーム走査角から、可視領域にグレーティングローブが出るかを判定します。",
+    formula: "|sinθ0 + mλ/d| ≤ 1",
+    essenceLead: "素子間隔が広いほど不要ローブが出やすく、広角走査ほど厳しくなります。",
+    canonical: `${SITE_TOOLS}/array-grating-lobe`
+  },
+  {
+    slug: "patch-antenna-dimensions",
+    title: "矩形パッチアンテナ寸法",
+    metaTitle: "矩形パッチアンテナ寸法計算ツール｜周波数・基板εr・厚みから概算",
+    description:
+      "中心周波数、基板の比誘電率、基板厚から、矩形マイクロストリップパッチアンテナの幅と長さを概算します。",
+    formula: "W = c/(2f)√(2/(εr+1))　L = c/(2f√εeff) − 2ΔL",
+    essenceLead: "パッチは基板上の実効波長で決まるため、自由空間のλ/2より短くなります。",
+    canonical: `${SITE_TOOLS}/patch-antenna-dimensions`
+  },
+  {
+    slug: "small-loop-resonance",
+    title: "小型ループアンテナ共振",
+    metaTitle: "小型ループアンテナ共振計算ツール｜インダクタンスと必要容量",
+    description:
+      "小型ループの直径、線径、巻数からインダクタンスを近似し、指定周波数で共振させるための容量を計算します。",
+    formula: "L≈μ0N²r(ln(8r/a)-2)　C=1/((2πf)²L)",
+    essenceLead: "小型ループは同調容量に敏感で、共振させるほど帯域とばらつきに注意が必要です。",
+    canonical: `${SITE_TOOLS}/small-loop-resonance`
+  },
+  {
+    slug: "radiation-resistance",
+    title: "短縮アンテナ放射抵抗・効率",
+    metaTitle: "短縮アンテナ放射抵抗・効率計算ツール｜短いモノポール/ダイポールの厳しさ",
+    description:
+      "波長より短いモノポール/ダイポールの放射抵抗を概算し、損失抵抗との比から効率目安を計算します。",
+    formula: "Rr≈40π²(h/λ)² または 80π²(l/λ)²",
+    essenceLead: "短いアンテナは放射抵抗が小さく、わずかな損失抵抗でも効率が下がります。",
+    canonical: `${SITE_TOOLS}/radiation-resistance`
+  },
+  {
+    slug: "small-antenna-limit",
+    title: "小型アンテナ限界（ka・Q・帯域）",
+    metaTitle: "小型アンテナ限界計算ツール｜ka・Chu限界Q・比帯域",
+    description:
+      "アンテナ外形を外接球半径で見た ka とChu限界Qを計算し、小型化と帯域の物理的な厳しさを可視化します。",
+    formula: "ka = 2πa/λ　Qmin≈1/(ka)³+1/(ka)",
+    essenceLead: "小さくするほどQが上がり、帯域は急に狭くなります。",
+    canonical: `${SITE_TOOLS}/small-antenna-limit`
+  },
+  {
+    slug: "large-array-near-field",
+    title: "大型アレイ近傍界・遠方界判定",
+    metaTitle: "大型アレイ近傍界判定ツール｜Fraunhofer距離とFresnel数",
+    description:
+      "周波数、アレイ開口、評価距離から、Fraunhofer距離、Fresnel数、近傍界/遠方界の目安を計算します。",
+    formula: "Rff = 2D²/λ　F = D²/(λR)",
+    essenceLead: "5G/6Gや大型開口では、遠方界の前提が想像以上に遠くなります。",
+    canonical: `${SITE_TOOLS}/large-array-near-field`
+  },
+  {
+    slug: "reflector-ris-size-effect",
+    title: "反射板・RISサイズ効果",
+    metaTitle: "反射板・RISサイズ効果計算ツール｜面積・距離・波長による概算",
+    description:
+      "反射板やRISを面積を持つ受動開口として見たときの上限利得、近傍界距離、2ホップ損失の目安を計算します。",
+    formula: "Gsurface≈4πAη/λ²　L≈FSPL(d1)+FSPL(d2)-Gsurface",
+    essenceLead: "反射面は面積、距離、波長、近傍/遠方界で効き方が変わります。",
+    canonical: `${SITE_TOOLS}/reflector-ris-size-effect`
   }
 ];
 

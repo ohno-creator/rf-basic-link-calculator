@@ -2,9 +2,11 @@
 
 import { useMemo, useState } from "react";
 import { Card } from "@/components/Card";
+import { NumberField } from "@/components/NumberField";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { cableAssemblies, referenceCables } from "@/data/coaxCables";
+import { calculateEirp } from "@/lib/rf/antenna";
 import { cableAssemblyLoss, interpolateCableLoss } from "@/lib/rf/coax";
 import { formatNumber } from "@/lib/rf/format";
 import { CableLossCurveDiagram } from "./CableLossCurveDiagram";
@@ -14,6 +16,8 @@ export function CoaxCableLossPanel() {
   const [cableIndex, setCableIndex] = useState(0);
   const [frequencyMHz, setFrequencyMHz] = useState(2400);
   const [quantity, setQuantity] = useState(1);
+  const [txPowerDbm, setTxPowerDbm] = useState(20);
+  const [antennaGainDbi, setAntennaGainDbi] = useState(2.15);
 
   const cable = cableAssemblies[cableIndex] ?? cableAssemblies[0];
 
@@ -26,6 +30,13 @@ export function CoaxCableLossPanel() {
   }, [cable.points, frequencyMHz, quantity]);
 
   const outOfRange = frequencyMHz < 500 || frequencyMHz > 8000;
+  const eirp = result
+    ? calculateEirp({
+        txPowerDbm,
+        antennaGainDbi,
+        cableLossDb: result.totalDb
+      })
+    : null;
 
   return (
     <Card as="section" padding="lg" className="flex flex-col">
@@ -147,6 +158,105 @@ export function CoaxCableLossPanel() {
               quantity={quantity}
               referenceCables={referenceCables}
             />
+          </div>
+
+          {eirp ? (
+            <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-950">
+                    ケーブル後EIRP
+                  </h3>
+                  <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                    送信機出力、ケーブル損失、アンテナ利得をつないで、実際の実効放射電力を確認します。
+                  </p>
+                </div>
+                <Tooltip term="ケーブル後EIRP">
+                  EIRP = 送信電力 + アンテナ利得 - ケーブル損失。ケーブルが長い/高周波/本数が多いほど、アンテナ利得を食いつぶします。
+                </Tooltip>
+              </div>
+              <div className="mt-3 grid gap-4 md:grid-cols-2">
+                <NumberField
+                  id="coaxTxPower"
+                  label="送信機出力"
+                  unit="dBm"
+                  value={txPowerDbm}
+                  step={0.5}
+                  onChange={setTxPowerDbm}
+                />
+                <NumberField
+                  id="coaxAntennaGain"
+                  label="アンテナ利得"
+                  unit="dBi"
+                  value={antennaGainDbi}
+                  step={0.1}
+                  onChange={setAntennaGainDbi}
+                />
+              </div>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg bg-white p-3 shadow-card">
+                  <Stat
+                    label="アンテナ端子電力"
+                    value={formatNumber(eirp.antennaInputDbm, 1)}
+                    unit="dBm"
+                    tone="neutral"
+                    size="sm"
+                    note={`送信機から ${formatNumber(result.totalDb, 2)} dB 減`}
+                  />
+                </div>
+                <div className="rounded-lg bg-white p-3 shadow-card">
+                  <Stat
+                    label="EIRP"
+                    value={formatNumber(eirp.eirpDbm, 1)}
+                    unit="dBm"
+                    tone="emerald"
+                    size="sm"
+                    note={`${formatNumber(eirp.eirpW, 3)} W`}
+                  />
+                </div>
+                <div className="rounded-lg bg-white p-3 shadow-card">
+                  <Stat
+                    label="ERP"
+                    value={formatNumber(eirp.erpDbm, 1)}
+                    unit="dBm"
+                    tone="staf"
+                    size="sm"
+                    note={`${formatNumber(eirp.erpW, 3)} W`}
+                  />
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
+            <div className="mt-3 grid gap-4 md:grid-cols-2">
+              <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
+                <li>
+                  <span className="font-semibold text-staf-dark">1.</span> 使う品番を選び、運用周波数をMHzで入力します。
+                </li>
+                <li>
+                  <span className="font-semibold text-staf-dark">2.</span> 直列に入る本数を合わせ、合計損失と残る電力%を確認します。
+                </li>
+                <li>
+                  <span className="font-semibold text-staf-dark">3.</span> 送信機出力とアンテナ利得を入れ、ケーブル後EIRPまで見て設置可否を判断します。
+                </li>
+              </ol>
+              <dl className="grid gap-2 text-xs leading-relaxed text-slate-600">
+                <div>
+                  <dt className="font-semibold text-slate-900">挿入損失</dt>
+                  <dd>ケーブルやコネクタを通ることで失われる電力です。dBで足し算できます。</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-slate-900">残る電力%</dt>
+                  <dd>損失を線形の割合に戻した値です。3dBで約50%、6dBで約25%が残ります。</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-slate-900">ケーブル後EIRP</dt>
+                  <dd>送信機出力からケーブル損失を引き、アンテナ利得を足した実効放射電力です。</dd>
+                </div>
+              </dl>
+            </div>
           </div>
         </>
       ) : (

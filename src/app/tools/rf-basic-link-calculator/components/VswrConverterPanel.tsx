@@ -2,8 +2,10 @@
 
 import { useMemo, useState } from "react";
 import { Card } from "@/components/Card";
+import { NumberField } from "@/components/NumberField";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
+import { dbmToW, wToDbm } from "@/lib/rf/antenna";
 import { formatNumber } from "@/lib/rf/format";
 import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
@@ -22,6 +24,7 @@ function formatInfinite(value: number, digits: number): string {
 export function VswrConverterPanel() {
   const [mode, setMode] = useState<VswrSourceKind>("vswr");
   const [value, setValue] = useState(1.5);
+  const [inputPowerDbm, setInputPowerDbm] = useState(20);
 
   // モード切替時は前モードの値を引き継がず、新モードの代表値へリセットする。
   // これにより VSWR=1.5 のまま「反射係数Γ」に切り替えて即エラーになる事故を防ぐ。
@@ -47,6 +50,24 @@ export function VswrConverterPanel() {
 
   const result = computation.result;
   const activeMode = modes.find((item) => item.id === mode);
+  const powerFlow = useMemo(() => {
+    if (!result) {
+      return null;
+    }
+    const inputPowerW = dbmToW(inputPowerDbm);
+    const reflectedRatio = result.reflectionCoefficient ** 2;
+    const acceptedRatio = Math.max(0, 1 - reflectedRatio);
+    const reflectedW = inputPowerW * reflectedRatio;
+    const acceptedW = inputPowerW * acceptedRatio;
+    return {
+      inputPowerW,
+      reflectedW,
+      acceptedW,
+      acceptedDbm: acceptedW > 0 ? wToDbm(acceptedW) : Number.NEGATIVE_INFINITY,
+      reflectedDbm: reflectedW > 0 ? wToDbm(reflectedW) : Number.NEGATIVE_INFINITY,
+      acceptedPercent: acceptedRatio * 100
+    };
+  }, [inputPowerDbm, result]);
 
   return (
     <Card as="section" padding="lg" className="flex flex-col">
@@ -170,6 +191,97 @@ export function VswrConverterPanel() {
           />
         </div>
       ) : null}
+
+      {result && powerFlow ? (
+        <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h4 className="text-sm font-semibold text-slate-950">
+                入力電力から見る反射・受け入れ電力
+              </h4>
+              <p className="mt-1 text-xs leading-relaxed text-slate-600">
+                VSWRの値を、送信電力の何mWが戻るか、アンテナへ何mW入るかに換算します。
+              </p>
+            </div>
+            <Tooltip term="受け入れ電力">
+              ここではアンテナ端子へ入る電力 = 入力電力 × (1-Γ²) として計算します。実際に放射される電力は、さらにアンテナ効率や導体損・誘電体損に左右されます。
+            </Tooltip>
+          </div>
+          <div className="mt-3 grid gap-4 lg:grid-cols-[220px_1fr]">
+            <NumberField
+              id="vswrInputPower"
+              label="入力電力"
+              unit="dBm"
+              value={inputPowerDbm}
+              step={0.5}
+              onChange={setInputPowerDbm}
+            />
+            <div className="grid gap-3 sm:grid-cols-3">
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="アンテナへ入る電力"
+                  value={Number.isFinite(powerFlow.acceptedDbm) ? formatNumber(powerFlow.acceptedDbm, 1) : "-∞"}
+                  unit="dBm"
+                  tone="emerald"
+                  size="sm"
+                  note={`${formatNumber(powerFlow.acceptedW * 1000, 1)} mW / ${formatNumber(powerFlow.acceptedPercent, 1)}%`}
+                />
+              </div>
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="反射して戻る電力"
+                  value={Number.isFinite(powerFlow.reflectedDbm) ? formatNumber(powerFlow.reflectedDbm, 1) : "-∞"}
+                  unit="dBm"
+                  tone="rose"
+                  size="sm"
+                  note={`${formatNumber(powerFlow.reflectedW * 1000, 1)} mW`}
+                />
+              </div>
+              <div className="rounded-lg bg-white p-3 shadow-card">
+                <Stat
+                  label="整合で失う量"
+                  value={formatInfinite(result.mismatchLossDb, 2)}
+                  unit="dB"
+                  tone="amber"
+                  size="sm"
+                  note="リンクバジェットへ入れられる損失"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <h4 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h4>
+        <div className="mt-3 grid gap-4 md:grid-cols-2">
+          <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
+            <li>
+              <span className="font-semibold text-staf-dark">1.</span> 仕様書や測定器に合わせて、VSWR・リターンロス・Γのどれで入力するか選びます。
+            </li>
+            <li>
+              <span className="font-semibold text-staf-dark">2.</span> 反射電力%とミスマッチ損失を見て、リンクバジェットへ入れるべき損失感を掴みます。
+            </li>
+            <li>
+              <span className="font-semibold text-staf-dark">3.</span> 入力電力を実機の送信電力に合わせ、何mWが戻るかを確認します。
+            </li>
+          </ol>
+          <dl className="grid gap-2 text-xs leading-relaxed text-slate-600">
+            <div>
+              <dt className="font-semibold text-slate-900">VSWR</dt>
+              <dd>定在波比です。1.0が完全整合で、値が大きいほど反射が増えます。</dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-slate-900">リターンロス</dt>
+              <dd>反射の小ささをdBで表します。大きいほど整合が良い指標です。</dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-slate-900">ミスマッチ損失</dt>
+              <dd>反射により負荷へ入らない電力をdBで表したものです。放射効率とは別の損失です。</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
 
       <div className="mt-5">
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
