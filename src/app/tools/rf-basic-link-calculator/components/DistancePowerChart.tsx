@@ -11,6 +11,8 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { Card } from "@/components/Card";
+import { chartTheme } from "@/lib/chartTheme";
 import { generateDistancePowerData } from "@/lib/rf/chartData";
 import type { LinkBudgetInput } from "@/lib/rf/linkBudget";
 
@@ -28,7 +30,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
   }, []);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">
@@ -49,15 +51,15 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
               <XAxis
                 dataKey="distanceLabel"
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
                 interval={0}
               />
               <YAxis
                 unit="dBm"
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
                 domain={["dataMin - 12", "dataMax + 8"]}
               />
               <RechartsTooltip
@@ -66,8 +68,8 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
               />
               <ReferenceLine
                 y={input.receiverSensitivityDbm}
-                stroke="#E11D48"
-                strokeDasharray="5 5"
+                stroke={chartTheme.reference.sensitivity}
+                strokeDasharray={chartTheme.reference.sensitivityDash}
                 label={{
                   value: "受信感度",
                   position: "insideTopRight",
@@ -78,8 +80,8 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
               <Line
                 type="monotone"
                 dataKey="receivedPowerDbm"
-                stroke="#0071BD"
-                strokeWidth={3}
+                stroke={chartTheme.series.source}
+                strokeWidth={chartTheme.stroke.emphasis}
                 dot={(props) => {
                   const payload = props.payload as { current?: boolean };
                   return (
@@ -87,8 +89,8 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                       cx={props.cx}
                       cy={props.cy}
                       r={payload.current ? 6 : 4}
-                      fill={payload.current ? "#0071BD" : "#FFFFFF"}
-                      stroke="#0071BD"
+                      fill={payload.current ? chartTheme.series.source : "#FFFFFF"}
+                      stroke={chartTheme.series.source}
                       strokeWidth={2}
                     />
                   );
@@ -103,6 +105,6 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
           </div>
         )}
       </div>
-    </section>
+    </Card>
   );
 }

@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { chartTheme } from "@/lib/chartTheme";
 import type { ReferenceCable } from "@/data/coaxCables";
 import type { LossPoint } from "@/lib/rf/coax";
 
@@ -70,17 +71,17 @@ export function CableLossCurveDiagram({
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 4, right: 16, top: 12, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
               <XAxis
                 dataKey="f"
                 type="number"
                 scale="log"
                 domain={[300, 9000]}
                 ticks={[500, 1000, 2000, 4000, 8000]}
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
                 unit="MHz"
               />
-              <YAxis unit="dB" tick={{ fontSize: 12, fill: "#64748B" }} domain={[0, "dataMax + 1"]} />
+              <YAxis unit="dB" tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }} domain={[0, "dataMax + 1"]} />
               <RechartsTooltip
                 formatter={(value, name) => [`${value} dB`, name as string]}
                 labelFormatter={(label) => `${label} MHz`}
@@ -103,9 +104,9 @@ export function CableLossCurveDiagram({
                 type="monotone"
                 dataKey="selected"
                 name={`${partNumber}（1本あたり実測）`}
-                stroke="#0071BD"
-                strokeWidth={3}
-                dot={{ r: 3, fill: "#0071BD" }}
+                stroke={chartTheme.series.source}
+                strokeWidth={chartTheme.stroke.emphasis}
+                dot={{ r: 3, fill: chartTheme.series.source }}
                 isAnimationActive={false}
               />
               {showTotalLine ? (
@@ -113,7 +114,7 @@ export function CableLossCurveDiagram({
                   type="monotone"
                   dataKey="total"
                   name={`合計（${quantity}本）`}
-                  stroke="#0071BD"
+                  stroke={chartTheme.series.source}
                   strokeWidth={2}
                   strokeDasharray="2 3"
                   dot={false}

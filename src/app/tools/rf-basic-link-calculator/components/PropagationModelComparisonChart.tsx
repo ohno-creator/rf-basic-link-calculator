@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { chartTheme } from "@/lib/chartTheme";
 import {
   type GeometricPropagationModel,
   type PropagationLossParams,
@@ -72,7 +73,7 @@ export function PropagationModelComparisonChart({
         {isMounted && models.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <ComposedChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
               <XAxis
                 dataKey="d"
                 type="number"
@@ -80,11 +81,11 @@ export function PropagationModelComparisonChart({
                 domain={[0.01, 20]}
                 ticks={[0.01, 0.1, 1, 10]}
                 tickFormatter={(value) => (value < 1 ? `${value * 1000}m` : `${value}km`)}
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
               />
               <YAxis
                 unit="dB"
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
                 domain={["dataMin - 6", "dataMax + 6"]}
               />
               <RechartsTooltip
@@ -99,7 +100,7 @@ export function PropagationModelComparisonChart({
                   dataKey={model.value}
                   name={model.label}
                   stroke={model.color}
-                  strokeWidth={2.5}
+                  strokeWidth={chartTheme.stroke.series}
                   dot={false}
                   isAnimationActive={false}
                   connectNulls
