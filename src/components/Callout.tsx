@@ -17,7 +17,7 @@ export const calloutToneClass: Record<CalloutTone, string> = {
 };
 
 const sizeClass: Record<CalloutSize, string> = {
-  sm: "rounded-md p-3",
+  sm: "rounded-lg p-3",
   md: "rounded-lg p-4",
   lg: "rounded-lg p-5"
 };
