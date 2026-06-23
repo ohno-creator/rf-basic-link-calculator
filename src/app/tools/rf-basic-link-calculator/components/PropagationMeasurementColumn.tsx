@@ -1,16 +1,15 @@
 import { Globe } from "lucide-react";
 
+import { Callout } from "@/components/Callout";
+
 // Google Earth で記録を取り、実測値をページに重ねて考察する手順を伝えるコラム。
 
 export function PropagationMeasurementColumn() {
   return (
-    <section className="rounded-lg border border-sky-200 bg-sky-50 p-5 shadow-card">
-      <div className="flex items-center gap-2">
-        <Globe aria-hidden="true" className="h-5 w-5 text-sky-700" />
-        <h2 className="text-lg font-bold text-sky-950">コラム：実測で深掘りする — Google Earth × モデル比較</h2>
-      </div>
+    <Callout tone="info" size="lg" icon={<Globe aria-hidden="true" className="h-5 w-5" />}>
+      <h2 className="text-lg font-bold">コラム：実測で深掘りする — Google Earth × モデル比較</h2>
 
-      <div className="mt-3 space-y-3 text-sm leading-relaxed text-sky-950/90">
+      <div className="mt-3 space-y-3 text-sm leading-relaxed">
         <p>
           ここで並ぶ各モデルは、あくまで「平均的な環境」を仮定した中央値・基準値の推定です。実際の現場では、地形の起伏、建物や樹木の遮蔽、見通し（LOS/NLOS）、反射や回折によって、同じ距離でも損失は大きく変わります。
           そこで役立つのが、<span className="font-semibold">Google Earth を使って現地の条件を記録し、実測値をこのページに入れてモデルと重ねる</span>方法です。机上のモデルと現実のギャップを、自分の目で確かめながら理解できます。
@@ -47,6 +46,6 @@ export function PropagationMeasurementColumn() {
           地図上の距離は水平直線距離なので、実際の反射・回折経路とは差が出る点、電波は時間変動する点に注意し、できれば複数回・複数地点で確認してください。
         </p>
       </div>
-    </section>
+    </Callout>
   );
 }

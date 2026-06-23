@@ -1,3 +1,5 @@
+import { Card } from "@/components/Card";
+
 const scaleItems = [
   { dbm: "0dBm", mw: "1mW", value: 0 },
   { dbm: "10dBm", mw: "10mW", value: 10 },
@@ -22,7 +24,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
   const isAbove = hasMarker && currentDbm > SCALE_MAX;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <h3 className="text-base font-semibold text-slate-950">Decibel Scale Visual</h3>
 
       {hasMarker ? (
@@ -89,6 +91,6 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
       <p className="mt-4 text-sm leading-relaxed text-slate-600">
         dBを使うと、アンテナ利得や損失を足し算・引き算で整理できます。リンクバジェットは、このdBの特徴を使って通信余裕を見積もります。
       </p>
-    </section>
+    </Card>
   );
 }

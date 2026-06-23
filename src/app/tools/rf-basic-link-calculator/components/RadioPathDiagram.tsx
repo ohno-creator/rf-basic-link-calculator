@@ -1,4 +1,5 @@
 import { Box, Cable, RadioReceiver, RadioTower, Waves } from "lucide-react";
+import { Card, StateCard } from "@/components/Card";
 import { formatDb, formatDbm } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -14,7 +15,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
       : `${input.distance} m`;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">経路図</p>
@@ -32,7 +33,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
       </div>
 
       <div className="mt-6 grid gap-3 lg:grid-cols-[1fr_1.2fr_1fr_1fr]">
-        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
+        <StateCard tone="success" padding="md">
           <RadioTower aria-hidden="true" className="h-7 w-7 text-emerald-700" />
           <p className="mt-3 text-sm font-semibold text-emerald-950">送信側</p>
           <p className="mt-1 text-2xl font-bold text-emerald-950">
@@ -42,9 +43,9 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
             Txアンテナ {input.txAntennaGainDbi >= 0 ? "+" : ""}
             {input.txAntennaGainDbi} dBi
           </p>
-        </div>
+        </StateCard>
 
-        <div className="relative overflow-hidden rounded-lg border border-sky-200 bg-sky-50 p-4">
+        <StateCard tone="info" padding="md" className="relative overflow-hidden">
           <div className="absolute inset-x-5 top-1/2 h-1 -translate-y-1/2 rounded-full bg-sky-200" />
           <div className="relative flex h-full min-h-32 items-center justify-between gap-3">
             <Waves aria-hidden="true" className="h-9 w-9 text-sky-700" />
@@ -57,9 +58,9 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
             </div>
             <Waves aria-hidden="true" className="h-9 w-9 rotate-180 text-sky-700" />
           </div>
-        </div>
+        </StateCard>
 
-        <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+        <StateCard tone="danger" padding="md">
           <div className="flex items-center gap-2">
             <Cable aria-hidden="true" className="h-6 w-6 text-rose-700" />
             <Box aria-hidden="true" className="h-6 w-6 text-rose-700" />
@@ -72,9 +73,9 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
             ケーブル {input.cableLossDb} dB / 環境 {input.environmentLossDb} dB / 近傍{" "}
             {result.nearTerminalLossDb.toFixed(1)} dB
           </p>
-        </div>
+        </StateCard>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <Card variant="slate" padding="md" shadow={false}>
           <RadioReceiver aria-hidden="true" className="h-7 w-7 text-slate-700" />
           <p className="mt-3 text-sm font-semibold text-slate-950">受信側</p>
           <p className="mt-1 text-2xl font-bold text-slate-950">
@@ -83,15 +84,15 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
           <p className="mt-1 text-xs text-slate-600">
             受信感度 {formatDbm(input.receiverSensitivityDbm)}
           </p>
-        </div>
+        </Card>
       </div>
 
-      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <Card variant="slate" padding="md" shadow={false} className="mt-4">
         <p className="text-sm font-semibold text-slate-950">改善の読み方</p>
         <p className="mt-1 text-sm leading-relaxed text-slate-600">
           滝グラフで大きく落ちている部分が、通信余裕を削っている主因です。伝搬損失が大きい場合は距離・周波数・アンテナ高、端末近傍損失が大きい場合は地面近接・筐体・偏波・遮蔽・設置方向を重点的に確認します。
         </p>
-      </div>
-    </section>
+      </Card>
+    </Card>
   );
 }

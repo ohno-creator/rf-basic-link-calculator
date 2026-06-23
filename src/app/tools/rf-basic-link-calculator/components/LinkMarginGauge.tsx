@@ -1,3 +1,4 @@
+import { Card } from "@/components/Card";
 import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -25,7 +26,7 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
   const left = markerPosition(result.linkMarginDb);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">リンクマージンゲージ</h3>
@@ -63,6 +64,6 @@ export function LinkMarginGauge({ result }: LinkMarginGaugeProps) {
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         {result.judgement.summary} 色だけでなく、判定名と説明で状態を確認できます。
       </p>
-    </section>
+    </Card>
   );
 }

@@ -1,3 +1,4 @@
+import { Card } from "@/components/Card";
 import { chartTheme } from "@/lib/chartTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
@@ -153,7 +154,7 @@ export function LinkBudgetWaterfallChart({
   const sensitivityY = y(input.receiverSensitivityDbm);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">滝グラフ</p>
@@ -312,6 +313,6 @@ export function LinkBudgetWaterfallChart({
         {formatDbm(input.receiverSensitivityDbm)} より上にあるほど通信の余裕が大きくなります。現在のリンクマージンは{" "}
         {formatDb(result.linkMarginDb)} です。
       </p>
-    </section>
+    </Card>
   );
 }

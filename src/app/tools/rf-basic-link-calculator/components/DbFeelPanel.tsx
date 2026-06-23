@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { dbToDistanceRatio, dbToPowerRatio } from "@/lib/rf/db";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
@@ -41,7 +42,7 @@ export function DbFeelPanel() {
   }
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col">
       <h2 className="text-xl font-bold text-slate-950">dBを体感する</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         dBは「掛け算を足し算にするものさし」です。スライダーを動かして、dBが電力の倍率・到達距離の倍率にどう効くかを体感してください。
@@ -217,6 +218,6 @@ export function DbFeelPanel() {
           </p>
         </FormulaExplanationCard>
       </div>
-    </section>
+    </Card>
   );
 }

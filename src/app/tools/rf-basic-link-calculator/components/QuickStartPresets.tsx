@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import { Card } from "@/components/Card";
 import type { QuickStartPreset } from "@/data/quickStartPresets";
 import { quickStartPresets } from "@/data/quickStartPresets";
 
@@ -23,9 +24,11 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
         {quickStartPresets.map((preset) => (
-          <article
+          <Card
+            as="article"
             key={preset.id}
-            className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card"
+            padding="lg"
+            className="flex flex-col"
           >
             <span className="w-fit rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
               {preset.label}
@@ -53,7 +56,7 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
               この条件で試す
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </button>
-          </article>
+          </Card>
         ))}
       </div>
     </section>

@@ -1,4 +1,5 @@
 import { Accordion } from "@/components/Accordion";
+import { Card } from "@/components/Card";
 import { getPropagationAreaOption } from "@/data/linkBudgetOptions";
 import { formatDb, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
@@ -92,7 +93,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
 
       <ResultTabs input={input} result={result} />
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section" padding="lg">
         <h3 className="text-base font-semibold text-slate-950">主なリスク</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           {riskItems(input, result).map((risk) => (
@@ -104,7 +105,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
             </span>
           ))}
         </div>
-      </section>
+      </Card>
 
       <Accordion title="技術者向けの説明を見る">
         <p>

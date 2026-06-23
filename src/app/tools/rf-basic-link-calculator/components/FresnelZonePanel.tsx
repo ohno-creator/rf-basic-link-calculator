@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { calculateFresnel } from "@/lib/rf/fresnel";
@@ -31,7 +32,7 @@ export function FresnelZonePanel() {
   }, [frequencyMHz, distanceKm]);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col">
       <h3 className="text-lg font-bold text-slate-950">フレネルゾーン半径</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         見通し通信で「どれだけ障害物を空けるべきか」の目安になる、第1フレネルゾーンの半径を計算します。
@@ -162,6 +163,6 @@ export function FresnelZonePanel() {
           </p>
         </FormulaExplanationCard>
       </div>
-    </section>
+    </Card>
   );
 }

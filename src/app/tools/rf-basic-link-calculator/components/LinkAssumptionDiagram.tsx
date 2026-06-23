@@ -1,4 +1,6 @@
 import { AlertTriangle, Ruler, Settings2 } from "lucide-react";
+import { Callout } from "@/components/Callout";
+import { Card } from "@/components/Card";
 import {
   getLinkTypeLabel,
   getPropagationAreaOption,
@@ -144,7 +146,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
     result.communicationMode === "gateway_to_low_height_terminal";
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-staf-dark">設定前提の2D図</p>
@@ -270,32 +272,31 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
           </dl>
         </section>
 
-        <section className="rounded-lg border border-sky-200 bg-sky-50 p-4">
-          <div className="flex items-start gap-2">
-            <Ruler aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" />
-            <div>
-              <h4 className="text-sm font-bold text-sky-950">モデル前提</h4>
-              <p className="mt-1 text-sm leading-relaxed text-sky-900">{modelAssumption(input)}</p>
-            </div>
-          </div>
-        </section>
+        <Callout
+          tone="info"
+          size="md"
+          icon={<Ruler aria-hidden="true" className="h-5 w-5" />}
+          title="モデル前提"
+        >
+          <p className="leading-relaxed">{modelAssumption(input)}</p>
+        </Callout>
       </div>
 
-      <section className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4">
-        <div className="flex items-start gap-3">
-          <AlertTriangle aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
-          <div>
-            <h4 className="text-sm font-bold text-amber-950">この図と計算を見るときの注意点</h4>
-            <ul className="mt-2 grid gap-2 text-xs leading-relaxed text-amber-950 md:grid-cols-2">
-              {cautionItems.map((item) => (
-                <li key={item} className="rounded-md bg-white/65 p-3">
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-    </section>
+      <Callout
+        tone="caution"
+        size="md"
+        className="mt-4"
+        icon={<AlertTriangle aria-hidden="true" className="h-5 w-5" />}
+        title="この図と計算を見るときの注意点"
+      >
+        <ul className="grid gap-2 text-xs leading-relaxed md:grid-cols-2">
+          {cautionItems.map((item) => (
+            <li key={item} className="rounded-md bg-white/65 p-3">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </Callout>
+    </Card>
   );
 }

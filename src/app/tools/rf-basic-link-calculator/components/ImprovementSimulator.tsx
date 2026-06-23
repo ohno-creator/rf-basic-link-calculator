@@ -1,4 +1,5 @@
 import { ArrowRight, MessageSquareText } from "lucide-react";
+import { Card } from "@/components/Card";
 import { simulateImprovements } from "@/lib/rf/chartData";
 import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
@@ -13,7 +14,7 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
   const simulations = simulateImprovements(input);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-slate-950">改善したらどうなる？</h3>
@@ -31,7 +32,7 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
 
       <div className="mt-5 grid gap-3 md:grid-cols-2">
         {simulations.map((simulation) => (
-          <div key={simulation.label} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <Card key={simulation.label} variant="slate" padding="md" shadow={false}>
             <div className="flex items-center justify-between gap-3">
               <p className="text-sm font-semibold text-slate-950">{simulation.label}</p>
               <ArrowRight aria-hidden="true" className="h-4 w-4 text-staf-dark" />
@@ -45,7 +46,7 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
             <p className="text-xs font-medium text-slate-500">
               現在比 {formatSigned(simulation.deltaDb, "dB")}
             </p>
-          </div>
+          </Card>
         ))}
       </div>
 
@@ -62,6 +63,6 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
           改善案を相談する
         </a>
       </div>
-    </section>
+    </Card>
   );
 }

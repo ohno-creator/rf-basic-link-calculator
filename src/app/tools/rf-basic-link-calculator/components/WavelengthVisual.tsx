@@ -1,4 +1,5 @@
 import { Accordion } from "@/components/Accordion";
+import { Card } from "@/components/Card";
 import { calculateWavelengthFromMHz } from "@/lib/rf/frequency";
 import { formatMeters } from "@/lib/rf/format";
 import { DielectricImpactTable } from "./DielectricImpactTable";
@@ -30,7 +31,7 @@ export function WavelengthVisual({ frequencyMHz, hasInput = true }: WavelengthVi
   const maxHalf = Math.max(...rows.map((row) => row.halfWavelengthM));
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h3 className="text-base font-semibold text-slate-950">半波長アンテナ長の目安（λ/2）</h3>
         <span className="text-xs font-medium text-slate-500">共振する基本サイズ</span>
@@ -129,6 +130,6 @@ export function WavelengthVisual({ frequencyMHz, hasInput = true }: WavelengthVi
           </p>
         </Accordion>
       </div>
-    </section>
+    </Card>
   );
 }

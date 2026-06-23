@@ -2,6 +2,7 @@
 
 import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { formatNumber } from "@/lib/rf/format";
@@ -217,7 +218,7 @@ export function MicrostripLinePanel() {
   }, [result, widthMm, heightMm, dielectricConstant, frequencyMHz]);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col">
       <h2 className="text-xl font-bold text-slate-950">マイクロストリップ線路シミュレーション</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         基板上の配線（マイクロストリップ）の特性インピーダンス・実効比誘電率・電気長を計算し、曲げ（マイター）やグラウンドのスルーホール（ビア）の設計目安まで確認できます。
@@ -490,7 +491,7 @@ export function MicrostripLinePanel() {
               </p>
             </div>
 
-            <div className="mt-4 rounded-lg border border-slate-200 bg-white p-4">
+            <Card padding="md" shadow={false} className="mt-4">
               <p className="text-sm font-semibold text-slate-950">推奨する曲げ方</p>
               <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
                 {bendRecommendations(bend).map((text) => (
@@ -502,7 +503,7 @@ export function MicrostripLinePanel() {
                   注意：W/h または εr が Douville-James の適用範囲（W/h 0.25〜2.75、εr ≤ 25）の外です。マイター率は参考目安としてご利用ください。
                 </p>
               ) : null}
-            </div>
+            </Card>
 
             <div className="mt-4 grid gap-3 sm:grid-cols-3">
               <ResultCard
@@ -563,6 +564,6 @@ export function MicrostripLinePanel() {
           </FormulaExplanationCard>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

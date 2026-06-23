@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { cableAssemblies, referenceCables } from "@/data/coaxCables";
@@ -27,7 +28,7 @@ export function CoaxCableLossPanel() {
   const outOfRange = frequencyMHz < 500 || frequencyMHz > 8000;
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col">
       <h2 className="text-xl font-bold text-slate-950">同軸ケーブル損失（実測値）</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         標準品（変換・延長用）の同軸ケーブルについて、品番と周波数から1本あたりの挿入損失（実測値）を求めます。求めた合計を、リンクバジェットの「ケーブル・コネクタ損失」に入れて使えます。
@@ -164,6 +165,6 @@ export function CoaxCableLossPanel() {
           </p>
         </FormulaExplanationCard>
       </div>
-    </section>
+    </Card>
   );
 }

@@ -12,6 +12,8 @@ import {
   type LucideIcon
 } from "lucide-react";
 import { Accordion } from "@/components/Accordion";
+import { Callout } from "@/components/Callout";
+import { Card, StateCard } from "@/components/Card";
 import { Tooltip } from "@/components/Tooltip";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { frequencyPresets } from "@/data/frequencyPresets";
@@ -117,7 +119,7 @@ function NumberField({
   const sliderValue = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <Card padding="md" shadow={false}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor={htmlId} className="text-sm font-semibold text-slate-950">
           {label}
@@ -156,7 +158,7 @@ function NumberField({
         <span>推奨レンジ: {range}</span>
       </div>
       {error ? <p className="mt-2 text-sm font-medium text-rose-700">{error}</p> : null}
-    </div>
+    </Card>
   );
 }
 
@@ -198,7 +200,7 @@ function LinkTypeCards({
   onSelect: (value: LinkBudgetInput["linkType"]) => void;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <Card padding="md" shadow={false}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <span id="linkType-label" className="text-sm font-semibold text-slate-950">
           通信形態
@@ -253,14 +255,14 @@ function LinkTypeCards({
           );
         })}
       </div>
-      <div className="mt-3 space-y-2 rounded-md border border-sky-200 bg-sky-50 p-3 text-xs leading-relaxed text-sky-950">
+      <StateCard tone="info" padding="sm" radius="md" className="mt-3 space-y-2 text-xs leading-relaxed">
         <p>
           <span className="font-semibold">相性の良い伝搬モデル：</span>
-          <span className="text-sky-900">{selectedOption.recommendedModels}</span>
+          <span>{selectedOption.recommendedModels}</span>
         </p>
-        <p className="text-sky-900">{modeText}</p>
-      </div>
-    </div>
+        <p>{modeText}</p>
+      </StateCard>
+    </Card>
   );
 }
 
@@ -279,21 +281,21 @@ function focusAntennaHeightInput(id: "txAntennaHeightM" | "rxAntennaHeightM") {
 function HataAntennaHeightNotice({ input }: { input: LinkBudgetInput }) {
   if (!isHataFamily(input.propagationModel)) {
     return (
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <Card variant="slate" padding="md" shadow={false}>
         <p className="text-sm font-semibold text-slate-950">空中線地上高も入力パラメータです</p>
         <p className="mt-1 text-xs leading-relaxed text-slate-600">
           2波モデル、奥村・秦モデル、COST231-Hataモデルでは、送信側・受信側の空中線地上高（アンテナ高）が伝搬損失に効きます。高さは固定ではなく「ステップ2：送信側・受信側のアンテナ条件を入れる」で入力できます。
         </p>
-      </div>
+      </Card>
     );
   }
 
   return (
-    <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
-      <p className="text-sm font-semibold text-emerald-950">
+    <Callout tone="success" size="md">
+      <p className="text-sm font-semibold">
         奥村・秦モデルの空中線地上高は固定ではなく、入力パラメータです
       </p>
-      <p className="mt-1 text-xs leading-relaxed text-emerald-900">
+      <p className="mt-1 text-xs leading-relaxed">
         送信側・受信側の空中線地上高は「ステップ2：送信側・受信側のアンテナ条件を入れる」で入力でき、変更するとその場で伝搬損失が再計算されます。
         現在は、送信側 空中線地上高 {input.txAntennaHeightM.toFixed(1)}m を基地局高 hb、
         受信側 空中線地上高 {input.rxAntennaHeightM.toFixed(1)}m を移動局高 hm として計算に反映しています。
@@ -315,7 +317,7 @@ function HataAntennaHeightNotice({ input }: { input: LinkBudgetInput }) {
           受信側アンテナ高を確認
         </button>
       </div>
-    </div>
+    </Callout>
   );
 }
 
@@ -346,7 +348,7 @@ function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
   ];
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <Card padding="md" shadow={false}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="text-sm font-bold text-slate-950">入力前提チェックメニュー</h3>
@@ -442,7 +444,7 @@ function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
           </div>
         </details>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -662,12 +664,12 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
   return (
     <section className="space-y-4">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card padding="lg">
         <h2 className="text-xl font-bold text-slate-950">リンクバジェット簡易診断</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           送信電力、アンテナ利得、距離による損失、筐体や環境の損失を足し引きして、受信電力とリンクマージンを見積もります。スライダーを動かすと、右の滝グラフがその場で変わります。
         </p>
-      </div>
+      </Card>
 
       <Accordion title="入力で何が変わるか（効き方ガイド）">
         <InputImpactGuide />
@@ -693,7 +695,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onSelect={(value) => update("linkType", value)}
           />
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <Card padding="md" shadow={false}>
             <div className="flex flex-wrap items-center justify-between gap-2">
               <label htmlFor="propagationModel" className="text-sm font-semibold text-slate-950">
                 伝搬モデル
@@ -719,7 +721,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                 </option>
               ))}
             </select>
-            <div className="mt-2 space-y-1.5 rounded-md border border-slate-200 bg-slate-50 p-3 text-xs leading-relaxed">
+            <Card
+              variant="slate"
+              padding="sm"
+              radius="md"
+              shadow={false}
+              className="mt-2 space-y-1.5 text-xs leading-relaxed"
+            >
               <p className="text-slate-700">{selectedPropagationModel.description}</p>
               <p>
                 <span className="font-semibold text-slate-900">向いている：</span>
@@ -729,18 +737,18 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                 <span className="font-semibold text-slate-900">注意：</span>
                 <span className="text-amber-700">{selectedPropagationModel.caution}</span>
               </p>
-            </div>
+            </Card>
             {selectedLinkType.recommendedModelValues.length > 0 &&
             !selectedLinkType.recommendedModelValues.includes(input.propagationModel) ? (
-              <div className="mt-2 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs leading-relaxed text-amber-900">
+              <StateCard tone="caution" padding="sm" radius="md" className="mt-2 text-xs leading-relaxed">
                 <span className="font-semibold">この通信形態での推奨モデル：</span>
                 {selectedLinkType.recommendedModels}。現在の「{selectedPropagationModel.label}」は参考として計算します。
-              </div>
+              </StateCard>
             ) : null}
-          </div>
+          </Card>
 
           {isHataFamily(input.propagationModel) ? (
-            <div className="rounded-lg border border-slate-200 bg-white p-4">
+            <Card padding="md" shadow={false}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <label htmlFor="propagationArea" className="text-sm font-semibold text-slate-950">
                   奥村・秦モデルのエリア種別
@@ -769,7 +777,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               <p className="mt-2 text-xs leading-relaxed text-slate-600">
                 {selectedPropagationArea.description}
               </p>
-            </div>
+            </Card>
           ) : null}
 
           <IotHataCalibrationPanel input={input} errors={errors} onChange={onChange} update={update} />
@@ -796,7 +804,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("pathLossExponent", value)}
           />
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <Card padding="md" shadow={false}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="system" className="text-sm font-semibold text-slate-950">
               通信方式
@@ -819,9 +827,9 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             ))}
           </select>
           {errors.system ? <p className="mt-2 text-sm font-medium text-rose-700">{errors.system}</p> : null}
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <Card padding="md" shadow={false}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="frequencyPreset" className="text-sm font-semibold text-slate-950">
               周波数プリセット
@@ -843,7 +851,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               <option value={input.frequencyMHz}>手動入力中: {input.frequencyMHz}MHz</option>
             ) : null}
           </select>
-          </div>
+          </Card>
 
           <NumberField
             id="frequencyMHz"
@@ -861,7 +869,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("frequencyMHz", value)}
           />
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <Card padding="md" shadow={false}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="distance" className="text-sm font-semibold text-slate-950">
               通信距離
@@ -918,7 +926,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             <span>推奨レンジ: 1m-10km</span>
           </div>
           {errors.distance ? <p className="mt-2 text-sm font-medium text-rose-700">{errors.distance}</p> : null}
-          </div>
+          </Card>
         </InputGroup>
 
         <InputGroup
@@ -1030,7 +1038,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("cableLossDb", value)}
           />
 
-          <div className="rounded-lg border border-slate-200 bg-white p-4">
+          <Card padding="md" shadow={false}>
           <div className="flex flex-wrap items-center justify-between gap-2">
             <label htmlFor="environmentPreset" className="text-sm font-semibold text-slate-950">
               環境損失プリセット
@@ -1059,7 +1067,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           <p className="mt-2 text-xs leading-relaxed text-slate-500">
             環境損失は初期検討用の目安です。実際の損失は筐体材質、金属部品、設置姿勢、周辺環境、ノイズ条件によって大きく変動します。
           </p>
-          </div>
+          </Card>
 
           <NumberField
             id="environmentLossDb"
@@ -1077,15 +1085,15 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("environmentLossDb", value)}
           />
 
-          <div className="rounded-lg border border-rose-200 bg-rose-50 p-4">
-            <p className="text-sm font-semibold text-rose-950">端末近傍損失</p>
-            <p className="mt-1 text-2xl font-bold text-rose-950">
+          <StateCard tone="danger" padding="md">
+            <p className="text-sm font-semibold">端末近傍損失</p>
+            <p className="mt-1 text-2xl font-bold">
               {nearTerminalLossDb.toFixed(1)} dB
             </p>
-            <p className="mt-1 text-xs leading-relaxed text-rose-800">
+            <p className="mt-1 text-xs leading-relaxed">
               地面近接・筐体・偏波・車両/人体遮蔽・設置ばらつきの合計です。下の内訳で各要因を入力できます。
             </p>
-          </div>
+          </StateCard>
 
           <details
             id="near-terminal-detail"

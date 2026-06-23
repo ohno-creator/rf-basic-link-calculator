@@ -1,16 +1,15 @@
 import { BookOpen } from "lucide-react";
 
+import { Callout } from "@/components/Callout";
+
 // 奥村-秦モデルの背景を伝える読み物コラム。
 
 export function HataColumn() {
   return (
-    <section className="rounded-lg border border-amber-200 bg-amber-50 p-5 shadow-card">
-      <div className="flex items-center gap-2">
-        <BookOpen aria-hidden="true" className="h-5 w-5 text-amber-700" />
-        <h2 className="text-lg font-bold text-amber-950">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>
-      </div>
+    <Callout tone="caution" size="lg" icon={<BookOpen aria-hidden="true" className="h-5 w-5" />}>
+      <h2 className="text-lg font-bold">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>
 
-      <div className="mt-3 space-y-3 text-sm leading-relaxed text-amber-950/90">
+      <div className="mt-3 space-y-3 text-sm leading-relaxed">
         <p>
           この式は、机上の理論からではなく、地道な“実測”から生まれました。1960年代、日本の奥村善久（おくむら よしひさ）氏らは、東京とその周辺で膨大な電波伝搬の測定を行い、周波数・距離・アンテナ高・市街地や郊外といった地形ごとに、電波がどれだけ弱くなるかを一群の曲線（いわゆる「奥村カーブ」）としてまとめ上げました。
         </p>
@@ -86,6 +85,6 @@ export function HataColumn() {
           </ul>
         </div>
       </div>
-    </section>
+    </Callout>
   );
 }

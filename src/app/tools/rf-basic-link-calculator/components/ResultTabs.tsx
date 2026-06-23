@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { Card } from "@/components/Card";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 import { BeginnerExplanation } from "./BeginnerExplanation";
 import { DistancePowerChart } from "./DistancePowerChart";
@@ -55,7 +56,7 @@ export function ResultTabs({ input, result }: ResultTabsProps) {
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-card sm:p-5">
+    <Card as="section" padding="md" className="sm:p-5">
       <div role="tablist" aria-label="結果の詳細" className="flex gap-2 overflow-x-auto" onKeyDown={onKeyDown}>
         {tabs.map((tab) => {
           const selected = active === tab.id;
@@ -110,6 +111,6 @@ export function ResultTabs({ input, result }: ResultTabsProps) {
           </>
         ) : null}
       </div>
-    </section>
+    </Card>
   );
 }

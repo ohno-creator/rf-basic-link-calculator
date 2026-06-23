@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
@@ -55,7 +56,7 @@ export function FsplPanel() {
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card padding="lg">
         <h2 className="text-xl font-bold text-slate-950">自由空間損失 FSPL 計算</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           障害物や反射がない理想的な空間で、距離により電波が弱くなる量を計算します。
@@ -151,9 +152,9 @@ export function FsplPanel() {
             </p>
           </FormulaExplanationCard>
         </div>
-      </div>
+      </Card>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section" padding="lg">
         <h3 className="text-base font-semibold text-slate-950">FSPL Visual</h3>
         <div className="mt-4 rounded-lg bg-slate-50 p-5 text-center text-sm text-slate-700">
           <div className="flex items-center justify-between gap-2">
@@ -237,7 +238,7 @@ export function FsplPanel() {
             </p>
           )}
         </div>
-      </section>
+      </Card>
     </section>
   );
 }

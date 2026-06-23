@@ -2,6 +2,9 @@
 
 import { type ReactNode, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Check, Copy, Plus, Printer, Trash2 } from "lucide-react";
+import { Badge } from "@/components/Badge";
+import { Callout } from "@/components/Callout";
+import { Card } from "@/components/Card";
 import { Tooltip } from "@/components/Tooltip";
 import { getPropagationModelOption, propagationAreaOptions } from "@/data/linkBudgetOptions";
 import { type AreaType } from "@/lib/rf/propagation";
@@ -52,7 +55,7 @@ function Field({ id, label, unit, value, min, max, step, onChange, hint, tooltip
   const sliderValue = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-3">
+    <Card padding="sm" shadow={false}>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <label htmlFor={id} className="text-sm font-semibold text-slate-950">
           {label}
@@ -84,7 +87,7 @@ function Field({ id, label, unit, value, min, max, step, onChange, hint, tooltip
       />
       {children}
       {hint ? <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p> : null}
-    </div>
+    </Card>
   );
 }
 
@@ -248,7 +251,7 @@ export function PropagationExplorer() {
   };
 
   return (
-    <section className="flex flex-col gap-4 rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col gap-4">
       <div>
         <h3 className="text-lg font-bold text-slate-950">伝搬損失モデル比較</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -258,7 +261,7 @@ export function PropagationExplorer() {
       </div>
 
       {/* モデル選択チップ */}
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <Card variant="slate" padding="md" shadow={false}>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-semibold text-slate-950">比較するモデル</p>
           <Tooltip term="伝搬モデル">
@@ -294,7 +297,7 @@ export function PropagationExplorer() {
             );
           })}
         </div>
-      </div>
+      </Card>
 
       {/* 共通条件の入力 */}
       <div>
@@ -380,7 +383,7 @@ export function PropagationExplorer() {
             />
           ) : null}
           {hataActive ? (
-            <div className="rounded-lg border border-slate-200 bg-white p-3">
+            <Card padding="sm" shadow={false}>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <label htmlFor="propArea" className="text-sm font-semibold text-slate-950">
                   エリア種別（Hata系）
@@ -404,7 +407,7 @@ export function PropagationExplorer() {
               <p className="mt-1 text-xs leading-relaxed text-slate-500">
                 市街地ほど損失が大きく、開放地ほど小さく推定します。
               </p>
-            </div>
+            </Card>
           ) : null}
         </div>
       </div>
@@ -441,10 +444,7 @@ export function PropagationExplorer() {
               const option = getPropagationModelOption(result.model);
               const deltaDb = minLoss !== null ? result.pathLossDb - minLoss : 0;
               return (
-                <li
-                  key={result.model}
-                  className="rounded-lg border border-slate-200 bg-white p-3"
-                >
+                <Card as="li" key={result.model} padding="sm" shadow={false}>
                   <div className="flex items-center justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-2">
                       <span
@@ -454,14 +454,14 @@ export function PropagationExplorer() {
                       />
                       <span className="truncate text-sm font-bold text-slate-950">{option.label}</span>
                       {index === 0 ? (
-                        <span className="shrink-0 rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-800">
+                        <Badge tone="success" size="xs" className="shrink-0">
                           最小
-                        </span>
+                        </Badge>
                       ) : null}
                       {result.outOfRange ? (
-                        <span className="shrink-0 rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-800">
+                        <Badge tone="caution" size="xs" className="shrink-0">
                           適用範囲外
-                        </span>
+                        </Badge>
                       ) : null}
                     </div>
                     <div className="shrink-0 text-right">
@@ -478,7 +478,7 @@ export function PropagationExplorer() {
                     <span className="ml-2 font-semibold text-amber-700">注意：</span>
                     <span className="text-amber-700">{option.caution}</span>
                   </p>
-                </li>
+                </Card>
               );
             })}
           </ul>
@@ -486,7 +486,7 @@ export function PropagationExplorer() {
       </div>
 
       {/* 実測値の入力 */}
-      <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <Card variant="slate" padding="md" shadow={false}>
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-semibold text-slate-950">実測値を重ねる（任意・最大10点）</p>
           <Tooltip term="実測値">
@@ -548,7 +548,7 @@ export function PropagationExplorer() {
             {measuredOutOfRange}点が表示範囲（10m〜20km）外のため、グラフには重ねていません。
           </p>
         ) : null}
-      </div>
+      </Card>
 
       {/* 距離スイープのグラフ */}
       <PropagationModelComparisonChart
@@ -595,15 +595,12 @@ export function PropagationExplorer() {
         ) : null}
       </div>
 
-      <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-        <div className="flex items-start gap-2">
-          <AlertTriangle aria-hidden className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
-          <p className="text-xs leading-relaxed text-amber-950">
-            いずれのモデルも中央値・基準値の概算です。実際の損失は建物配置、地形、屋内侵入、マルチパス、筐体・設置条件で変動します。
-            通信可否の判断には、リンクバジェット計算機で環境損失・端末近傍損失・実測補正を併用してください。
-          </p>
-        </div>
-      </div>
-    </section>
+      <Callout tone="caution" size="md" icon={<AlertTriangle aria-hidden className="h-4 w-4" />}>
+        <p className="text-xs leading-relaxed">
+          いずれのモデルも中央値・基準値の概算です。実際の損失は建物配置、地形、屋内侵入、マルチパス、筐体・設置条件で変動します。
+          通信可否の判断には、リンクバジェット計算機で環境損失・端末近傍損失・実測補正を併用してください。
+        </p>
+      </Callout>
+    </Card>
   );
 }

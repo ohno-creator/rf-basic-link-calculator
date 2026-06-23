@@ -1,11 +1,12 @@
 import { Accordion } from "@/components/Accordion";
+import { Card } from "@/components/Card";
 import { CONTACT_URL } from "@/lib/rf/presets";
 
 // フレネルゾーン半径が「理想的な見通しが稀なIoT現場」で持つ意味を掘り下げる解説。
 
 export function FresnelDeepDive() {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <h2 className="text-lg font-bold text-slate-950">IoTの現場でフレネルゾーンをどう活かすか</h2>
       <p className="mt-2 text-sm leading-relaxed text-slate-700">
         フレネルゾーンは「見通しが取れている理想的な状況」を前提に語られがちです。しかし実際のIoT現場では、送受信点の間に什器、棚、在庫、配管、人、車などが入り込み、第1フレネルゾーンの60%を常に確保できる環境はむしろ稀です。だからこそこの半径は、「どれだけ余裕（クリアランス）を見込むべきか」「どこに置けば損をしにくいか」を考えるための“ものさし”になります。
@@ -51,6 +52,6 @@ export function FresnelDeepDive() {
           設置条件・マージン設計を相談する
         </a>
       </div>
-    </section>
+    </Card>
   );
 }

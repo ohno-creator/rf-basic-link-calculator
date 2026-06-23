@@ -9,6 +9,7 @@ import {
   Ruler,
   Waves
 } from "lucide-react";
+import { Callout } from "@/components/Callout";
 import { Tooltip } from "@/components/Tooltip";
 import { getPropagationModelOption } from "@/data/linkBudgetOptions";
 import { getCommunicationMode, type LinkBudgetInput } from "@/lib/rf/linkBudget";
@@ -119,18 +120,17 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
 
   return (
     <div className="space-y-4">
-      <div className="rounded-lg border border-sky-200 bg-sky-50 p-4">
-        <div className="flex items-start gap-3">
-          <Crosshair aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-sky-700" />
-          <div>
-            <p className="text-sm font-bold text-sky-950">{modeSummary.title}</p>
-            <p className="mt-1 text-sm leading-relaxed text-sky-900">{modeSummary.text}</p>
-            <p className="mt-2 text-xs leading-relaxed text-sky-800">
-              現在の主モデルは「{activeModel.label}」です。下の表で、どの入力が計算に効くかを確認できます。
-            </p>
-          </div>
-        </div>
-      </div>
+      <Callout
+        tone="info"
+        size="md"
+        icon={<Crosshair aria-hidden="true" className="h-5 w-5" />}
+        title={modeSummary.title}
+      >
+        <p className="leading-relaxed">{modeSummary.text}</p>
+        <p className="mt-2 text-xs leading-relaxed">
+          現在の主モデルは「{activeModel.label}」です。下の表で、どの入力が計算に効くかを確認できます。
+        </p>
+      </Callout>
 
       <div className="grid gap-3">
         {activeRows.map((row) => (
@@ -176,12 +176,13 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
         ))}
       </div>
 
-      <section className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-amber-950">
-        <div className="flex items-start gap-3">
-          <Gauge aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-amber-700" />
-          <div>
-            <h3 className="text-sm font-bold">二重計上に注意</h3>
-            <p className="mt-1 text-sm leading-relaxed">
+      <Callout
+        tone="caution"
+        size="md"
+        icon={<Gauge aria-hidden="true" className="h-5 w-5" />}
+        title="二重計上に注意"
+      >
+            <p className="leading-relaxed">
               同じ現象を複数欄へ入れると、リンクマージンを必要以上に悪く見積もります。
               <Tooltip term="二重計上">
                 例えば筐体による差分を「環境損失」と「筐体損失」と「実測補正値」に同時に入れると、同じ損失を何度も引くことになります。
@@ -212,40 +213,36 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
               IoT実測補正Hataモードでは、実測アンカー点からHata基準との差分を既に推定します。
               追加で「実測補正値」を入れる場合は、アンカー補正とは別の要因だけを入れてください。
             </p>
-          </div>
-        </div>
-      </section>
+      </Callout>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <div className="flex items-start gap-3">
-          <Database aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-slate-600" />
-          <div>
-            <h3 className="text-sm font-bold text-slate-950">現地実測で確認する順番</h3>
-            <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-relaxed text-slate-600">
+      <Callout
+        tone="neutral"
+        size="md"
+        icon={<Database aria-hidden="true" className="h-5 w-5" />}
+        title="現地実測で確認する順番"
+      >
+            <ol className="list-decimal space-y-1 pl-5 leading-relaxed">
               <li>送信電力、アンテナ利得、アンテナ高、距離を現地条件に合わせます。</li>
               <li>筐体・地面・遮蔽など、原因が分かる損失は個別欄へ入れます。</li>
               <li>残った差分だけを実測補正値、またはIoT実測補正Hataのアンカー点へ入れます。</li>
               <li>距離が大きく変わる場合は、複数地点で距離勾配補正を確認します。</li>
             </ol>
-          </div>
-        </div>
-      </section>
+      </Callout>
 
-      <section className="rounded-lg border border-emerald-200 bg-emerald-50 p-4">
-        <div className="flex items-start gap-3">
-          <RadioTower aria-hidden="true" className="mt-0.5 h-5 w-5 shrink-0 text-emerald-700" />
-          <div>
-            <h3 className="text-sm font-bold text-emerald-950">奥村・秦の高さ入力</h3>
-            <p className="mt-1 text-sm leading-relaxed text-emerald-900">
+      <Callout
+        tone="success"
+        size="md"
+        icon={<RadioTower aria-hidden="true" className="h-5 w-5" />}
+        title="奥村・秦の高さ入力"
+      >
+            <p className="leading-relaxed">
               奥村・秦/COST231-Hataでは、送信側アンテナ高を
               <Tooltip term="hb">基地局アンテナ高です。一般的な目安は30〜200mです。</Tooltip>
               、受信側アンテナ高を
               <Tooltip term="hm">移動局アンテナ高です。一般的な目安は1〜10mです。</Tooltip>
               として使います。値は固定ではなく、入力欄の変更が伝搬損失へ反映されます。
             </p>
-          </div>
-        </div>
-      </section>
+      </Callout>
 
       <section className="rounded-lg border border-indigo-200 bg-indigo-50 p-4">
         <div className="flex items-start gap-3">

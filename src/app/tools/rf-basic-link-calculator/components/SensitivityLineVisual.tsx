@@ -1,3 +1,4 @@
+import { Card } from "@/components/Card";
 import { formatDbm } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -19,7 +20,7 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
   const sensitivityTop = position(input.receiverSensitivityDbm);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <h3 className="text-base font-semibold text-slate-950">Sensitivity Line Visual</h3>
       <p className="mt-1 text-sm leading-relaxed text-slate-600">
         受信感度は「ここまで弱い電波なら受け取れる」という最低ラインです。受信電力がこのラインより上にあれば、通信できる可能性があります。
@@ -52,6 +53,6 @@ export function SensitivityLineVisual({ input, result }: SensitivityLineVisualPr
           </div>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }

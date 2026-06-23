@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { formatNumber } from "@/lib/rf/format";
@@ -48,7 +49,7 @@ export function VswrConverterPanel() {
   const activeMode = modes.find((item) => item.id === mode);
 
   return (
-    <section className="flex flex-col rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg" className="flex flex-col">
       <h3 className="text-lg font-bold text-slate-950">VSWR・リターンロス変換</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         アンテナや線路の整合の良さを表す指標を相互変換します。どれか1つを入力してください。
@@ -187,6 +188,6 @@ export function VswrConverterPanel() {
           </p>
         </FormulaExplanationCard>
       </div>
-    </section>
+    </Card>
   );
 }

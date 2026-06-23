@@ -1,4 +1,5 @@
 import { CheckCircle2 } from "lucide-react";
+import { Card } from "@/components/Card";
 
 const checkpoints = [
   "使用する通信方式・周波数帯",
@@ -17,7 +18,7 @@ const checkpoints = [
 
 export function NextCheckpoints() {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <h3 className="text-base font-semibold text-slate-950">次に確認すること</h3>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {checkpoints.map((checkpoint) => (
@@ -27,6 +28,6 @@ export function NextCheckpoints() {
           </div>
         ))}
       </div>
-    </section>
+    </Card>
   );
 }
