@@ -1,3 +1,5 @@
+import { Callout } from "@/components/Callout";
+import { Card } from "@/components/Card";
 import { chartTheme } from "@/lib/chartTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { NcuBelowGroundInput, NcuBelowGroundResult } from "@/lib/rf/ncuBelowGround";
@@ -171,7 +173,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
   const marginPass = marginTypical >= 0;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card" data-testid="ncu-budget-waterfall">
+    <Card as="section" padding="lg" data-testid="ncu-budget-waterfall">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-bold text-staf-dark">滝グラフ</p>
@@ -335,13 +337,13 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
           <span className={`font-bold ${marginPass ? "text-emerald-700" : "text-rose-700"}`}>{formatDb(marginTypical)}</span>{" "}
           （楽観 {formatSigned(result.linkMarginRangeDb.max, "dB")} / 厳しめ {formatSigned(result.linkMarginRangeDb.min, "dB")}）です。
         </p>
-        <div className="rounded-lg border border-orange-200 bg-orange-50 p-3 text-xs leading-relaxed text-orange-900">
-          <p className="font-bold">読み方のコツ</p>
-          <p className="mt-1">
+        <Callout tone="warning" size="sm">
+          <p className="text-xs font-bold">読み方のコツ</p>
+          <p className="mt-1 text-xs leading-relaxed">
             暖色のバー（地下の追加損失）の合計が大きいほど、受信電力が受信感度ラインを下回りやすくなります。いちばん長い「主因」バーから対策すると効率的です。
           </p>
-        </div>
+        </Callout>
       </div>
-    </section>
+    </Card>
   );
 }

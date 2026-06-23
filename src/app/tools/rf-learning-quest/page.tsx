@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Card } from "@/components/Card";
 import { ToolLayout } from "@/components/ToolLayout";
 import { RfLearningQuestClient } from "./components/RfLearningQuestClient";
 
@@ -44,7 +45,7 @@ export default function RfLearningQuestPage() {
     <ToolLayout>
       <RfLearningQuestClient />
       <section className="mx-auto max-w-7xl px-4 pb-12 sm:px-6 lg:px-8">
-        <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+        <Card padding="lg">
           <p className="text-sm font-bold text-staf-dark">アンテナ設計・選定の関連ページ</p>
           <h2 className="mt-1 text-xl font-bold text-slate-950">学んだ内容を製品選定と相談につなげる</h2>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
@@ -67,7 +68,7 @@ export default function RfLearningQuestPage() {
               </a>
             ))}
           </div>
-        </div>
+        </Card>
       </section>
     </ToolLayout>
   );

@@ -42,6 +42,7 @@ import {
   Zap,
   type LucideIcon
 } from "lucide-react";
+import { Card } from "@/components/Card";
 import {
   antennaSeoLinks,
   questModes,
@@ -653,7 +654,7 @@ function LevelUpPanel({ levelUp, onClose }: { levelUp: LevelUpState; onClose: ()
 
 function ManufacturerWorkflowPanel() {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
@@ -671,7 +672,7 @@ function ManufacturerWorkflowPanel() {
           const Icon = step.icon;
 
           return (
-            <article key={step.title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <Card as="article" key={step.title} variant="slate" padding="md" shadow={false}>
               <div className="flex items-center justify-between gap-3">
                 <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-staf-dark">
                   <Icon aria-hidden="true" className="h-4 w-4" />
@@ -681,11 +682,11 @@ function ManufacturerWorkflowPanel() {
               <h3 className="mt-3 text-base font-bold text-slate-950">{step.title}</h3>
               <p className="mt-1 text-xs font-bold text-staf-dark">{step.caption}</p>
               <p className="mt-2 text-xs leading-relaxed text-slate-600">{step.detail}</p>
-            </article>
+            </Card>
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -761,7 +762,7 @@ function ModeReviewPanel({
   const Icon = guide.icon;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
+    <Card as="section" padding="md">
       <p className="flex items-center gap-2 text-xs font-bold text-staf-dark">
         <Icon aria-hidden="true" className="h-4 w-4" />
         {guide.reviewName}
@@ -781,13 +782,13 @@ function ModeReviewPanel({
           { label: "確認資料", value: guide.evidence },
           { label: "到達点", value: guide.output }
         ].map((item) => (
-          <div key={item.label} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+          <Card key={item.label} variant="slate" padding="sm" radius="md" shadow={false}>
             <p className="text-[11px] font-bold text-slate-400">{item.label}</p>
             <p className="mt-1 text-xs leading-relaxed text-slate-700">{item.value}</p>
-          </div>
+          </Card>
         ))}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -817,7 +818,7 @@ function StageMap({
   });
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
+    <Card as="section" padding="md">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-slate-950">ステージ選択</h2>
         <span className="text-xs font-semibold text-slate-400">{chapterCount}章×10問</span>
@@ -865,7 +866,7 @@ function StageMap({
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -1036,7 +1037,7 @@ function LessonBattle({
   const reviewSummary = lessonReviewSummary(lesson);
 
   return (
-    <article className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="article" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-xs font-bold text-slate-400">
@@ -1065,23 +1066,23 @@ function LessonBattle({
         </div>
       </div>
 
-      <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+      <Card variant="slate" padding="md" shadow={false} className="mt-4">
         <p className="text-xs font-bold text-staf-dark">QUESTION</p>
         <p className="mt-1 text-base font-bold leading-relaxed text-slate-950">{lesson.question}</p>
-        <div className="mt-4 rounded-md border border-slate-200 bg-white p-3">
+        <Card padding="sm" radius="md" shadow={false} className="mt-4">
           <p className="flex items-center gap-2 text-xs font-bold text-slate-500">
             <ClipboardList aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
             読み解きの順番
           </p>
           <div className="mt-3 grid gap-2 md:grid-cols-3">
             {preparationSteps.map((step, index) => (
-              <div key={step} className="rounded-md border border-slate-200 bg-slate-50 p-3">
+              <Card key={step} variant="slate" padding="sm" radius="md" shadow={false}>
                 <p className="text-[11px] font-bold text-staf-dark">CHECK {index + 1}</p>
                 <p className="mt-1 text-xs leading-relaxed text-slate-700">{step}</p>
-              </div>
+              </Card>
             ))}
           </div>
-        </div>
+        </Card>
         <div className="mt-4 grid gap-2 sm:grid-cols-3">
           {displayedChoices.map(({ choice, originalIndex }) => {
             const isSelected = selectedChoice === originalIndex;
@@ -1106,7 +1107,7 @@ function LessonBattle({
             );
           })}
         </div>
-      </div>
+      </Card>
 
       {answered ? (
         <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_0.9fr]">
@@ -1131,13 +1132,13 @@ function LessonBattle({
                   const Icon = item.icon;
 
                   return (
-                    <div key={item.label} className="rounded-md border border-slate-200 bg-white p-3">
+                    <Card key={item.label} padding="sm" radius="md" shadow={false}>
                       <p className="flex items-center gap-1 text-[11px] font-bold text-staf-dark">
                         <Icon aria-hidden="true" className="h-3.5 w-3.5" />
                         {item.label}
                       </p>
                       <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.value}</p>
-                    </div>
+                    </Card>
                   );
                 })}
               </div>
@@ -1206,13 +1207,13 @@ function LessonBattle({
               現場コラムと設計レビュー
             </summary>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">{lesson.column}</p>
-            <div className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+            <Card variant="slate" padding="sm" radius="md" shadow={false} className="mt-3">
               <p className="flex items-center gap-2 text-xs font-bold text-slate-700">
                 <LessonLensIcon aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
                 {lessonLens.title}
               </p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">{lessonLens.why}</p>
-            </div>
+            </Card>
             {lesson.sources?.length ? (
               <div className="mt-3 flex flex-wrap gap-2">
                 {lesson.sources.map((source) => (
@@ -1250,7 +1251,7 @@ function LessonBattle({
           </details>
         </div>
       ) : null}
-    </article>
+    </Card>
   );
 }
 
@@ -1353,7 +1354,7 @@ function CertificationPanel({
   const modeNotice = notice?.mode === mode.id ? notice : null;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
@@ -1365,22 +1366,22 @@ function CertificationPanel({
             このモードの{lessons.length}問をすべて攻略すると、同じモードからランダムに10問を出題します。誤答した問題は問題名をクリックして回答をクリアし、再挑戦できます。
           </p>
         </div>
-        <div className="min-w-40 rounded-md border border-slate-200 bg-slate-50 p-3 text-sm">
+        <Card variant="slate" padding="sm" radius="md" shadow={false} className="min-w-40 text-sm">
           <p className="text-xs font-bold text-slate-500">モード進捗</p>
           <p className="mt-1 text-lg font-bold text-slate-950">
             {completedInMode}/{lessons.length}
           </p>
           <ProgressBar value={completedInMode} max={lessons.length} />
-        </div>
+        </Card>
       </div>
 
       {!unlocked ? (
-        <div className="mt-4 rounded-md border border-slate-200 bg-slate-50 p-4">
+        <Card variant="slate" padding="md" radius="md" shadow={false} className="mt-4">
           <p className="text-sm font-bold text-slate-700">修了試験はまだロック中です。</p>
           <p className="mt-1 text-sm leading-relaxed text-slate-500">
             残り{lessons.length - completedInMode}問を攻略すると、このモードのランダム修了試験が解放されます。
           </p>
-        </div>
+        </Card>
       ) : (
         <div className="mt-4 space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-emerald-200 bg-emerald-50 p-4">
@@ -1413,7 +1414,7 @@ function CertificationPanel({
           </div>
 
           {attempt && examLessons.length ? (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <Card variant="slate" padding="md" shadow={false}>
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="text-sm font-bold text-slate-950">修了試験スコア</p>
@@ -1523,7 +1524,7 @@ function CertificationPanel({
                   );
                 })}
               </div>
-            </div>
+            </Card>
           ) : null}
 
           {passed ? (
@@ -1594,7 +1595,7 @@ function CertificationPanel({
           ) : null}
         </div>
       )}
-    </section>
+    </Card>
   );
 }
 

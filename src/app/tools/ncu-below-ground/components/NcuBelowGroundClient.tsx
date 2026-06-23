@@ -3,6 +3,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Callout } from "@/components/Callout";
+import { Card, StateCard } from "@/components/Card";
 import { HelpHint as FieldHint } from "@/components/HelpHint";
 import { NumberField } from "@/components/NumberField";
 import { NcuBudgetWaterfall } from "./NcuBudgetWaterfall";
@@ -825,7 +827,7 @@ function NcuCrossSectionDiagram({
   ];
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card" data-testid="ncu-assumption-diagram">
+    <Card as="section" data-testid="ncu-assumption-diagram">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-bold text-staf-dark">シミュレーション結果の2D図</p>
@@ -1098,7 +1100,7 @@ function NcuCrossSectionDiagram({
           <p className="mt-1 text-slate-600">材質・水分・配置の不確かさを、楽観・標準・厳しめで見ます。</p>
         </div>
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -1149,23 +1151,23 @@ function RangeTriplet({
   const severe = higherIsBetter ? range.min : range.max;
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <Card padding="md" shadow={false}>
       <p className="text-sm font-bold text-slate-900">{title}</p>
       <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-        <div className="rounded-lg bg-emerald-50 p-2" title="楽観＝好条件がそろった最良ケース（材質・水分・配置などが有利な側）。ここまで良くなる可能性の上限の目安です。">
+        <StateCard tone="success" padding="sm" className="text-center" title="楽観＝好条件がそろった最良ケース（材質・水分・配置などが有利な側）。ここまで良くなる可能性の上限の目安です。">
           <p className="text-[11px] font-bold text-emerald-700">楽観</p>
           <p className="text-sm font-bold text-emerald-950">{optimistic.toFixed(1)} {unit}</p>
-        </div>
-        <div className="rounded-lg bg-sky-50 p-2" title="標準＝平均的・代表的な見積もり。まずはこの値で判断し、実測で補正していきます。">
+        </StateCard>
+        <StateCard tone="info" padding="sm" className="text-center" title="標準＝平均的・代表的な見積もり。まずはこの値で判断し、実測で補正していきます。">
           <p className="text-[11px] font-bold text-sky-700">標準</p>
           <p className="text-sm font-bold text-sky-950">{range.typical.toFixed(1)} {unit}</p>
-        </div>
-        <div className="rounded-lg bg-rose-50 p-2" title="厳しめ＝悪条件が重なった最悪ケース（金属蓋・水溜まり・底面配置・駐車車両など）。ここでも成立すれば安心という下限の目安です。">
+        </StateCard>
+        <StateCard tone="danger" padding="sm" className="text-center" title="厳しめ＝悪条件が重なった最悪ケース（金属蓋・水溜まり・底面配置・駐車車両など）。ここでも成立すれば安心という下限の目安です。">
           <p className="text-[11px] font-bold text-rose-700">厳しめ</p>
           <p className="text-sm font-bold text-rose-950">{severe.toFixed(1)} {unit}</p>
-        </div>
+        </StateCard>
       </div>
-    </div>
+    </Card>
   );
 }
 
@@ -1199,7 +1201,7 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
   const max = Math.max(...items.map((item) => item.range.max), 1);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section">
       <SectionTitle icon={Layers} eyebrow="Loss decomposition" title="BOX・地下まわりの追加損失を分解">
         効いている順に並べています。いちばん上（主因）から現場で潰すと、いちばん少ない手間で通信余裕を稼げます。
       </SectionTitle>
@@ -1261,7 +1263,7 @@ function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -1287,12 +1289,12 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
         <p className="mt-3 text-sm leading-relaxed">{result.judgement.summary}</p>
       </section>
 
-      <section className="rounded-lg border border-rose-200 bg-rose-50 p-4">
+      <Callout tone="danger" size="md">
         <div className="flex items-center gap-2 text-rose-700">
           <Target aria-hidden="true" className="h-4 w-4" />
           <p className="text-xs font-bold uppercase tracking-wider">いちばん効いている損失（主因）</p>
         </div>
-        <p className="mt-1 text-xl font-bold text-rose-950">
+        <p className="mt-1 text-xl font-bold">
           {dominant.label}
           <span className="ml-2 text-base font-bold">標準 {dominant.range.typical.toFixed(1)} dB</span>
         </p>
@@ -1308,7 +1310,7 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
             </span>
           </p>
         ) : null}
-      </section>
+      </Callout>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
         <MetricCard
@@ -1327,7 +1329,7 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
         />
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <h2 className="text-lg font-bold text-slate-950">計算の流れ</h2>
         <div className="mt-4 space-y-2 text-sm">
           <Row label="送信電力 + アンテナ利得" value={`${(input.txPowerDbm + input.gatewayAntennaGainDbi + input.ncuAntennaGainDbi).toFixed(1)} dBm`} />
@@ -1338,19 +1340,16 @@ function ResultPanel({ input, result }: { input: NcuBelowGroundInput; result: Nc
           <Row label="合計損失レンジ" value={formatDbRange(result.totalLossRangeDb)} strong />
           <Row label="地上側固定損失" value={`${totalFixedLossDb.toFixed(1)} dB`} />
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-lg border border-amber-200 bg-amber-50 p-5">
-        <div className="flex items-center gap-2">
-          <AlertTriangle aria-hidden="true" className="h-5 w-5 text-amber-700" />
-          <h2 className="font-bold text-amber-950">注意と次の確認</h2>
-        </div>
-        <ul className="mt-3 space-y-2 text-sm leading-relaxed text-amber-950/90">
+      <Callout tone="caution" size="lg" icon={<AlertTriangle aria-hidden="true" className="h-5 w-5 text-amber-700" />}>
+        <h2 className="font-bold">注意と次の確認</h2>
+        <ul className="mt-3 space-y-2 text-sm leading-relaxed">
           {result.warnings.map((warning) => (
             <li key={warning.id}>{warning.message}</li>
           ))}
         </ul>
-      </section>
+      </Callout>
     </aside>
   );
 }
@@ -1366,11 +1365,8 @@ function Row({ label, value, strong = false }: { label: string; value: string; s
 
 function ResearchColumn() {
   return (
-    <section className="rounded-lg border border-sky-200 bg-sky-50 p-5">
-      <div className="flex items-center gap-2">
-        <BookOpen aria-hidden="true" className="h-5 w-5 text-sky-700" />
-        <h2 className="text-lg font-bold text-sky-950">コラム：世界の研究ではどう扱っているか</h2>
-      </div>
+    <Callout tone="info" size="lg" icon={<BookOpen aria-hidden="true" className="h-5 w-5 text-sky-700" />}>
+      <h2 className="text-lg font-bold">コラム：世界の研究ではどう扱っているか</h2>
       <div className="mt-3 space-y-3 text-sm leading-relaxed text-sky-950/90">
         <p>
           GL以下NCUに対して、奥村・秦モデルのアンテナ高へマイナス値を入れる、という扱いは主流ではありません。
@@ -1430,7 +1426,7 @@ function ResearchColumn() {
           実務上の落としどころは、万能な「地下距離式」を探すことではなく、蓋・BOX・水分・開口・アンテナ位置を分解し、現地測定で補正することです。
         </p>
       </div>
-    </section>
+    </Callout>
   );
 }
 
@@ -1639,7 +1635,7 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
   const steps = mode === "estimate" ? estimateSteps : fieldSteps;
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section">
       <div className="flex items-center gap-2">
         <Compass aria-hidden="true" className="h-5 w-5 text-staf-dark" />
         <h2 className="text-lg font-bold text-slate-950">迷わない入力順</h2>
@@ -1648,7 +1644,7 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
         {steps.map((step, index) => {
           const Icon = step.icon;
           return (
-            <div key={step.title} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+            <Card key={step.title} variant="slate" padding="sm" shadow={false}>
               <div className="flex items-center gap-2">
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-staf text-xs font-bold text-white">
                   {index + 1}
@@ -1657,11 +1653,11 @@ function WorkflowGuide({ mode }: { mode: WorkMode }) {
               </div>
               <p className="mt-3 text-sm font-bold text-slate-950">{step.title}</p>
               <p className="mt-1 text-xs leading-relaxed text-slate-600">{step.text}</p>
-            </div>
+            </Card>
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -1758,7 +1754,7 @@ function RadioMetricsDiagnosisPanel({
   const summaryTone = metricSeverityClass(diagnosis.overallSeverity);
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+    <Card as="section">
       <SectionTitle icon={Gauge} eyebrow="Radio metrics" title="RSRQ・SNRなど通信品質指標の簡易診断">
         機器ログで分かる項目だけ入力してください。電界不足、品質劣化、実通信成功率のどこが怪しいかを簡易的に切り分けます。
       </SectionTitle>
@@ -1809,23 +1805,22 @@ function RadioMetricsDiagnosisPanel({
             </p>
           </div>
 
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <Card variant="slate" padding="md" shadow={false}>
             <p className="text-sm font-bold text-slate-950">推奨する次アクション</p>
             <ul className="mt-2 space-y-2 text-xs leading-relaxed text-slate-600">
               {diagnosis.recommendedActions.map((action) => (
                 <li key={action}>・{action}</li>
               ))}
             </ul>
-          </div>
+          </Card>
 
-          <div className="rounded-lg border border-sky-200 bg-sky-50 p-4">
-            <p className="text-sm font-bold text-sky-950">簡易診断の前提</p>
-            <ul className="mt-2 space-y-2 text-xs leading-relaxed text-sky-950/90">
+          <Callout tone="info" size="md" title="簡易診断の前提">
+            <ul className="mt-2 space-y-2 text-xs leading-relaxed">
               {diagnosis.caveats.map((caveat) => (
                 <li key={caveat}>・{caveat}</li>
               ))}
             </ul>
-          </div>
+          </Callout>
         </aside>
       </div>
 
@@ -1834,7 +1829,7 @@ function RadioMetricsDiagnosisPanel({
           <MetricDiagnosisCard key={item.id} item={item} />
         ))}
       </div>
-    </section>
+    </Card>
   );
 }
 
@@ -1870,7 +1865,7 @@ function FieldAnalysisPanel({
 
   return (
     <section className="space-y-5" data-testid="ncu-field-analysis">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <SectionTitle icon={Search} eyebrow="Field analysis" title="現場RSSI/RSRPから原因を追い込む">
           すべてを完璧に測らなくても大丈夫です。まずはBOX外、蓋開け、蓋閉めの3点だけで、地上側・BOX内・蓋のどこが怪しいか見えます。
         </SectionTitle>
@@ -1880,7 +1875,7 @@ function FieldAnalysisPanel({
             {measurementItems.map((item) => {
               const Icon = item.icon;
               return (
-                <div key={item.key} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+                <Card key={item.key} variant="slate" padding="sm" shadow={false}>
                   <div className="mb-2 flex items-start gap-2">
                     <span className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-white text-staf-dark">
                       <Icon aria-hidden="true" className="h-4 w-4" />
@@ -1899,7 +1894,7 @@ function FieldAnalysisPanel({
                     step={0.5}
                     onChange={(value) => onMeasurementChange(item.key, value)}
                   />
-                </div>
+                </Card>
               );
             })}
           </div>
@@ -1927,29 +1922,26 @@ function FieldAnalysisPanel({
               </button>
             </div>
 
-            <div className="rounded-lg border border-sky-200 bg-sky-50 p-4">
-              <div className="flex items-center gap-2">
-                <Waves aria-hidden="true" className="h-5 w-5 text-sky-700" />
-                <p className="font-bold text-sky-950">反射・2波を見る目安</p>
-              </div>
-              <p className="mt-2 text-sm leading-relaxed text-sky-950/90">
+            <Callout tone="info" size="md" icon={<Waves aria-hidden="true" className="h-5 w-5 text-sky-700" />}>
+              <p className="font-bold">反射・2波を見る目安</p>
+              <p className="mt-2 text-sm leading-relaxed">
                 {frequencyMHz.toFixed(0)}MHzの波長は約{(wavelengthM * 100).toFixed(1)}cmです。30cm程度の移動や向き変更で
                 {localFadingFinding ? ` ${localFadingFinding.impactDb.toFixed(1)}dB ` : " 数dB "}
                 変わるなら、地面反射・BOX内反射・偏波の影響を強く疑います。
               </p>
-            </div>
+            </Callout>
 
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-              <p className="font-bold text-amber-950">測定品質チェック</p>
-              <ul className="mt-2 space-y-2 text-sm leading-relaxed text-amber-950/90">
+            <Callout tone="caution" size="md">
+              <p className="font-bold">測定品質チェック</p>
+              <ul className="mt-2 space-y-2 text-sm leading-relaxed">
                 {analysis.measurementQualityNotes.map((note) => (
                   <li key={note}>{note}</li>
                 ))}
               </ul>
-            </div>
+            </Callout>
           </aside>
         </div>
-      </section>
+      </Card>
 
       <RadioMetricsDiagnosisPanel
         metrics={radioMetrics}
@@ -1957,7 +1949,7 @@ function FieldAnalysisPanel({
         onMetricChange={onRadioMetricChange}
       />
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <SectionTitle icon={Target} eyebrow="Root cause ranking" title="原因候補ランキング">
           値が大きい順に見れば、現場で何から潰すべきかが分かります。差分が小さい項目は、主因ではない可能性が高いです。
         </SectionTitle>
@@ -1966,9 +1958,9 @@ function FieldAnalysisPanel({
             <FindingCard key={finding.id} finding={finding} rank={index + 1} />
           ))}
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <div className="flex items-center gap-2">
           <ClipboardList aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現場で使う簡易チェックシート</h2>
@@ -1987,7 +1979,7 @@ function FieldAnalysisPanel({
             <p className="mt-2">30cm前後は920MHz帯の約1波長に近く、反射や偏波でRSSIが変わることがあります。</p>
           </details>
         </div>
-      </section>
+      </Card>
     </section>
   );
 }
@@ -2029,7 +2021,7 @@ export function NcuBelowGroundClient() {
 
   return (
     <div className="space-y-6">
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
           <div>
             <p className="text-sm font-bold text-staf-dark">GL以下NCU専用</p>
@@ -2040,14 +2032,14 @@ export function NcuBelowGroundClient() {
               水道BOX、メーターボックス、マンホール、地下ピット内のNCUは、奥村・秦モデルの移動局高を負値にして扱うのではなく、地上側の伝搬と、蓋・BOX・水分・アンテナ配置の追加損失に分けます。現場ではRSSI/RSRPの差分から、何が主因かを追い込みます。
             </p>
           </div>
-          <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm leading-relaxed text-emerald-950">
+          <Callout tone="success" size="md">
             <p className="font-bold">このページの狙い</p>
             <p className="mt-1">
               現場の「距離・障害物・高低差でおおざっぱ何dB」を、事前の危険因子と現場の差分測定に分けて、説明可能な解析にします。
             </p>
-          </div>
+          </Callout>
         </div>
-      </section>
+      </Card>
 
       <PurposeSwitch activeMode={activeMode} onChange={setActiveMode} />
       <WorkflowGuide mode={activeMode} />
@@ -2068,7 +2060,7 @@ export function NcuBelowGroundClient() {
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
         <div className="space-y-5">
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+          <Card as="section">
             <SectionTitle icon={RadioTower} eyebrow="Preset" title="現場条件プリセット">
               最初は近い条件を選び、写真・図面・実測値が分かったら細かく調整してください。
             </SectionTitle>
@@ -2114,9 +2106,9 @@ export function NcuBelowGroundClient() {
               <RotateCcw aria-hidden="true" className="h-4 w-4" />
               初期値に戻す
             </button>
-          </section>
+          </Card>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+          <Card as="section">
             <SectionTitle icon={Waves} eyebrow="Ground link" title="地上側の無線リンク">
               地上側の距離減衰を計算したうえで、GL以下の追加損失を積み上げます。
             </SectionTitle>
@@ -2219,9 +2211,9 @@ export function NcuBelowGroundClient() {
                 />
               </div>
             </div>
-          </section>
+          </Card>
 
-          <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+          <Card as="section">
             <SectionTitle icon={Box} eyebrow="Below ground" title="GL以下・BOXまわりの条件">
               蓋、BOX、深さ、水分、アンテナ位置、地表上の遮蔽を、端末近傍損失として分けて入力します。
             </SectionTitle>
@@ -2299,7 +2291,7 @@ export function NcuBelowGroundClient() {
                 onChange={(value) => update("surfaceObstruction", value)}
               />
             </div>
-          </section>
+          </Card>
         </div>
 
         <ResultPanel input={input} result={result} />
@@ -2311,7 +2303,7 @@ export function NcuBelowGroundClient() {
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
         <LossBreakdown result={result} />
-        <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+        <Card as="section">
           <SectionTitle icon={Gauge} eyebrow="Range result" title="レンジで見る通信余裕">
             GL以下の条件は一点値で断言しにくいため、楽観・標準・厳しめを並べて確認します。
           </SectionTitle>
@@ -2320,10 +2312,10 @@ export function NcuBelowGroundClient() {
             <RangeTriplet title="リンクマージンレンジ" range={result.linkMarginRangeDb} unit="dB" />
             <RangeTriplet title="総損失レンジ" range={result.totalLossRangeDb} unit="dB" higherIsBetter={false} />
           </div>
-        </section>
+        </Card>
       </div>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <div className="flex items-center gap-2">
           <Info aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">入力の前提をどう説明するか</h2>
@@ -2348,11 +2340,11 @@ export function NcuBelowGroundClient() {
             </p>
           </details>
         </div>
-      </section>
+      </Card>
 
       <ResearchColumn />
 
-      <section className="rounded-lg border border-slate-200 bg-slate-50 p-5">
+      <Card as="section" variant="slate" padding="lg" shadow={false}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
             <h2 className="text-lg font-bold text-slate-950">通常のリンクバジェットへつなぐ</h2>
@@ -2368,9 +2360,9 @@ export function NcuBelowGroundClient() {
             <ArrowRight aria-hidden="true" className="h-4 w-4" />
           </Link>
         </div>
-      </section>
+      </Card>
 
-      <section className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
+      <Card as="section">
         <div className="flex items-center gap-2">
           <Ruler aria-hidden="true" className="h-5 w-5 text-staf-dark" />
           <h2 className="text-lg font-bold text-slate-950">現地で最低限メモしたい項目</h2>
@@ -2383,7 +2375,7 @@ export function NcuBelowGroundClient() {
           <li>RSSI/RSRP：乾燥時と雨天後、蓋あり/なしで比較</li>
           <li>通信方向：下り評価か上り評価か、送信電力と受信感度を確認</li>
         </ul>
-      </section>
+      </Card>
     </div>
   );
 }
