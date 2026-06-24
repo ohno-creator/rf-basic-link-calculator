@@ -10,6 +10,7 @@ import {
   Building2,
   Cable,
   CircuitBoard,
+  FlaskConical,
   Gauge,
   type LucideIcon,
   RadioTower,
@@ -159,12 +160,26 @@ export function ToolDirectoryBrowser() {
         </div>
       ) : (
         <div className="mt-8 space-y-10">
-          {groups.map((group) => (
-            <section key={group.id} className="mx-auto max-w-6xl px-6">
-              <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
-                {group.label}
-                <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
-              </h2>
+          {groups.map((group) => {
+            const isResearch = group.id === "research";
+            // 研究者モードは「すべて表示」で他カテゴリの下に並ぶときだけ、区切り線で明確に分ける。
+            const dividerClass = isResearch && groups.length > 1 ? " mt-4 border-t border-slate-200 pt-10" : "";
+            return (
+            <section key={group.id} className={`mx-auto max-w-6xl px-6${dividerClass}`}>
+              <div className="flex items-start gap-3">
+                {isResearch ? (
+                  <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                    <FlaskConical aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                ) : null}
+                <div>
+                  <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
+                    {group.label}
+                    <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
+                  </h2>
+                  <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-500">{group.description}</p>
+                </div>
+              </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {group.tools.map((tool) => {
                   const Icon = iconMap[tool.icon] ?? Gauge;
@@ -192,7 +207,8 @@ export function ToolDirectoryBrowser() {
                 })}
               </div>
             </section>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

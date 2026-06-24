@@ -1,14 +1,42 @@
 export type ToolCategory = {
   id: string;
   label: string;
+  /** カテゴリ見出しに添える1〜2文の用途説明（何のための区画か）。 */
+  description: string;
 };
 
 export const toolCategories: ToolCategory[] = [
-  { id: "link", label: "リンク設計" },
-  { id: "antenna", label: "アンテナ設計" },
-  { id: "basics", label: "単位・基礎" },
-  { id: "line", label: "線路・整合" },
-  { id: "learning", label: "学習クエスト" }
+  {
+    id: "link",
+    label: "リンク設計",
+    description: "通信が届くかどうかを、送受信電力・距離・損失から見積もる基本系。まずはここから。"
+  },
+  {
+    id: "antenna",
+    label: "アンテナ設計",
+    description: "アンテナの寸法・利得・配置を、波長と基板条件から実務的に概算するツール。"
+  },
+  {
+    id: "basics",
+    label: "単位・基礎",
+    description: "dB・dBm・波長など、RFで使う共通言語を直感的につかむための入口。"
+  },
+  {
+    id: "line",
+    label: "線路・整合",
+    description: "ケーブル・基板配線・整合の損失と反射を扱う、ハードウェア寄りのツール。"
+  },
+  {
+    id: "learning",
+    label: "学習クエスト",
+    description: "用語から実測レビューまで、RF設計の判断を問題形式で身につける。"
+  },
+  {
+    id: "research",
+    label: "研究者モード",
+    description:
+      "物理限界・アレイ・最新研究の概算をまとめた区画です。実務の初期検討より一歩踏み込んだ、専門的・理論寄りのツール群です。"
+  }
 ];
 
 export type DirectoryTool = {
@@ -131,7 +159,7 @@ export const toolDirectory: DirectoryTool[] = [
     name: "グレーティングローブ判定",
     tagline: "アレイ素子間隔と走査角",
     icon: "radar",
-    category: "antenna"
+    category: "research"
   },
   {
     href: "/tools/patch-antenna-dimensions",
@@ -145,34 +173,34 @@ export const toolDirectory: DirectoryTool[] = [
     name: "小型ループ共振",
     tagline: "ループLと必要Cを計算",
     icon: "refresh",
-    category: "antenna"
+    category: "research"
   },
   {
     href: "/tools/radiation-resistance",
     name: "放射抵抗・効率",
     tagline: "短いアンテナの損失感度",
     icon: "antenna",
-    category: "antenna"
+    category: "research"
   },
   {
     href: "/tools/small-antenna-limit",
     name: "小型アンテナ限界",
     tagline: "ka・Q・帯域の物理限界",
     icon: "orbit",
-    category: "antenna"
+    category: "research"
   },
   {
     href: "/tools/large-array-near-field",
     name: "大型アレイ近傍界",
     tagline: "Fraunhofer距離とFresnel数",
     icon: "grid",
-    category: "antenna"
+    category: "research"
   },
   {
     href: "/tools/reflector-ris-size-effect",
     name: "反射板・RISサイズ効果",
     tagline: "面積・距離・波長の効き方",
     icon: "mirror",
-    category: "antenna"
+    category: "research"
   }
 ];
