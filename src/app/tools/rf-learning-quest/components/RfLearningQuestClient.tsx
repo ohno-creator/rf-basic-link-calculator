@@ -96,31 +96,32 @@ const modeIconMap: Record<QuestModeId, LucideIcon> = {
   apprentice: Swords,
   practitioner: ShieldCheck,
   expert: Crown,
-  researcher: FlaskConical
+  researcher: FlaskConical,
+  inquiry: Compass
 };
 
 const chapterTitles: Record<QuestModeId, string[]> = {
   intro: [
-    "電波と波長",
-    "dBと電力",
-    "アンテナ構造",
-    "GNDと偏波",
-    "筐体実装",
-    "VSWRと効率",
-    "ケーブル設置",
-    "LPWAと屋外",
-    "OTA測定",
-    "基地局アンテナ",
-    "MIMOとアレイ",
-    "測定メタデータ",
-    "リンク余裕",
-    "遮蔽と反射",
-    "フレネル",
-    "セルラーIoT",
-    "アンテナ選定",
-    "現場トラブル",
-    "研究の入口",
-    "総仕上げ"
+    "電波と単位の基礎",
+    "利得・損失とリンク収支",
+    "伝搬とアンテナ入門",
+    "放射パターンと整合",
+    "ケーブルとコネクタ",
+    "RFフロントエンドと信号品質",
+    "変調と通信品質",
+    "干渉と雑音",
+    "受信妨害と回線構成",
+    "セル運用とLoRa",
+    "無線規格と見通し",
+    "伝搬とフェージング",
+    "伝搬モデルと損失",
+    "測定と統計",
+    "可用率と結果の読み方",
+    "筐体・基板と誘電体",
+    "EMCとシールド",
+    "アンテナ選定とチューニング",
+    "アンテナ実装と設置",
+    "総仕上げ（アンテナとOTA測定）"
   ],
   beginner: [
     "dBの基礎",
@@ -181,13 +182,45 @@ const chapterTitles: Record<QuestModeId, string[]> = {
     "偏波と近傍界",
     "モデル管理",
     "研究者ボス"
+  ],
+  inquiry: [
+    "なぜ電波は飛ぶのか",
+    "電界と磁界の二人三脚",
+    "近傍界と遠方界の物理",
+    "波長がすべてを決める",
+    "共振の正体",
+    "「強くすれば届く」の落とし穴",
+    "「高利得ほど良い」は本当か",
+    "「長いほど良い」の誤解",
+    "整合≠効率（S11の誤解）",
+    "「見えれば届く」とは限らない",
+    "送受信は鏡写し（相反定理）",
+    "なぜ1本で送受信できるのか",
+    "小ささと帯域は両立しない",
+    "利得・ビーム幅・大きさの三すくみ",
+    "効率・帯域・整合の綱引き",
+    "たとえの限界",
+    "dBという「ものさし」の本質",
+    "VNAは何を見ているか",
+    "スペアナ・電界強度計が示すもの",
+    "RSSI/SNRが実際に意味すること",
+    "同じ原理が別分野でどう現れるか",
+    "結合 vs 放射（NFCと遠距離）",
+    "なぜEIRPで規制するのか",
+    "なぜ周波数帯を分けるのか",
+    "なぜ共用の作法があるのか",
+    "症状から原因を切り分ける",
+    "机上と現場のギャップを説明する",
+    "電波の発見の物語",
+    "指向性の発明",
+    "すべてを貫く一つの問い"
   ]
 };
 
 const finalAntennaAchievement = {
-  threshold: 700,
-  title: "アンテナ賢者",
-  description: "全700問を攻略し、研究と現場をつなげられます。"
+  threshold: 1000,
+  title: "アンテナ大賢者",
+  description: "全1000問を攻略。用語・設計・最新研究に加え、電波とアンテナの物理の本質まで説明できます。"
 };
 
 type ManufacturerWorkflowStep = {
@@ -291,6 +324,14 @@ const modeReviewGuides: Record<QuestModeId, ModeReviewGuide> = {
     shopFloor: "平均誤差だけでなく、悪い側の外れと再現性を見る",
     evidence: "距離、高さ、時刻、環境、端末姿勢、RSSI/SNR、データ版",
     output: "標準モデル、実測、統計的な不確かさをつないで説明する"
+  },
+  inquiry: {
+    icon: Compass,
+    reviewName: "本質・探究レビュー",
+    field: "放射の物理、近傍/遠方界、相反、本質的なトレードオフ、測定の意味、規制の理由、診断",
+    shopFloor: "計算や手順の前に、『なぜそうなるのか』という物理の筋を押さえる",
+    evidence: "電荷の加速、波長との比、SN比、整合と効率の区別、症状の出方",
+    output: "暗記ではなく原理から、設計判断の理由を自分の言葉で説明する"
   }
 };
 
@@ -386,6 +427,8 @@ const antennaAchievementBadges = [
   { threshold: 220, title: "近傍損失ハンター", description: "地面・人体・金属近接をリンク余裕へ落とし込めます。" },
   { threshold: 360, title: "アンテナ設計士", description: "モデル選択と実測補正を組み合わせて説明できます。" },
   { threshold: 520, title: "基地局配置マスター", description: "チルト、方位、干渉、GISの前提を意識できます。" },
+  { threshold: 700, title: "アンテナ賢者", description: "用語から最新研究まで、現場の判断を一通り説明できます。" },
+  { threshold: 850, title: "本質の探究者", description: "なぜそうなるのか――物理の直感で電波を語れる段階です。" },
   finalAntennaAchievement
 ];
 
@@ -415,7 +458,8 @@ const emptyCertificateForms: Record<QuestModeId, { recipientName: string; compan
   apprentice: { recipientName: "", companyName: "" },
   practitioner: { recipientName: "", companyName: "" },
   expert: { recipientName: "", companyName: "" },
-  researcher: { recipientName: "", companyName: "" }
+  researcher: { recipientName: "", companyName: "" },
+  inquiry: { recipientName: "", companyName: "" }
 };
 
 function loadProgress(): ProgressMap {
@@ -465,6 +509,8 @@ function levelFromCompleted(completedCount: number): number {
 }
 
 function rankName(completedCount: number): string {
+  if (completedCount >= 1000) return "アンテナ大賢者";
+  if (completedCount >= 850) return "アンテナ探究者";
   if (completedCount >= 700) return "アンテナ賢者";
   if (completedCount >= 600) return "研究者";
   if (completedCount >= 500) return "基地局配置マスター";
@@ -867,6 +913,166 @@ function StageMap({
         })}
       </div>
     </Card>
+  );
+}
+
+function CardCollectionPanel({
+  progress,
+  onJump
+}: {
+  progress: ProgressMap;
+  onJump: (lesson: QuestLesson) => void;
+}) {
+  const [viewMode, setViewMode] = useState<QuestModeId>("intro");
+
+  const totalCount = rfQuestLessons.length;
+  const collectedCount = rfQuestLessons.filter((lesson) => progress[lesson.id]).length;
+  const rareLessons = rfQuestLessons.filter((lesson) => lesson.stage % 10 === 0);
+  const rareCollected = rareLessons.filter((lesson) => progress[lesson.id]).length;
+
+  const modeLessons = rfQuestLessons
+    .filter((lesson) => lesson.mode === viewMode)
+    .sort((a, b) => a.stage - b.stage);
+  const modeCollected = modeLessons.filter((lesson) => progress[lesson.id]).length;
+  const modeComplete = modeLessons.length > 0 && modeCollected === modeLessons.length;
+  const chapterCount = Math.ceil(modeLessons.length / 10);
+  const chapters = Array.from({ length: chapterCount }, (_, index) => index + 1).map((chapter) => ({
+    chapter,
+    lessons: modeLessons.filter((lesson) => lesson.stage >= (chapter - 1) * 10 + 1 && lesson.stage <= chapter * 10)
+  }));
+  const viewModeLabel = questModes.find((mode) => mode.id === viewMode)?.label ?? "";
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-6 shadow-card">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="max-w-2xl">
+          <p className="flex items-center gap-2 text-sm font-bold text-staf-dark">
+            <BookOpen aria-hidden="true" className="h-4 w-4" />
+            ことばカード図鑑
+          </p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">
+            クリアした問題は「カード」として集まります。章ごとの抜けを埋めて、全{totalCount}枚コンプリートを目指しましょう。？？？は未獲得のカード（ホバーで用語ヒント）、★はボス戦で手に入るレアカードです。気になるカードを押すと、その問題へ直接ジャンプできます。
+          </p>
+        </div>
+        <div className="min-w-52 rounded-lg border border-staf/20 bg-staf-light p-3 text-staf-dark">
+          <p className="text-xs font-bold">総コレクション</p>
+          <p className="mt-1 text-2xl font-bold">
+            {collectedCount}/{totalCount}
+          </p>
+          <div className="mt-2">
+            <ProgressBar value={collectedCount} max={totalCount} />
+          </div>
+          <p className="mt-2 flex items-center gap-1 text-xs font-bold">
+            <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
+            ★レア {rareCollected}/{rareLessons.length}
+          </p>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        {questModes.map((mode) => {
+          const Icon = modeIconMap[mode.id];
+          const lessonsForMode = rfQuestLessons.filter((lesson) => lesson.mode === mode.id);
+          const done = lessonsForMode.filter((lesson) => progress[lesson.id]).length;
+          const complete = lessonsForMode.length > 0 && done === lessonsForMode.length;
+          const active = mode.id === viewMode;
+
+          return (
+            <button
+              key={mode.id}
+              type="button"
+              onClick={() => setViewMode(mode.id)}
+              aria-pressed={active}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-bold transition ${
+                active ? "border-staf bg-staf text-white" : "border-slate-200 bg-white text-slate-600 hover:border-staf/30"
+              }`}
+            >
+              <Icon aria-hidden="true" className="h-3.5 w-3.5" />
+              {mode.label}
+              <span className={active ? "text-white/90" : "text-slate-400"}>
+                {done}/{lessonsForMode.length}
+              </span>
+              {complete ? <Trophy aria-hidden="true" className="h-3.5 w-3.5 text-amber-300" /> : null}
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <p className="text-sm font-bold text-slate-900">
+            {viewModeLabel}のカード {modeCollected}/{modeLessons.length}
+          </p>
+          {modeComplete ? (
+            <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-bold text-amber-800">
+              <Trophy aria-hidden="true" className="h-3.5 w-3.5" />
+              コンプリート！
+            </span>
+          ) : (
+            <span className="text-xs font-bold text-slate-500">あと{modeLessons.length - modeCollected}枚でコンプリート</span>
+          )}
+        </div>
+        <div className="mt-2">
+          <ProgressBar value={modeCollected} max={modeLessons.length} />
+        </div>
+      </div>
+
+      <div className="mt-3 max-h-[60vh] space-y-3 overflow-y-auto pr-1">
+        {chapters.map(({ chapter, lessons }) => {
+          const chapterDone = lessons.filter((lesson) => progress[lesson.id]).length;
+
+          return (
+            <div key={chapter} className="rounded-md border border-slate-100 bg-white p-3">
+              <div className="flex items-center justify-between gap-2">
+                <p className="text-xs font-bold text-staf-dark">
+                  第{chapter}章 {chapterTitleFor(viewMode, chapter)}
+                </p>
+                <p className="text-[11px] font-bold text-slate-400">
+                  {chapterDone}/{lessons.length}
+                </p>
+              </div>
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {lessons.map((lesson) => {
+                  const done = Boolean(progress[lesson.id]);
+                  const rare = lesson.stage % 10 === 0;
+                  const chipClass = done
+                    ? rare
+                      ? "border-amber-300 bg-amber-50 text-amber-900"
+                      : "border-emerald-200 bg-emerald-50 text-emerald-800"
+                    : "border-dashed border-slate-200 bg-slate-50 text-slate-400 hover:border-staf/40 hover:text-staf-dark";
+
+                  return (
+                    <button
+                      key={lesson.id}
+                      type="button"
+                      onClick={() => onJump(lesson)}
+                      title={done ? `${lesson.title}${rare ? "（★レアカード）" : ""}` : `未獲得：${lesson.title}（クリアで獲得）`}
+                      aria-label={
+                        done
+                          ? `獲得済みカード ${lesson.title}${rare ? " ★レア" : ""}`
+                          : `未獲得カード（${lesson.title}）。問題へ進んで獲得する`
+                      }
+                      className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${chipClass}`}
+                    >
+                      {done ? (
+                        rare ? (
+                          <Sparkles aria-hidden="true" className="h-3 w-3" />
+                        ) : (
+                          <CheckCircle2 aria-hidden="true" className="h-3 w-3" />
+                        )
+                      ) : (
+                        <span aria-hidden="true">＋</span>
+                      )}
+                      {done ? lesson.title : "？？？"}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
   );
 }
 
@@ -1733,7 +1939,7 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全700問を攻略しました。アンテナ構造、実装、リンク設計、最新研究、掲示板で定番の誤解までひと通り確認済みです。"
+              ? "全1000問を攻略しました。用語・実装・リンク設計・最新研究に加え、探究モードで『なぜそうなるのか』という物理の本質まで腑に落ちた状態です。"
               : `${afterCount}問クリア。アンテナギルドの称号や未攻略ステージへ進めます。`
         });
       }
@@ -1933,8 +2139,8 @@ export function RfLearningQuestClient() {
               クエストで、アンテナ設計の判断を一つずつ固める
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問。波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究まで、
-              問題ごとに「なぜそう見るか」「実機では何を確認するか」「相談時に何を残すか」を確認しながら進めます。
+              入門、初心者、見習い、実務者、玄人、研究者の6モードに、本質を掘り下げる「探究モード」を加えた7モードで合計1000問。波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究に加え、
+              「なぜ電波は飛ぶのか」「整合と効率は別物」など物理の本質まで、問題ごとに「なぜそう見るか」「実機では何を確認するか」「相談時に何を残すか」を確認しながら進めます。
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               {[
@@ -2006,6 +2212,10 @@ export function RfLearningQuestClient() {
 
       <div className="mt-5">
         <AntennaGuildPanel completedCount={completedCount} progress={progress} onJump={goToLesson} />
+      </div>
+
+      <div className="mt-5">
+        <CardCollectionPanel progress={progress} onJump={goToLesson} />
       </div>
 
       <div className="mt-5">

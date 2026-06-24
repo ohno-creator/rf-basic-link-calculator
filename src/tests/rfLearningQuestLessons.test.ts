@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 import { antennaSeoLinks, questModes, rfQuestLessons } from "@/data/rfLearningQuestLessons";
 
 describe("RF learning quest lessons", () => {
-  it("contains exactly 700 lessons across the six modes", () => {
-    expect(rfQuestLessons).toHaveLength(700);
+  it("contains exactly 1000 lessons across the seven modes", () => {
+    expect(rfQuestLessons).toHaveLength(1000);
 
     for (const mode of questModes) {
       const lessons = rfQuestLessons.filter((lesson) => lesson.mode === mode.id);
-      const expectedLength = mode.id === "intro" ? 200 : 100;
+      const expectedLength = mode.id === "intro" ? 200 : mode.id === "inquiry" ? 300 : 100;
       expect(lessons).toHaveLength(expectedLength);
       expect(lessons.map((lesson) => lesson.stage)).toEqual(Array.from({ length: expectedLength }, (_, index) => index + 1));
     }
