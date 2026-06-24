@@ -10,6 +10,14 @@ export const chartTheme = {
     loss: "#FB7185", // 損失（マイナス）
     total: "#1E293B" // 合計・到達値
   },
+  // 系列色に対応づけた「軸テキスト用」の濃い同系色。デュアルY軸で軸を系列に色対応させる際、
+  // 淡い系列色そのままだと小さな軸文字（目盛り・軸名）がWCAG-AA 4.5:1を満たさないため、
+  // 色の対応関係は保ったままテキストだけ濃く落とす。明るい図版背景でAA合格を確認済み。
+  seriesText: {
+    source: "#005A95", // series.source 対応（濃いブランド青）
+    gain: "#047857", // series.gain 対応（emerald-700）
+    loss: "#BE123C" // series.loss 対応（rose-700）
+  },
   // 参照線（感度・基準線など）
   reference: {
     sensitivity: "#E11D48",

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, Eye, ListChecks, Target } from "lucide-react";
+import { ArrowRight, Compass, Eye, ListChecks, Target } from "lucide-react";
 import type { ReactNode } from "react";
 import { ConsultationCta } from "@/app/tools/rf-basic-link-calculator/components/ConsultationCta";
 import type { BasicToolMeta } from "@/data/basicTools";
@@ -78,6 +78,15 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
           <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-700">
             {tool.description}
           </p>
+          {tool.scopeNote ? (
+            <p className="mt-3 flex max-w-3xl items-start gap-2 rounded-lg border border-staf/20 bg-staf-light px-3 py-2 text-sm leading-relaxed text-slate-700">
+              <Compass aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-staf-dark" />
+              <span>
+                <span className="font-semibold text-staf-dark">対象：</span>
+                {tool.scopeNote}
+              </span>
+            </p>
+          ) : null}
         </header>
 
         <section className="mt-6 border-y border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-5">

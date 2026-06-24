@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   CartesianGrid,
+  Legend,
   Line,
   LineChart,
   ReferenceLine,
@@ -87,6 +88,8 @@ type ChartSeries = {
   key: "value" | "value2";
   name: string;
   color: string;
+  /** 値の桁が大きく違う系列は右軸に分ける（既定は左軸）。 */
+  axis?: "left" | "right";
 };
 
 type ToolView = {
@@ -104,6 +107,14 @@ type ToolView = {
     series: ChartSeries[];
     reference?: number;
     referenceLabel?: string;
+    /** 横軸の名前（例: 周波数 MHz）。 */
+    xLabel?: string;
+    /** 左Y軸の名前。 */
+    leftLabel?: string;
+    /** 右Y軸の名前（右軸の系列がある場合）。 */
+    rightLabel?: string;
+    /** 基準線をどちらの軸に合わせるか（既定は左）。 */
+    referenceAxis?: "left" | "right";
   };
   formula: string;
   explanation: string;
@@ -225,7 +236,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "array-grating-lobe": {
     title: "狙っていない方向にも強い電波が出るか",
     lead:
-      "複数のアンテナを並べて電波の向きを変えるとき、間隔が広すぎると本来向けたい方向とは別の方向にも強い電波の山が出ます。このページは、その不要ビームが出る条件を、周波数・間隔・向きから確認するツールです。",
+      "アレイアンテナ／フェーズドアレイで素子の間隔を広げすぎると、狙った方向のほかにも「グレーティングローブ」と呼ばれる強い不要ビームが現れます。このページは、それが出る条件を周波数・素子間隔・走査角（向けたい方向）から確認します。",
     defaults: { frequencyMHz: 4800, spacingM: 0.031, scanAngleDeg: 45 },
     fields: [
       {
@@ -871,6 +882,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "同じ利得なら、低い周波数ほど受信面積は大きくなります。周波数違いのアンテナサイズ感を比べる時に見ます。",
           data: chart,
           unit: "cm²",
+          xLabel: "周波数 MHz",
+          leftLabel: "有効開口 cm²",
           series: [{ key: "value", name: "有効開口", color: chartTheme.series.source }]
         },
         formula: "Ae = λ²G / (4π)\nG = 10^(dBi / 10)",
@@ -915,12 +928,15 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
         },
         chart: {
           title: "開口径で、強さとビーム幅がどう変わるか",
-          description: "開口径が大きいほど利得は上がり、ビームは狭くなります。届きやすさと向き合わせの難しさを同時に見ます。",
+          description: "青＝利得（dBi・左軸）、赤＝ビーム幅（deg・右軸）。開口径が大きいほど利得は上がり、ビームは狭くなります。届きやすさと向き合わせの難しさを同時に見ます。",
           data: chart,
           unit: "dBi / deg",
+          xLabel: "開口径 mm",
+          leftLabel: "利得 dBi",
+          rightLabel: "ビーム幅 deg",
           series: [
-            { key: "value", name: "利得 dBi", color: chartTheme.series.source },
-            { key: "value2", name: "ビーム幅 deg", color: chartTheme.series.loss }
+            { key: "value", name: "利得 dBi", color: chartTheme.series.source, axis: "left" },
+            { key: "value2", name: "ビーム幅 deg", color: chartTheme.series.loss, axis: "right" }
           ]
         },
         formula: "G = η(πD/λ)²\nG[dBi] = 10log10(G)\nHPBW[deg] ≈ 70λ/D",
@@ -961,6 +977,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "筐体上の距離が同じでも、周波数が上がると波長に対する間隔は大きくなります。複数帯域で同じ配置を使う時に確認します。",
           data: chart,
           unit: "λ",
+          xLabel: "周波数 MHz",
+          leftLabel: "間隔 / λ",
           series: [{ key: "value", name: "間隔/λ", color: chartTheme.series.source }],
           reference: 0.5,
           referenceLabel: "λ/2"
@@ -1011,6 +1029,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "赤い線が今の間隔、青い線が安全寄りの上限です。赤が青を超えると、狙っていない方向にも強く出る可能性があります。",
           data: chart,
           unit: "mm",
+          xLabel: "走査角 deg",
+          leftLabel: "間隔 mm",
           series: [
             { key: "value", name: "安全に使える上限 mm", color: chartTheme.series.source },
             { key: "value2", name: "今の間隔 mm", color: chartTheme.series.loss }
@@ -1063,6 +1083,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "同じ基板なら、狙う周波数が上がるほどパッチの幅と長さは小さくなります。基板に入るかの初期確認に使います。",
           data: chart,
           unit: "mm",
+          xLabel: "周波数 MHz",
+          leftLabel: "寸法 mm",
           series: [
             { key: "value", name: "幅 W", color: chartTheme.series.source },
             { key: "value2", name: "長さ L", color: chartTheme.series.gain }
@@ -1111,6 +1133,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "同じループなら、周波数が高いほど必要な同調容量は小さくなります。部品値の候補が現実的かを見ます。",
           data: chart,
           unit: "pF",
+          xLabel: "周波数 MHz",
+          leftLabel: "必要容量 pF",
           series: [{ key: "value", name: "必要容量", color: chartTheme.series.source }]
         },
         formula: "L ≈ μ0N²r(ln(8r/a)-2)\nC = 1 / ((2πf)²L)",
@@ -1157,12 +1181,15 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
         },
         chart: {
           title: "短いほど、損が効率を奪いやすい",
-          description: "アンテナ長が短いほど放射抵抗が小さくなり、コイルやGNDの数Ωが効率を大きく下げます。",
+          description: "青＝放射抵抗（Ω・左軸）、緑＝効率（％・右軸）。アンテナ長が短いほど放射抵抗が小さくなり、コイルやGNDの数Ωが効率を大きく下げます。",
           data: chart,
           unit: "Ω / %",
+          xLabel: "アンテナ長 / λ",
+          leftLabel: "放射抵抗 Ω",
+          rightLabel: "効率 %",
           series: [
-            { key: "value", name: "放射抵抗 Ω", color: chartTheme.series.source },
-            { key: "value2", name: "効率 %", color: chartTheme.series.gain }
+            { key: "value", name: "放射抵抗 Ω", color: chartTheme.series.source, axis: "left" },
+            { key: "value2", name: "効率 %", color: chartTheme.series.gain, axis: "right" }
           ]
         },
         formula: shortKind === "monopole"
@@ -1202,15 +1229,20 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
         },
         chart: {
           title: "小さくするほど、帯域上限は急に狭くなる",
-          description: "kaが小さくなるほどQが急増し、狙える帯域は急に狭くなります。筐体サイズの交渉材料になります。",
+          description:
+            "青＝狙える帯域上限（％・左軸）、赤＝最低限のQ（右軸）。kaが小さくなるほどQが急増し、狙える帯域は急に狭くなります。筐体サイズの交渉材料になります。",
           data: chart,
           unit: "% / Q",
+          xLabel: "ka（小さいほど厳しい）",
+          leftLabel: "比帯域上限 %",
+          rightLabel: "最低限のQ",
           series: [
-            { key: "value", name: "比帯域上限 %", color: chartTheme.series.source },
-            { key: "value2", name: "Qmin", color: chartTheme.series.loss }
+            { key: "value", name: "比帯域上限 %", color: chartTheme.series.source, axis: "left" },
+            { key: "value2", name: "最低限のQ", color: chartTheme.series.loss, axis: "right" }
           ],
           reference: values.targetBandwidthPercent,
-          referenceLabel: "目標帯域"
+          referenceLabel: "目標帯域",
+          referenceAxis: "left"
         },
         formula: "ka = 2πa / λ\nQmin ≈ 1/(ka)³ + 1/(ka)\n比帯域上限 ≈ 1/Q",
         explanation: "Chu限界に基づく小型アンテナの物理限界の粗い可視化です。この計算は、与えられた筐体サイズで必要帯域を狙うのが現実的かを、試作前に説明するために使います。整合回路や能動回路で見かけの帯域を工夫できても、受動・小型・高効率を同時に満たす難しさは残ります。",
@@ -1260,6 +1292,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "遠方界距離はD²/λで増えるため、開口を大きくすると急に伸びます。測定環境や解析モデルの確認に使います。",
           data: chart,
           unit: "m",
+          xLabel: "開口の最大幅 m",
+          leftLabel: "距離 m",
           series: [
             { key: "value", name: "遠方界目安距離", color: chartTheme.series.source },
             { key: "value2", name: "評価距離", color: chartTheme.series.loss }
@@ -1318,6 +1352,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           description: "面積を大きくすると開口利得は増えますが、2ホップ距離の損失も効きます。設置サイズを増やす意味があるかを見ます。",
           data: chart,
           unit: "dB",
+          xLabel: "反射面の幅 m",
+          leftLabel: "dB",
           series: [
             { key: "value", name: "面で稼げる上限", color: chartTheme.series.source },
             { key: "value2", name: "直接経路との差", color: chartTheme.series.loss }
@@ -1346,6 +1382,24 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
     setMounted(true);
   }, []);
 
+  const hasRight = chart.series.some((s) => s.axis === "right");
+  const leftSeriesColor = chart.series.find((s) => (s.axis ?? "left") === "left")?.color ?? chartTheme.series.source;
+  const rightSeriesColor = chart.series.find((s) => s.axis === "right")?.color ?? chartTheme.series.loss;
+  // 右軸がある（＝軸ごとに1系列）ときは、軸を線の色に対応させて一目で分かるようにする。
+  // ただし淡い系列色のままだと小さな軸文字が低コントラストになるため、軸線・目盛り・軸名には
+  // 対応する濃い同系色（chartTheme.seriesText）を使ってWCAG-AAを満たす。
+  const axisHueColor = (color: string): string =>
+    color === chartTheme.series.loss
+      ? chartTheme.seriesText.loss
+      : color === chartTheme.series.gain
+        ? chartTheme.seriesText.gain
+        : color === chartTheme.series.source
+          ? chartTheme.seriesText.source
+          : chartTheme.axis.label.fill;
+  const leftAxisColor = hasRight ? axisHueColor(leftSeriesColor) : chartTheme.axis.label.fill;
+  const leftAxisStroke = hasRight ? axisHueColor(leftSeriesColor) : chartTheme.axis.tick.fill;
+  const rightAxisColor = axisHueColor(rightSeriesColor);
+
   return (
     <Card as="section" padding="lg" shadow={false} className="bg-slate-50">
       <div className="flex flex-wrap items-start justify-between gap-2">
@@ -1357,22 +1411,74 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
           {chart.unit}
         </span>
       </div>
-      <div className="mt-4 h-64 w-full">
+      <div className="mt-4 h-72 w-full">
         {mounted ? (
-          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={256}>
-            <LineChart data={chart.data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
+          <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
+            <LineChart
+              data={chart.data}
+              margin={{
+                left: chart.leftLabel ? 16 : 6,
+                right: hasRight && chart.rightLabel ? 16 : 18,
+                top: 8,
+                bottom: chart.xLabel ? 16 : 8
+              }}
+            >
               <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
               <XAxis
                 dataKey="label"
                 tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
+                label={
+                  chart.xLabel
+                    ? {
+                        value: chart.xLabel,
+                        position: "insideBottom",
+                        offset: -6,
+                        fontSize: 11,
+                        fill: chartTheme.axis.label.fill
+                      }
+                    : undefined
+                }
               />
               <YAxis
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
+                yAxisId="left"
+                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: leftAxisColor }}
+                stroke={leftAxisStroke}
                 domain={["auto", "auto"]}
+                label={
+                  chart.leftLabel
+                    ? {
+                        value: chart.leftLabel,
+                        angle: -90,
+                        position: "insideLeft",
+                        style: { textAnchor: "middle", fontSize: 11, fontWeight: 600, fill: leftAxisColor }
+                      }
+                    : undefined
+                }
               />
+              {hasRight ? (
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  tick={{ fontSize: chartTheme.axis.label.fontSize, fill: rightAxisColor }}
+                  stroke={rightAxisColor}
+                  domain={["auto", "auto"]}
+                  label={
+                    chart.rightLabel
+                      ? {
+                          value: chart.rightLabel,
+                          angle: 90,
+                          position: "insideRight",
+                          style: { textAnchor: "middle", fontSize: 11, fontWeight: 600, fill: rightAxisColor }
+                        }
+                      : undefined
+                  }
+                />
+              ) : null}
               <RechartsTooltip formatter={(value, name) => [`${value}`, name]} />
+              <Legend verticalAlign="top" align="right" height={22} wrapperStyle={{ fontSize: 12 }} />
               {typeof chart.reference === "number" ? (
                 <ReferenceLine
+                  yAxisId={chart.referenceAxis ?? "left"}
                   y={chart.reference}
                   stroke={chartTheme.reference.sensitivity}
                   strokeDasharray={chartTheme.reference.sensitivityDash}
@@ -1387,6 +1493,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
               {chart.series.map((series) => (
                 <Line
                   key={series.key}
+                  yAxisId={series.axis ?? "left"}
                   type="monotone"
                   dataKey={series.key}
                   name={series.name}
