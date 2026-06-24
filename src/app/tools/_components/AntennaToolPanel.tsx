@@ -117,6 +117,15 @@ type Guidance = {
   terms: Array<{ term: string; description: string }>;
 };
 
+type ResearchBridge = {
+  plainTitle: string;
+  plainSummary: string;
+  everydayImage: string;
+  realUse: string;
+  firstAction: string;
+  glossary: Array<{ term: string; description: string }>;
+};
+
 const configs: Record<AntennaToolId, ToolConfig> = {
   "effective-aperture": {
     title: "有効開口面積・受信面積",
@@ -638,6 +647,105 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
       { term: "受動開口", description: "増幅器を持たず、面積で電波を受けて再放射する開口として見る考え方です。" },
       { term: "2ホップ損失", description: "送信機から反射面、反射面から受信機までの2つの距離損失を合わせた見方です。" },
       { term: "近傍/遠方界", description: "反射面の大きさと距離によって、鏡のような幾何光学近似だけでは足りない場合があります。" }
+    ]
+  }
+};
+
+const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
+  "array-grating-lobe": {
+    plainTitle: "一言でいうと：アンテナを並べたときの「変な方向にも飛ぶ」を見るツール",
+    plainSummary:
+      "アレイアンテナは、複数の小さなアンテナを並べてビームを向けます。ただし間隔が広すぎると、狙った方向とは別の方向にも強いビームが出ます。それがグレーティングローブです。",
+    everydayImage:
+      "スピーカーを何台も並べると、正面だけでなく横の変な場所でも音が強く聞こえることがあります。電波でも似たことが起きます。",
+    realUse:
+      "5G/ローカル5G、ミリ波センサー、フェーズドアレイの初期設計で、素子間隔をλ/2にしてよいか、広角までビームを振ってよいかを確認します。",
+    firstAction:
+      "まずプリセットを押し、走査角スライダーを動かしてください。『判定』が発生なしから発生ありに変わる境目を見るのが入口です。",
+    glossary: [
+      { term: "アレイ", description: "複数のアンテナを規則的に並べたものです。タイミングをずらして、電波の向きを作ります。" },
+      { term: "走査角", description: "ビームを正面からどれだけ横へ振るかです。大きく振るほど設計は難しくなります。" },
+      { term: "λ/2", description: "波長の半分の間隔です。アレイでよく使われる安全寄りの基準です。" }
+    ]
+  },
+  "small-loop-resonance": {
+    plainTitle: "一言でいうと：小さな輪っかを、狙った周波数で鳴らすためのCを探すツール",
+    plainSummary:
+      "小型ループは、そのままでは狙いの周波数に合わないことが多いので、コンデンサを足して共振させます。このページは、ループのLと必要なCの目安を出します。",
+    everydayImage:
+      "ギターの弦を張り具合でチューニングするように、ループも容量で『その周波数に合わせる』と考えると入りやすいです。",
+    realUse:
+      "NFC、RFID、近距離センサー、低周波の小型アンテナで、試作前に必要な容量レンジや、巻数を増やした時の変化を確認します。",
+    firstAction:
+      "NFC 13.56MHzプリセットを押し、ループ直径と巻数を動かしてください。必要容量が大きく変わることを見るのがポイントです。",
+    glossary: [
+      { term: "L", description: "インダクタンスです。ループが磁界としてエネルギーをためる力です。" },
+      { term: "C", description: "容量です。Lと組み合わせると特定の周波数で共振します。" },
+      { term: "共振", description: "アンテナや回路が特定の周波数で反応しやすくなる状態です。" }
+    ]
+  },
+  "radiation-resistance": {
+    plainTitle: "一言でいうと：短いアンテナが、なぜ『整合しても飛ばない』ことがあるかを見るツール",
+    plainSummary:
+      "短いアンテナは、電波として外へ出る成分である放射抵抗が小さくなります。そこにコイルやGNDの損失が少しあるだけで、効率が大きく落ちます。",
+    everydayImage:
+      "細い水路から水を出したいのに、途中の漏れが同じくらい大きい状態です。水は流れているのに、外へ出る量が少なくなります。",
+    realUse:
+      "920MHzの小型端末、BLE/Wi-Fi内蔵アンテナ、コイルで短縮したアンテナで、VSWRだけでは説明できない飛びの悪さを説明する時に使います。",
+    firstAction:
+      "損失抵抗を1Ω、2Ω、5Ωと動かしてください。放射抵抗が小さい時、たった数Ωで効率が大きく落ちるのが見えます。",
+    glossary: [
+      { term: "放射抵抗", description: "電力が電波として外へ出る分を抵抗に置き換えたものです。" },
+      { term: "損失抵抗", description: "熱になる分です。コイル損、導体損、GND損などをまとめて見ます。" },
+      { term: "効率", description: "入力した電力のうち、実際に電波として出た割合です。" }
+    ]
+  },
+  "small-antenna-limit": {
+    plainTitle: "一言でいうと：小さすぎるアンテナに、どこまで無理をさせているかを見るツール",
+    plainSummary:
+      "アンテナは小さくできますが、小さくするほど帯域が狭くなり、効率も厳しくなります。kaとQは、その無理度を数値で見るための入口です。",
+    everydayImage:
+      "大きな楽器ほど低い音を豊かに鳴らしやすく、小さな楽器で同じ音を出すのは難しい。アンテナにも似た物理的な制約があります。",
+    realUse:
+      "『この小さな筐体で920MHzを広帯域にできますか？』という初期相談で、物理的にどれくらい厳しい要求かを説明する時に使います。",
+    firstAction:
+      "外接球半径を半分にしてみてください。Qが急に上がり、理想上限の比帯域が狭くなるのが研究者モードの核心です。",
+    glossary: [
+      { term: "ka", description: "アンテナサイズを波長で割ったような数です。小さいほど小型化が厳しい状態です。" },
+      { term: "Q", description: "共振の鋭さです。高いほど帯域が狭く、調整がシビアになります。" },
+      { term: "Chu限界", description: "小型アンテナの帯域とQに関する物理限界の目安です。" }
+    ]
+  },
+  "large-array-near-field": {
+    plainTitle: "一言でいうと：大きなアンテナでは、近距離の相手を『遠くの点』として扱えないことを見るツール",
+    plainSummary:
+      "アンテナの開口が大きくなると、遠方界になる距離が想像以上に長くなります。近い相手には、角度だけでなく距離方向の焦点も効いてきます。",
+    everydayImage:
+      "遠くの山は平らな背景のように見えますが、目の前の大きな看板は端と中央で見える角度が違います。大型アレイでも似た見え方の差が出ます。",
+    realUse:
+      "Sub6の大きな反射板、ミリ波アレイ、6G/XL-MIMO、アンテナ測定距離の検討で、遠方界前提でよいかを確認します。",
+    firstAction:
+      "アレイ開口サイズを2倍にしてください。Fraunhofer距離が4倍近く伸びることを見ると、D²/λの怖さが分かります。",
+    glossary: [
+      { term: "近傍界", description: "アンテナに近く、波の曲がりや距離方向の違いを無視しにくい領域です。" },
+      { term: "遠方界", description: "十分遠く、波を平面波として扱いやすい領域です。" },
+      { term: "Fraunhofer距離", description: "遠方界とみなす代表的な目安距離です。開口サイズの2乗に比例します。" }
+    ]
+  },
+  "reflector-ris-size-effect": {
+    plainTitle: "一言でいうと：反射板やRISが『どれくらい効きそうか』を面積と距離で見るツール",
+    plainSummary:
+      "反射板やRISは、置けば必ず良くなる魔法の板ではありません。面積が足りるか、距離が長すぎないか、効率をどれくらい見込むかで結果が変わります。",
+    everydayImage:
+      "鏡で光を反射させる時、小さな鏡を遠くに置いても届く光は少ない。電波の反射面も、面積と距離が効きます。",
+    realUse:
+      "ローカル5G、Wi-Fi、ミリ波で、直接届かない場所へ反射板を置く初期検討や、RIS研究の結果を実務の距離感に戻す時に使います。",
+    firstAction:
+      "反射面の幅と高さを半分にしてみてください。開口上限利得と直接経路との差がどう悪化するかを見るのが入口です。",
+    glossary: [
+      { term: "RIS", description: "電波の反射や位相を制御する面です。研究では賢い反射面として扱われます。" },
+      { term: "2ホップ", description: "送信機→反射面、反射面→受信機という2つの経路で考えることです。" },
+      { term: "開口利得", description: "面の大きさを電波を集める力として見た利得です。" }
     ]
   }
 };
@@ -1425,6 +1533,52 @@ function GuidanceSection({ toolId }: { toolId: AntennaToolId }) {
   );
 }
 
+function ResearchBridgeSection({ toolId }: { toolId: AntennaToolId }) {
+  const bridge = researchBridgeByTool[toolId];
+  if (!bridge) {
+    return null;
+  }
+
+  return (
+    <Card as="section" padding="lg" className="border-indigo-100 bg-indigo-50/40">
+      <div className="flex flex-wrap items-start justify-between gap-3">
+        <div>
+          <p className="text-xs font-semibold text-indigo-700">研究者モードをやさしく読む</p>
+          <h3 className="mt-1 text-base font-semibold text-slate-950">{bridge.plainTitle}</h3>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-700">{bridge.plainSummary}</p>
+        </div>
+        <Tooltip term="最初の見方">
+          研究者モードでは式を暗記するより、入力を少し動かして結果が急変する場所を見るのが近道です。まず判定・主役の数値・グラフの傾きを見てください。
+        </Tooltip>
+      </div>
+
+      <div className="mt-5 grid gap-4 lg:grid-cols-3">
+        <div className="border-l-2 border-indigo-300 bg-white/50 py-1 pl-4">
+          <p className="text-sm font-semibold text-slate-950">日常イメージ</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{bridge.everydayImage}</p>
+        </div>
+        <div className="border-l-2 border-indigo-300 bg-white/50 py-1 pl-4">
+          <p className="text-sm font-semibold text-slate-950">実際の使われ方</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{bridge.realUse}</p>
+        </div>
+        <div className="border-l-2 border-indigo-300 bg-white/50 py-1 pl-4">
+          <p className="text-sm font-semibold text-slate-950">まず触るところ</p>
+          <p className="mt-2 text-sm leading-relaxed text-slate-600">{bridge.firstAction}</p>
+        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <span className="text-xs font-semibold text-slate-500">このページでつまずきやすい語：</span>
+        {bridge.glossary.map((item) => (
+          <Tooltip key={item.term} term={item.term}>
+            {item.description}
+          </Tooltip>
+        ))}
+      </div>
+    </Card>
+  );
+}
+
 export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
   const config = configs[toolId];
   const [values, setValues] = useState(config.defaults);
@@ -1525,6 +1679,8 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
 
       {computation.view ? (
         <>
+          <ResearchBridgeSection toolId={toolId} />
+
           <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
             <Card as="section" padding="lg">
               <div className="flex flex-wrap items-center justify-between gap-2">

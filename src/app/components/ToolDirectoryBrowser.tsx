@@ -21,6 +21,7 @@ import {
   Waves,
   X
 } from "lucide-react";
+import { Tooltip } from "@/components/Tooltip";
 import { toolCategories, toolDirectory } from "@/data/toolDirectory";
 
 const iconMap: Record<string, LucideIcon> = {
@@ -47,6 +48,44 @@ const iconMap: Record<string, LucideIcon> = {
   grid: CircuitBoard,
   mirror: Box
 };
+
+const researchModeGuide = [
+  {
+    title: "何を見る区画？",
+    body: "普通のリンク計算で答えが出にくい「小さすぎる」「近すぎる」「面で反射させたい」といった限界やクセを見ます。"
+  },
+  {
+    title: "実務での使いどころ",
+    body: "小型端末のアンテナが入らない、MIMOの間隔が狭い、反射板で死角を減らしたい、という設計レビュー前の一次判断に使えます。"
+  },
+  {
+    title: "まず見る数値",
+    body: "判定文を先に読み、次にグラフで入力を少し動かします。式の細部より「どの入力で急に厳しくなるか」を見るのがコツです。"
+  }
+];
+
+const researchTerms = [
+  {
+    term: "ka",
+    description:
+      "アンテナの外形が波長に対してどれだけ小さいかを表す数です。ざっくり、小さい箱に長い波長を押し込むほど厳しい、という目印です。"
+  },
+  {
+    term: "Q",
+    description:
+      "共振の鋭さです。Qが高いほどピンポイントに合いますが、使える周波数幅は狭くなります。"
+  },
+  {
+    term: "Fraunhofer距離",
+    description:
+      "アンテナから十分離れて、電波を平らな波として扱いやすくなる距離です。大きなアンテナほど遠くなります。"
+  },
+  {
+    term: "RIS",
+    description:
+      "電波を反射・制御して、届きにくい場所へ通り道を作る面です。魔法の板ではなく、面積・距離・角度で効き方が変わります。"
+  }
+];
 
 // 検索＋カテゴリ絞り込みでツールを探せるようにする（発見性: 一覧が増えても破綻しない）。
 export function ToolDirectoryBrowser() {
@@ -178,6 +217,26 @@ export function ToolDirectoryBrowser() {
                     <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
                   </h2>
                   <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-500">{group.description}</p>
+                  {isResearch ? (
+                    <div className="mt-4 space-y-4">
+                      <div className="grid gap-3 md:grid-cols-3">
+                        {researchModeGuide.map((item) => (
+                          <div key={item.title} className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+                            <p className="text-sm font-semibold text-slate-950">{item.title}</p>
+                            <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.body}</p>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="text-xs font-semibold text-slate-500">よく出る用語：</span>
+                        {researchTerms.map((item) => (
+                          <Tooltip key={item.term} term={item.term}>
+                            {item.description}
+                          </Tooltip>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
