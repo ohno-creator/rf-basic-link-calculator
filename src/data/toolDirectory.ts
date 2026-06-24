@@ -136,70 +136,70 @@ export const toolDirectory: DirectoryTool[] = [
   {
     href: "/tools/effective-aperture",
     name: "有効開口面積",
-    tagline: "dBiを受信面積として理解",
+    tagline: "利得を受信面積に換算",
     icon: "aperture",
     category: "antenna"
   },
   {
     href: "/tools/aperture-gain-beamwidth",
     name: "開口利得・ビーム幅",
-    tagline: "ホーン/レンズ/パラボラの概算",
+    tagline: "必要利得とビーム幅を確認",
     icon: "satellite",
     category: "antenna"
   },
   {
     href: "/tools/antenna-spacing",
     name: "アンテナ間隔 λ換算",
-    tagline: "MIMO配置を波長で評価",
+    tagline: "複数アンテナの離し方を判断",
     icon: "scan",
     category: "antenna"
   },
   {
     href: "/tools/array-grating-lobe",
-    name: "グレーティングローブ判定",
-    tagline: "アレイ素子間隔と走査角",
+    name: "不要ビーム判定",
+    tagline: "狙っていない方向に強く出ないか確認",
     icon: "radar",
     category: "research"
   },
   {
     href: "/tools/patch-antenna-dimensions",
     name: "パッチアンテナ寸法",
-    tagline: "基板εrと厚みから概算",
+    tagline: "基板CADの初期寸法を決める",
     icon: "panel",
     category: "antenna"
   },
   {
     href: "/tools/small-loop-resonance",
     name: "小型ループ共振",
-    tagline: "ループLと必要Cを計算",
+    tagline: "同調コンデンサ容量を決める",
     icon: "refresh",
     category: "research"
   },
   {
     href: "/tools/radiation-resistance",
     name: "放射抵抗・効率",
-    tagline: "短いアンテナの損失感度",
+    tagline: "短いアンテナの飛びにくさを確認",
     icon: "antenna",
     category: "research"
   },
   {
     href: "/tools/small-antenna-limit",
     name: "小型アンテナ限界",
-    tagline: "ka・Q・帯域の物理限界",
+    tagline: "筐体サイズで帯域が足りるか確認",
     icon: "orbit",
     category: "research"
   },
   {
     href: "/tools/large-array-near-field",
     name: "大型アレイ近傍界",
-    tagline: "Fraunhofer距離とFresnel数",
+    tagline: "遠方界扱いでよいか確認",
     icon: "grid",
     category: "research"
   },
   {
     href: "/tools/reflector-ris-size-effect",
     name: "反射板・RISサイズ効果",
-    tagline: "面積・距離・波長の効き方",
+    tagline: "反射面を置く効果を見積もる",
     icon: "mirror",
     category: "research"
   }

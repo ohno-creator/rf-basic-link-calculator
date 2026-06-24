@@ -130,23 +130,23 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "effective-aperture": {
     title: "有効開口面積・受信面積",
     lead:
-      "アンテナ利得を「どれくらいの面積で電波を受けているか」に変換します。dBiの感覚を、面積として掴めます。",
+      "このアンテナが電波をどれくらい拾える規模なのかを、利得dBiから面積に戻して見ます。仕様書のdBiを、受信しやすさやアンテナサイズ感の説明に使うための計算です。",
     defaults: { frequencyMHz: 920, gainDbi: 2.15 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 1,
-        help: "有効開口は波長の2乗に比例します。同じ利得でも、920MHzでは面積が大きく、2.4GHzや5GHzでは小さくなります。"
+        help: "同じ利得でも、低い周波数ほど受け取れる面積は大きくなります。920MHz、2.4GHz、5GHzの違いを見る入口です。"
       },
       {
         key: "gainDbi",
-        label: "アンテナ利得",
+        label: "仕様書の利得",
         unit: "dBi",
         step: 0.1,
-        help: "等方性アンテナを基準にした利得です。受信有効開口 Ae = λ²G/(4π) で面積に換算します。"
+        help: "アンテナ仕様にあるdBi値を入れます。この値を、受信面積という直感しやすい量に換算します。"
       }
     ],
     presets: [
@@ -158,33 +158,33 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "aperture-gain-beamwidth": {
     title: "開口アンテナ利得・ビーム幅",
     lead:
-      "ホーン、パラボラ、レンズ、ミリ波アンテナの開口径から、概算利得とビーム幅を計算します。",
+      "ホーン、パラボラ、レンズなどで、開口の大きさから「どれくらい強く飛ばせるか」と「どれくらい細いビームになるか」を見ます。アンテナ径の候補決めや、向き合わせの難しさの確認に使います。",
     defaults: { frequencyMHz: 60000, diameterM: 0.05, efficiencyPercent: 60 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 100,
-        help: "周波数が高いほど波長が短くなり、同じ開口径でも高利得・細ビームになります。60GHzなら60000MHzです。"
+        help: "周波数が高いほど波長が短くなり、同じ直径でも強く細いビームになります。60GHzなら60000MHzです。"
       },
       {
         key: "diameterM",
-        label: "開口径",
+        label: "開口の直径",
         unit: "m",
         min: 0.001,
         step: 0.005,
-        help: "円形開口の直径です。ホーン開口、レンズ径、パラボラ径などの代表寸法を入れます。"
+        help: "ホーンの口、レンズ径、パラボラ径など、電波を出し入れする面の代表寸法です。ここを大きくすると利得は上がります。"
       },
       {
         key: "efficiencyPercent",
-        label: "開口効率",
+        label: "見込む効率",
         unit: "%",
         min: 1,
         max: 100,
         step: 1,
-        help: "開口をどれだけ有効に使えているかの係数です。初期検討では50〜70%を目安にします。"
+        help: "開口をどれだけ有効に使えるかの見込みです。迷ったら50〜70%で感度を見ます。"
       }
     ],
     presets: [
@@ -196,24 +196,24 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "antenna-spacing": {
     title: "アンテナ間隔 λ換算",
     lead:
-      "MIMOや複数アンテナ配置の間隔を、波長に対する割合で評価します。mmやcmの距離を電気的な距離へ変換します。",
+      "筐体や基板に複数アンテナを置くとき、今のcm間隔が電波的に近すぎるのか、広すぎるのかを見ます。MIMO配置、アンテナ同士の結合、アレイ設計の最初の当たりを付けるための計算です。",
     defaults: { frequencyMHz: 2400, spacingM: 0.0625 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 1,
-        help: "同じ物理間隔でも、周波数が高いほどλ換算では広くなります。"
+        help: "同じcm間隔でも、周波数が高いほど電波的には広い間隔になります。"
       },
       {
         key: "spacingM",
-        label: "アンテナ間隔",
+        label: "実際に置ける間隔",
         unit: "m",
         min: 0.001,
         step: 0.001,
-        help: "アンテナ給電点どうし、または素子中心どうしの距離を入れます。MIMOではλ/2前後がよく使われます。"
+        help: "給電点どうし、またはアンテナ中心どうしの距離を入れます。実装上置ける距離が、λで見るとどの程度か確認します。"
       }
     ],
     presets: [
@@ -223,57 +223,57 @@ const configs: Record<AntennaToolId, ToolConfig> = {
     ]
   },
   "array-grating-lobe": {
-    title: "アレイ素子間隔・グレーティングローブ",
+    title: "狙っていない方向にも強い電波が出るか",
     lead:
-      "アレイアンテナの素子間隔と走査角から、不要なグレーティングローブが見えるかを判定します。",
+      "複数のアンテナを並べて電波の向きを変えるとき、間隔が広すぎると本来向けたい方向とは別の方向にも強い電波の山が出ます。このページは、その不要ビームが出る条件を、周波数・間隔・向きから確認するツールです。",
     defaults: { frequencyMHz: 4800, spacingM: 0.031, scanAngleDeg: 45 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 1,
-        help: "波長を決める周波数です。Sub6やミリ波のアレイ設計では素子間隔がλに対して何倍かが重要です。"
+        help: "波長を決める値です。同じ3cm間隔でも、周波数が上がるほど電気的には広い間隔になります。"
       },
       {
         key: "spacingM",
-        label: "素子間隔",
+        label: "アンテナ同士の間隔",
         unit: "m",
         min: 0.001,
         step: 0.001,
-        help: "隣り合う素子中心の間隔です。広すぎるとビーム走査時に不要ローブが現れます。"
+        help: "隣り合うアンテナ中心どうしの距離です。広すぎると、狙っていない方向にも強いビームが出やすくなります。"
       },
       {
         key: "scanAngleDeg",
-        label: "走査角",
+        label: "向けたい方向",
         unit: "deg",
         min: -80,
         max: 80,
         step: 1,
         showSlider: true,
-        help: "正面（ブロードサイド）からどれだけビームを傾けるかです。大きく振るほど安全な素子間隔は狭くなります。"
+        help: "正面からどれだけ横へビームを向けるかです。横へ大きく向けるほど、許される間隔は狭くなります。"
       }
     ],
     presets: [
-      { label: "Sub6 λ/2・45°", values: { frequencyMHz: 4800, spacingM: 0.031, scanAngleDeg: 45 } },
-      { label: "28GHz λ/2・60°", values: { frequencyMHz: 28000, spacingM: 0.00535, scanAngleDeg: 60 } },
-      { label: "広め間隔の失敗例", values: { frequencyMHz: 4800, spacingM: 0.06, scanAngleDeg: 45 } }
+      { label: "Sub6 安全寄り", values: { frequencyMHz: 4800, spacingM: 0.031, scanAngleDeg: 45 } },
+      { label: "28GHz 広角確認", values: { frequencyMHz: 28000, spacingM: 0.00535, scanAngleDeg: 60 } },
+      { label: "間隔が広すぎる例", values: { frequencyMHz: 4800, spacingM: 0.06, scanAngleDeg: 45 } }
     ]
   },
   "patch-antenna-dimensions": {
     title: "矩形パッチアンテナ寸法",
     lead:
-      "周波数、基板厚、比誘電率から、矩形マイクロストリップパッチの幅と長さを概算します。",
+      "基板上に四角い金属パターンでアンテナを作るとき、最初に引く幅と長さを決めるための計算です。EMシミュレーションや試作で追い込む前の、CAD初期寸法を出します。",
     defaults: { frequencyMHz: 1575.42, dielectricConstant: 3.38, substrateHeightMm: 1.6 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "中心周波数",
+        label: "狙う周波数",
         unit: "MHz",
         min: 1,
         step: 0.1,
-        help: "共振させたい周波数です。GNSS L1は1575.42MHz、2.4GHzなら2400MHzです。"
+        help: "アンテナを一番よく反応させたい周波数です。GNSS L1は1575.42MHz、2.4GHzなら2400MHzです。"
       },
       {
         key: "dielectricConstant",
@@ -281,7 +281,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "εr",
         min: 1.01,
         step: 0.01,
-        help: "基板材料の比誘電率です。FR-4はおおよそ4前後ですが周波数や材料で変わります。"
+        help: "基板材料の値です。値が大きいほどパッチは小さくなりますが、材料差や周波数差でずれるため仕様値を確認します。"
       },
       {
         key: "substrateHeightMm",
@@ -289,7 +289,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "mm",
         min: 0.05,
         step: 0.05,
-        help: "パッチとGND面の距離です。厚いほど帯域は広がりやすい一方、表面波などの影響も出ます。"
+        help: "パッチとGND面の距離です。厚いほど帯域は広がりやすい一方、表面波や実装制約も効きます。"
       }
     ],
     presets: [
@@ -301,7 +301,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "small-loop-resonance": {
     title: "小型ループアンテナ共振",
     lead:
-      "小型ループのインダクタンスを近似し、指定周波数で共振させるための容量を計算します。",
+      "小さな輪っか状アンテナを狙った周波数に合わせるため、どのくらいのコンデンサを入れればよいかを見ます。NFC、RFID、近距離センサーの部品選定の入口です。",
     defaults: { frequencyMHz: 13.56, loopDiameterMm: 40, wireDiameterMm: 1, turns: 1 },
     fields: [
       {
@@ -310,7 +310,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "MHz",
         min: 0.001,
         step: 0.01,
-        help: "共振させたい周波数です。NFCなら13.56MHz、低い周波数ほど必要容量や巻数の影響が大きくなります。"
+        help: "ループを合わせたい周波数です。NFCなら13.56MHz。低い周波数ほど、巻数やコンデンサ容量の選び方が効きます。"
       },
       {
         key: "loopDiameterMm",
@@ -318,7 +318,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "mm",
         min: 1,
         step: 1,
-        help: "円形ループに置き換えた直径です。四角ループの場合は同程度の周長になる円径を目安にします。"
+        help: "円形ループに置き換えた直径です。四角いパターンなら、周囲長が近い円として入れると初期値を見られます。"
       },
       {
         key: "wireDiameterMm",
@@ -326,7 +326,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "mm",
         min: 0.01,
         step: 0.1,
-        help: "ループ導体の太さです。インダクタンス近似に効きます。プリント配線なら同等の導体幅として見ます。"
+        help: "ループ導体の太さです。プリント配線ならパターン幅の目安を入れます。インダクタンスと必要容量に効きます。"
       },
       {
         key: "turns",
@@ -334,7 +334,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "turn",
         min: 1,
         step: 1,
-        help: "ループの巻数です。インダクタンスは概ね巻数の2乗で増えます。"
+        help: "ループを何回巻くかです。巻数を増やすと必要なコンデンサ容量は大きく変わります。"
       }
     ],
     presets: [
@@ -346,32 +346,32 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "radiation-resistance": {
     title: "短縮アンテナ放射抵抗・効率",
     lead:
-      "波長より短いモノポール/ダイポールの放射抵抗を概算し、損失抵抗との比で効率を見ます。",
+      "短いアンテナが、S11やVSWRを合わせてもなぜ飛びにくいことがあるのかを見ます。アンテナ長と損失抵抗から、入力電力のうち電波として外へ出る割合を概算します。",
     defaults: { frequencyMHz: 920, lengthMm: 30, lossResistanceOhm: 2 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 1,
-        help: "波長を決める周波数です。アンテナ長が同じでも、周波数が低いほど短縮度が大きくなります。"
+        help: "波長を決める値です。同じ30mmアンテナでも、920MHzではかなり短く、2.4GHzでは少し余裕が出ます。"
       },
       {
         key: "lengthMm",
-        label: "導体長",
+        label: "アンテナの長さ",
         unit: "mm",
         min: 0.1,
         step: 1,
-        help: "モノポールなら地板から先端まで、短いダイポールなら全長の目安です。短いほど放射抵抗が小さくなります。"
+        help: "モノポールならGNDから先端まで、ダイポールなら全長の目安です。短いほど電波として外へ出る力が小さくなります。"
       },
       {
         key: "lossResistanceOhm",
-        label: "損失抵抗",
+        label: "損として見込む抵抗",
         unit: "Ω",
         min: 0,
         step: 0.1,
-        help: "導体損、コイル損、接地損などをまとめた抵抗です。放射抵抗より大きいと効率が急に下がります。"
+        help: "コイル損、導体損、GND損など、熱になる分をまとめた値です。数Ωでも短いアンテナでは大きく効きます。"
       }
     ],
     presets: [
@@ -383,32 +383,32 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "small-antenna-limit": {
     title: "小型アンテナ限界（ka・Q・帯域）",
     lead:
-      "アンテナを外接球半径で見たときの ka とChu限界Qを計算し、小型化と帯域の厳しさを見ます。",
+      "その筐体サイズで、必要な帯域のアンテナを作るのが物理的にどれくらい厳しいかを見ます。小型化の要求が現実的か、試作前に無理度を確認するための計算です。",
     defaults: { frequencyMHz: 920, radiusMm: 20, targetBandwidthPercent: 2 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 1,
-        help: "小型アンテナの厳しさは、アンテナ外形が波長に対してどれだけ小さいか（ka）で決まります。"
+        help: "波長を決める値です。低い周波数ほど同じ筐体サイズでは小型化が厳しくなります。"
       },
       {
         key: "radiusMm",
-        label: "外接球半径",
+        label: "入れられる半径",
         unit: "mm",
         min: 0.1,
         step: 1,
-        help: "アンテナ全体を包む球の半径です。筐体内蔵アンテナでは、許される実装空間の半径として入力します。"
+        help: "アンテナ全体が入る空間を球で包んだときの半径です。筐体内で許されるアンテナスペースとして入れます。"
       },
       {
         key: "targetBandwidthPercent",
-        label: "目標比帯域",
+        label: "必要な帯域",
         unit: "%",
         min: 0.001,
         step: 0.1,
-        help: "中心周波数に対する必要帯域幅の割合です。例: 920MHzで20MHzなら約2.2%。"
+        help: "中心周波数に対して何%の帯域が必要かです。例: 920MHzで20MHz必要なら約2.2%です。"
       }
     ],
     presets: [
@@ -420,32 +420,32 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "large-array-near-field": {
     title: "大型アレイ近傍界・遠方界判定",
     lead:
-      "アレイ開口が大きいと、従来の遠方界前提が想像以上に遠くなります。Fraunhofer距離と位相差を計算します。",
+      "大型アレイや高周波アンテナで、相手や測定点を「十分遠い」とみなしてよいかを確認します。測定距離、ビーム計算、近傍界補正が必要かを判断するための計算です。",
     defaults: { frequencyMHz: 28000, apertureSizeM: 0.5, distanceM: 10 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 10,
-        help: "周波数が高く波長が短いほど、同じ開口でも遠方界距離が長くなります。"
+        help: "周波数が高く波長が短いほど、同じ開口でも遠方界として扱える距離が長くなります。"
       },
       {
         key: "apertureSizeM",
-        label: "アレイ開口サイズ",
+        label: "一番大きい幅",
         unit: "m",
         min: 0.001,
         step: 0.01,
-        help: "アレイの最大寸法です。正方形や円形なら直径/幅、長方形なら長辺を入れます。"
+        help: "アンテナ面やアレイ全体の最大寸法です。正方形なら一辺、長方形なら長辺、円形なら直径を入れます。"
       },
       {
         key: "distanceM",
-        label: "評価距離",
+        label: "相手までの距離",
         unit: "m",
         min: 0.001,
         step: 0.1,
-        help: "アンテナから相手端末、または測定点までの距離です。Fraunhofer距離より近いと近傍界効果が残ります。"
+        help: "通信相手、測定点、ターゲットまでの距離です。この距離が短いと、遠方界前提では外すことがあります。"
       }
     ],
     presets: [
@@ -457,32 +457,32 @@ const configs: Record<AntennaToolId, ToolConfig> = {
   "reflector-ris-size-effect": {
     title: "反射板・RISサイズ効果",
     lead:
-      "反射板やRISを、面積を持つ受動開口として見たときの上限利得、近傍界距離、2ホップ損失の目安を計算します。",
+      "反射板やRISを置いたとき、面積と距離の条件から本当に効きそうかを見ます。反射面を大きくする効果と、送信機→反射面→受信機という遠回りの損失をまとめて確認します。",
     defaults: { frequencyMHz: 4800, widthM: 1, heightM: 1, txDistanceM: 30, rxDistanceM: 30, efficiencyPercent: 50 },
     fields: [
       {
         key: "frequencyMHz",
-        label: "周波数",
+        label: "使う周波数",
         unit: "MHz",
         min: 1,
         step: 10,
-        help: "反射面の電気的な大きさは面積/λ²で効きます。Sub6、ミリ波、Wi-Fiなどで比較できます。"
+        help: "同じ反射面でも、周波数が高いほど電波的には大きな面に見えます。Sub6、Wi-Fi、ミリ波で比較できます。"
       },
       {
         key: "widthM",
-        label: "反射面の幅",
+        label: "置く面の幅",
         unit: "m",
         min: 0.01,
         step: 0.01,
-        help: "反射板またはRISの物理幅です。"
+        help: "設置できる反射板やRISの幅です。面積が足りないと、反射経路の改善は限定的になります。"
       },
       {
         key: "heightM",
-        label: "反射面の高さ",
+        label: "置く面の高さ",
         unit: "m",
         min: 0.01,
         step: 0.01,
-        help: "反射板またはRISの物理高さです。"
+        help: "設置できる反射板やRISの高さです。幅と高さで、電波を受けて再放射する面積が決まります。"
       },
       {
         key: "txDistanceM",
@@ -490,7 +490,7 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "m",
         min: 0.01,
         step: 1,
-        help: "送信アンテナから反射面までの距離です。"
+        help: "送信アンテナから反射面までの距離です。遠いほど、反射面へ届く電力が小さくなります。"
       },
       {
         key: "rxDistanceM",
@@ -498,16 +498,16 @@ const configs: Record<AntennaToolId, ToolConfig> = {
         unit: "m",
         min: 0.01,
         step: 1,
-        help: "反射面から受信アンテナまでの距離です。"
+        help: "反射面から受信アンテナまでの距離です。ここも遠いほど、反射後の電力が小さくなります。"
       },
       {
         key: "efficiencyPercent",
-        label: "有効効率",
+        label: "見込む効率",
         unit: "%",
         min: 1,
         max: 100,
         step: 1,
-        help: "反射面の位相制御、照明むら、損失をまとめた係数です。初期検討では30〜70%程度で感度を見ます。"
+        help: "反射面の損失、位相制御、照明むらをまとめた見込みです。初期検討では30〜70%程度で感度を見ます。"
       }
     ],
     presets: [
@@ -521,9 +521,9 @@ const configs: Record<AntennaToolId, ToolConfig> = {
 const guidanceByTool: Record<AntennaToolId, Guidance> = {
   "effective-aperture": {
     tutorial: [
-      "まず周波数を、実際に使う無線帯に合わせます。920MHz、2.4GHz、Sub6などで面積がどれだけ変わるかを見ます。",
-      "次にアンテナ利得を仕様書のdBiで入れます。利得を上げると有効開口がどれだけ増えるか、グラフで傾きを確認します。",
-      "最後に正方形換算の一辺を見て、アンテナサイズ感や受信しやすさの説明に使います。"
+      "まず、実際に使う無線帯を入れます。920MHzと2.4GHzで、同じdBiでも受信面積がどれだけ違うかを見ます。",
+      "次に、仕様書や候補アンテナの利得dBiを入れます。結果の「電波を拾う面積」が、このアンテナが電波を拾う規模感です。",
+      "最後に正方形換算の一辺を見ます。営業説明や設計レビューでは「この利得は受信面積で言うとこのくらい」と説明できます。"
     ],
     terms: [
       { term: "有効開口 Ae", description: "アンテナが電波から電力を取り出す等価面積です。実物の投影面積と同じとは限りません。" },
@@ -534,9 +534,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "aperture-gain-beamwidth": {
     tutorial: [
-      "周波数と開口径を入れ、まず利得dBiと半値ビーム幅を見ます。",
-      "開口効率を50〜70%で動かして、理想値からどれくらい下がるかを確認します。",
-      "グラフで開口径を大きくした時の利得上昇とビーム幅低下を同時に見ます。"
+      "まず、候補にしているアンテナ径と周波数を入れます。結果の「飛ばせる強さ」で、必要なリンク余裕に届きそうかを見ます。",
+      "次に「ビームの太さ」を見ます。細すぎる場合は、向き合わせや取り付け誤差が厳しくなります。",
+      "最後に遠方界開始距離を確認します。測定室や評価距離が足りない場合、測定結果の読み方を変える必要があります。"
     ],
     terms: [
       { term: "開口径 D", description: "ホーン、レンズ、パラボラなどの電波を受ける/出す面の代表寸法です。" },
@@ -547,9 +547,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "antenna-spacing": {
     tutorial: [
-      "周波数を入力し、実際のアンテナ間隔をm単位で入れます。",
-      "間隔/λが0.25未満、0.5付近、0.75超えのどこにいるかを見ます。",
-      "周波数を変えて、同じ筐体寸法が別の無線帯でどう見えるか比較します。"
+      "まず、筐体や基板で実際に置けるアンテナ間隔を入れます。cmではなく「間隔/波長」を主役として見ます。",
+      "間隔/λが0.25未満なら近すぎ、0.5付近ならよく使われる目安、0.75超えならアレイ用途では広すぎる可能性があります。",
+      "最後に周波数を変え、同じ筐体寸法が別の無線帯では近いのか広いのかを比較します。"
     ],
     terms: [
       { term: "λ換算", description: "物理距離を波長で割った値です。周波数が違う配置を同じ尺度で比較できます。" },
@@ -560,22 +560,22 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "array-grating-lobe": {
     tutorial: [
-      "周波数と素子間隔を入れ、まず現在の間隔が何λかを確認します。",
-      "走査角スライダーを動かして、安全上限がどこまで下がるかを見ます。",
-      "判定が発生ありになったら、間隔を狭めるか走査角を小さくした時の変化を試します。"
+      "まずプリセット「Sub6 安全寄り」を押します。判定が「出にくい」なら、狙った方向以外に強い山が出にくい条件です。",
+      "次に「向けたい方向」を大きくします。横へ向けるほど、安全に使えるアンテナ間隔が狭くなることを見ます。",
+      "「間隔が広すぎる例」を押すと、なぜ問題になるかが分かります。出る可能性ありなら、間隔を狭めるか、向ける角度を小さくします。"
     ],
     terms: [
-      { term: "グレーティングローブ", description: "アレイの周期構造で生じる不要な強いビームです。意図しない方向へ電力が出ます。" },
-      { term: "走査角", description: "アレイの主ビームを正面からどれだけ傾けるかを表す角度です。" },
-      { term: "可視領域", description: "sinθが-1〜1に入る、実空間に放射される角度範囲です。" },
-      { term: "素子間隔", description: "隣り合うアンテナ素子の中心間距離です。広すぎると不要ローブが出やすくなります。" }
+      { term: "不要ビーム", description: "本来向けたい方向とは別に出てしまう強い電波の山です。専門的にはグレーティングローブと呼びます。" },
+      { term: "アレイ", description: "複数のアンテナを並べ、タイミングをずらして電波の向きを作る仕組みです。" },
+      { term: "向けたい方向", description: "正面からどれだけ横へ電波を向けるかです。専門的には走査角と呼びます。" },
+      { term: "λ/2", description: "波長の半分の間隔です。不要ビームを避けるときの代表的な目安です。" }
     ]
   },
   "patch-antenna-dimensions": {
     tutorial: [
-      "中心周波数、基板εr、基板厚を入れて、まずWとLの概算を見ます。",
-      "εrを上げ下げして、基板材料でサイズがどう変わるか確認します。",
-      "得られた寸法を、基板サイズやGND余白、給電位置の初期検討に使います。"
+      "まず、狙う周波数と使う基板材料を入れます。結果のWとLが、CADで最初に描くパッチ寸法の目安です。",
+      "基板の比誘電率を変えて、材料を替えるとサイズがどれだけ変わるかを見ます。大きすぎる場合の材料選定に使えます。",
+      "最後に、基板サイズ、GND余白、給電位置を検討します。この計算値は完成寸法ではなく、EMシミュレーションや試作調整の出発点です。"
     ],
     terms: [
       { term: "矩形パッチ", description: "GND面上の金属板を共振させる平面アンテナです。基板上で作りやすい形式です。" },
@@ -586,9 +586,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "small-loop-resonance": {
     tutorial: [
-      "共振周波数とループ直径を入れ、インダクタンスと必要容量を確認します。",
-      "巻数や線径を動かして、必要容量がどれくらい変わるかを見ます。",
-      "周長/λが大きすぎる場合は、小型ループ近似から外れる点に注意します。"
+      "まず、狙う周波数とループの大きさを入れます。結果の「必要な共振容量」が、部品選定の最初の候補です。",
+      "巻数や線径を動かし、必要容量が手に入りやすい範囲に入るかを見ます。極端な容量ならループ形状を見直します。",
+      "最後に周長/λを見ます。値が大きくなると、小型ループとしての単純近似から外れやすくなります。"
     ],
     terms: [
       { term: "インダクタンス L", description: "ループが磁界としてエネルギーを蓄える度合いです。巻数の2乗で増えやすい量です。" },
@@ -599,9 +599,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "radiation-resistance": {
     tutorial: [
-      "周波数とアンテナ長を入れ、長さ/λと放射抵抗を確認します。",
-      "損失抵抗を1〜5Ωで動かして、効率がどれだけ落ちるかを見ます。",
-      "モノポール/ダイポールを切り替え、形式で放射抵抗の目安が変わることを確認します。"
+      "まず、実際のアンテナ長を入れます。結果の「長さ/波長」で、どれくらい短縮しているかを確認します。",
+      "次に、コイル損やGND損を想定して損失抵抗を1〜5Ωで動かします。効率が急に落ちるなら、短さと損失が主犯です。",
+      "最後にモノポール/ダイポールを切り替えます。S11が良くても飛ばない時の説明材料として使えます。"
     ],
     terms: [
       { term: "放射抵抗", description: "電波として出ていく電力を、抵抗で表現した等価量です。" },
@@ -612,9 +612,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "small-antenna-limit": {
     tutorial: [
-      "外接球半径を、アンテナが入る実装空間の半径として入れます。",
-      "kaとChu限界Qを見て、小型化の厳しさを確認します。",
-      "目標比帯域を入れ、理想上限帯域を超えていないか判定します。"
+      "まず、アンテナに使える実装空間を半径として入れます。結果のkaが小さいほど、小型化の無理度が高い状態です。",
+      "次に、必要な帯域を入れます。理想上限の比帯域より大きい要求なら、受動アンテナだけではかなり厳しい目安です。",
+      "最後に半径を少し大きくしてみます。筐体スペースを増やすことが、帯域確保にどれだけ効くかを説明できます。"
     ],
     terms: [
       { term: "ka", description: "波数kと外接球半径aの積です。アンテナが波長に対してどれだけ小さいかを表します。" },
@@ -625,9 +625,9 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "large-array-near-field": {
     tutorial: [
-      "アレイの最大寸法と評価距離を入れ、Fraunhofer距離を確認します。",
-      "評価距離がFraunhofer距離より近い場合、近傍界として扱うべき可能性を見ます。",
-      "開口サイズを変えて、遠方界距離がD²で急増する感覚を掴みます。"
+      "まず、アンテナ面の最大寸法と、相手や測定点までの距離を入れます。結果の「遠方界になる目安」を見ます。",
+      "相手までの距離がその目安より短い場合、遠方界前提の利得測定やビーム計算では外す可能性があります。",
+      "最後に開口サイズを2倍にしてみます。遠方界距離が急に伸びるため、大型アレイほど測定距離が問題になることが分かります。"
     ],
     terms: [
       { term: "Fraunhofer距離", description: "遠方界とみなす代表的な距離目安です。2D²/λで計算します。" },
@@ -638,12 +638,12 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
   },
   "reflector-ris-size-effect": {
     tutorial: [
-      "反射面の幅・高さと、送信側/受信側までの距離を入れます。",
-      "開口上限利得と2ホップ損失を見て、面積を増やす効果を確認します。",
-      "直接経路との差が大きい場合は、距離、面積、効率のどれが効いているかをグラフで見ます。"
+      "まず、置ける反射面の幅・高さと、送信側/受信側までの距離を入れます。面積が足りるかを見ます。",
+      "次に「直接経路との差」を見ます。正のdBが大きいほど、反射経路は直接届く場合より厳しい条件です。",
+      "最後に反射面サイズと効率を動かします。面を大きくすべきか、設置距離を短くすべきかの当たりを付けられます。"
     ],
     terms: [
-      { term: "RIS", description: "Reconfigurable Intelligent Surface。反射/透過面の位相などを制御して電波環境を変える面です。" },
+      { term: "RIS", description: "反射の強さや向きを調整できる面です。電波を届きにくい場所へ回り込ませる研究・設計で扱います。" },
       { term: "受動開口", description: "増幅器を持たず、面積で電波を受けて再放射する開口として見る考え方です。" },
       { term: "2ホップ損失", description: "送信機から反射面、反射面から受信機までの2つの距離損失を合わせた見方です。" },
       { term: "近傍/遠方界", description: "反射面の大きさと距離によって、鏡のような幾何光学近似だけでは足りない場合があります。" }
@@ -652,24 +652,88 @@ const guidanceByTool: Record<AntennaToolId, Guidance> = {
 };
 
 const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
-  "array-grating-lobe": {
-    plainTitle: "一言でいうと：アンテナを並べたときの「変な方向にも飛ぶ」を見るツール",
+  "effective-aperture": {
+    plainTitle: "要するに：dBiを、電波を拾う面積として説明するためのツール",
     plainSummary:
-      "アレイアンテナは、複数の小さなアンテナを並べてビームを向けます。ただし間隔が広すぎると、狙った方向とは別の方向にも強いビームが出ます。それがグレーティングローブです。",
+      "アンテナ利得はdBiで書かれますが、初めて見る人には大きさの感覚が分かりにくい値です。このページでは、利得を受信面積に戻して、どれくらいの規模で電波を受け取れるアンテナなのかを説明しやすくします。",
     everydayImage:
-      "スピーカーを何台も並べると、正面だけでなく横の変な場所でも音が強く聞こえることがあります。電波でも似たことが起きます。",
+      "雨を受けるバケツを想像すると近いです。同じ雨でも、口が広いバケツほど多く受け取れます。有効開口は、電波に対するその受け口の大きさです。",
     realUse:
-      "5G/ローカル5G、ミリ波センサー、フェーズドアレイの初期設計で、素子間隔をλ/2にしてよいか、広角までビームを振ってよいかを確認します。",
+      "アンテナ選定、リンクバジェット説明、低周波と高周波のアンテナサイズ比較で、dBiだけでは伝わりにくい受信しやすさを説明する時に使います。",
     firstAction:
-      "まずプリセットを押し、走査角スライダーを動かしてください。『判定』が発生なしから発生ありに変わる境目を見るのが入口です。",
+      "まず見る結果は「電波を拾う面積」です。同じ利得のまま周波数を変えると、受信面積がどれだけ変わるかが分かります。",
     glossary: [
-      { term: "アレイ", description: "複数のアンテナを規則的に並べたものです。タイミングをずらして、電波の向きを作ります。" },
-      { term: "走査角", description: "ビームを正面からどれだけ横へ振るかです。大きく振るほど設計は難しくなります。" },
+      { term: "有効開口", description: "アンテナが電波から電力を取り出す等価的な面積です。実物の見た目の面積とは一致しないことがあります。" },
+      { term: "dBi", description: "理想的に全方向へ同じ強さで出すアンテナを基準にした利得です。" },
+      { term: "受信面積", description: "利得を直感的に説明するための言い換えです。低周波ほど同じ利得に必要な面積は大きくなります。" }
+    ]
+  },
+  "aperture-gain-beamwidth": {
+    plainTitle: "要するに：アンテナの口をどれくらい大きくすれば、必要な強さとビーム幅になるかを見るツール",
+    plainSummary:
+      "開口アンテナは、口の大きさで利得とビームの細さが大きく決まります。大きくすれば遠くへ届きやすくなりますが、向き合わせはシビアになり、測定に必要な距離も伸びます。",
+    everydayImage:
+      "懐中電灯の反射板が大きいほど光を遠くへ集められますが、照らす範囲は細くなります。開口アンテナでも同じような設計判断が起きます。",
+    realUse:
+      "ホーン、レンズ、パラボラ、ミリ波アンテナで、アンテナ径の候補、必要な取り付け精度、測定距離の見積もりを出す時に使います。",
+    firstAction:
+      "まず見る結果は「飛ばせる強さ」と「ビームの太さ」です。強さが足りないなら開口を大きくし、ビームが細すぎるなら向き合わせの余裕を確認します。",
+    glossary: [
+      { term: "開口", description: "電波を出し入れする面です。ホーンの口、レンズ径、パラボラ径などが該当します。" },
+      { term: "半値ビーム幅", description: "ピークから3dB下がるまでの角度幅です。小さいほど細く狙うアンテナです。" },
+      { term: "遠方界", description: "アンテナを十分遠くから見た状態です。開口が大きいほど、その距離は長くなります。" }
+    ]
+  },
+  "antenna-spacing": {
+    plainTitle: "要するに：複数アンテナを、近すぎず広すぎず置けているかを見るツール",
+    plainSummary:
+      "アンテナ間隔はcmだけでは判断できません。同じ5cmでも、周波数が変わると電波的な距離は変わります。このページでは、実装上の距離を波長に対する割合へ直して、配置の当たりを付けます。",
+    everydayImage:
+      "人の間隔を『何cm』ではなく『肩幅何個分』で見るようなものです。波長を基準にすると、違う周波数の配置を同じものさしで比べられます。",
+    realUse:
+      "MIMOアンテナ、複数無線を載せた端末、アレイ配置の初期検討で、筐体上の限られたスペースにどの程度の間隔で置けるかを判断します。",
+    firstAction:
+      "まず見る結果は「間隔/波長」です。0.5λ前後はよく使われる基準、0.25λ未満なら近接結合や相関に注意します。",
+    glossary: [
+      { term: "λ", description: "波長です。電波1周期分の長さで、周波数が高いほど短くなります。" },
+      { term: "相関", description: "複数アンテナが似た信号を受けてしまう度合いです。近すぎると高くなりやすいです。" },
+      { term: "結合", description: "アンテナ同士が互いに影響し合うことです。近い配置では無視しにくくなります。" }
+    ]
+  },
+  "array-grating-lobe": {
+    plainTitle: "要するに：複数アンテナで、狙っていない方向に強く飛ばないかを見るツール",
+    plainSummary:
+      "アレイアンテナは、複数のアンテナを並べて電波の向きを作ります。ただ、アンテナ同士の間隔が広すぎると、狙った方向とは別の方向にも強い電波の山が出ます。通信なら干渉やムダ打ち、センサーなら誤検知の原因になります。",
+    everydayImage:
+      "懐中電灯を1本だけ向けるなら分かりやすいですが、ライトを等間隔にたくさん並べると、正面以外にも明るい筋が出ることがあります。ここでは、その余計な明るい筋が出るかを見ます。",
+    realUse:
+      "ローカル5G、5G基地局、ミリ波レーダー、MIMOアンテナで、アンテナを何cm間隔で並べるか、どこまで横へビームを向けてよいかを決める初期チェックに使います。",
+    firstAction:
+      "見るべき結果は「不要ビーム」です。出にくいならまず安心、出る可能性ありならアンテナ間隔を狭めるか、向けたい方向を正面寄りにします。",
+    glossary: [
+      { term: "グレーティングローブ", description: "不要ビームの専門名です。狙った方向以外に出る強い山を指します。" },
+      { term: "走査角", description: "ここでは「向けたい方向」のことです。正面から横へどれだけ振るかを角度で表します。" },
       { term: "λ/2", description: "波長の半分の間隔です。アレイでよく使われる安全寄りの基準です。" }
     ]
   },
+  "patch-antenna-dimensions": {
+    plainTitle: "要するに：基板に描くパッチアンテナの最初の幅と長さを決めるツール",
+    plainSummary:
+      "パッチアンテナは、基板上の四角い金属板を共振させるアンテナです。このページでは、狙う周波数と基板材料から、最初にCADへ描く幅Wと長さLを出します。",
+    everydayImage:
+      "楽器の弦を狙った音に合わせて長さを決めるように、パッチも狙った周波数で反応する長さがあります。基板の材料によって、その長さは変わります。",
+    realUse:
+      "GNSS、2.4GHz、920MHzなどの基板アンテナで、基板サイズに入るか、どの材料なら小さくできるか、EMシミュレーションの初期形状をどうするかを決める時に使います。",
+    firstAction:
+      "まず見る結果は「CADで引く幅W」と「CADで引く長さL」です。大きすぎる場合は周波数、基板材料、アンテナ方式の見直し候補になります。",
+    glossary: [
+      { term: "パッチ", description: "GND面の上に置く金属板です。形状と基板条件で共振周波数が決まります。" },
+      { term: "比誘電率", description: "基板内で電波がどれだけ遅く進むかに関係する値です。大きいほど寸法は小さくなります。" },
+      { term: "初期寸法", description: "そのまま完成値にする寸法ではなく、シミュレーションや試作調整を始めるための出発点です。" }
+    ]
+  },
   "small-loop-resonance": {
-    plainTitle: "一言でいうと：小さな輪っかを、狙った周波数で鳴らすためのCを探すツール",
+    plainTitle: "要するに：小さな輪っかに、どのコンデンサを載せれば狙いの周波数になるかを見るツール",
     plainSummary:
       "小型ループは、そのままでは狙いの周波数に合わないことが多いので、コンデンサを足して共振させます。このページは、ループのLと必要なCの目安を出します。",
     everydayImage:
@@ -685,7 +749,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     ]
   },
   "radiation-resistance": {
-    plainTitle: "一言でいうと：短いアンテナが、なぜ『整合しても飛ばない』ことがあるかを見るツール",
+    plainTitle: "要するに：短いアンテナが、なぜ『整合しても飛ばない』ことがあるかを見るツール",
     plainSummary:
       "短いアンテナは、電波として外へ出る成分である放射抵抗が小さくなります。そこにコイルやGNDの損失が少しあるだけで、効率が大きく落ちます。",
     everydayImage:
@@ -701,7 +765,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     ]
   },
   "small-antenna-limit": {
-    plainTitle: "一言でいうと：小さすぎるアンテナに、どこまで無理をさせているかを見るツール",
+    plainTitle: "要するに：その筐体サイズで、必要な帯域を狙うのが無理筋かを見るツール",
     plainSummary:
       "アンテナは小さくできますが、小さくするほど帯域が狭くなり、効率も厳しくなります。kaとQは、その無理度を数値で見るための入口です。",
     everydayImage:
@@ -709,7 +773,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     realUse:
       "『この小さな筐体で920MHzを広帯域にできますか？』という初期相談で、物理的にどれくらい厳しい要求かを説明する時に使います。",
     firstAction:
-      "外接球半径を半分にしてみてください。Qが急に上がり、理想上限の比帯域が狭くなるのが研究者モードの核心です。",
+      "入れられる半径を半分にしてみてください。Qが急に上がり、狙える帯域が狭くなるのがこのツールのポイントです。",
     glossary: [
       { term: "ka", description: "アンテナサイズを波長で割ったような数です。小さいほど小型化が厳しい状態です。" },
       { term: "Q", description: "共振の鋭さです。高いほど帯域が狭く、調整がシビアになります。" },
@@ -717,7 +781,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     ]
   },
   "large-array-near-field": {
-    plainTitle: "一言でいうと：大きなアンテナでは、近距離の相手を『遠くの点』として扱えないことを見るツール",
+    plainTitle: "要するに：大型アレイを、遠方界として扱ってよい距離かを見るツール",
     plainSummary:
       "アンテナの開口が大きくなると、遠方界になる距離が想像以上に長くなります。近い相手には、角度だけでなく距離方向の焦点も効いてきます。",
     everydayImage:
@@ -725,7 +789,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     realUse:
       "Sub6の大きな反射板、ミリ波アレイ、6G/XL-MIMO、アンテナ測定距離の検討で、遠方界前提でよいかを確認します。",
     firstAction:
-      "アレイ開口サイズを2倍にしてください。Fraunhofer距離が4倍近く伸びることを見ると、D²/λの怖さが分かります。",
+      "一番大きい幅を2倍にしてください。遠方界になる目安距離が4倍近く伸びることを見ると、大型アレイの測定距離が問題になる理由が分かります。",
     glossary: [
       { term: "近傍界", description: "アンテナに近く、波の曲がりや距離方向の違いを無視しにくい領域です。" },
       { term: "遠方界", description: "十分遠く、波を平面波として扱いやすい領域です。" },
@@ -733,7 +797,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     ]
   },
   "reflector-ris-size-effect": {
-    plainTitle: "一言でいうと：反射板やRISが『どれくらい効きそうか』を面積と距離で見るツール",
+    plainTitle: "要するに：反射板やRISを置いて効きそうなサイズ・距離かを見るツール",
     plainSummary:
       "反射板やRISは、置けば必ず良くなる魔法の板ではありません。面積が足りるか、距離が長すぎないか、効率をどれくらい見込むかで結果が変わります。",
     everydayImage:
@@ -743,7 +807,7 @@ const researchBridgeByTool: Partial<Record<AntennaToolId, ResearchBridge>> = {
     firstAction:
       "反射面の幅と高さを半分にしてみてください。開口上限利得と直接経路との差がどう悪化するかを見るのが入口です。",
     glossary: [
-      { term: "RIS", description: "電波の反射や位相を制御する面です。研究では賢い反射面として扱われます。" },
+      { term: "RIS", description: "電波の反射や向きを調整できる面です。届きにくい場所へ電波を回り込ませる目的で使われます。" },
       { term: "2ホップ", description: "送信機→反射面、反射面→受信機という2つの経路で考えることです。" },
       { term: "開口利得", description: "面の大きさを電波を集める力として見た利得です。" }
     ]
@@ -793,29 +857,29 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       }));
       return {
         cards: [
-          card("有効開口面積", formatArea(result.areaM2), undefined, "受信アンテナが電波から電力を取り出す等価面積です。"),
-          card("正方形換算の一辺", formatMeters(result.squareSideM), undefined, "同じ面積の正方形に置き換えたときの一辺です。"),
-          card("利得倍率", `×${smart(result.gainLinear, 2)}`, undefined, "dBiを電力倍率に換算した値です。")
+          card("電波を拾う面積", formatArea(result.areaM2), undefined, "このアンテナが電波から電力を取り出す等価的な受け口の大きさです。"),
+          card("面積換算の一辺", formatMeters(result.squareSideM), undefined, "同じ面積の正方形に置き換えたときの一辺です。サイズ感の説明に使えます。"),
+          card("dBiの電力倍率", `×${smart(result.gainLinear, 2)}`, undefined, "仕様書のdBiを、電力で何倍かに戻した値です。")
         ],
         diagram: {
-          title: "利得を受信面積として見る",
+          title: "dBiを受信面積に戻す",
           variant: toolId,
           labels: [`Ae ${formatArea(result.areaM2)}`, `λ ${formatMeters(result.wavelengthM)}`, `${smart(values.gainDbi, 1)} dBi`]
         },
         chart: {
-          title: "周波数を変えたときの有効開口",
-          description: "同じ利得なら、有効開口はλ²に比例します。低い周波数ほど面積は急に大きくなります。",
+          title: "周波数が変わると、受信面積はどう変わるか",
+          description: "同じ利得なら、低い周波数ほど受信面積は大きくなります。周波数違いのアンテナサイズ感を比べる時に見ます。",
           data: chart,
           unit: "cm²",
           series: [{ key: "value", name: "有効開口", color: chartTheme.series.source }]
         },
         formula: "Ae = λ²G / (4π)\nG = 10^(dBi / 10)",
-        explanation: "アンテナ利得は、受信側では有効開口面積として解釈できます。dBiが同じでも、周波数が低いほど波長が長く、同じ利得を実現するための等価面積は大きくなります。",
-        columnTitle: "コラム：dBiを面積に戻すとアンテナの実感が出る",
+        explanation: "アンテナ利得は、受信側では有効開口面積として解釈できます。この計算は、仕様書のdBiを『どれくらいの受け口で電波を拾うか』に言い換えるためのものです。dBiが同じでも、周波数が低いほど波長が長く、等価面積は大きくなります。",
+        columnTitle: "コラム：dBiを面積で見ると説明しやすい",
         column: [
-          "920MHzと5GHzで同じ2dBiでも、有効開口は大きく違います。サブGHzのアンテナが物理的に大きくなりやすい理由が直感できます。",
-          "受信電力の議論では利得だけを見がちですが、開口面積で見ると「電波をどれだけ拾えるか」の説明がしやすくなります。",
-          "小型アンテナの実効利得が落ちると、リンクバジェットだけでなく受信面積も小さくなったと考えられます。"
+          "920MHzと5GHzで同じ2dBiでも、有効開口は大きく違います。サブGHzのアンテナが物理的に大きくなりやすい理由を説明できます。",
+          "受信電力の議論では利得だけを見がちですが、開口面積で見ると「電波をどれだけ拾えるか」の話にできます。",
+          "小型アンテナで実効利得が落ちる場合、受信面積も小さくなったと考えるとリンク余裕の説明がしやすくなります。"
         ]
       };
     }
@@ -840,18 +904,18 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       });
       return {
         cards: [
-          card("概算利得", smart(result.gainDbi, 1), "dBi", "開口径と効率から求める理想寄りの利得です。"),
-          card("半値ビーム幅", smart(result.hpbwDeg, 1), "deg", "主ビームのおおよその-3dB幅です。"),
-          card("遠方界開始距離", formatMeters(result.fraunhoferM), undefined, "開口アンテナの測定で遠方界とみなす目安です。")
+          card("飛ばせる強さ", smart(result.gainDbi, 1), "dBi", "開口径と効率から見た、正面方向にどれくらい強く集められるかの目安です。"),
+          card("ビームの太さ", smart(result.hpbwDeg, 1), "deg", "主ビームのおおよその幅です。小さいほど細く、向き合わせがシビアになります。"),
+          card("測定で必要な距離", formatMeters(result.fraunhoferM), undefined, "遠方界として測りたい時に必要になりやすい距離の目安です。")
         ],
         diagram: {
-          title: "開口径が利得とビーム幅を決める",
+          title: "開口を大きくすると強く細くなる",
           variant: toolId,
           labels: [`D ${formatMeters(values.diameterM)}`, `${smart(result.gainDbi, 1)} dBi`, `HPBW ${smart(result.hpbwDeg, 1)}°`]
         },
         chart: {
-          title: "開口径を変えたときの利得とビーム幅",
-          description: "開口径が大きいほど利得は上がり、ビーム幅は狭くなります。",
+          title: "開口径で、強さとビーム幅がどう変わるか",
+          description: "開口径が大きいほど利得は上がり、ビームは狭くなります。届きやすさと向き合わせの難しさを同時に見ます。",
           data: chart,
           unit: "dBi / deg",
           series: [
@@ -860,11 +924,11 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           ]
         },
         formula: "G = η(πD/λ)²\nG[dBi] = 10log10(G)\nHPBW[deg] ≈ 70λ/D",
-        explanation: "円形開口アンテナの一次近似です。実際のビーム幅やサイドローブは照明分布、レンズ/ホーン形状、エッジ処理で変わります。",
-        columnTitle: "コラム：ミリ波で小さなレンズが高利得になる理由",
+        explanation: "円形開口アンテナの一次近似です。この計算は、アンテナ径の候補が必要利得に届くか、ビームが細すぎないか、測定距離が足りるかをざっくり確認するために使います。実際のビーム幅やサイドローブは照明分布、レンズ/ホーン形状、エッジ処理で変わります。",
+        columnTitle: "コラム：強くするほど、狙いは細くなる",
         column: [
           "利得はD/λの2乗で増えます。60GHzではλが約5mmなので、5cmの開口でもかなり大きな電気的サイズになります。",
-          "高利得化は同時にビームを細くします。通信距離は伸びますが、向き合わせや筐体公差は厳しくなります。",
+          "高利得化は同時にビームを細くします。通信距離は伸びますが、取り付け角度や筐体公差は厳しくなります。",
           "測定距離も2D²/λで伸びるため、開口が大きいアンテナほど近距離測定の解釈に注意が必要です。"
         ]
       };
@@ -883,18 +947,18 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
             : undefined;
       return {
         cards: [
-          card("間隔/波長", smart(result.spacingLambda, 2), "λ", "物理間隔を波長で割った値です。"),
-          card("位相差換算", smart(result.phaseDeg, 0), "deg", "平面波がアンテナ間を進むときの1周期あたりの位相差です。"),
-          card("λ/2の物理長", formatMeters(result.halfWaveM), undefined, "同じ周波数でλ/2を物理長に戻した値です。")
+          card("今の間隔", smart(result.spacingLambda, 2), "λ", "実際のアンテナ間隔を波長で割った値です。配置判断ではこの値を主に見ます。"),
+          card("位相差の目安", smart(result.phaseDeg, 0), "deg", "正面から来る波ではなく、横方向の波を考えたときに効く位相差の目安です。"),
+          card("λ/2なら何cmか", formatMeters(result.halfWaveM), undefined, "同じ周波数で、よく使われるλ/2間隔を物理長に戻した値です。")
         ],
         diagram: {
-          title: "物理距離をλで見る",
+          title: "cmの距離を波長のものさしで見る",
           variant: toolId,
           labels: [`間隔 ${formatMeters(values.spacingM)}`, `${smart(result.spacingLambda, 2)} λ`, `λ/2 ${formatMeters(result.halfWaveM)}`]
         },
         chart: {
-          title: "周波数を変えたときのλ換算間隔",
-          description: "同じ配置でも、周波数が上がると電気的な間隔は広くなります。",
+          title: "同じ配置でも、周波数が上がると広く見える",
+          description: "筐体上の距離が同じでも、周波数が上がると波長に対する間隔は大きくなります。複数帯域で同じ配置を使う時に確認します。",
           data: chart,
           unit: "λ",
           series: [{ key: "value", name: "間隔/λ", color: chartTheme.series.source }],
@@ -902,8 +966,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           referenceLabel: "λ/2"
         },
         formula: "間隔[λ] = 物理間隔[m] / λ[m]\n位相差[deg] = 間隔[λ] × 360",
-        explanation: "MIMOや複数アンテナ配置では、cmではなくλで距離を見ると周波数をまたいで比較できます。λ/2はよく使われる基準ですが、筐体、偏波、グランド、相関の実測で最終判断します。",
-        columnTitle: "コラム：アンテナ間隔はcmではなくλで考える",
+        explanation: "MIMOや複数アンテナ配置では、cmではなくλで距離を見ると周波数をまたいで比較できます。この計算は、限られた筐体内で近すぎるか、アレイ用途で広すぎるかの初期判断に使います。λ/2はよく使われる基準ですが、筐体、偏波、グランド、相関の実測で最終判断します。",
+        columnTitle: "コラム：アンテナ間隔はcmだけでは判断できない",
         column: [
           "920MHzで10cmは約0.31λですが、2.4GHzで10cmは約0.8λです。同じ筐体寸法でも意味が変わります。",
           "MIMOでは離せば必ず良いわけではなく、相関、結合、放射パターン、筐体モードが絡みます。まずλ換算で初期判断します。",
@@ -929,39 +993,39 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       }));
       return {
         cards: [
-          card("現在の素子間隔", smart(result.spacingLambda, 2), "λ", "λ換算の素子間隔です。"),
-          card("安全目安の上限", smart(result.limitLambda, 2), "λ", "指定走査角までグレーティングローブを避ける上限目安です。"),
-          card("判定", result.hasVisibleGratingLobe ? "発生あり" : "発生なし", undefined, "m=±1以上のローブが可視領域に入るかを判定します。", result.hasVisibleGratingLobe ? "rose" : "emerald")
+          card("今の間隔", smart(result.spacingLambda, 2), "λ", "アンテナ同士の距離を波長で見た値です。0.5λ前後なら安全寄りです。"),
+          card("安全に使える上限", smart(result.limitLambda, 2), "λ", "指定した向きまでビームを振っても、不要ビームを出しにくい間隔の目安です。"),
+          card("不要ビーム", result.hasVisibleGratingLobe ? "出る可能性あり" : "出にくい", undefined, "狙っていない方向にも強い電波の山が出るかを判定します。", result.hasVisibleGratingLobe ? "rose" : "emerald")
         ],
         diagram: {
-          title: "走査角と不要ローブ",
+          title: "狙う方向と余計な方向",
           variant: toolId,
           labels: [
-            `d ${smart(result.spacingLambda, 2)}λ`,
-            `scan ${smart(values.scanAngleDeg, 0)}°`,
-            result.lobes[0] ? `GL ${smart(result.lobes[0].angleDeg, 0)}°` : "no visible GL"
+            `間隔 ${smart(result.spacingLambda, 2)}λ`,
+            `向ける ${smart(values.scanAngleDeg, 0)}°`,
+            result.lobes[0] ? `余計な山 ${smart(result.lobes[0].angleDeg, 0)}°` : "余計な山なし"
           ]
         },
         chart: {
-          title: "走査角ごとの安全な素子間隔",
-          description: "走査角が大きいほど、グレーティングローブを避けるための上限間隔は小さくなります。",
+          title: "横へ向けるほど、許される間隔は狭くなる",
+          description: "赤い線が今の間隔、青い線が安全寄りの上限です。赤が青を超えると、狙っていない方向にも強く出る可能性があります。",
           data: chart,
           unit: "mm",
           series: [
-            { key: "value", name: "安全上限 mm", color: chartTheme.series.source },
-            { key: "value2", name: "現在の間隔 mm", color: chartTheme.series.loss }
+            { key: "value", name: "安全に使える上限 mm", color: chartTheme.series.source },
+            { key: "value2", name: "今の間隔 mm", color: chartTheme.series.loss }
           ]
         },
-        formula: "可視グレーティング条件: |sinθ0 + mλ/d| ≤ 1\n安全目安: d/λ ≤ 1 / (1 + |sinθmax|)",
-        explanation: "等間隔リニアアレイの基本式です。実際には素子パターン、振幅重み、筐体、相互結合でローブ強度は変わりますが、発生条件の一次判定として有効です。",
-        columnTitle: "コラム：λ/2でも広角走査ではギリギリになる",
+        formula: "不要ビームが実際に出る条件: |sinθ0 + mλ/d| ≤ 1\n安全目安: d/λ ≤ 1 / (1 + |sinθmax|)",
+        explanation: "等間隔に並べたアンテナでは、間隔dが広いほど別方向にも同じような山が出やすくなります。式はその山が実空間に現れる条件です。実際の強さはアンテナ単体の形、振幅の付け方、筐体、相互結合で変わりますが、まず危ない配置を見つける一次判定として使えます。",
+        columnTitle: "コラム：なぜ「間隔を広げればよい」ではないのか",
         column: [
-          "正面だけを見るならλ/2は定番ですが、広い角度へビームを振るほど安全な間隔はλ/2より小さくなります。",
-          "Sub6やミリ波のアレイでは、素子を詰めるほど結合や実装が難しく、広げるほどグレーティングローブが出やすくなります。",
-          "このトレードオフをスライダーで動かすと、アレイ設計の難しさが直感的に見えます。"
+          "アンテナを離すと、アンテナ同士の影響は減り、実装もしやすく見えます。しかし離しすぎると、複数アンテナの周期性が目立ち、狙った方向以外にも強い山が出ます。",
+          "正面だけを見るならλ/2はよく使われる基準ですが、横へ大きく向けるほど安全な上限はλ/2より小さくなります。",
+          "このトレードオフをスライダーで動かすと、アレイ設計で『詰めたい理由』と『離したい理由』が同時に見えます。"
         ],
         warning: result.hasVisibleGratingLobe
-          ? "指定条件では可視領域にグレーティングローブ候補があります。素子間隔を狭める、走査角を抑える、素子パターンで抑圧するなどを検討してください。"
+          ? "この条件では、狙っていない方向にも強い電波の山が出る可能性があります。アンテナ間隔を狭める、向けたい角度を小さくする、アンテナ単体の指向性で抑える、の順に検討してください。"
           : undefined
       };
     }
@@ -985,18 +1049,18 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       });
       return {
         cards: [
-          card("パッチ幅 W", formatMm(result.widthM), undefined, "放射効率と入力抵抗に効く幅の目安です。"),
-          card("パッチ長 L", formatMm(result.lengthM), undefined, "端部効果補正後の共振長の目安です。"),
-          card("実効比誘電率", smart(result.effectiveEr, 2), undefined, "空気と基板をまたぐ電界を考慮した実効値です。")
+          card("CADで引く幅 W", formatMm(result.widthM), undefined, "最初に基板CADへ置くパッチ幅の目安です。放射効率や入力抵抗にも効きます。"),
+          card("CADで引く長さ L", formatMm(result.lengthM), undefined, "狙う周波数で共振させるための長さの初期値です。試作やEM解析で追い込みます。"),
+          card("基板中の見かけε", smart(result.effectiveEr, 2), undefined, "空気と基板をまたいで進む電波が、実際に感じる誘電率の目安です。")
         ],
         diagram: {
-          title: "矩形パッチの初期寸法",
+          title: "最初に描くパッチ寸法",
           variant: toolId,
           labels: [`W ${formatMm(result.widthM)}`, `L ${formatMm(result.lengthM)}`, `εeff ${smart(result.effectiveEr, 2)}`]
         },
         chart: {
-          title: "周波数を変えたときのパッチ寸法",
-          description: "周波数が上がると、幅・長さとも小さくなります。",
+          title: "周波数を上げると、パッチはどれだけ小さくなるか",
+          description: "同じ基板なら、狙う周波数が上がるほどパッチの幅と長さは小さくなります。基板に入るかの初期確認に使います。",
           data: chart,
           unit: "mm",
           series: [
@@ -1005,8 +1069,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           ]
         },
         formula: "W = c/(2f)√(2/(εr+1))\nεeff = (εr+1)/2 + (εr-1)/(2√(1+12h/W))\nL = c/(2f√εeff) - 2ΔL",
-        explanation: "矩形マイクロストリップパッチの伝送線路モデルによる初期寸法です。給電位置、GNDサイズ、基板損失、銅厚、筐体で共振点はずれるため、EMシミュレーションや試作調整の出発点として使います。",
-        columnTitle: "コラム：パッチはλ/2だが、基板の中では短くなる",
+        explanation: "矩形マイクロストリップパッチの伝送線路モデルによる初期寸法です。この計算は、CADに最初の形を置くためのものです。給電位置、GNDサイズ、基板損失、銅厚、筐体で共振点はずれるため、EMシミュレーションや試作調整の出発点として使います。",
+        columnTitle: "コラム：完成寸法ではなく、最初の当たりを出す",
         column: [
           "パッチ長は自由空間のλ/2ではなく、実効比誘電率で短縮されたλg/2に近づきます。",
           "端部のフリンジ電界により、見かけの電気長は物理長より少し長くなります。その分、計算上の物理長は短く補正します。",
@@ -1033,29 +1097,29 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       }));
       return {
         cards: [
-          card("インダクタンス", smart(result.inductanceH * 1e9, 1), "nH", "円形ループ近似のインダクタンスです。"),
-          card("必要な共振容量", smart(result.capacitanceF * 1e12, 1), "pF", "指定周波数でLC共振するための容量です。"),
-          card("周長/波長", smart(result.circumferenceLambda, 3), "λ", "小型ループとして見てよいかの目安です。")
+          card("ループのL", smart(result.inductanceH * 1e9, 1), "nH", "ループが磁界としてエネルギーをためる量です。ここから必要容量を決めます。"),
+          card("載せる容量の目安", smart(result.capacitanceF * 1e12, 1), "pF", "指定周波数でループを合わせるためのコンデンサ容量の初期候補です。"),
+          card("小型近似の確認", smart(result.circumferenceLambda, 3), "λ", "ループ周囲長が波長に対して十分小さいかを見る目安です。")
         ],
         diagram: {
-          title: "ループと同調容量",
+          title: "ループに足すコンデンサを決める",
           variant: toolId,
           labels: [`D ${smart(values.loopDiameterMm, 0)} mm`, `L ${smart(result.inductanceH * 1e9, 1)} nH`, `C ${smart(result.capacitanceF * 1e12, 1)} pF`]
         },
         chart: {
-          title: "周波数を変えたときの必要容量",
-          description: "同じループなら、周波数が高いほど必要な同調容量は小さくなります。",
+          title: "狙う周波数で、必要容量がどう変わるか",
+          description: "同じループなら、周波数が高いほど必要な同調容量は小さくなります。部品値の候補が現実的かを見ます。",
           data: chart,
           unit: "pF",
           series: [{ key: "value", name: "必要容量", color: chartTheme.series.source }]
         },
         formula: "L ≈ μ0N²r(ln(8r/a)-2)\nC = 1 / ((2πf)²L)",
-        explanation: "単純な円形導体ループの近似です。プリントループや多巻きコイルでは寄生容量、近接効果、基板、手や筐体の影響が大きいため、初期値として扱ってください。",
-        columnTitle: "コラム：ループは共振させると小さくても使えるがQが上がる",
+        explanation: "単純な円形導体ループの近似です。この計算は、狙う周波数に合わせるためのコンデンサ容量レンジを決める入口です。プリントループや多巻きコイルでは寄生容量、近接効果、基板、手や筐体の影響が大きいため、初期値として扱ってください。",
+        columnTitle: "コラム：部品値が極端なら、形状から見直す",
         column: [
-          "小型ループは磁界結合や近距離用途で便利ですが、共振容量や寄生容量に敏感です。",
-          "周長が波長に対して十分小さい場合、放射アンテナというより磁界プローブに近い振る舞いになります。",
-          "高いQは選択度を上げる一方、帯域や量産ばらつきの許容を狭くします。"
+          "必要容量が極端に小さい、または大きい場合は、コンデンサ選定だけでなくループ径や巻数を見直した方が早いことがあります。",
+          "小型ループは磁界結合や近距離用途で便利ですが、寄生容量や手・筐体の影響を受けやすい構造です。",
+          "高いQは選択度を上げる一方、帯域や量産ばらつきの許容を狭くします。試作では可変容量や複数値で追い込みます。"
         ]
       };
     }
@@ -1082,18 +1146,18 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       });
       return {
         cards: [
-          card("放射抵抗", smart(result.radiationResistanceOhm, 2), "Ω", "電波として放射される成分を抵抗に置き換えた値です。"),
-          card("効率目安", smart(result.efficiencyPercent, 1), "%", "放射抵抗/(放射抵抗+損失抵抗) の単純モデルです。", result.efficiencyPercent < 50 ? "amber" : "emerald"),
-          card("長さ/波長", smart(result.lengthRatio, 3), "λ", "アンテナ長が波長に対してどれだけ短いかを示します。")
+          card("電波に変わる抵抗", smart(result.radiationResistanceOhm, 2), "Ω", "入力電力のうち、電波として外へ出る成分を抵抗に置き換えた値です。"),
+          card("外へ出る割合", smart(result.efficiencyPercent, 1), "%", "放射抵抗/(放射抵抗+損失抵抗) の単純モデルです。低いほど熱として失われます。", result.efficiencyPercent < 50 ? "amber" : "emerald"),
+          card("短さの度合い", smart(result.lengthRatio, 3), "λ", "アンテナ長が波長に対してどれだけ短いかを示します。小さいほど損失に弱くなります。")
         ],
         diagram: {
-          title: "短いアンテナは放射抵抗が小さい",
+          title: "短いアンテナは、少しの損でも効率が落ちる",
           variant: toolId,
-          labels: [`${shortKind === "monopole" ? "Monopole" : "Dipole"}`, `Rr ${smart(result.radiationResistanceOhm, 2)}Ω`, `η ${smart(result.efficiencyPercent, 1)}%`]
+          labels: [`${shortKind === "monopole" ? "モノポール" : "ダイポール"}`, `Rr ${smart(result.radiationResistanceOhm, 2)}Ω`, `η ${smart(result.efficiencyPercent, 1)}%`]
         },
         chart: {
-          title: "長さ/λと放射抵抗・効率",
-          description: "短いアンテナでは放射抵抗が急に小さくなり、少しの損失抵抗でも効率を奪います。",
+          title: "短いほど、損が効率を奪いやすい",
+          description: "アンテナ長が短いほど放射抵抗が小さくなり、コイルやGNDの数Ωが効率を大きく下げます。",
           data: chart,
           unit: "Ω / %",
           series: [
@@ -1104,8 +1168,8 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
         formula: shortKind === "monopole"
           ? "Rr ≈ 40π²(h/λ)²\n効率 η = Rr / (Rr + Rloss)"
           : "Rr ≈ 80π²(l/λ)²\n効率 η = Rr / (Rr + Rloss)",
-        explanation: "短いモノポール/ダイポールの低次近似です。実アンテナでは整合回路やGND、コイル、筐体電流が効きますが、「短いほど放射抵抗が小さく、損失に弱い」ことを定量的に見せられます。",
-        columnTitle: "コラム：小型アンテナでコイル損が痛い理由",
+        explanation: "短いモノポール/ダイポールの低次近似です。この計算は、S11やVSWRが良くても飛びが悪い時に、短さと損失がどれほど効いているかを説明するために使います。実アンテナでは整合回路やGND、コイル、筐体電流も効きます。",
+        columnTitle: "コラム：S11が良いのに飛ばない理由を分ける",
         column: [
           "放射抵抗が数Ω以下になると、コイルや接地の1〜2Ωが効率を大きく落とします。",
           "整合が取れてVSWRが良く見えても、放射抵抗ではなく損失抵抗へ電力が入っている場合があります。",
@@ -1127,18 +1191,18 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       }));
       return {
         cards: [
-          card("ka", smart(result.ka, 3), undefined, "アンテナ外形の電気的小ささを示す無次元量です。"),
-          card("Chu限界Q", smart(result.chuQ, 1), undefined, "小型アンテナが避けにくい最小Qの目安です。"),
-          card("理想上限の比帯域", smart(result.maxFractionalBandwidthPercent, 2), "%", "1/Qから見た粗い帯域上限です。", result.targetToLimitRatio > 1 ? "rose" : "emerald")
+          card("小ささの指標 ka", smart(result.ka, 3), undefined, "アンテナ外形が波長に対してどれだけ小さいかを示します。小さいほど帯域確保が厳しくなります。"),
+          card("最低限のQ目安", smart(result.chuQ, 1), undefined, "小型アンテナで避けにくい共振の鋭さの目安です。高いほど帯域は狭くなります。"),
+          card("狙える帯域の目安", smart(result.maxFractionalBandwidthPercent, 2), "%", "1/Qから見た粗い帯域上限です。必要帯域より小さい場合は要注意です。", result.targetToLimitRatio > 1 ? "rose" : "emerald")
         ],
         diagram: {
-          title: "外接球半径で見る小型化限界",
+          title: "筐体サイズで帯域の無理度を見る",
           variant: toolId,
           labels: [`a ${smart(values.radiusMm, 0)} mm`, `ka ${smart(result.ka, 3)}`, `Qmin ${smart(result.chuQ, 1)}`]
         },
         chart: {
-          title: "kaと理想上限帯域",
-          description: "kaが小さくなるほどQが急増し、帯域上限は急に狭くなります。",
+          title: "小さくするほど、帯域上限は急に狭くなる",
+          description: "kaが小さくなるほどQが急増し、狙える帯域は急に狭くなります。筐体サイズの交渉材料になります。",
           data: chart,
           unit: "% / Q",
           series: [
@@ -1149,15 +1213,15 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           referenceLabel: "目標帯域"
         },
         formula: "ka = 2πa / λ\nQmin ≈ 1/(ka)³ + 1/(ka)\n比帯域上限 ≈ 1/Q",
-        explanation: "Chu限界に基づく小型アンテナの物理限界の粗い可視化です。整合回路や能動回路で見かけの帯域を工夫できても、受動・小型・高効率を同時に満たす難しさは残ります。",
-        columnTitle: "研究メモ：小型アンテナの帯域限界はまだ重要な設計原理",
+        explanation: "Chu限界に基づく小型アンテナの物理限界の粗い可視化です。この計算は、与えられた筐体サイズで必要帯域を狙うのが現実的かを、試作前に説明するために使います。整合回路や能動回路で見かけの帯域を工夫できても、受動・小型・高効率を同時に満たす難しさは残ります。",
+        columnTitle: "コラム：小型化で一番つらいのは帯域",
         column: [
           "近年も小型アンテナの帯域拡張は研究されていますが、受動共振器のサイズと帯域の制約は設計判断の中心にあります。",
           "時間変調抵抗など限界を工学的に押し広げる研究もありますが、量産端末ではまずkaとQで無理度を見積もるのが実務的です。",
           "玄人向けには「この筐体サイズでその帯域は物理的に厳しい」を数値で説明できるのが価値です。"
         ],
         warning: result.targetToLimitRatio > 1
-          ? "目標比帯域が単純なChu限界目安を上回っています。効率低下、能動/非フォスター整合、複共振化、筐体全体の利用などを検討する領域です。"
+          ? "必要な帯域が、単純な物理限界の目安を上回っています。アンテナスペース拡大、筐体全体の利用、複共振化、効率低下の許容などを検討する領域です。"
           : undefined
       };
     }
@@ -1182,35 +1246,35 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       });
       return {
         cards: [
-          card("Fraunhofer距離", formatMeters(result.fraunhoferM), undefined, "遠方界とみなす代表的な開始距離です。"),
-          card("Fresnel数", smart(result.fresnelNumber, 2), undefined, "D²/(λR)。1以上なら近傍界性が強い目安です。"),
-          card("判定", result.isRadiatingNearField ? "近傍界" : "遠方界寄り", undefined, "評価距離がFraunhofer距離より近いかで判定します。", result.isRadiatingNearField ? "amber" : "emerald")
+          card("遠方界になる目安", formatMeters(result.fraunhoferM), undefined, "この距離より十分遠いと、平面波・遠方界として扱いやすくなります。"),
+          card("近さの指標", smart(result.fresnelNumber, 2), undefined, "D²/(λR)。1以上なら近傍界性が強く、距離方向の違いを無視しにくい目安です。"),
+          card("遠方界扱い", result.isRadiatingNearField ? "要注意" : "おおむねOK", undefined, "評価距離が遠方界の目安より近いかどうかを見ます。", result.isRadiatingNearField ? "amber" : "emerald")
         ],
         diagram: {
-          title: "大型アレイでは遠方界が遠くなる",
+          title: "測定点や相手が十分遠いかを見る",
           variant: toolId,
           labels: [`D ${formatMeters(values.apertureSizeM)}`, `Rff ${formatMeters(result.fraunhoferM)}`, `R ${formatMeters(values.distanceM)}`]
         },
         chart: {
-          title: "開口サイズを変えたときの遠方界距離",
-          description: "遠方界距離はD²/λで増えるため、開口を大きくすると急に伸びます。",
+          title: "アンテナ面が大きいほど、必要距離は急に伸びる",
+          description: "遠方界距離はD²/λで増えるため、開口を大きくすると急に伸びます。測定環境や解析モデルの確認に使います。",
           data: chart,
           unit: "m",
           series: [
-            { key: "value", name: "Fraunhofer距離", color: chartTheme.series.source },
+            { key: "value", name: "遠方界目安距離", color: chartTheme.series.source },
             { key: "value2", name: "評価距離", color: chartTheme.series.loss }
           ]
         },
         formula: "Rff = 2D² / λ\nFresnel数 = D² / (λR)\n端部の経路差 = √(R²+(D/2)²)-R",
-        explanation: "大型アレイや高周波アンテナでは、相手が遠方界にいるとは限りません。近傍界では平面波ではなく球面波として扱う必要があり、ビームは角度だけでなく距離にも焦点を持ちます。",
-        columnTitle: "研究メモ：XL-MIMOでは近傍界が主役になりつつある",
+        explanation: "大型アレイや高周波アンテナでは、相手が遠方界にいるとは限りません。この計算は、測定距離や通信距離で遠方界前提を使ってよいかを確認するためのものです。近傍界では平面波ではなく球面波として扱う必要があり、ビームは角度だけでなく距離にも焦点を持ちます。",
+        columnTitle: "コラム：大型アレイでは『十分遠い』が意外と遠い",
         column: [
           "6G/XL-MIMOではアンテナ数や開口が大きくなり、従来の平面波・遠方界モデルだけでは足りない場面が増えています。",
           "近傍界ではビームステアリングだけでなく、ビームフォーカシング、球面波、空間非定常性が問題になります。",
-          "このツールは研究式の入口として、まず2D²/λがどれほど大きくなるかを体感するためのものです。"
+          "このツールは発展的な計算の入口として、まず2D²/λがどれほど大きくなるかを体感するためのものです。"
         ],
         warning: result.isRadiatingNearField
-          ? "評価距離はFraunhofer距離より近いです。近傍界ビーム、測定距離、位相補正の影響を確認してください。"
+          ? "この距離では遠方界前提に注意が必要です。近傍界ビーム、測定距離、位相補正、距離方向の焦点を確認してください。"
           : undefined
       };
     }
@@ -1240,30 +1304,30 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
       });
       return {
         cards: [
-          card("開口上限利得", smart(result.apertureGainDbi, 1), "dBi", "面積を有効開口として使えた場合の上限寄り利得です。"),
-          card("2ホップ損失目安", smart(result.twoHopLossUpperBoundDb, 1), "dB", "FSPL2本分から開口効果を差し引いた粗い上限目安です。"),
-          card("直接経路との差", smart(result.excessVsDirectDb, 1), "dB", "同じ総距離の直接波FSPLとの差です。正なら反射経路の方が厳しい目安です。", result.excessVsDirectDb > 0 ? "amber" : "emerald")
+          card("面で稼げる上限", smart(result.apertureGainDbi, 1), "dBi", "反射面の面積を有効に使えた場合に期待できる上限寄りの利得です。"),
+          card("反射経路の損失", smart(result.twoHopLossUpperBoundDb, 1), "dB", "送信機→反射面、反射面→受信機の2区間を通る時の粗い損失目安です。"),
+          card("置く意味の目安", smart(result.excessVsDirectDb, 1), "dB", "同じ総距離を直接進む場合との差です。正の値が大きいほど反射経路は厳しい条件です。", result.excessVsDirectDb > 0 ? "amber" : "emerald")
         ],
         diagram: {
-          title: "反射面は面積・距離・波長で効き方が変わる",
+          title: "反射面は面積と距離で効き方が決まる",
           variant: toolId,
           labels: [`A ${formatArea(result.areaM2)}`, `${smart(result.apertureGainDbi, 1)} dBi`, `Rff ${formatMeters(result.fraunhoferM)}`]
         },
         chart: {
-          title: "反射面サイズを変えたときの効果",
-          description: "面積を大きくすると開口利得は増えますが、2ホップ距離の損失も効きます。",
+          title: "反射面を大きくすると、どこまで効くか",
+          description: "面積を大きくすると開口利得は増えますが、2ホップ距離の損失も効きます。設置サイズを増やす意味があるかを見ます。",
           data: chart,
           unit: "dB",
           series: [
-            { key: "value", name: "開口上限利得", color: chartTheme.series.source },
+            { key: "value", name: "面で稼げる上限", color: chartTheme.series.source },
             { key: "value2", name: "直接経路との差", color: chartTheme.series.loss }
           ],
           reference: 0,
           referenceLabel: "直接FSPL"
         },
         formula: "Gsurface ≈ 4πAη / λ²\nL2hop ≈ FSPL(d1)+FSPL(d2)-Gsurface\nRff ≈ 2D²/λ",
-        explanation: "反射板/RISを面積を持つ受動開口として見た上限寄りの概算です。実際のRISパスロスは偏波、散乱、位相分布、照明、近傍/遠方界条件で変わるため、ここでは『面積を増やすと何が効くか』を見る一次ツールとして扱います。",
-        columnTitle: "研究メモ：RISは鏡を置けば単純に良くなる、ではない",
+        explanation: "反射板/RISを面積を持つ受動開口として見た上限寄りの概算です。この計算は、反射面を置く価値がありそうか、面積不足か、距離が厳しすぎるかを一次判断するために使います。実際のRISパスロスは偏波、散乱、位相分布、照明、近傍/遠方界条件で変わります。",
+        columnTitle: "コラム：反射板は、置けば必ず効くわけではない",
         column: [
           "RISや反射板の効果は、面積、距離、波長、偏波、近傍/遠方界で大きく変わります。",
           "近年のRISパスロス研究では、単純な距離損失ではなく、有限面積の電磁界積分や近傍界/遠方界の違いが重視されています。",
@@ -1492,9 +1556,9 @@ function GuidanceSection({ toolId }: { toolId: AntennaToolId }) {
     <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div>
-          <h3 className="text-base font-semibold text-slate-950">使い方チュートリアルと用語ミニ辞典</h3>
+          <h3 className="text-base font-semibold text-slate-950">使い方と判断ポイント・用語ミニ辞典</h3>
           <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            入力の順番と、結果を読むために必要な用語をこのページ内で確認できます。
+            どの順番で入力し、結果を何の判断に使うのかをこのページ内で確認できます。
           </p>
         </div>
         <Tooltip term="迷ったら">
@@ -1543,12 +1607,12 @@ function ResearchBridgeSection({ toolId }: { toolId: AntennaToolId }) {
     <Card as="section" padding="lg" className="border-indigo-100 bg-indigo-50/40">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold text-indigo-700">研究者モードをやさしく読む</p>
+          <p className="text-xs font-semibold text-indigo-700">この計算で決められること</p>
           <h3 className="mt-1 text-base font-semibold text-slate-950">{bridge.plainTitle}</h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-700">{bridge.plainSummary}</p>
         </div>
         <Tooltip term="最初の見方">
-          研究者モードでは式を暗記するより、入力を少し動かして結果が急変する場所を見るのが近道です。まず判定・主役の数値・グラフの傾きを見てください。
+          式を暗記するより、入力を少し動かして結果が急変する場所を見るのが近道です。まず主役の数値、判定、グラフの傾きを見てください。
         </Tooltip>
       </div>
 
@@ -1684,9 +1748,9 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
           <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
             <Card as="section" padding="lg">
               <div className="flex flex-wrap items-center justify-between gap-2">
-                <h3 className="text-base font-semibold text-slate-950">計算結果</h3>
+                <h3 className="text-base font-semibold text-slate-950">計算結果（まずここを見る）</h3>
                 <Tooltip term="結果の読み方">
-                  主役の値は大きく表示し、式の前提や実務上の注意は下の解説にまとめています。dBと線形量が混ざるため、単位を必ず確認してください。
+                  主役の値は大きく表示し、その値で何を判断するかは各カードの補足と下の解説にまとめています。dB、長さ、割合など単位も必ず確認してください。
                 </Tooltip>
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
