@@ -9,6 +9,7 @@ import {
   Box,
   Building2,
   Cable,
+  Calculator,
   CircuitBoard,
   FlaskConical,
   Gauge,
@@ -26,6 +27,7 @@ import { toolCategories, toolDirectory } from "@/data/toolDirectory";
 
 const iconMap: Record<string, LucideIcon> = {
   gauge: Gauge,
+  calculator: Calculator,
   waves: Waves,
   spline: Spline,
   building: Building2,

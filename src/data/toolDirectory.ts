@@ -57,6 +57,13 @@ export const toolDirectory: DirectoryTool[] = [
     category: "link"
   },
   {
+    href: "/tools/simple-link-budget",
+    name: "かんたんリンク計算",
+    tagline: "受信電力と通信余裕だけを見る",
+    icon: "calculator",
+    category: "link"
+  },
+  {
     href: "/tools/free-space-loss",
     name: "自由空間損失（FSPL）",
     tagline: "距離と周波数による基本損失",

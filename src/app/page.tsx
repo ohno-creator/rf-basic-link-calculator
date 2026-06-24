@@ -18,9 +18,9 @@ export const metadata: Metadata = {
 const beginnerPaths = [
   {
     label: "まず通信が届くか知りたい",
-    title: "リンクバジェット診断から始める",
-    body: "送信電力、距離、アンテナ利得、受信感度をまとめて入れ、通信余裕があるかを見ます。",
-    href: "/tools/rf-basic-link-calculator",
+    title: "かんたんリンク計算から始める",
+    body: "送信電力、距離、受信感度だけで、まず通信余裕がどれくらいあるかを見ます。",
+    href: "/tools/simple-link-budget",
     icon: Compass
   },
   {

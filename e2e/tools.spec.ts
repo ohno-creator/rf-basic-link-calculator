@@ -1,20 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { rfQuestLessons } from "../src/data/rfLearningQuestLessons";
-
-const ALL_SLUGS = [
-  "rf-basic-link-calculator",
-  "free-space-loss",
-  "fresnel-zone",
-  "propagation-loss",
-  "ncu-below-ground",
-  "rf-learning-quest",
-  "frequency-wavelength",
-  "dbm-converter",
-  "db-feel",
-  "vswr-return-loss",
-  "coaxial-cable-loss",
-  "microstrip-line"
-];
+import { toolDirectory } from "../src/data/toolDirectory";
 
 test.describe("tool hub", () => {
   test("home lists every tool and links to its page", async ({ page }) => {
@@ -23,8 +9,8 @@ test.describe("tool hub", () => {
       page.getByRole("heading", { level: 1, name: "無線設計の計算を、ひとつずつ。" })
     ).toBeVisible();
 
-    for (const slug of ALL_SLUGS) {
-      await expect(page.locator(`a[href*="/tools/${slug}"]`)).toHaveCount(1);
+    for (const tool of toolDirectory) {
+      await expect(page.locator(`a[href*="${tool.href}"]`).first()).toBeVisible();
     }
   });
 });
@@ -37,6 +23,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
     { slug: "propagation-loss", h1: "伝搬損失モデル比較", fig: "現在距離" },
     { slug: "ncu-below-ground", h1: "GL以下NCU・水道BOX診断", fig: "NCUが地面より下にある場合" },
+    { slug: "simple-link-budget", h1: "かんたんリンク計算", fig: "リンク余裕" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
@@ -48,7 +35,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
       await page.goto(`/tools/${slug}/`);
       await expect(page.getByRole("heading", { level: 1, name: h1 })).toBeVisible();
       await expect(page.getByText(fig).first()).toBeVisible();
-      await expect(page.getByRole("heading", { name: "ほかの基本計算ツール" })).toBeVisible();
+      await expect(page.getByRole("heading", { name: "ほかのツール" })).toBeVisible();
     });
   }
 });

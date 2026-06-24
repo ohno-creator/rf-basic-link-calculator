@@ -115,6 +115,23 @@ export const basicTools: BasicToolMeta[] = [
     canonical: `${SITE_TOOLS}/ncu-below-ground`
   },
   {
+    slug: "simple-link-budget",
+    title: "かんたんリンク計算",
+    metaTitle: "かんたんリンク計算ツール｜受信電力とリンクマージンを1行で確認",
+    description:
+      "送信電力、アンテナ利得、自由空間損失、追加損失、受信感度だけで、受信電力とリンクマージンを計算します。RFリンクバジェットの足し引きを最小構成で確認できます。",
+    scopeNote:
+      "リンクバジェットの考え方を最短で確認する入口です。壁・地面反射・筐体・実測補正まで分けたい場合は、総合版のリンクバジェット診断を使います。",
+    formula: "受信電力 = 送信電力 + 利得 − FSPL − 追加損失",
+    essenceLead: "dBmとdBは足し引きでき、受信電力が受信感度を何dB上回るかが通信余裕です。",
+    beginnerGuide: {
+      purpose: "通信が届きそうかを、受信電力と受信感度の差だけでまず確認します。",
+      inputs: "周波数、距離、送信電力、受信感度を入れます。分かる場合だけアンテナ利得や追加損失を足します。",
+      result: "リンク余裕が0dBを下回ると厳しく、10〜20dB以上あるほど設置ばらつきに強くなります。"
+    },
+    canonical: `${SITE_TOOLS}/simple-link-budget`
+  },
+  {
     slug: "frequency-wavelength",
     title: "周波数・波長",
     metaTitle: "周波数・波長 計算ツール｜λ・λ/2・λ/4 とアンテナサイズ",
