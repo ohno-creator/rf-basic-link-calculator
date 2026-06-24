@@ -19,7 +19,7 @@ export const toolCategories: ToolCategory[] = [
   {
     id: "basics",
     label: "単位・基礎",
-    description: "dB・dBm・波長など、RFで使う共通言語を直感的につかむための入口。"
+    description: "dB・dBm・波長など、他の計算結果を読む前に押さえる入口。無線に慣れていない方はここから。"
   },
   {
     id: "line",
@@ -33,9 +33,9 @@ export const toolCategories: ToolCategory[] = [
   },
   {
     id: "research",
-    label: "研究者モード",
+    label: "発展・設計限界",
     description:
-      "難しそうな研究用語を、設計判断に使える形へほどく区画です。『なぜ小型アンテナは難しいのか』『なぜ大きなアレイは近距離でも普通に扱えないのか』を、数値と図で確認できます。"
+      "少し難しいテーマを、設計判断に使える形へほどく区画です。小型化、近距離の大型アレイ、反射面の効き方など、無理が出やすい条件を確認できます。"
   }
 ];
 

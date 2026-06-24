@@ -52,7 +52,7 @@ const iconMap: Record<string, LucideIcon> = {
 const researchModeGuide = [
   {
     title: "何を見る区画？",
-    body: "普通のリンク計算で答えが出にくい「小さすぎる」「近すぎる」「面で反射させたい」といった限界やクセを見ます。"
+    body: "普通のリンク計算だけでは分かりにくい「小さすぎる」「近すぎる」「面で反射させたい」といった限界やクセを見ます。"
   },
   {
     title: "実務での使いどころ",
@@ -60,7 +60,7 @@ const researchModeGuide = [
   },
   {
     title: "まず見る数値",
-    body: "判定文を先に読み、次にグラフで入力を少し動かします。式の細部より「どの入力で急に厳しくなるか」を見るのがコツです。"
+    body: "判定文を先に読み、次にグラフで入力を少し動かします。式の細部より「どの条件で急に厳しくなるか」を見るのがコツです。"
   }
 ];
 
@@ -129,7 +129,7 @@ export function ToolDirectoryBrowser() {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="ツールを検索（例：VSWR、損失、距離）"
+              placeholder="知りたいことを検索（例：届く、損失、アンテナ）"
               aria-label="ツールを検索"
               className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm text-slate-900 outline-none transition focus:border-staf/50 focus:ring-2 focus:ring-staf/20"
             />

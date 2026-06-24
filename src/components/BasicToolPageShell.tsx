@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye, ListChecks, Target } from "lucide-react";
 import type { ReactNode } from "react";
 import { ConsultationCta } from "@/app/tools/rf-basic-link-calculator/components/ConsultationCta";
 import type { BasicToolMeta } from "@/data/basicTools";
@@ -21,6 +21,23 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
     ...others.filter((item) => flagshipHrefs.includes(item.href)),
     ...others.filter((item) => !flagshipHrefs.includes(item.href))
   ].slice(0, 6);
+  const beginnerItems = [
+    {
+      title: "何を決める？",
+      body: tool.beginnerGuide.purpose,
+      icon: Target
+    },
+    {
+      title: "何を入れる？",
+      body: tool.beginnerGuide.inputs,
+      icon: ListChecks
+    },
+    {
+      title: "結果をどう読む？",
+      body: tool.beginnerGuide.result,
+      icon: Eye
+    }
+  ];
 
   const jsonLd = [
     {
@@ -62,6 +79,34 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
             {tool.description}
           </p>
         </header>
+
+        <section className="mt-6 border-y border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+            <div className="lg:w-48 lg:shrink-0">
+              <p className="text-xs font-semibold text-staf-dark">はじめての見方</p>
+              <p className="mt-1 text-sm font-semibold leading-relaxed text-slate-900">
+                式より先に、ここだけ見れば大丈夫です。
+              </p>
+            </div>
+            <div className="grid flex-1 gap-4 md:grid-cols-3 md:divide-x md:divide-slate-200">
+              {beginnerItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div key={item.title} className="md:pl-4 first:md:pl-0">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-slate-950">
+                      <Icon aria-hidden="true" className="h-4 w-4 text-staf-dark" />
+                      {item.title}
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{item.body}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <p className="mt-4 text-xs leading-relaxed text-slate-500">
+            用語が分からない場合は、ページ内の「？」や用語ミニ辞典を開いてください。まずは近いプリセットや初期値から動かすと、変化がつかみやすくなります。
+          </p>
+        </section>
 
         <div className="mt-8 space-y-6">{children}</div>
 
