@@ -3,6 +3,7 @@ import { calculateFsplDb } from "@/lib/rf/fspl";
 import { calculatePropagationLoss } from "@/lib/rf/propagation";
 import {
   type PropagationLossParams,
+  calculatePropagationLossCurveDb,
   calculatePropagationLossResult,
   comparePropagationModels,
   geometricPropagationModels,
@@ -59,6 +60,22 @@ describe("propagation loss models", () => {
     const hata = calculatePropagationLossResult("okumura_hata", baseParams);
     // 別式なので一致しない（COST231は46.3+33.9log f 系）
     expect(cost.pathLossDb).not.toBeCloseTo(hata.pathLossDb, 1);
+    expect(cost.outOfRange).toBe(true);
+    expect(hata.outOfRange).toBe(false);
+  });
+
+  it("flags forced Okumura-Hata above its frequency range", () => {
+    const hata = calculatePropagationLossResult("okumura_hata", {
+      ...baseParams,
+      frequencyMHz: 1800
+    });
+    const cost = calculatePropagationLossResult("cost231_hata", {
+      ...baseParams,
+      frequencyMHz: 1800
+    });
+
+    expect(hata.outOfRange).toBe(true);
+    expect(cost.outOfRange).toBe(false);
   });
 
   it("predicts more urban loss than free space at 1km", () => {
@@ -80,6 +97,27 @@ describe("two-ray interference model", () => {
   const f = 920;
   const ht = 30;
   const hr = 1.5;
+
+  it("uses the interference calculation for two-ray chart curves", () => {
+    const distanceKm = 0.1;
+    const curve = calculatePropagationLossCurveDb("two_ray", {
+      ...baseParams,
+      frequencyMHz: f,
+      distanceKm,
+      txHeightM: ht,
+      rxHeightM: hr
+    });
+    const smoothed = calculatePropagationLossResult("two_ray", {
+      ...baseParams,
+      frequencyMHz: f,
+      distanceKm,
+      txHeightM: ht,
+      rxHeightM: hr
+    }).pathLossDb;
+
+    expect(curve).toBeCloseTo(twoRayInterferencePathLossDb(f, distanceKm, ht, hr), 6);
+    expect(Math.abs(curve - smoothed)).toBeGreaterThan(3);
+  });
 
   it("has a constructive peak below free-space loss (the +6dB gain region)", () => {
     // ブレークポイント付近では直接波と反射波が強め合い、FSPLより小さい損失（利得）になる。
@@ -118,5 +156,12 @@ describe("two-ray interference model", () => {
       const pl = twoRayInterferencePathLossDb(f, d, ht, hr, -1, 40);
       expect(pl).toBeLessThanOrEqual(calculateFsplDb(f, d) + 40 + 1e-6);
     }
+  });
+
+  it("rejects invalid two-ray geometry inputs", () => {
+    expect(() => twoRayBreakpointM(0, ht, hr)).toThrow();
+    expect(() => twoRayBreakpointM(f, 0, hr)).toThrow();
+    expect(() => twoRayInterferencePathLossDb(f, 1, ht, 0)).toThrow();
+    expect(() => twoRayInterferencePathLossDb(f, 1, ht, hr, Number.NaN)).toThrow();
   });
 });

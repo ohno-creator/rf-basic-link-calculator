@@ -312,8 +312,8 @@ export function PropagationExplorer() {
             max={6000}
             step={10}
             onChange={setFrequencyMHz}
-            hint="低い周波数ほど損失は小さく届きやすい。Hata系の適用目安は150〜2000MHz。"
-            tooltip="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。Hata系は150〜2000MHzが目安で、外れると結果は参考値になります。"
+            hint="低い周波数ほど損失は小さく届きやすい。Hataは150〜1500MHz、COST231-Hataは1500〜2000MHzが目安。"
+            tooltip="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。奥村・秦は150〜1500MHz、COST231-Hataは1500〜2000MHzが目安で、外れると結果は参考値になります。"
           >
             <div className="mt-2 flex flex-wrap gap-1.5">
               {frequencyChips.map((mhz) => (

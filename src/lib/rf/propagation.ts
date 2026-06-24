@@ -59,10 +59,14 @@ function mediumCityCorrection(frequencyMHz: number, mobileHeightM: number): numb
   return (1.1 * logF - 0.7) * mobileHeightM - (1.56 * logF - 0.8);
 }
 
-function isOutOfRange(input: PropagationInput): boolean {
+function isOutOfRange(input: PropagationInput, model: PropagationModel): boolean {
+  const frequencyOutOfRange =
+    model === "Hata"
+      ? input.frequencyMHz < 150 || input.frequencyMHz > 1500
+      : input.frequencyMHz < 1500 || input.frequencyMHz > 2000;
+
   return (
-    input.frequencyMHz < 150 ||
-    input.frequencyMHz > 2000 ||
+    frequencyOutOfRange ||
     input.baseHeightM < 30 ||
     input.baseHeightM > 200 ||
     input.mobileHeightM < 1 ||
@@ -84,9 +88,8 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
   const logD = Math.log10(d);
   const distanceTerm = (44.9 - 6.55 * logHb) * logD;
 
-  // preferredModel を指定すると周波数によらずそのモデルを使う。例: 'Hata' を 1500–2000MHz で
-  // 強制すると Hata 本来の上限(1500MHz)を超える外挿になるが、outOfRange は f>2000 でしか立たない
-  // 点に注意（範囲警告はモデル選択と非連動）。
+  // preferredModel を指定すると周波数によらずそのモデルを使う。範囲警告は選択された
+  // モデルごとに判定する（Hata: 150〜1500MHz、COST231-Hata: 1500〜2000MHz）。
   const model: PropagationModel = input.preferredModel ?? (f >= 1500 ? "COST231-Hata" : "Hata");
 
   let urbanLoss: number;
@@ -114,6 +117,6 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
   return {
     model,
     pathLossDb,
-    outOfRange: isOutOfRange(input)
+    outOfRange: isOutOfRange(input, model)
   };
 }

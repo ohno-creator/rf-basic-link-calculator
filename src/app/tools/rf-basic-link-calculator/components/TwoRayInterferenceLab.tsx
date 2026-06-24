@@ -18,6 +18,38 @@ import {
   twoRayBreakpointM,
   twoRayInterferencePathLossDb
 } from "@/lib/rf/propagationLossModels";
+import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
+
+const MIN_DISTANCE_M = 5;
+const MIN_SAMPLE_COUNT = 360;
+const MAX_SAMPLE_COUNT = 2400;
+
+function twoRayPhaseRad(
+  distanceM: number,
+  frequencyMHz: number,
+  txHeightM: number,
+  rxHeightM: number
+): number {
+  const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
+  const directM = Math.hypot(distanceM, txHeightM - rxHeightM);
+  const reflectedM = Math.hypot(distanceM, txHeightM + rxHeightM);
+  return (2 * Math.PI * (reflectedM - directM)) / wavelengthM;
+}
+
+function getTwoRaySampleCount(
+  minM: number,
+  maxM: number,
+  frequencyMHz: number,
+  txHeightM: number,
+  rxHeightM: number
+): number {
+  const phaseSpan = Math.abs(
+    twoRayPhaseRad(minM, frequencyMHz, txHeightM, rxHeightM) -
+      twoRayPhaseRad(maxM, frequencyMHz, txHeightM, rxHeightM)
+  );
+  const cycles = phaseSpan / (2 * Math.PI);
+  return Math.min(MAX_SAMPLE_COUNT, Math.max(MIN_SAMPLE_COUNT, Math.ceil(cycles * 10)));
+}
 
 type Slider = {
   id: string;
@@ -79,13 +111,12 @@ export function TwoRayInterferenceLab({
   }, [syncedFrequencyMHz, syncedTxHeightM, syncedRxHeightM]);
 
   const breakpointM = twoRayBreakpointM(frequencyMHz, txHeightM, rxHeightM);
+  const maxDistanceM = Math.min(8000, Math.max(400, breakpointM * 4));
 
   const data = useMemo(() => {
-    const minM = 5;
-    const maxM = Math.min(8000, Math.max(400, breakpointM * 4));
-    const count = 260;
+    const count = getTwoRaySampleCount(MIN_DISTANCE_M, maxDistanceM, frequencyMHz, txHeightM, rxHeightM);
     return Array.from({ length: count }, (_, index) => {
-      const distanceM = minM + ((maxM - minM) * index) / (count - 1);
+      const distanceM = MIN_DISTANCE_M + ((maxDistanceM - MIN_DISTANCE_M) * index) / (count - 1);
       const distanceKm = distanceM / 1000;
       const fspl = calculateFsplDb(frequencyMHz, distanceKm);
       const envelope = calculatePropagationLossResult("two_ray", {
@@ -104,7 +135,7 @@ export function TwoRayInterferenceLab({
         full: Number(full.toFixed(2))
       };
     });
-  }, [frequencyMHz, txHeightM, rxHeightM, breakpointM]);
+  }, [frequencyMHz, txHeightM, rxHeightM, maxDistanceM]);
 
   const formatDistance = (m: number) => (m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${Math.round(m)}m`);
 
@@ -158,15 +189,17 @@ export function TwoRayInterferenceLab({
                 labelFormatter={(label) => `距離 ${formatDistance(Number(label))}`}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line type="monotone" dataKey="full" name="2波（干渉・完全版）" stroke="#ea580c" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="envelope" name="2波（平滑化・包絡線）" stroke="#0071BD" strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
-              <Line type="monotone" dataKey="fspl" name="自由空間損失" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="2 4" dot={false} isAnimationActive={false} />
-              <ReferenceLine
-                x={breakpointM}
-                stroke="#0f172a"
-                strokeDasharray="4 4"
-                label={{ value: `ブレークポイント ${formatDistance(breakpointM)}`, position: "top", fontSize: 11, fill: "#0f172a" }}
-              />
+              <Line type="linear" dataKey="full" name="2波（干渉・完全版）" stroke="#ea580c" strokeWidth={2} dot={false} isAnimationActive={false} />
+              <Line type="linear" dataKey="envelope" name="2波（平滑化・包絡線）" stroke="#0071BD" strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
+              <Line type="linear" dataKey="fspl" name="自由空間損失" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="2 4" dot={false} isAnimationActive={false} />
+              {breakpointM >= MIN_DISTANCE_M && breakpointM <= maxDistanceM ? (
+                <ReferenceLine
+                  x={breakpointM}
+                  stroke="#0f172a"
+                  strokeDasharray="4 4"
+                  label={{ value: `ブレークポイント ${formatDistance(breakpointM)}`, position: "top", fontSize: 11, fill: "#0f172a" }}
+                />
+              ) : null}
             </LineChart>
           </ResponsiveContainer>
         ) : (

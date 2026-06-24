@@ -127,12 +127,11 @@ export function comparePropagationModels(
  * ブレークポイント d_bp = 4·ht·hr/λ 付近から、平均的には 40·log10(d) の遠方近似へ近づく。
  *
  *   直接波経路長 r1 = √(d² + (ht−hr)²),  反射波経路長 r2 = √(d² + (ht+hr)²)
- *   位相差 φ = 2π·(r2−r1)/λ,  反射係数 Γ（接地・浅い入射角の目安で −1）
- *   合成振幅² = 1 + Γ² + 2Γ·cos(φ)
- *   損失[dB] = FSPL − 10·log10(合成振幅²)   （深い谷は FSPL + maxFadeDb で底打ち）
+ *   電界 E ∝ e^(-jkr1)/r1 + Γ·e^(-jkr2)/r2
+ *   損失[dB] = -20·log10((λ/4π)·|E|)   （深い谷は直接波のみのFSPL + maxFadeDbで底打ち）
  *
- * 注: リンクバジェットや本ツールのモデル比較では、安定した一点見積もりのため平滑化した包絡線（two_ray）を使う。
- *     この関数は干渉の山谷を可視化・学習するための完全版。
+ * 注: リンクバジェットの一点見積もりでは、安定した判定のため平滑化した包絡線（two_ray）を使う。
+ *     この関数は干渉の山谷をグラフ表示・学習用途へ反映するための完全版。
  */
 export function twoRayInterferencePathLossDb(
   frequencyMHz: number,
@@ -142,17 +141,55 @@ export function twoRayInterferencePathLossDb(
   reflectionCoefficient = -1,
   maxFadeDb = 40
 ): number {
+  assertPositiveFinite(frequencyMHz, "周波数");
+  assertPositiveFinite(distanceKm, "距離");
+  assertPositiveFinite(txHeightM, "送信側アンテナ高");
+  assertPositiveFinite(rxHeightM, "受信側アンテナ高");
+  if (!Number.isFinite(reflectionCoefficient)) {
+    throw new Error("反射係数は有限の値を入力してください。");
+  }
+  assertPositiveFinite(maxFadeDb, "最大フェード量");
+
   const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
   const distanceM = distanceKm * 1000;
   const directM = Math.hypot(distanceM, txHeightM - rxHeightM);
   const reflectedM = Math.hypot(distanceM, txHeightM + rxHeightM);
-  const phase = (2 * Math.PI * (reflectedM - directM)) / wavelengthM;
-  const amplitudeSquared =
-    1 + reflectionCoefficient ** 2 + 2 * reflectionCoefficient * Math.cos(phase);
-  const fsplDb = calculateFsplDb(frequencyMHz, distanceKm);
-  const combinedGainDb = 10 * Math.log10(Math.max(amplitudeSquared, 1e-9));
+  const waveNumber = (2 * Math.PI) / wavelengthM;
+  const directPhase = waveNumber * directM;
+  const reflectedPhase = waveNumber * reflectedM;
+  const realField =
+    Math.cos(directPhase) / directM +
+    (reflectionCoefficient * Math.cos(reflectedPhase)) / reflectedM;
+  const imaginaryField =
+    -Math.sin(directPhase) / directM -
+    (reflectionCoefficient * Math.sin(reflectedPhase)) / reflectedM;
+  const fieldMagnitudeSquared = realField ** 2 + imaginaryField ** 2;
+  const pathGain = (wavelengthM / (4 * Math.PI)) ** 2 * fieldMagnitudeSquared;
+  const pathLossDb = -10 * Math.log10(Math.max(pathGain, 1e-30));
+  const directOnlyLossDb = calculateFsplDb(frequencyMHz, directM / 1000);
 
-  return Math.min(fsplDb - combinedGainDb, fsplDb + maxFadeDb);
+  return Math.min(pathLossDb, directOnlyLossDb + maxFadeDb);
+}
+
+/**
+ * 距離カーブ描画用の伝搬損失。2波だけは干渉込みの完全版を使い、その他は
+ * 一点見積もりと同じ式を使う。リンク判定の `calculatePropagationLossResult`
+ * と表示カーブを分けることで、二波の局所的な山谷をグラフへ正しく出す。
+ */
+export function calculatePropagationLossCurveDb(
+  model: GeometricPropagationModel,
+  params: PropagationLossParams
+): number {
+  if (model === "two_ray") {
+    return twoRayInterferencePathLossDb(
+      params.frequencyMHz,
+      params.distanceKm,
+      params.txHeightM,
+      params.rxHeightM
+    );
+  }
+
+  return calculatePropagationLossResult(model, params).pathLossDb;
 }
 
 /** 2波モデルのブレークポイント距離 d_bp = 4·ht·hr/λ [m]。 */
@@ -161,6 +198,9 @@ export function twoRayBreakpointM(
   txHeightM: number,
   rxHeightM: number
 ): number {
+  assertPositiveFinite(frequencyMHz, "周波数");
+  assertPositiveFinite(txHeightM, "送信側アンテナ高");
+  assertPositiveFinite(rxHeightM, "受信側アンテナ高");
   const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
   return (4 * txHeightM * rxHeightM) / wavelengthM;
 }

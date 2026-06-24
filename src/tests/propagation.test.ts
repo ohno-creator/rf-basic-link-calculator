@@ -45,6 +45,33 @@ describe("Okumura-Hata propagation loss", () => {
     expect(large.pathLossDb - medium.pathLossDb).toBeCloseTo(3, 5);
   });
 
+  it("flags frequency range by the selected Hata family model", () => {
+    const forcedHataAt1800 = calculatePropagationLoss({
+      ...base,
+      frequencyMHz: 1800,
+      area: "urbanMedium",
+      preferredModel: "Hata"
+    });
+    const forcedCostAt900 = calculatePropagationLoss({
+      ...base,
+      frequencyMHz: 900,
+      area: "urbanMedium",
+      preferredModel: "COST231-Hata"
+    });
+    const costAt1800 = calculatePropagationLoss({
+      ...base,
+      frequencyMHz: 1800,
+      area: "urbanMedium",
+      preferredModel: "COST231-Hata"
+    });
+
+    expect(forcedHataAt1800.model).toBe("Hata");
+    expect(forcedHataAt1800.outOfRange).toBe(true);
+    expect(forcedCostAt900.model).toBe("COST231-Hata");
+    expect(forcedCostAt900.outOfRange).toBe(true);
+    expect(costAt1800.outOfRange).toBe(false);
+  });
+
   it("flags out-of-range inputs and rejects non-positive values", () => {
     const farOutside = calculatePropagationLoss({ ...base, distanceKm: 50, area: "urbanMedium" });
     expect(farOutside.outOfRange).toBe(true);
