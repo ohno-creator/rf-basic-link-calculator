@@ -30,14 +30,14 @@ export function SignalFlowDiagram({ input, result }: SignalFlowDiagramProps) {
     {
       title: "送信アンテナ利得",
       value: formatSigned(input.txAntennaGainDbi, "dBi"),
-      helper: "足すもの",
-      tone: "plus"
+      helper: input.txAntennaGainDbi >= 0 ? "足すもの" : "負＝実質マイナス",
+      tone: input.txAntennaGainDbi >= 0 ? "plus" : "minus"
     },
     {
       title: "受信アンテナ利得",
       value: formatSigned(input.rxAntennaGainDbi, "dBi"),
-      helper: "足すもの",
-      tone: "plus"
+      helper: input.rxAntennaGainDbi >= 0 ? "足すもの" : "負＝実質マイナス",
+      tone: input.rxAntennaGainDbi >= 0 ? "plus" : "minus"
     },
     {
       title: "伝搬損失",

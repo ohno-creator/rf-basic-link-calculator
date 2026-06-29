@@ -2,7 +2,7 @@
  * 同軸フィードライン（ケーブル）の挿入損失を、実測データの補間で求める。
  *
  * 各品番について、複数の周波数で測定した挿入損失[dB]（正の値）を保持し、
- * 指定周波数の損失を線形補間（測定点の外側は線形外挿）で算出する。
+ * 指定周波数の損失を線形補間（測定点の外側は表皮効果の √f でスケール外挿）で算出する。
  *
  *   合計損失[dB] = 1本あたり損失 × 本数
  *   残る電力[%]  = 10^(-合計損失/10) × 100
@@ -50,18 +50,14 @@ export function interpolateCableLoss(points: LossPoint[], frequencyMHz: number):
   const first = points[0];
   const last = points[points.length - 1];
 
+  // 測定範囲の外側は、表皮効果が支配的な同軸減衰の √f 物理に合わせてスケール外挿する
+  // （referenceLossPoints と同じモデル。誘電損 ∝f は無視した近似で、範囲内は実測の線形補間を使う）。
   if (frequencyMHz <= first.freqMHz) {
-    if (points.length === 1) {
-      return Math.max(0, first.lossDb);
-    }
-    const slope = (points[1].lossDb - first.lossDb) / (points[1].freqMHz - first.freqMHz);
-    return Math.max(0, first.lossDb + slope * (frequencyMHz - first.freqMHz));
+    return Math.max(0, first.lossDb * Math.sqrt(frequencyMHz / first.freqMHz));
   }
 
   if (frequencyMHz >= last.freqMHz) {
-    const prev = points[points.length - 2];
-    const slope = (last.lossDb - prev.lossDb) / (last.freqMHz - prev.freqMHz);
-    return Math.max(0, last.lossDb + slope * (frequencyMHz - last.freqMHz));
+    return Math.max(0, last.lossDb * Math.sqrt(frequencyMHz / last.freqMHz));
   }
 
   for (let i = 0; i < points.length - 1; i += 1) {
