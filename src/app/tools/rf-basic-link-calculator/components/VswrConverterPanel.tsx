@@ -8,6 +8,7 @@ import { Tooltip } from "@/components/Tooltip";
 import { dbmToW, wToDbm } from "@/lib/rf/antenna";
 import { formatNumber } from "@/lib/rf/format";
 import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
+import { rfErrorMessage } from "@/lib/rfErrorMessages";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { VswrStandingWaveDiagram } from "./VswrStandingWaveDiagram";
 
@@ -40,10 +41,10 @@ export function VswrConverterPanel() {
     try {
       return { result: convertVswr(mode, value), error: null as string | null };
     } catch (error) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "VSWRは1以上、反射係数は0以上1未満、リターンロスは0以上のdBで入力してください。";
+      const message = rfErrorMessage(
+        error,
+        "VSWRは1以上、反射係数は0以上1未満、リターンロスは0以上のdBで入力してください。"
+      );
       return { result: null, error: message };
     }
   }, [mode, value]);

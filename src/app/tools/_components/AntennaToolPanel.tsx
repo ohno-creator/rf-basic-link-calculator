@@ -31,6 +31,7 @@ import {
   type ShortAntennaKind
 } from "@/lib/rf/antenna";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
+import { rfErrorMessage } from "@/lib/rfErrorMessages";
 import { FormulaExplanationCard } from "../rf-basic-link-calculator/components/FormulaExplanationCard";
 
 export type AntennaToolId =
@@ -1766,7 +1767,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
     } catch (error) {
       return {
         view: null,
-        error: error instanceof Error ? error.message : "入力値を確認してください。"
+        error: rfErrorMessage(error)
       };
     }
   }, [shortKind, toolId, values]);

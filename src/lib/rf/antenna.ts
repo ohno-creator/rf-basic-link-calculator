@@ -1,56 +1,44 @@
+import {
+  assertFinite,
+  assertNonNegative,
+  assertPercent,
+  assertPositiveFinite,
+  RfError,
+  RfErrorCode
+} from "./errors";
 import { calculateFsplDb } from "./fspl";
 import { calculateWavelengthFromMHz, SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 
 const DBI_TO_DBD_OFFSET = 2.15;
 const MU_0 = 4 * Math.PI * 1e-7;
 
-function assertPositiveFinite(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい数値を入力してください。`);
-  }
-}
-
-function assertPercent(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0 || value > 100) {
-    throw new Error(`${label}は0より大きく100以下の値を入力してください。`);
-  }
-}
-
 export function dbiToLinear(dbi: number): number {
-  if (!Number.isFinite(dbi)) {
-    throw new Error("dBiは数値で入力してください。");
-  }
+  assertFinite(dbi, "dbi");
   return 10 ** (dbi / 10);
 }
 
 export function linearToDbi(linear: number): number {
-  assertPositiveFinite(linear, "倍率");
+  assertPositiveFinite(linear, "ratio");
   return 10 * Math.log10(linear);
 }
 
 export function dbiToDbd(dbi: number): number {
-  if (!Number.isFinite(dbi)) {
-    throw new Error("dBiは数値で入力してください。");
-  }
+  assertFinite(dbi, "dbi");
   return dbi - DBI_TO_DBD_OFFSET;
 }
 
 export function dbdToDbi(dbd: number): number {
-  if (!Number.isFinite(dbd)) {
-    throw new Error("dBdは数値で入力してください。");
-  }
+  assertFinite(dbd, "dbd");
   return dbd + DBI_TO_DBD_OFFSET;
 }
 
 export function dbmToW(dbm: number): number {
-  if (!Number.isFinite(dbm)) {
-    throw new Error("dBmは数値で入力してください。");
-  }
+  assertFinite(dbm, "dbm");
   return 10 ** ((dbm - 30) / 10);
 }
 
 export function wToDbm(watts: number): number {
-  assertPositiveFinite(watts, "W");
+  assertPositiveFinite(watts, "watts");
   return 10 * Math.log10(watts) + 30;
 }
 
@@ -62,7 +50,7 @@ export function calculateEirp(input: {
 }) {
   const extraLossDb = input.extraLossDb ?? 0;
   if (![input.txPowerDbm, input.antennaGainDbi, input.cableLossDb, extraLossDb].every(Number.isFinite)) {
-    throw new Error("EIRP計算の入力は数値で入力してください。");
+    throw new RfError(RfErrorCode.NonFinite, { field: "eirp_inputs" });
   }
   const eirpDbm = input.txPowerDbm + input.antennaGainDbi - input.cableLossDb - extraLossDb;
   const erpDbm = eirpDbm - DBI_TO_DBD_OFFSET;
@@ -76,8 +64,8 @@ export function calculateEirp(input: {
 }
 
 export function calculateAntennaLengths(frequencyMHz: number, velocityFactorPercent: number) {
-  assertPositiveFinite(frequencyMHz, "周波数");
-  assertPercent(velocityFactorPercent, "短縮率");
+  assertPositiveFinite(frequencyMHz, "frequency");
+  assertPercent(velocityFactorPercent, "velocity_factor");
   const wavelengthM = calculateWavelengthFromMHz(frequencyMHz);
   const velocityFactor = velocityFactorPercent / 100;
   const electrical = {
@@ -119,8 +107,8 @@ export function calculateApertureAntenna(input: {
   efficiencyPercent: number;
 }) {
   const wavelengthM = calculateWavelengthFromMHz(input.frequencyMHz);
-  assertPositiveFinite(input.diameterM, "開口径");
-  assertPercent(input.efficiencyPercent, "開口効率");
+  assertPositiveFinite(input.diameterM, "aperture_diameter");
+  assertPercent(input.efficiencyPercent, "aperture_efficiency");
   const efficiency = input.efficiencyPercent / 100;
   const areaM2 = Math.PI * (input.diameterM / 2) ** 2;
   const gainLinear = efficiency * (Math.PI * input.diameterM / wavelengthM) ** 2;
@@ -139,7 +127,7 @@ export function calculateApertureAntenna(input: {
 
 export function calculateAntennaSpacing(frequencyMHz: number, spacingM: number) {
   const wavelengthM = calculateWavelengthFromMHz(frequencyMHz);
-  assertPositiveFinite(spacingM, "アンテナ間隔");
+  assertPositiveFinite(spacingM, "antenna_spacing");
   const spacingLambda = spacingM / wavelengthM;
   return {
     wavelengthM,
@@ -157,7 +145,7 @@ export function calculateGratingLobes(input: {
 }) {
   const base = calculateAntennaSpacing(input.frequencyMHz, input.spacingM);
   if (!Number.isFinite(input.scanAngleDeg) || Math.abs(input.scanAngleDeg) >= 90) {
-    throw new Error("走査角は-90度より大きく90度より小さい値で入力してください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "scan_angle" });
   }
   const scanSin = Math.sin((input.scanAngleDeg * Math.PI) / 180);
   const limitLambda = 1 / (1 + Math.abs(scanSin));
@@ -189,11 +177,11 @@ export function calculatePatchAntenna(input: {
   dielectricConstant: number;
   substrateHeightMm: number;
 }) {
-  assertPositiveFinite(input.frequencyMHz, "周波数");
+  assertPositiveFinite(input.frequencyMHz, "frequency");
   if (!Number.isFinite(input.dielectricConstant) || input.dielectricConstant <= 1) {
-    throw new Error("比誘電率は1より大きい値を入力してください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "patch_dielectric" });
   }
-  assertPositiveFinite(input.substrateHeightMm, "基板厚");
+  assertPositiveFinite(input.substrateHeightMm, "substrate_height");
   const frequencyHz = input.frequencyMHz * 1_000_000;
   const hM = input.substrateHeightMm / 1000;
   const er = input.dielectricConstant;
@@ -225,14 +213,14 @@ export function calculateSmallLoop(input: {
   wireDiameterMm: number;
   turns: number;
 }) {
-  assertPositiveFinite(input.frequencyMHz, "周波数");
-  assertPositiveFinite(input.loopDiameterMm, "ループ径");
-  assertPositiveFinite(input.wireDiameterMm, "線径");
-  assertPositiveFinite(input.turns, "巻数");
+  assertPositiveFinite(input.frequencyMHz, "frequency");
+  assertPositiveFinite(input.loopDiameterMm, "loop_diameter");
+  assertPositiveFinite(input.wireDiameterMm, "wire_diameter");
+  assertPositiveFinite(input.turns, "turns");
   const radiusM = input.loopDiameterMm / 2000;
   const wireRadiusM = input.wireDiameterMm / 2000;
   if (wireRadiusM >= radiusM) {
-    throw new Error("線径はループ径より小さくしてください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "wire_vs_loop" });
   }
   const turns = Math.max(1, input.turns);
   const inductanceH = MU_0 * turns ** 2 * radiusM * (Math.log((8 * radiusM) / wireRadiusM) - 2);
@@ -260,10 +248,8 @@ export function calculateRadiationResistance(input: {
   kind: ShortAntennaKind;
 }) {
   const wavelengthM = calculateWavelengthFromMHz(input.frequencyMHz);
-  assertPositiveFinite(input.lengthMm, "アンテナ長");
-  if (!Number.isFinite(input.lossResistanceOhm) || input.lossResistanceOhm < 0) {
-    throw new Error("損失抵抗は0以上の値を入力してください。");
-  }
+  assertPositiveFinite(input.lengthMm, "antenna_length");
+  assertNonNegative(input.lossResistanceOhm, "loss_resistance");
   const lengthM = input.lengthMm / 1000;
   const lengthRatio = lengthM / wavelengthM;
   const radiationResistanceOhm =
@@ -288,8 +274,8 @@ export function calculateSmallAntennaLimit(input: {
   targetBandwidthPercent: number;
 }) {
   const wavelengthM = calculateWavelengthFromMHz(input.frequencyMHz);
-  assertPositiveFinite(input.radiusMm, "外接球半径");
-  assertPositiveFinite(input.targetBandwidthPercent, "目標比帯域");
+  assertPositiveFinite(input.radiusMm, "sphere_radius");
+  assertPositiveFinite(input.targetBandwidthPercent, "target_bandwidth");
   const radiusM = input.radiusMm / 1000;
   const ka = (2 * Math.PI * radiusM) / wavelengthM;
   const chuQ = 1 / ka ** 3 + 1 / ka;
@@ -310,8 +296,8 @@ export function calculateLargeArrayNearField(input: {
   distanceM: number;
 }) {
   const wavelengthM = calculateWavelengthFromMHz(input.frequencyMHz);
-  assertPositiveFinite(input.apertureSizeM, "アレイ開口");
-  assertPositiveFinite(input.distanceM, "評価距離");
+  assertPositiveFinite(input.apertureSizeM, "array_aperture");
+  assertPositiveFinite(input.distanceM, "eval_distance");
   const fraunhoferM = (2 * input.apertureSizeM ** 2) / wavelengthM;
   const reactiveNearFieldM = 0.62 * Math.sqrt(input.apertureSizeM ** 3 / wavelengthM);
   const pathSagM = Math.sqrt(input.distanceM ** 2 + (input.apertureSizeM / 2) ** 2) - input.distanceM;
@@ -334,11 +320,11 @@ export function calculateReflectorRisEffect(input: {
   rxDistanceM: number;
   efficiencyPercent: number;
 }) {
-  assertPositiveFinite(input.widthM, "反射面幅");
-  assertPositiveFinite(input.heightM, "反射面高さ");
-  assertPositiveFinite(input.txDistanceM, "送信側距離");
-  assertPositiveFinite(input.rxDistanceM, "受信側距離");
-  assertPercent(input.efficiencyPercent, "開口効率");
+  assertPositiveFinite(input.widthM, "reflector_width");
+  assertPositiveFinite(input.heightM, "reflector_height");
+  assertPositiveFinite(input.txDistanceM, "tx_distance");
+  assertPositiveFinite(input.rxDistanceM, "rx_distance");
+  assertPercent(input.efficiencyPercent, "aperture_efficiency");
   const wavelengthM = calculateWavelengthFromMHz(input.frequencyMHz);
   const areaM2 = input.widthM * input.heightM;
   const efficiency = input.efficiencyPercent / 100;

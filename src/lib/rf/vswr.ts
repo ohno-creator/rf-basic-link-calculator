@@ -9,6 +9,8 @@
  *   ミスマッチ損失 ML[dB] = -10 log10(1 - Γ^2)
  */
 
+import { assertFinite, RfError, RfErrorCode } from "./errors";
+
 export type VswrSourceKind = "vswr" | "returnLoss" | "reflection";
 
 export type VswrResult = {
@@ -20,27 +22,25 @@ export type VswrResult = {
 };
 
 function reflectionFromSource(kind: VswrSourceKind, value: number): number {
-  if (!Number.isFinite(value)) {
-    throw new Error("数値を入力してください。");
-  }
+  assertFinite(value, "vswr_value");
 
   if (kind === "vswr") {
     if (value < 1) {
-      throw new Error("VSWRは1以上の値を入力してください。");
+      throw new RfError(RfErrorCode.BelowMinimum, { field: "vswr", min: 1 });
     }
     return (value - 1) / (value + 1);
   }
 
   if (kind === "returnLoss") {
     if (value < 0) {
-      throw new Error("リターンロスは0以上のdB値を入力してください。");
+      throw new RfError(RfErrorCode.Negative, { field: "return_loss" });
     }
     return 10 ** (-value / 20);
   }
 
   // reflection coefficient
   if (value < 0 || value >= 1) {
-    throw new Error("反射係数は0以上1未満の値を入力してください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "reflection_coefficient" });
   }
   return value;
 }

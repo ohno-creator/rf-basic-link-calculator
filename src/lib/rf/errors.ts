@@ -19,6 +19,8 @@ export const RfErrorCode = {
   BelowMinimum: "below_minimum",
   /** 定義域外（例: 0より大きく1未満）。 */
   OutOfDomain: "out_of_domain",
+  /** 百分率（0より大きく100以下）の範囲外。 */
+  Percent: "percent",
   /** 必要なデータが空。 */
   Empty: "empty"
 } as const;
@@ -74,5 +76,12 @@ export function assertNonNegative(value: number, field: string): void {
 export function assertAtLeast(value: number, min: number, field: string): void {
   if (!Number.isFinite(value) || value < min) {
     throw new RfError(RfErrorCode.BelowMinimum, { field, min });
+  }
+}
+
+/** 百分率（0より大きく100以下）であることを要求する。 */
+export function assertPercent(value: number, field: string): void {
+  if (!Number.isFinite(value) || value <= 0 || value > 100) {
+    throw new RfError(RfErrorCode.Percent, { field });
   }
 }
