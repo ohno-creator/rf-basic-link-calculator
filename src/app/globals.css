@@ -147,3 +147,15 @@ svg g[role="button"]:focus-visible rect {
     box-shadow: none !important;
   }
 }
+
+/* モーション低減の希望を尊重（ヒートマップの一括再描画やバー成長のアニメも抑制）。 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -92,9 +92,16 @@ export const toolDirectory: DirectoryTool[] = [
     category: "link"
   },
   {
+    href: "/tools/nami-gate-window",
+    name: "ナミゲート 室内受信電力シミュレーター",
+    tagline: "窓設置30cm角・室内分布をOFF/ON/差分で可視化",
+    icon: "window",
+    category: "link"
+  },
+  {
     href: "/tools/rf-learning-quest",
     name: "RF学習クエスト",
-    tagline: "700問のアンテナ設計RPG",
+    tagline: "1000問のアンテナ設計RPG",
     icon: "book",
     category: "learning"
   },

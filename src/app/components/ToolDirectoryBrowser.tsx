@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   Activity,
+  AppWindow,
   ArrowUpRight,
   BookOpenCheck,
   Box,
@@ -39,6 +40,7 @@ const iconMap: Record<string, LucideIcon> = {
   cable: Cable,
   circuit: CircuitBoard,
   box: Box,
+  window: AppWindow,
   aperture: Spline,
   satellite: RadioTower,
   scan: Ruler,
