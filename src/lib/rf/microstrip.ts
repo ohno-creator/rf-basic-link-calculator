@@ -1,3 +1,4 @@
+import { assertAtLeast, assertPositiveFinite } from "./errors";
 import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 
 /**
@@ -16,12 +17,6 @@ import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
  *   M[%] = 52 + 65 · exp(-1.35 · W/h)
  */
 
-function assertPositiveFinite(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
-
 export type MicrostripResult = {
   impedanceOhms: number;
   effectiveDielectric: number;
@@ -33,11 +28,9 @@ export function microstripImpedance(
   heightMm: number,
   dielectricConstant: number
 ): MicrostripResult {
-  assertPositiveFinite(widthMm, "線路幅 W");
-  assertPositiveFinite(heightMm, "基板厚 h");
-  if (!Number.isFinite(dielectricConstant) || dielectricConstant < 1) {
-    throw new Error("比誘電率は1以上の値を入力してください。");
-  }
+  assertPositiveFinite(widthMm, "trace_width");
+  assertPositiveFinite(heightMm, "substrate_height");
+  assertAtLeast(dielectricConstant, 1, "dielectric_constant");
 
   const u = widthMm / heightMm;
   const er = dielectricConstant;
@@ -80,10 +73,8 @@ export function isMiterFormulaApplicable(
 
 /** マイクロストリップ中の導波波長 λg[mm] = c / (f · √εeff)。 */
 export function guidedWavelengthMm(frequencyMHz: number, effectiveDielectric: number): number {
-  assertPositiveFinite(frequencyMHz, "周波数");
-  if (!Number.isFinite(effectiveDielectric) || effectiveDielectric < 1) {
-    throw new Error("実効比誘電率は1以上である必要があります。");
-  }
+  assertPositiveFinite(frequencyMHz, "frequency");
+  assertAtLeast(effectiveDielectric, 1, "effective_dielectric");
   const wavelengthM =
     SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000 * Math.sqrt(effectiveDielectric));
   return wavelengthM * 1000;
@@ -132,9 +123,7 @@ export function electricalLengthDegrees(lengthMm: number, guidedWavelengthValueM
  * fraction = 0.1 で λg/10（目安）、0.05 で λg/20（より安全側）。
  */
 export function stitchingViaPitchMm(guidedWavelengthValueMm: number, fraction: number): number {
-  assertPositiveFinite(guidedWavelengthValueMm, "導波波長 λg");
-  if (!Number.isFinite(fraction) || fraction <= 0) {
-    throw new Error("分数は0より大きい値で指定してください。");
-  }
+  assertPositiveFinite(guidedWavelengthValueMm, "guided_wavelength");
+  assertPositiveFinite(fraction, "fraction");
   return guidedWavelengthValueMm * fraction;
 }

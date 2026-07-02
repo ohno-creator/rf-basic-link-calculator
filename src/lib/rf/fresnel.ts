@@ -1,3 +1,4 @@
+import { assertNonNegative, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
 import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 
 /**
@@ -8,12 +9,6 @@ import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
  * λは波長[m]、d1/d2は障害物位置から送受信点までの距離[m]。
  * 見通し通信では第1フレネルゾーン（n=1）の60%以上を障害物から空けることが目安。
  */
-
-function assertPositiveFinite(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
 
 export function fresnelRadiusM(
   frequencyMHz: number,
@@ -48,11 +43,11 @@ export function calculateFresnel(
   totalDistanceKm: number,
   positionRatio = 0.5
 ): FresnelResult {
-  assertPositiveFinite(frequencyMHz, "周波数");
-  assertPositiveFinite(totalDistanceKm, "通信距離");
+  assertPositiveFinite(frequencyMHz, "frequency");
+  assertPositiveFinite(totalDistanceKm, "distance");
 
   if (!Number.isFinite(positionRatio) || positionRatio <= 0 || positionRatio >= 1) {
-    throw new Error("障害物の位置は0より大きく1未満の割合で指定してください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "position_ratio" });
   }
 
   const d1Km = totalDistanceKm * positionRatio;
@@ -113,21 +108,15 @@ export function analyzeObstacle(
   rxHeightM: number,
   obstacleHeightM: number
 ): ObstacleAnalysis {
-  assertPositiveFinite(frequencyMHz, "周波数");
-  assertPositiveFinite(totalDistanceKm, "通信距離");
+  assertPositiveFinite(frequencyMHz, "frequency");
+  assertPositiveFinite(totalDistanceKm, "distance");
 
   if (!Number.isFinite(positionRatio) || positionRatio <= 0 || positionRatio >= 1) {
-    throw new Error("障害物の位置は0より大きく1未満の割合で指定してください。");
+    throw new RfError(RfErrorCode.OutOfDomain, { field: "position_ratio" });
   }
-  if (!Number.isFinite(txHeightM) || txHeightM < 0) {
-    throw new Error("送信アンテナ高は0以上で入力してください。");
-  }
-  if (!Number.isFinite(rxHeightM) || rxHeightM < 0) {
-    throw new Error("受信アンテナ高は0以上で入力してください。");
-  }
-  if (!Number.isFinite(obstacleHeightM) || obstacleHeightM < 0) {
-    throw new Error("障害物の高さは0以上で入力してください。");
-  }
+  assertNonNegative(txHeightM, "tx_height");
+  assertNonNegative(rxHeightM, "rx_height");
+  assertNonNegative(obstacleHeightM, "obstacle_height");
 
   const d1Km = totalDistanceKm * positionRatio;
   const d2Km = totalDistanceKm * (1 - positionRatio);

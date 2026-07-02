@@ -9,12 +9,12 @@
  * 帯域は狭くなる」という性質を、寸法縮小に比例する簡易目安として扱う。
  */
 
+import { assertAtLeast } from "./errors";
+
 export type DielectricImpact = "ほぼなし" | "小" | "中" | "大" | "特大";
 
 function assertDielectricConstant(er: number) {
-  if (!Number.isFinite(er) || er < 1) {
-    throw new Error("比誘電率は1以上の値を入力してください。");
-  }
+  assertAtLeast(er, 1, "dielectric_constant");
 }
 
 /** 波長短縮率 λg/λ0 = 1/√εr（誘電体中で波長は何倍になるか） */

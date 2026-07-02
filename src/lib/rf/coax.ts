@@ -10,16 +10,12 @@
  * 損失は実測値だが、個体差・コネクタ品質・曲げ・温度で多少変わる目安として扱う。
  */
 
+import { assertAtLeast, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
+
 export type LossPoint = {
   freqMHz: number;
   lossDb: number;
 };
-
-function assertPositiveFinite(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
 
 /** 比較用の参考周波数点（測定品番と同じ周波数）。 */
 const REFERENCE_FREQUENCIES_MHZ = [500, 800, 2000, 3000, 4000, 5000, 6000, 7000, 8000];
@@ -32,8 +28,8 @@ const REFERENCE_FREQUENCIES_MHZ = [500, 800, 2000, 3000, 4000, 5000, 6000, 7000,
  *     （実リンク計算には実測補間値 cableAssemblies を使う）。
  */
 export function referenceLossPoints(attenuationAt2400DbPerM: number, lengthM: number): LossPoint[] {
-  assertPositiveFinite(attenuationAt2400DbPerM, "代表減衰量");
-  assertPositiveFinite(lengthM, "長さ");
+  assertPositiveFinite(attenuationAt2400DbPerM, "attenuation");
+  assertPositiveFinite(lengthM, "length");
   return REFERENCE_FREQUENCIES_MHZ.map((freqMHz) => ({
     freqMHz,
     lossDb: attenuationAt2400DbPerM * Math.sqrt(freqMHz / 2400) * lengthM
@@ -42,9 +38,9 @@ export function referenceLossPoints(attenuationAt2400DbPerM: number, lengthM: nu
 
 /** 測定点（周波数昇順）から、指定周波数の損失[dB]を線形補間／外挿で求める。 */
 export function interpolateCableLoss(points: LossPoint[], frequencyMHz: number): number {
-  assertPositiveFinite(frequencyMHz, "周波数");
+  assertPositiveFinite(frequencyMHz, "frequency");
   if (points.length === 0) {
-    throw new Error("測定データがありません。");
+    throw new RfError(RfErrorCode.Empty, { field: "cable_measurements" });
   }
 
   const first = points[0];
@@ -84,9 +80,7 @@ export function cableAssemblyLoss(
   frequencyMHz: number,
   quantity: number
 ): CableLossResult {
-  if (!Number.isFinite(quantity) || quantity < 1) {
-    throw new Error("本数は1以上で入力してください。");
-  }
+  assertAtLeast(quantity, 1, "quantity");
 
   const perPieceDb = interpolateCableLoss(points, frequencyMHz);
   const totalDb = perPieceDb * quantity;

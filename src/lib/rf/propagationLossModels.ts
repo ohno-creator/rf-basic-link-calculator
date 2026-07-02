@@ -1,3 +1,4 @@
+import { assertFinite, assertPositiveFinite } from "./errors";
 import { calculateFsplDb } from "./fspl";
 import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 import { type AreaType, calculatePropagationLoss } from "./propagation";
@@ -49,14 +50,6 @@ function log10(value: number): number {
   return Math.log10(value);
 }
 
-// 公開純関数も fspl/propagation と同じ防御レベルに揃える。0や負・非有限の入力で
-// ±Infinity/NaN を黙って下流へ流さないようにする。
-function assertPositiveFinite(value: number, label: string): void {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
-
 /**
  * 平面大地2波の遠方近似（一点見積り用の包絡線）。ブレークポイント手前では自由空間損失に張り付く。
  * 注意：この max(FSPL, 40log d…) 包絡線が FSPL から 40log d へ切り替わる数学的なクロスオーバーは
@@ -64,8 +57,8 @@ function assertPositiveFinite(value: number, label: string): void {
  * 強め合いピーク）とは π 倍ずれる。両者は別定義で用途も異なるため、一方に合わせて他方を変更しないこと。
  */
 function twoRayPathLossDb(params: PropagationLossParams): number {
-  assertPositiveFinite(params.txHeightM, "送信側アンテナ高");
-  assertPositiveFinite(params.rxHeightM, "受信側アンテナ高");
+  assertPositiveFinite(params.txHeightM, "tx_height");
+  assertPositiveFinite(params.rxHeightM, "rx_height");
   const distanceM = params.distanceKm * 1000;
   const fsplDb = calculateFsplDb(params.frequencyMHz, params.distanceKm);
   const twoRayDb =
@@ -76,8 +69,8 @@ function twoRayPathLossDb(params: PropagationLossParams): number {
 
 /** 1m基準（close-in）の Log-distance：L = FSPL(1m) + 10·n·log10(d[m])。 */
 function logDistancePathLossDb(params: PropagationLossParams): number {
-  assertPositiveFinite(params.distanceKm, "距離");
-  assertPositiveFinite(params.pathLossExponent, "距離損失指数n");
+  assertPositiveFinite(params.distanceKm, "distance");
+  assertPositiveFinite(params.pathLossExponent, "path_loss_exponent");
   const distanceM = params.distanceKm * 1000;
   const referenceLossDb = calculateFsplDb(params.frequencyMHz, 0.001);
 
@@ -146,14 +139,12 @@ export function twoRayInterferencePathLossDb(
   reflectionCoefficient = -1,
   maxFadeDb = 40
 ): number {
-  assertPositiveFinite(frequencyMHz, "周波数");
-  assertPositiveFinite(distanceKm, "距離");
-  assertPositiveFinite(txHeightM, "送信側アンテナ高");
-  assertPositiveFinite(rxHeightM, "受信側アンテナ高");
-  if (!Number.isFinite(reflectionCoefficient)) {
-    throw new Error("反射係数は有限の値を入力してください。");
-  }
-  assertPositiveFinite(maxFadeDb, "最大フェード量");
+  assertPositiveFinite(frequencyMHz, "frequency");
+  assertPositiveFinite(distanceKm, "distance");
+  assertPositiveFinite(txHeightM, "tx_height");
+  assertPositiveFinite(rxHeightM, "rx_height");
+  assertFinite(reflectionCoefficient, "reflection_coefficient");
+  assertPositiveFinite(maxFadeDb, "max_fade");
 
   const wavelengthM = SPEED_OF_LIGHT_M_PER_S / (frequencyMHz * 1_000_000);
   const distanceM = distanceKm * 1000;

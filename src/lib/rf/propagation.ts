@@ -18,6 +18,7 @@
  *   開放地 : L = L_urban − 4.78·(log10 f)² + 18.33·log10 f − 40.94
  */
 
+import { assertPositiveFinite } from "./errors";
 import { calculateFsplDb } from "./fspl";
 
 export type AreaType = "urbanLarge" | "urbanMedium" | "suburban" | "open";
@@ -39,12 +40,6 @@ export type PropagationInput = {
   area: AreaType;
   preferredModel?: PropagationModel;
 };
-
-function assertPositiveFinite(value: number, label: string) {
-  if (!Number.isFinite(value) || value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
 
 function largeCityCorrection(frequencyMHz: number, mobileHeightM: number): number {
   // 大都市の移動局補正 a(hm)。原典は f≤200MHz と f≥400MHz の2式のみで、
@@ -79,10 +74,10 @@ function isOutOfRange(input: PropagationInput, model: PropagationModel): boolean
 }
 
 export function calculatePropagationLoss(input: PropagationInput): PropagationResult {
-  assertPositiveFinite(input.frequencyMHz, "周波数");
-  assertPositiveFinite(input.baseHeightM, "基地局アンテナ高");
-  assertPositiveFinite(input.mobileHeightM, "移動局アンテナ高");
-  assertPositiveFinite(input.distanceKm, "距離");
+  assertPositiveFinite(input.frequencyMHz, "frequency");
+  assertPositiveFinite(input.baseHeightM, "base_height");
+  assertPositiveFinite(input.mobileHeightM, "mobile_height");
+  assertPositiveFinite(input.distanceKm, "distance");
 
   const { frequencyMHz: f, baseHeightM: hb, mobileHeightM: hm, distanceKm: d, area } = input;
   const logF = Math.log10(f);

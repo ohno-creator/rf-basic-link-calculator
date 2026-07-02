@@ -1,3 +1,4 @@
+import { assertFinite, assertNonNegative, assertPositiveFinite } from "./errors";
 import { calculateFsplDb } from "./fspl";
 import { judgeLinkMargin, type LinkJudgement } from "./judgement";
 
@@ -21,37 +22,17 @@ export type SimpleLinkBudgetResult = {
   judgement: LinkJudgement;
 };
 
-function assertFinite(value: number, label: string) {
-  if (!Number.isFinite(value)) {
-    throw new Error(`${label}を数値で入力してください。`);
-  }
-}
-
-function assertPositive(value: number, label: string) {
-  assertFinite(value, label);
-  if (value <= 0) {
-    throw new Error(`${label}は0より大きい値を入力してください。`);
-  }
-}
-
-function assertNonNegative(value: number, label: string) {
-  assertFinite(value, label);
-  if (value < 0) {
-    throw new Error(`${label}は0以上の値を入力してください。`);
-  }
-}
-
 function normalizeDistanceKm(distance: number, unit: SimpleDistanceUnit): number {
   return unit === "m" ? distance / 1000 : distance;
 }
 
 export function calculateSimpleLinkBudget(input: SimpleLinkBudgetInput): SimpleLinkBudgetResult {
-  assertPositive(input.frequencyMHz, "周波数");
-  assertPositive(input.distance, "通信距離");
-  assertFinite(input.txPowerDbm, "送信電力");
-  assertFinite(input.antennaGainTotalDbi, "アンテナ利得");
-  assertNonNegative(input.extraLossDb, "追加損失");
-  assertFinite(input.receiverSensitivityDbm, "受信感度");
+  assertPositiveFinite(input.frequencyMHz, "frequency");
+  assertPositiveFinite(input.distance, "distance");
+  assertFinite(input.txPowerDbm, "tx_power");
+  assertFinite(input.antennaGainTotalDbi, "antenna_gain");
+  assertNonNegative(input.extraLossDb, "extra_loss");
+  assertFinite(input.receiverSensitivityDbm, "sensitivity");
 
   const distanceKm = normalizeDistanceKm(input.distance, input.distanceUnit);
   const fsplDb = calculateFsplDb(input.frequencyMHz, distanceKm);

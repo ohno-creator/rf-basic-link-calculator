@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { RfError, RfErrorCode } from "@/lib/rf/errors";
 import { calculateSimpleLinkBudget } from "@/lib/rf/simpleLinkBudget";
 
 describe("simple link budget calculations", () => {
@@ -37,7 +38,8 @@ describe("simple link budget calculations", () => {
   });
 
   it("rejects negative extra loss", () => {
-    expect(() =>
+    let thrown: unknown;
+    try {
       calculateSimpleLinkBudget({
         frequencyMHz: 920,
         distance: 1,
@@ -46,7 +48,13 @@ describe("simple link budget calculations", () => {
         antennaGainTotalDbi: 0,
         extraLossDb: -1,
         receiverSensitivityDbm: -120
-      })
-    ).toThrow("追加損失は0以上");
+      });
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(RfError);
+    expect((thrown as RfError).code).toBe(RfErrorCode.Negative);
+    expect((thrown as RfError).field).toBe("extra_loss");
   });
 });
