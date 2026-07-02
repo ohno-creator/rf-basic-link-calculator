@@ -21,6 +21,8 @@ export const RfErrorCode = {
   OutOfDomain: "out_of_domain",
   /** 百分率（0より大きく100以下）の範囲外。 */
   Percent: "percent",
+  /** 複合入力の検証に失敗。 */
+  InvalidInput: "invalid_input",
   /** 必要なデータが空。 */
   Empty: "empty"
 } as const;

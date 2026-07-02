@@ -39,6 +39,9 @@ describe("rfErrorMessage", () => {
     expect(rfErrorMessage(new RfError(RfErrorCode.NonFinite, { field: "vswr_value" }))).toBe(
       "数値を入力してください。"
     );
+    expect(rfErrorMessage(new RfError(RfErrorCode.NonFinite, { field: "link_margin" }))).toBe(
+      "リンクマージンを計算できません。入力値を確認してください。"
+    );
   });
 
   it("falls back for non-RfError and unknown fields", () => {

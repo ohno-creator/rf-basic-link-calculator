@@ -79,6 +79,29 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
   await expect(page.getByText("今回SUI Terrain A/B/CとCOST231 Walfisch-Ikegami NLOSを比較モデルとして追加しました")).toBeVisible();
 });
 
+test("RF calculator keeps each number field's intentional empty-value behavior", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
+
+  const frequency = page.locator("#frequencyMHz");
+  await frequency.fill("");
+  await expect(frequency).toHaveValue("");
+  await expect(page.getByText("周波数は0より大きい値をMHzで入力してください。").first()).toBeVisible();
+
+  await frequency.fill("2000000");
+  await frequency.blur();
+  await expect(frequency).toHaveValue("6000");
+  await frequency.fill("920");
+  await frequency.blur();
+
+  await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
+  const researchFrequency = page.locator("#research-frequencyGHz");
+  await expect(researchFrequency).toHaveValue("0.92");
+  await researchFrequency.fill("");
+  await researchFrequency.blur();
+  await expect(researchFrequency).toHaveValue("0.92");
+});
+
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");

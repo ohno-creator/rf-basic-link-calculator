@@ -1,4 +1,5 @@
 import { calculateFsplDb } from "./fspl";
+import { RfError, RfErrorCode } from "./errors";
 import { judgeLinkMargin, type LinkJudgement } from "./judgement";
 import { calculatePropagationLoss, type AreaType } from "./propagation";
 import { calculatePropagationLossResult, twoRayBreakpointM } from "./propagationLossModels";
@@ -695,7 +696,7 @@ export function calculateLinkMarginDb(
   receiverSensitivityDbm: number
 ): number {
   if (!Number.isFinite(receivedPowerDbm) || !Number.isFinite(receiverSensitivityDbm)) {
-    throw new Error("受信電力または受信感度を計算できません。");
+    throw new RfError(RfErrorCode.NonFinite, { field: "link_margin_inputs" });
   }
 
   return receivedPowerDbm - receiverSensitivityDbm;
@@ -704,7 +705,8 @@ export function calculateLinkMarginDb(
 export function calculateLinkBudget(input: LinkBudgetInput): LinkBudgetResult {
   const errors = validateLinkBudgetInput(input);
   if (hasValidationErrors(errors)) {
-    throw new Error(Object.values(errors)[0]);
+    const field = Object.keys(errors)[0];
+    throw new RfError(RfErrorCode.InvalidInput, { field });
   }
 
   const distanceKm = normalizeDistanceKm(input.distance, input.distanceUnit);

@@ -49,7 +49,9 @@ const FIELD_MESSAGES: Record<string, string> = {
   wire_vs_loop: "線径はループ径より小さくしてください。",
   reflection_coefficient: "反射係数は0以上1未満の値を入力してください。",
   return_loss: "リターンロスは0以上のdB値を入力してください。",
-  vswr_value: "数値を入力してください。"
+  vswr_value: "数値を入力してください。",
+  link_margin_inputs: "受信電力または受信感度を計算できません。",
+  link_margin: "リンクマージンを計算できません。入力値を確認してください。"
 };
 
 function labelOf(field?: string): string {
@@ -84,6 +86,8 @@ export function rfErrorMessage(error: unknown, fallback = "入力値を確認し
       return `${label}は${error.min ?? 1}以上の値を入力してください。`;
     case RfErrorCode.Percent:
       return `${label}は0より大きく100以下の値を入力してください。`;
+    case RfErrorCode.InvalidInput:
+      return "入力値を確認してください。";
     case RfErrorCode.OutOfDomain:
       return `${label}が指定できる範囲を外れています。`;
     case RfErrorCode.Empty:

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertTriangle, BookOpen, Calculator, RefreshCw, Route, ShieldCheck } from "lucide-react";
 import {
   CartesianGrid,
@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { NumberInput } from "@/components/NumberField";
 import {
   calculateNearTerminalLossDb,
   normalizeDistanceKm,
@@ -37,7 +38,7 @@ type NumericResearchKey = {
   [K in keyof ResearchDistanceInput]: ResearchDistanceInput[K] extends number ? K : never;
 }[keyof ResearchDistanceInput];
 
-type NumberFieldProps = {
+type ResearchNumberFieldProps = {
   id: NumericResearchKey;
   label: string;
   unit: string;
@@ -150,7 +151,7 @@ function buildResearchInputFromLinkBudget(input: LinkBudgetInput): ResearchDista
 // 編集途中でも0に戻さず親へ通知しない、離脱時に min/max へクランプ）を、このシートの
 // カード型レイアウトを保ったまま適用する。空欄→0を親へ流さないことで、計算・グラフ側の
 // 黙示フォールバックを防ぐ。
-function NumberField({
+function ResearchNumberField({
   id,
   label,
   unit,
@@ -160,37 +161,7 @@ function NumberField({
   step,
   value,
   onChange
-}: NumberFieldProps) {
-  const [draft, setDraft] = useState(() => String(value));
-  const committedRef = useRef(value);
-
-  useEffect(() => {
-    if (value !== committedRef.current) {
-      committedRef.current = value;
-      setDraft(String(value));
-    }
-  }, [value]);
-
-  const handleChange = (raw: string) => {
-    setDraft(raw);
-    const parsed = Number(raw);
-    if (raw.trim() !== "" && Number.isFinite(parsed)) {
-      committedRef.current = parsed;
-      onChange(parsed);
-    }
-  };
-
-  const handleBlur = () => {
-    let next = committedRef.current;
-    if (next < min) next = min;
-    if (next > max) next = max;
-    if (next !== committedRef.current) {
-      committedRef.current = next;
-      onChange(next);
-    }
-    setDraft(String(next));
-  };
-
+}: ResearchNumberFieldProps) {
   const sliderValue = Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
 
   return (
@@ -203,15 +174,15 @@ function NumberField({
       </span>
       <span className="mt-1 block text-xs leading-relaxed text-slate-500">{description}</span>
       <span className="mt-3 grid gap-3 sm:grid-cols-[1fr_110px]">
-        <input
+        <NumberInput
           id={`research-${id}`}
-          type="text"
           inputMode={min >= 0 ? "decimal" : "text"}
-          step={step}
-          value={draft}
           className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-          onChange={(event) => handleChange(event.target.value)}
-          onBlur={handleBlur}
+          value={value}
+          min={min}
+          max={max}
+          step={step}
+          onChange={onChange}
         />
         <span className="flex h-10 items-center justify-center rounded-md bg-slate-50 text-sm font-semibold text-slate-700">
           {unit}
@@ -447,7 +418,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 </span>
               </label>
 
-              <NumberField
+              <ResearchNumberField
                 id="frequencyGHz"
                 label="周波数"
                 unit="GHz"
@@ -464,7 +435,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   正しい周波数（GHz）を入力すると結果が更新されます。
                 </Callout>
               ) : null}
-              <NumberField
+              <ResearchNumberField
                 id="shadowFadingStdDb"
                 label="シャドウフェージング標準偏差 σ"
                 unit="dB"
@@ -475,7 +446,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 value={input.shadowFadingStdDb}
                 onChange={(value) => update("shadowFadingStdDb", value)}
               />
-              <NumberField
+              <ResearchNumberField
                 id="fadeMarginDb"
                 label="追加フェード余裕"
                 unit="dB"
@@ -492,7 +463,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           <Card as="section" padding="lg">
             <h3 className="text-base font-bold text-slate-950">送受信条件と追加損失</h3>
             <div className="mt-4 grid gap-4">
-              <NumberField
+              <ResearchNumberField
                 id="txPowerDbm"
                 label="送信電力"
                 unit="dBm"
@@ -504,7 +475,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 onChange={(value) => update("txPowerDbm", value)}
               />
               <div className="grid gap-4 sm:grid-cols-2">
-                <NumberField
+                <ResearchNumberField
                   id="txAntennaGainDbi"
                   label="送信アンテナ利得"
                   unit="dBi"
@@ -515,7 +486,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.txAntennaGainDbi}
                   onChange={(value) => update("txAntennaGainDbi", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="rxAntennaGainDbi"
                   label="受信アンテナ利得"
                   unit="dBi"
@@ -528,7 +499,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 />
               </div>
               <div className="grid gap-4 sm:grid-cols-2">
-                <NumberField
+                <ResearchNumberField
                   id="txAntennaHeightM"
                   label="送信側アンテナ高"
                   unit="m"
@@ -539,7 +510,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.txAntennaHeightM}
                   onChange={(value) => update("txAntennaHeightM", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="rxAntennaHeightM"
                   label="受信側アンテナ高"
                   unit="m"
@@ -551,7 +522,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   onChange={(value) => update("rxAntennaHeightM", value)}
                 />
               </div>
-              <NumberField
+              <ResearchNumberField
                 id="receiverSensitivityDbm"
                 label="受信感度"
                 unit="dBm"
@@ -563,7 +534,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 onChange={(value) => update("receiverSensitivityDbm", value)}
               />
               <div className="grid gap-4 sm:grid-cols-3">
-                <NumberField
+                <ResearchNumberField
                   id="cableLossDb"
                   label="ケーブル損失"
                   unit="dB"
@@ -574,7 +545,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.cableLossDb}
                   onChange={(value) => update("cableLossDb", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="clutterLossDb"
                   label="クラッタ・環境損失"
                   unit="dB"
@@ -585,7 +556,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.clutterLossDb}
                   onChange={(value) => update("clutterLossDb", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="nearTerminalLossDb"
                   label="端末近傍損失"
                   unit="dB"
@@ -597,7 +568,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   onChange={(value) => update("nearTerminalLossDb", value)}
                 />
               </div>
-              <NumberField
+              <ResearchNumberField
                 id="calibrationOffsetDb"
                 label="実測補正値"
                 unit="dB"
@@ -614,7 +585,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           <Card as="section" padding="lg">
             <h3 className="text-base font-bold text-slate-950">CI / Dual-slope用パラメータ</h3>
             <div className="mt-4 grid gap-4">
-              <NumberField
+              <ResearchNumberField
                 id="pathLossExponent"
                 label="CI距離損失指数 n"
                 unit="n"
@@ -626,7 +597,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 onChange={(value) => update("pathLossExponent", value)}
               />
               <div className="grid gap-4 sm:grid-cols-3">
-                <NumberField
+                <ResearchNumberField
                   id="nearPathLossExponent"
                   label="近距離指数"
                   unit="n1"
@@ -637,7 +608,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.nearPathLossExponent}
                   onChange={(value) => update("nearPathLossExponent", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="farPathLossExponent"
                   label="遠距離指数"
                   unit="n2"
@@ -648,7 +619,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   value={input.farPathLossExponent}
                   onChange={(value) => update("farPathLossExponent", value)}
                 />
-                <NumberField
+                <ResearchNumberField
                   id="breakpointM"
                   label="ブレークポイント"
                   unit="m"
@@ -660,7 +631,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                   onChange={(value) => update("breakpointM", value)}
                 />
               </div>
-              <NumberField
+              <ResearchNumberField
                 id="maxDistanceKm"
                 label="探索上限距離"
                 unit="km"
@@ -680,7 +651,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               COST231 Walfisch-Ikegamiで使う都市街路の平均条件です。実際のキャリア設計では、地図・建物高・道路幅・クラッタをGISやレイトレースに渡しますが、このシートでは簡易入力で比較します。
             </p>
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
-              <NumberField
+              <ResearchNumberField
                 id="averageBuildingHeightM"
                 label="平均建物高"
                 unit="m"
@@ -691,7 +662,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 value={input.averageBuildingHeightM}
                 onChange={(value) => update("averageBuildingHeightM", value)}
               />
-              <NumberField
+              <ResearchNumberField
                 id="streetWidthM"
                 label="街路幅"
                 unit="m"
@@ -702,7 +673,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 value={input.streetWidthM}
                 onChange={(value) => update("streetWidthM", value)}
               />
-              <NumberField
+              <ResearchNumberField
                 id="buildingSeparationM"
                 label="建物間隔"
                 unit="m"
@@ -713,7 +684,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 value={input.buildingSeparationM}
                 onChange={(value) => update("buildingSeparationM", value)}
               />
-              <NumberField
+              <ResearchNumberField
                 id="streetOrientationDeg"
                 label="道路角度"
                 unit="deg"

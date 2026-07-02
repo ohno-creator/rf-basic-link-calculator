@@ -14,6 +14,7 @@ import {
 import { Accordion } from "@/components/Accordion";
 import { Callout } from "@/components/Callout";
 import { Card, StateCard } from "@/components/Card";
+import { NumberInput } from "@/components/NumberField";
 import { Tooltip } from "@/components/Tooltip";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { frequencyPresets } from "@/data/frequencyPresets";
@@ -42,7 +43,7 @@ type LinkBudgetPanelProps = {
   onChange: (input: LinkBudgetInput) => void;
 };
 
-type NumberFieldProps = {
+type LinkBudgetNumberFieldProps = {
   id: keyof LinkBudgetInput;
   label: string;
   unit: string;
@@ -99,7 +100,7 @@ function InputGroup({ step, title, description, tone, children }: InputGroupProp
   );
 }
 
-function NumberField({
+function LinkBudgetNumberField({
   id,
   label,
   unit,
@@ -113,9 +114,8 @@ function NumberField({
   value,
   error,
   onChange
-}: NumberFieldProps) {
+}: LinkBudgetNumberFieldProps) {
   const htmlId = String(id);
-  const inputValue = Number.isFinite(value) ? value : "";
   const sliderValue = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
 
   return (
@@ -128,16 +128,17 @@ function NumberField({
       </div>
       <p className="mt-1 text-xs leading-relaxed text-slate-500">{description}</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_120px]">
-        <input
+        <NumberInput
           id={htmlId}
           type="number"
-          value={inputValue}
+          value={value}
           min={min}
           max={max}
           step={step}
+          emptyBehavior="invalid"
           className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-          onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-          aria-invalid={Boolean(error)}
+          onChange={onChange}
+          ariaInvalid={Boolean(error)}
         />
         <div className="flex h-11 items-center justify-center rounded-md bg-slate-50 text-sm font-semibold text-slate-700">
           {unit}
@@ -544,7 +545,7 @@ function IotHataCalibrationPanel({
           ) : null}
         </div>
 
-        <NumberField
+        <LinkBudgetNumberField
           id="iotMeasuredReceivedPowerDbm"
           label="実測受信電力"
           unit="dBm"
@@ -560,7 +561,7 @@ function IotHataCalibrationPanel({
           onChange={(value) => update("iotMeasuredReceivedPowerDbm", value)}
         />
 
-        <NumberField
+        <LinkBudgetNumberField
           id="iotSlopeCorrectionDbPerDecade"
           label="距離勾配補正"
           unit="dB/decade"
@@ -784,7 +785,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <HataAntennaHeightNotice input={input} />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="pathLossExponent"
             label="距離損失指数"
             unit="n"
@@ -853,7 +854,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           </select>
           </Card>
 
-          <NumberField
+          <LinkBudgetNumberField
             id="frequencyMHz"
             label="周波数"
             unit="MHz"
@@ -935,7 +936,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           description="送信電力、アンテナ利得、アンテナ高を入れます。2波モデルや奥村・秦モデルではアンテナ高が伝搬損失に効きます。"
           tone="emerald"
         >
-          <NumberField
+          <LinkBudgetNumberField
             id="txPowerDbm"
             label="送信電力"
             unit="dBm"
@@ -951,7 +952,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("txPowerDbm", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="txAntennaGainDbi"
             label="送信アンテナ利得"
             unit="dBi"
@@ -967,7 +968,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("txAntennaGainDbi", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="rxAntennaGainDbi"
             label="受信アンテナ利得"
             unit="dBi"
@@ -983,7 +984,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("rxAntennaGainDbi", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="txAntennaHeightM"
             label="送信側 空中線地上高（アンテナ高 hb）"
             unit="m"
@@ -999,7 +1000,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("txAntennaHeightM", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="rxAntennaHeightM"
             label="受信側 空中線地上高（アンテナ高 hm）"
             unit="m"
@@ -1022,7 +1023,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           description="ケーブル、環境、地面近接、筐体、偏波、車両・人体遮蔽、設置ばらつきを分けて入力します。"
           tone="rose"
         >
-          <NumberField
+          <LinkBudgetNumberField
             id="cableLossDb"
             label="ケーブル・コネクタ損失"
             unit="dB"
@@ -1069,7 +1070,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           </p>
           </Card>
 
-          <NumberField
+          <LinkBudgetNumberField
             id="environmentLossDb"
             label="環境損失"
             unit="dB"
@@ -1109,7 +1110,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               />
             </summary>
             <div className="grid gap-4 px-4 pb-4">
-          <NumberField
+          <LinkBudgetNumberField
             id="groundProximityLossDb"
             label="地面近接損失"
             unit="dB"
@@ -1125,7 +1126,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("groundProximityLossDb", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="enclosureLossDb"
             label="筐体損失"
             unit="dB"
@@ -1141,7 +1142,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("enclosureLossDb", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="polarizationMismatchLossDb"
             label="偏波ミスマッチ損失"
             unit="dB"
@@ -1157,7 +1158,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("polarizationMismatchLossDb", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="vehicleBodyObstructionLossDb"
             label="車両・人体遮蔽損失"
             unit="dB"
@@ -1173,7 +1174,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("vehicleBodyObstructionLossDb", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="installationMarginDb"
             label="設置ばらつきマージン"
             unit="dB"
@@ -1198,7 +1199,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           description="受信感度は合格ラインです。現地測定がある場合は、RSSI/RSRPから得た差分を実測補正値として入れます。"
           tone="amber"
         >
-          <NumberField
+          <LinkBudgetNumberField
             id="receiverSensitivityDbm"
             label="受信感度"
             unit="dBm"
@@ -1214,7 +1215,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("receiverSensitivityDbm", value)}
           />
 
-          <NumberField
+          <LinkBudgetNumberField
             id="calibrationOffsetDb"
             label="実測補正値"
             unit="dB"

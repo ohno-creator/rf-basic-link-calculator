@@ -1,3 +1,5 @@
+import { RfError, RfErrorCode } from "./errors";
+
 export type LinkJudgementLevel = "excellent" | "good" | "caution" | "unstable" | "poor";
 
 export type LinkJudgement = {
@@ -11,7 +13,7 @@ export type LinkJudgement = {
 
 export function judgeLinkMargin(marginDb: number): LinkJudgement {
   if (!Number.isFinite(marginDb)) {
-    throw new Error("リンクマージンを計算できません。入力値を確認してください。");
+    throw new RfError(RfErrorCode.NonFinite, { field: "link_margin" });
   }
 
   if (marginDb >= 20) {

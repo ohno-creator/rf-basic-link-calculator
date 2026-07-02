@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { judgeLinkMargin } from "@/lib/rf/judgement";
-import { buildConsultationText, calculateLinkBudget, type LinkBudgetInput } from "@/lib/rf/linkBudget";
+import { RfError, RfErrorCode } from "@/lib/rf/errors";
+import {
+  buildConsultationText,
+  calculateLinkBudget,
+  calculateLinkMarginDb,
+  type LinkBudgetInput
+} from "@/lib/rf/linkBudget";
 
 const baseInput: LinkBudgetInput = {
   system: "LTE-M / NB-IoT",
@@ -63,6 +69,28 @@ describe("link budget calculations", () => {
     });
 
     expect(improved.linkMarginDb).toBeCloseTo(base.linkMarginDb + 3, 6);
+  });
+
+  it("throws coded errors for invalid calculation inputs", () => {
+    let validationError: unknown;
+    try {
+      calculateLinkBudget({ ...baseInput, system: "" });
+    } catch (error) {
+      validationError = error;
+    }
+    expect(validationError).toBeInstanceOf(RfError);
+    expect((validationError as RfError).code).toBe(RfErrorCode.InvalidInput);
+    expect((validationError as RfError).field).toBe("system");
+
+    let marginError: unknown;
+    try {
+      calculateLinkMarginDb(Number.NaN, -105);
+    } catch (error) {
+      marginError = error;
+    }
+    expect(marginError).toBeInstanceOf(RfError);
+    expect((marginError as RfError).code).toBe(RfErrorCode.NonFinite);
+    expect((marginError as RfError).field).toBe("link_margin_inputs");
   });
 
   it("judges margins by the required thresholds", () => {

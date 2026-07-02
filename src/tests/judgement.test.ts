@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { RfError, RfErrorCode } from "@/lib/rf/errors";
 import { judgeLinkMargin } from "@/lib/rf/judgement";
 
 describe("judgeLinkMargin", () => {
@@ -34,4 +35,16 @@ describe("judgeLinkMargin", () => {
       expect(() => judgeLinkMargin(marginDb)).toThrow();
     }
   );
+
+  it("identifies non-finite margins with a coded error", () => {
+    let thrown: unknown;
+    try {
+      judgeLinkMargin(Number.NaN);
+    } catch (error) {
+      thrown = error;
+    }
+    expect(thrown).toBeInstanceOf(RfError);
+    expect((thrown as RfError).code).toBe(RfErrorCode.NonFinite);
+    expect((thrown as RfError).field).toBe("link_margin");
+  });
 });
