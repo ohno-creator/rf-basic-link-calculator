@@ -117,4 +117,19 @@ describe("antenna calculations", () => {
 
     expect(result.twoHopLossUpperBoundDb).toBeCloseTo(expectedLossDb, 8);
   });
+
+  it("clamps the passive reflector loss at the mirror limit FSPL(d1+d2)", () => {
+    const result = calculateReflectorRisEffect({
+      frequencyMHz: 4800,
+      widthM: 2,
+      heightM: 2,
+      txDistanceM: 30,
+      rxDistanceM: 30,
+      efficiencyPercent: 50
+    });
+    const mirrorLimitDb = calculateFsplDb(4800, 0.06);
+
+    expect(result.twoHopLossUpperBoundDb).toBeCloseTo(mirrorLimitDb, 8);
+    expect(result.excessVsDirectDb).toBeCloseTo(0, 8);
+  });
 });

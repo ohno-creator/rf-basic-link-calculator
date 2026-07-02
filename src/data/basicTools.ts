@@ -352,7 +352,7 @@ export const basicTools: BasicToolMeta[] = [
     metaTitle: "反射板・RISサイズ効果計算ツール｜面積・距離・波長による概算",
     description:
       "反射板やRISを置いたときに、そもそも効きそうな面積・距離かを概算します。面を大きくする効果と、2ホップ経路の損失を同時に確認できます。",
-    formula: "Gsurface≈4πAη/λ²　L≈FSPL(d1)+FSPL(d2)-Gsurface",
+    formula: "Gsurface≈4πAη/λ²　L2hop≈max(FSPL(d1)+FSPL(d2)-2·Gsurface, FSPL(d1+d2))",
     essenceLead: "反射面は面積、距離、波長、近傍/遠方界で効き方が変わります。",
     beginnerGuide: {
       purpose: "反射板やRISを置いて、効きそうな面積と距離条件かを概算します。",

@@ -15,6 +15,7 @@ import {
   buildProposalSummary,
   calculateSimulation,
   defaultNamiGateInput,
+  normalizeNamiGateInput,
   signed,
   toCsv,
   type GlassType,
@@ -39,11 +40,13 @@ export function NamiGateClient() {
   const [copied, setCopied] = useState(false);
 
   // スライダー操作の即応性を保ちつつ、816セルの再計算は最新フレームに遅延させる。
-  // 結果表示（ヒートマップ・サマリ・コピー）は sim と同じ deferredInput で揃え、条件と結果の食い違いを防ぐ。
+  // 結果表示（ヒートマップ・サマリ・コピー）は計算と同じ正規化後の safeInput で揃え、
+  // 入力途中の一時的な不正値（空欄=0など）で条件表示と計算結果が食い違わないようにする。
   const deferredInput = useDeferredValue(input);
-  const sim = useMemo(() => calculateSimulation(deferredInput), [deferredInput]);
+  const safeInput = useMemo(() => normalizeNamiGateInput(deferredInput), [deferredInput]);
+  const sim = useMemo(() => calculateSimulation(safeInput), [safeInput]);
   const evaluation = sim.evaluation;
-  const deferredGlass = GLASS_TYPES.find((g) => g.id === deferredInput.glassType);
+  const deferredGlass = GLASS_TYPES.find((g) => g.id === safeInput.glassType);
 
   const update = <K extends keyof NamiGateInput>(key: K, value: NamiGateInput[K]) =>
     setInput((prev) => ({ ...prev, [key]: value }));
@@ -63,7 +66,7 @@ export function NamiGateClient() {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(buildProposalSummary(deferredInput, sim));
+      await navigator.clipboard.writeText(buildProposalSummary(safeInput, sim));
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2200);
     } catch {
@@ -318,7 +321,7 @@ export function NamiGateClient() {
           </div>
         </div>
 
-        <NamiGateHeatmap sim={sim} mode={mode} input={deferredInput} />
+        <NamiGateHeatmap sim={sim} mode={mode} input={safeInput} />
       </Card>
 
       {/* 商用デモ用の説明文 */}
@@ -326,8 +329,8 @@ export function NamiGateClient() {
         <h2 className="text-base font-bold text-slate-900">商用デモ用の説明</h2>
         <p>
           窓面中央に30cm×30cmのナミゲートを設置した場合の、屋外から入射する
-          {deferredInput.frequencyGHz.toFixed(2)}GHz帯の電波が室内へ透過したときの受信電力分布を概算しています。
-          現在の条件では、ガラスは「{deferredGlass?.label}」、入射角{deferredInput.incidentAngleDeg}°、
+          {safeInput.frequencyGHz.toFixed(2)}GHz帯の電波が室内へ透過したときの受信電力分布を概算しています。
+          現在の条件では、ガラスは「{deferredGlass?.label}」、入射角{safeInput.incidentAngleDeg}°、
           ナミゲートによる平均改善量は約 {signed(sim.diffStats.avg)}dB です。
         </p>
         <div className="rounded-lg border border-slate-200 bg-white p-3">

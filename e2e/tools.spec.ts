@@ -20,7 +20,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "vswr-return-loss", h1: "VSWR・リターンロス変換", fig: "定在波で見るVSWR" },
     { slug: "coaxial-cable-loss", h1: "同軸ケーブル損失", fig: "ロス比較" },
     { slug: "microstrip-line", h1: "マイクロストリップ線路", fig: "断面で見るマイクロストリップ" },
-    { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "経路で見るフレネルゾーン" },
+    { slug: "fresnel-zone", h1: "フレネルゾーン半径", fig: "フレネルゾーン半径と障害物チェック" },
     { slug: "propagation-loss", h1: "伝搬損失モデル比較", fig: "現在距離" },
     { slug: "ncu-below-ground", h1: "GL以下NCU・水道BOX診断", fig: "NCUが地面より下にある場合" },
     { slug: "simple-link-budget", h1: "かんたんリンク計算", fig: "リンク余裕" },
@@ -109,7 +109,7 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
   await page.getByText("モデルの前提条件・入力の使われ方").click();
   await expect(page.getByText("二重計上に注意")).toBeVisible();
   await expect(page.getByText("奥村・秦の高さ入力")).toBeVisible();
-  await expect(page.getByRole("button", { name: "RSSI/RSRPの説明" })).toBeVisible();
+  await expect(page.getByText("計算値と現地RSSI/RSRPの差分をまとめて補正します。")).toBeVisible();
   await expect(page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })).toBeVisible();
   await expect(page.getByText("2025〜2026年の研究を追うと")).toBeVisible();
 });
@@ -150,20 +150,20 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 test("NCU below-ground page updates warnings and diagram from BOX conditions", async ({ page }) => {
   await page.goto("/tools/ncu-below-ground/");
 
-  await expect(page.getByRole("tab", { name: /現場前に見積もる/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /現場前に見積もる/ })).toBeVisible();
   await expect(page.getByText("迷わない入力順")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "NCUが地面より下にある場合の設定パラメータ図" })).toBeVisible();
-  await expect(page.getByText("設定サマリ")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "NCUが地面より下にある場合の断面図" })).toBeVisible();
+  await expect(page.getByText("シミュレーション結果の2D図")).toBeVisible();
   await expect(page.getByText("GL以下のNCUは、奥村・秦モデルや2波モデルのアンテナ高にマイナス値")).toBeVisible();
   await expect(page.getByText("リンクマージンレンジ")).toBeVisible();
 
   await page.locator("#ncu-frequencyMHz").fill("915");
   await page.locator("#ncu-distance").fill("600");
-  await page.locator("#ncu-coverMaterial").selectOption("cast_iron");
-  await page.locator("#ncu-moisture").selectOption("standing_water");
+  await page.getByRole("button", { name: "鋳鉄蓋", exact: true }).click();
+  await page.getByRole("button", { name: "水が溜まる", exact: true }).click();
   await page.locator("#ncu-depth").fill("1.2");
-  await page.locator("#ncu-opening").selectOption("metal_frame");
-  await page.locator("#ncu-surfaceObstruction").selectOption("parked_vehicle");
+  await page.getByRole("button", { name: "金属枠が強い", exact: true }).click();
+  await page.getByRole("button", { name: "駐車車両で覆われる", exact: true }).click();
 
   await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("915 MHz");
   await expect(page.getByTestId("ncu-assumption-diagram")).toContainText("600 m");
@@ -180,7 +180,7 @@ test("NCU below-ground page updates warnings and diagram from BOX conditions", a
 test("NCU field analysis ranks causes from measurement deltas", async ({ page }) => {
   await page.goto("/tools/ncu-below-ground/");
 
-  await page.getByRole("tab", { name: /現場で原因を追い込む/ }).click();
+  await page.getByRole("button", { name: /現場で原因を追い込む/ }).click();
   await expect(page.getByTestId("ncu-field-analysis")).toBeVisible();
   await expect(page.getByRole("heading", { name: "現場RSSI/RSRPから原因を追い込む" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "RSRQ・SNRなど通信品質指標の簡易診断" })).toBeVisible();
@@ -243,28 +243,28 @@ test("propagation page includes the Okumura-Hata column", async ({ page }) => {
 test("RF learning quest answers immediately and saves progress", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
   await expect(
-    page.getByRole("heading", { level: 1, name: "問題を倒して、アンテナ設計の勘を育てる" })
+    page.getByRole("heading", { level: 1, name: "クエストで、アンテナ設計の判断を一つずつ固める" })
   ).toBeVisible();
-  await expect(page.getByText("入門、初心者、見習い、実務者、玄人、研究者の6モードで合計700問")).toBeVisible();
-  await expect(page.getByText("アンテナギルド")).toBeVisible();
+  await expect(page.getByText("7モードで合計1000問")).toBeVisible();
+  await expect(page.getByText("ことばカード図鑑")).toBeVisible();
   await expect(page.getByRole("link", { name: /アンテナ製品を見る/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /周波数からアンテナを探す/ }).first()).toBeVisible();
   await expect(page.getByText("第1章 STAGE 1-10")).toBeVisible();
-  await expect(page.getByText("電波と波長").first()).toBeVisible();
+  await expect(page.getByText("電波と単位の基礎").first()).toBeVisible();
   await expect(page.getByText("20章×10問")).toBeVisible();
-  await expect(page.getByRole("button", { name: /研究者モード/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /研究者モード 100問/ })).toBeVisible();
 
   await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
-  await expect(page.getByText("電波・高周波を扱う技術分野 が正解です。")).toBeVisible();
+  await expect(page.getByText("正解は「電波・高周波を扱う技術分野」です。")).toBeVisible();
   await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
   await expect(page.getByText("現場コラム").first()).toBeVisible();
   await expect(page.getByText("アンテナ設計の次の一手")).toBeVisible();
   await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
-  await expect(page.getByText("1/700")).toBeVisible();
+  await expect(page.getByText("1/1000").first()).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/700")).toBeVisible();
+  await expect(page.getByText("1/1000").first()).toBeVisible();
   await page.getByRole("button", { name: /ステージ1 RF/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
 });
@@ -281,12 +281,12 @@ test("RF learning quest clears a wrong answer when the stage is clicked again", 
 
   await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
-  await expect(page.getByText("1/700")).toBeVisible();
+  await expect(page.getByText("1/1000").first()).toBeVisible();
 });
 
 test("RF learning quest has researcher mode with recent-study sources", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
-  await page.getByRole("button", { name: /研究者モード/ }).click();
+  await page.getByRole("button", { name: /研究者モード 100問/ }).click();
 
   await expect(page.getByRole("heading", { name: "アンテナ研究と最新伝搬の塔" })).toBeVisible();
   await expect(page.getByText("2025年の屋内LoRaWAN測定データ研究")).toBeVisible();
@@ -308,7 +308,7 @@ test("RF learning quest unlocks certification exam and prepares PDF certificate"
   }, beginnerProgress);
 
   await page.goto("/tools/rf-learning-quest/");
-  await page.getByRole("button", { name: /初心者モード/ }).click();
+  await page.getByRole("button", { name: /初心者モード 100問/ }).click();
   await expect(page.getByText("初心者モード 修了試験")).toBeVisible();
   await expect(page.getByText("修了試験が解放されています。")).toBeVisible();
 
@@ -347,7 +347,7 @@ test("RF learning quest unlocks certification exam and prepares PDF certificate"
 
 test("RF learning quest shows a level-up screen after five clears", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
-  await page.getByRole("button", { name: /初心者モード/ }).click();
+  await page.getByRole("button", { name: /初心者モード 100問/ }).click();
 
   await page.getByRole("button", { name: "約2倍" }).click();
   await page.getByRole("button", { name: /ステージ2 dBmの巻物/ }).click();
@@ -361,5 +361,5 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
 
   await expect(page.getByText("レベルアップ")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
-  await expect(page.getByText("5/700")).toBeVisible();
+  await expect(page.getByText("5/1000").first()).toBeVisible();
 });

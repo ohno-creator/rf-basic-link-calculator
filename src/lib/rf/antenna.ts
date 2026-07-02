@@ -344,15 +344,17 @@ export function calculateReflectorRisEffect(input: {
   const efficiency = input.efficiencyPercent / 100;
   const equivalentDiameterM = Math.sqrt((4 * areaM2) / Math.PI);
   const apertureGainDbi = linearToDbi((4 * Math.PI * areaM2 * efficiency) / wavelengthM ** 2);
-  // 受動開口の利得[dBi]を、入射波の捕捉と受信方向への再放射の2段に適用する。
-  const twoHopLossUpperBoundDb =
-    calculateFsplDb(input.frequencyMHz, input.txDistanceM / 1000) +
-    calculateFsplDb(input.frequencyMHz, input.rxDistanceM / 1000) -
-    2 * apertureGainDbi;
   const directLossDb = calculateFsplDb(
     input.frequencyMHz,
     (input.txDistanceM + input.rxDistanceM) / 1000
   );
+  // 受動開口の利得[dBi]を、入射波の捕捉と受信方向への再放射の2段に適用する。
+  const farFieldProductLossDb =
+    calculateFsplDb(input.frequencyMHz, input.txDistanceM / 1000) +
+    calculateFsplDb(input.frequencyMHz, input.rxDistanceM / 1000) -
+    2 * apertureGainDbi;
+  // 大開口・近距離ではプロダクト式が鏡面反射の物理下限 FSPL(d1+d2) を下回るため、鏡面極限で飽和させる。
+  const twoHopLossUpperBoundDb = Math.max(farFieldProductLossDb, directLossDb);
   return {
     wavelengthM,
     areaM2,

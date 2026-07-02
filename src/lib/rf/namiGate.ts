@@ -105,6 +105,35 @@ export const HEATMAP_MODES: { id: HeatmapMode; label: string; short: string }[] 
 
 // ── 純粋関数（単体テスト可能・係数差し替えの単一ソース）──
 
+/** 周波数[GHz]の防御的正規化。入力途中の空欄(0)・負値・NaNは既定値へ戻し、log10の発散を防ぐ。 */
+export function normalizeFrequencyGHz(freqGHz: number): number {
+  return Number.isFinite(freqGHz) && freqGHz > 0 ? freqGHz : defaultNamiGateInput.frequencyGHz;
+}
+
+function normalizePositive(value: number, fallback: number): number {
+  return Number.isFinite(value) && value > 0 ? value : fallback;
+}
+
+function normalizeFinite(value: number, fallback: number): number {
+  return Number.isFinite(value) ? value : fallback;
+}
+
+/**
+ * シミュレーション入力の防御的正規化。NumberFieldはblurまで未クランプ値を通知するため、
+ * 入力途中の一時的な 0・負値・NaN でも全出力が有限になることをここで保証する。
+ */
+export function normalizeNamiGateInput(input: NamiGateInput): NamiGateInput {
+  return {
+    ...input,
+    frequencyGHz: normalizeFrequencyGHz(input.frequencyGHz),
+    incidentAngleDeg: normalizeFinite(input.incidentAngleDeg, defaultNamiGateInput.incidentAngleDeg),
+    txPowerDbm: normalizeFinite(input.txPowerDbm, defaultNamiGateInput.txPowerDbm),
+    outdoorDistanceM: normalizePositive(input.outdoorDistanceM, defaultNamiGateInput.outdoorDistanceM),
+    roomWidthM: normalizePositive(input.roomWidthM, defaultNamiGateInput.roomWidthM),
+    roomDepthM: normalizePositive(input.roomDepthM, defaultNamiGateInput.roomDepthM)
+  };
+}
+
 /** 周波数[GHz]からナミゲート基準利得[dB]を線形補間（テーブル端でクランプ）。 */
 export function interpGain(freqGHz: number): number {
   const table = NAMI_GATE_GAIN_TABLE;
@@ -122,11 +151,17 @@ export function interpGain(freqGHz: number): number {
   return table[0].gainDb;
 }
 
-/** 自由空間損失[dB]。屋外（基地局→窓）の絶対損失に使う。 */
+/**
+ * 自由空間損失[dB]。屋外（基地局→窓）の絶対損失に使う。
+ * 不正距離（0・負・NaN）は normalizeNamiGateInput と同じ既定値へ戻し、有効な小距離のみ0.1m床を適用する。
+ */
 export function calculateFsplDb(distanceM: number, freqGHz: number): number {
-  const safeKm = Math.max(distanceM, 0.1) / 1000;
-  const freqMHz = freqGHz * 1000;
-  return 32.44 + 20 * Math.log10(safeKm) + 20 * Math.log10(freqMHz);
+  const safeDistanceM =
+    Number.isFinite(distanceM) && distanceM > 0
+      ? Math.max(distanceM, 0.1)
+      : defaultNamiGateInput.outdoorDistanceM;
+  const freqMHz = normalizeFrequencyGHz(freqGHz) * 1000;
+  return 32.44 + 20 * Math.log10(safeDistanceM / 1000) + 20 * Math.log10(freqMHz);
 }
 
 /**
@@ -209,7 +244,8 @@ function statsOf(values: Float32Array): SimStats {
  * beamAngle = atan2(dx, dy)（正面=0°, 右=+, 左=-）。これは入射角 incidentAngle の符号と整合する。
  * この約束はヒートマップ描画（窓マーカー・入射ray）と入力の符号を一致させるため変更しないこと。
  */
-export function calculateSimulation(input: NamiGateInput): NamiGateSimulation {
+export function calculateSimulation(rawInput: NamiGateInput): NamiGateSimulation {
+  const input = normalizeNamiGateInput(rawInput);
   const { frequencyGHz, incidentAngleDeg, txPowerDbm, outdoorDistanceM, roomWidthM, roomDepthM, glassType } = input;
 
   const glassLossDb = (GLASS_TYPES.find((g) => g.id === glassType) ?? GLASS_TYPES[0]).lossDb;

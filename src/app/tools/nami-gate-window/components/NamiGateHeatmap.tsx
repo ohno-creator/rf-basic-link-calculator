@@ -69,7 +69,9 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
   const handlePointer = (event: React.PointerEvent<SVGSVGElement>) => {
     const rect = event.currentTarget.getBoundingClientRect();
     const col = Math.floor(((event.clientX - rect.left) / rect.width) * GRID_COLS);
-    const row = Math.floor(((event.clientY - rect.top) / rect.height) * GRID_ROWS);
+    // セル群は translate(0, 1.6) で窓ストリップ分だけ下げて描かれるため、
+    // ポインタ位置も viewBox 全高(GRID_ROWS+1.6)の座標系へ換算してからオフセットを差し引く。
+    const row = Math.floor(((event.clientY - rect.top) / rect.height) * (GRID_ROWS + 1.6) - 1.6);
     if (col >= 0 && col < GRID_COLS && row >= 0 && row < GRID_ROWS) {
       setHover({ col, row });
     }

@@ -19,6 +19,9 @@ playwright-report/
 .DS_Store
 *.pem
 
+# AIエージェントのローカル状態（コミット対象外）
+.claude/
+
 # debug
 npm-debug.log*
 yarn-debug.log*
