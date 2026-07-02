@@ -36,6 +36,20 @@ jobs:
       - name: Test
         run: npm run test
 
+      # e2e はデプロイ前のゲート。失敗時は Build/Deploy に進まず、壊れた内容の公開を防ぐ。
+      # ブラウザはキャッシュしてデプロイ時間の増加を抑える（キャッシュヒット時はダウンロードを省略）。
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install Playwright browser (chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E test
+        run: npm run test:e2e
+
       - name: Build static app
         run: npm run build
         env:
