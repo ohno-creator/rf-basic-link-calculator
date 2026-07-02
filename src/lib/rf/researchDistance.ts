@@ -116,6 +116,11 @@ function clampPositive(value: number, fallback: number): number {
   return Number.isFinite(value) && value > 0 ? value : fallback;
 }
 
+export function normalizeResearchFrequencyGHz(frequencyGHz: number): number {
+  // 空欄はUIで0になるため、非正値・NaNは既定周波数[GHz]へ戻す。
+  return clampPositive(frequencyGHz, defaultResearchDistanceInput.frequencyGHz);
+}
+
 function distanceLabel(distanceM: number): string {
   if (distanceM >= 1000) {
     return `${(distanceM / 1000).toFixed(distanceM >= 10_000 ? 0 : 1)}km`;
@@ -334,28 +339,36 @@ function calculateCost231WalfischIkegamiNlosDb(input: ResearchDistanceInput, dis
 
 export function calculateResearchPathLossDb(input: ResearchDistanceInput, distanceM: number): number {
   const effectiveDistanceM = Math.max(1, distanceM);
+  const normalizedInput = {
+    ...input,
+    frequencyGHz: normalizeResearchFrequencyGHz(input.frequencyGHz)
+  };
 
-  switch (input.model) {
+  switch (normalizedInput.model) {
     case "ci":
-      return calculateCiPathLossDb(input.frequencyGHz, effectiveDistanceM, input.pathLossExponent);
+      return calculateCiPathLossDb(
+        normalizedInput.frequencyGHz,
+        effectiveDistanceM,
+        normalizedInput.pathLossExponent
+      );
     case "dual_slope":
-      return calculateDualSlopePathLossDb(input, effectiveDistanceM);
+      return calculateDualSlopePathLossDb(normalizedInput, effectiveDistanceM);
     case "sui_terrain_a":
-      return calculateSuiPathLossDb(input, effectiveDistanceM, "a");
+      return calculateSuiPathLossDb(normalizedInput, effectiveDistanceM, "a");
     case "sui_terrain_b":
-      return calculateSuiPathLossDb(input, effectiveDistanceM, "b");
+      return calculateSuiPathLossDb(normalizedInput, effectiveDistanceM, "b");
     case "sui_terrain_c":
-      return calculateSuiPathLossDb(input, effectiveDistanceM, "c");
+      return calculateSuiPathLossDb(normalizedInput, effectiveDistanceM, "c");
     case "cost231_wi_nlos":
-      return calculateCost231WalfischIkegamiNlosDb(input, effectiveDistanceM);
+      return calculateCost231WalfischIkegamiNlosDb(normalizedInput, effectiveDistanceM);
     case "tr38901_umi_los":
-      return calculate3gppUmiLosPathLossDb(input, effectiveDistanceM);
+      return calculate3gppUmiLosPathLossDb(normalizedInput, effectiveDistanceM);
     case "tr38901_umi_nlos":
-      return calculate3gppUmiNlosPathLossDb(input, effectiveDistanceM);
+      return calculate3gppUmiNlosPathLossDb(normalizedInput, effectiveDistanceM);
     case "tr38901_uma_los":
-      return calculate3gppUmaLosPathLossDb(input, effectiveDistanceM);
+      return calculate3gppUmaLosPathLossDb(normalizedInput, effectiveDistanceM);
     case "tr38901_uma_nlos":
-      return calculate3gppUmaNlosPathLossDb(input, effectiveDistanceM);
+      return calculate3gppUmaNlosPathLossDb(normalizedInput, effectiveDistanceM);
   }
 }
 

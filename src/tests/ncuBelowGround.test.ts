@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  applyMeasuredCorrectionDb,
   calculateNcuFieldAnalysis,
   calculateNcuBelowGround,
   calculateNcuRadioMetricsDiagnosis,
@@ -78,6 +79,11 @@ describe("NCU below-ground calculator", () => {
       6
     );
     expect(withCorrection.warnings.some((warning) => warning.id === "missing-measurement")).toBe(false);
+  });
+
+  it("adds the recommended field correction to the current correction", () => {
+    expect(applyMeasuredCorrectionDb(8, -3.5)).toBeCloseTo(4.5, 8);
+    expect(applyMeasuredCorrectionDb(-6, 2)).toBeCloseTo(-4, 8);
   });
 
   it("ranks field-analysis causes from RSSI differences", () => {

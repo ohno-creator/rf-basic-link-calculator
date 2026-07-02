@@ -7,6 +7,18 @@ import {
 } from "@/lib/rf/researchDistance";
 
 describe("research distance calculations", () => {
+  it.each([0, -1, Number.NaN])(
+    "does not throw for invalid frequency %s GHz",
+    (frequencyGHz) => {
+      expect(() =>
+        calculateResearchDistance({
+          ...defaultResearchDistanceInput,
+          frequencyGHz
+        })
+      ).not.toThrow();
+    }
+  );
+
   it("solves CI distance from the allowed median path loss", () => {
     const input = {
       ...defaultResearchDistanceInput,

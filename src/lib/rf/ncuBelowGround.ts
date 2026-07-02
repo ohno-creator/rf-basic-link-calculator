@@ -532,6 +532,14 @@ function normalizeMeasurement(value: number, fallback: number): number {
   return Number.isFinite(value) ? value : fallback;
 }
 
+/** 現在の実測補正へ、現場解析で得た残差補正を加算する。単位はともにdB。 */
+export function applyMeasuredCorrectionDb(
+  currentCorrectionDb: number,
+  recommendedCorrectionDb: number
+): number {
+  return currentCorrectionDb + recommendedCorrectionDb;
+}
+
 function createFinding(
   id: string,
   label: string,

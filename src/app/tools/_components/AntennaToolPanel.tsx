@@ -1194,7 +1194,7 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
         },
         formula: shortKind === "monopole"
           ? "Rr ≈ 40π²(h/λ)²\n効率 η = Rr / (Rr + Rloss)"
-          : "Rr ≈ 80π²(l/λ)²\n効率 η = Rr / (Rr + Rloss)",
+          : "Rr ≈ 20π²(l/λ)²\n効率 η = Rr / (Rr + Rloss)",
         explanation: "短いモノポール/ダイポールの低次近似です。この計算は、S11やVSWRが良くても飛びが悪い時に、短さと損失がどれほど効いているかを説明するために使います。実アンテナでは整合回路やGND、コイル、筐体電流も効きます。",
         columnTitle: "コラム：S11が良いのに飛ばない理由を分ける",
         column: [
@@ -1361,7 +1361,7 @@ function buildView(toolId: AntennaToolId, values: Record<string, number>, shortK
           reference: 0,
           referenceLabel: "直接FSPL"
         },
-        formula: "Gsurface ≈ 4πAη / λ²\nL2hop ≈ FSPL(d1)+FSPL(d2)-Gsurface\nRff ≈ 2D²/λ",
+        formula: "Gsurface ≈ 4πAη / λ²\nL2hop ≈ FSPL(d1)+FSPL(d2)-2·Gsurface\nRff ≈ 2D²/λ",
         explanation: "反射板/RISを面積を持つ受動開口として見た上限寄りの概算です。この計算は、反射面を置く価値がありそうか、面積不足か、距離が厳しすぎるかを一次判断するために使います。実際のRISパスロスは偏波、散乱、位相分布、照明、近傍/遠方界条件で変わります。",
         columnTitle: "コラム：反射板は、置けば必ず効くわけではない",
         column: [

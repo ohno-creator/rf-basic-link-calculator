@@ -269,7 +269,7 @@ export function calculateRadiationResistance(input: {
   const radiationResistanceOhm =
     input.kind === "monopole"
       ? 40 * Math.PI ** 2 * lengthRatio ** 2
-      : 80 * Math.PI ** 2 * lengthRatio ** 2;
+      : 20 * Math.PI ** 2 * lengthRatio ** 2;
   const efficiency = radiationResistanceOhm / (radiationResistanceOhm + input.lossResistanceOhm);
   return {
     wavelengthM,
@@ -344,10 +344,11 @@ export function calculateReflectorRisEffect(input: {
   const efficiency = input.efficiencyPercent / 100;
   const equivalentDiameterM = Math.sqrt((4 * areaM2) / Math.PI);
   const apertureGainDbi = linearToDbi((4 * Math.PI * areaM2 * efficiency) / wavelengthM ** 2);
+  // 受動開口の利得[dBi]を、入射波の捕捉と受信方向への再放射の2段に適用する。
   const twoHopLossUpperBoundDb =
     calculateFsplDb(input.frequencyMHz, input.txDistanceM / 1000) +
     calculateFsplDb(input.frequencyMHz, input.rxDistanceM / 1000) -
-    apertureGainDbi;
+    2 * apertureGainDbi;
   const directLossDb = calculateFsplDb(
     input.frequencyMHz,
     (input.txDistanceM + input.rxDistanceM) / 1000

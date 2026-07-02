@@ -6,9 +6,11 @@ import {
   calculateGratingLobes,
   calculatePatchAntenna,
   calculateRadiationResistance,
+  calculateReflectorRisEffect,
   calculateSmallAntennaLimit,
   dbiToDbd
 } from "@/lib/rf/antenna";
+import { calculateFsplDb } from "@/lib/rf/fspl";
 
 describe("antenna calculations", () => {
   it("converts dBi to dBd", () => {
@@ -72,6 +74,22 @@ describe("antenna calculations", () => {
     expect(result.efficiencyPercent).toBeLessThan(70);
   });
 
+  it("uses total dipole length for short-dipole radiation resistance", () => {
+    const result = calculateRadiationResistance({
+      frequencyMHz: 920,
+      lengthMm: 60,
+      lossResistanceOhm: 2,
+      kind: "dipole"
+    });
+    const expectedResistanceOhm = 20 * Math.PI ** 2 * (result.lengthM / result.wavelengthM) ** 2;
+
+    expect(result.radiationResistanceOhm).toBeCloseTo(expectedResistanceOhm, 8);
+    expect(result.efficiency).toBeCloseTo(
+      expectedResistanceOhm / (expectedResistanceOhm + 2),
+      8
+    );
+  });
+
   it("calculates small antenna Chu-limit quantities", () => {
     const result = calculateSmallAntennaLimit({
       frequencyMHz: 920,
@@ -81,5 +99,22 @@ describe("antenna calculations", () => {
 
     expect(result.ka).toBeLessThan(0.5);
     expect(result.chuQ).toBeGreaterThan(10);
+  });
+
+  it("applies aperture gain to both legs of a passive reflector path", () => {
+    const result = calculateReflectorRisEffect({
+      frequencyMHz: 4800,
+      widthM: 1,
+      heightM: 1,
+      txDistanceM: 30,
+      rxDistanceM: 30,
+      efficiencyPercent: 50
+    });
+    const expectedLossDb =
+      calculateFsplDb(4800, 0.03) +
+      calculateFsplDb(4800, 0.03) -
+      2 * result.apertureGainDbi;
+
+    expect(result.twoHopLossUpperBoundDb).toBeCloseTo(expectedLossDb, 8);
   });
 });

@@ -24,6 +24,7 @@ import {
   defaultResearchDistanceInput,
   formatResearchDistance,
   generateResearchDistanceCurveData,
+  normalizeResearchFrequencyGHz,
   type ReliabilityPercent,
   type ResearchDistanceInput,
   type ResearchDistanceModel
@@ -421,7 +422,9 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 max={100}
                 step={0.01}
                 value={input.frequencyGHz}
-                onChange={(value) => update("frequencyGHz", value)}
+                onChange={(value) =>
+                  update("frequencyGHz", normalizeResearchFrequencyGHz(value))
+                }
               />
               <NumberField
                 id="shadowFadingStdDb"

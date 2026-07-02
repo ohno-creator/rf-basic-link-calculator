@@ -34,6 +34,7 @@ import {
   Waves
 } from "lucide-react";
 import {
+  applyMeasuredCorrectionDb,
   calculateNcuFieldAnalysis,
   calculateNcuBelowGround,
   calculateNcuRadioMetricsDiagnosis,
@@ -2054,7 +2055,17 @@ export function NcuBelowGroundClient() {
           frequencyMHz={input.frequencyMHz}
           onMeasurementChange={updateFieldMeasurement}
           onRadioMetricChange={updateRadioMetric}
-          onApplyCorrection={() => update("measuredCorrectionDb", Number(fieldAnalysis.recommendedCorrectionDb.toFixed(1)))}
+          onApplyCorrection={() =>
+            update(
+              "measuredCorrectionDb",
+              Number(
+                applyMeasuredCorrectionDb(
+                  input.measuredCorrectionDb,
+                  fieldAnalysis.recommendedCorrectionDb
+                ).toFixed(1)
+              )
+            )
+          }
         />
       ) : null}
 
