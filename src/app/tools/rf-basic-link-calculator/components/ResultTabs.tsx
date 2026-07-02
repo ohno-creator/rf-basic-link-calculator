@@ -12,7 +12,7 @@ import { RadioPathDiagram } from "./RadioPathDiagram";
 import { ResultReadingGuide } from "./ResultReadingGuide";
 import { SensitivityLineVisual } from "./SensitivityLineVisual";
 import { SignalFlowDiagram } from "./SignalFlowDiagram";
-import { TwoRayInterferenceLab } from "./TwoRayInterferenceLab";
+import { TwoRayInterferenceLab } from "@/app/tools/_components/TwoRayInterferenceLab";
 
 type ResultTabsProps = {
   input: LinkBudgetInput;

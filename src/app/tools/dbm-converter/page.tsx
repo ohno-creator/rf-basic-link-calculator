@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DbmConverterPanel } from "@/app/tools/rf-basic-link-calculator/components/DbmConverterPanel";
+import { DbmConverterPanel } from "@/app/tools/_components/DbmConverterPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

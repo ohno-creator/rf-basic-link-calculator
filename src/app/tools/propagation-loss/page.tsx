@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { HataColumn } from "@/app/tools/rf-basic-link-calculator/components/HataColumn";
-import { PropagationExplorer } from "@/app/tools/rf-basic-link-calculator/components/PropagationExplorer";
-import { PropagationMeasurementColumn } from "@/app/tools/rf-basic-link-calculator/components/PropagationMeasurementColumn";
-import { TwoRayInterferenceLab } from "@/app/tools/rf-basic-link-calculator/components/TwoRayInterferenceLab";
+import { HataColumn } from "@/app/tools/_components/HataColumn";
+import { PropagationExplorer } from "@/app/tools/_components/PropagationExplorer";
+import { PropagationMeasurementColumn } from "@/app/tools/_components/PropagationMeasurementColumn";
+import { TwoRayInterferenceLab } from "@/app/tools/_components/TwoRayInterferenceLab";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

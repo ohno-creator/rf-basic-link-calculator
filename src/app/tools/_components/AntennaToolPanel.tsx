@@ -32,7 +32,7 @@ import {
 } from "@/lib/rf/antenna";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { rfErrorMessage } from "@/lib/rfErrorMessages";
-import { FormulaExplanationCard } from "../rf-basic-link-calculator/components/FormulaExplanationCard";
+import { FormulaExplanationCard } from "@/app/tools/_components/FormulaExplanationCard";
 
 export type AntennaToolId =
   | "effective-aperture"

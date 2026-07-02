@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FrequencyWavelengthPanel } from "@/app/tools/rf-basic-link-calculator/components/FrequencyWavelengthPanel";
+import { FrequencyWavelengthPanel } from "@/app/tools/_components/FrequencyWavelengthPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

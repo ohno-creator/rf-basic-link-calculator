@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, Compass, Eye, ListChecks, Target } from "lucide-react";
 import type { ReactNode } from "react";
-import { ConsultationCta } from "@/app/tools/rf-basic-link-calculator/components/ConsultationCta";
+import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
 import type { BasicToolMeta } from "@/data/basicTools";
 import { toolDirectory } from "@/data/toolDirectory";
 import { COLUMN_URL } from "@/lib/rf/presets";

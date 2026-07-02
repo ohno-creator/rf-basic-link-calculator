@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { SimpleLinkBudgetPanel } from "@/app/tools/rf-basic-link-calculator/components/SimpleLinkBudgetPanel";
+import { SimpleLinkBudgetPanel } from "@/app/tools/_components/SimpleLinkBudgetPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

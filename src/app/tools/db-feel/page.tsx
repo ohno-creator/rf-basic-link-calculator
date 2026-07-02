@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { DbFeelPanel } from "@/app/tools/rf-basic-link-calculator/components/DbFeelPanel";
+import { DbFeelPanel } from "@/app/tools/_components/DbFeelPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

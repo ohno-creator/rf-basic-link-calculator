@@ -3,7 +3,7 @@ import { Card } from "@/components/Card";
 import { getPropagationAreaOption } from "@/data/linkBudgetOptions";
 import { formatDb, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
-import { ConsultationCta } from "./ConsultationCta";
+import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
 import { ResultTabs } from "./ResultTabs";
 
 type ResultDetailsProps = {

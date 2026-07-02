@@ -18,7 +18,7 @@ import {
   saveStoredInput
 } from "@/lib/rf/share";
 import { BeginnerRoadmap } from "./BeginnerRoadmap";
-import { ConsultationCta } from "./ConsultationCta";
+import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
 import { CalculatorTabs } from "./CalculatorTabs";
 import { FaqSection } from "./FaqSection";
 import { HeroSection } from "./HeroSection";

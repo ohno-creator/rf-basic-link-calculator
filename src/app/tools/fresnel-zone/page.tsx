@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { FresnelDeepDive } from "@/app/tools/rf-basic-link-calculator/components/FresnelDeepDive";
-import { FresnelZonePanel } from "@/app/tools/rf-basic-link-calculator/components/FresnelZonePanel";
+import { FresnelDeepDive } from "@/app/tools/_components/FresnelDeepDive";
+import { FresnelZonePanel } from "@/app/tools/_components/FresnelZonePanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

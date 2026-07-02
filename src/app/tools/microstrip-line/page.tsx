@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { MicrostripLinePanel } from "@/app/tools/rf-basic-link-calculator/components/MicrostripLinePanel";
+import { MicrostripLinePanel } from "@/app/tools/_components/MicrostripLinePanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

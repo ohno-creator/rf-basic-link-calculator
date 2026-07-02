@@ -8,7 +8,7 @@ import {
   type LinkBudgetInput,
   validateLinkBudgetInput
 } from "@/lib/rf/linkBudget";
-import { HataColumn } from "./HataColumn";
+import { HataColumn } from "@/app/tools/_components/HataColumn";
 import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";

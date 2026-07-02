@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { FsplPanel } from "@/app/tools/rf-basic-link-calculator/components/FsplPanel";
+import { FsplPanel } from "@/app/tools/_components/FsplPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

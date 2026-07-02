@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { CoaxCableLossPanel } from "@/app/tools/rf-basic-link-calculator/components/CoaxCableLossPanel";
+import { CoaxCableLossPanel } from "@/app/tools/_components/CoaxCableLossPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";

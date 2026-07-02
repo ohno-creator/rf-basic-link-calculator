@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { VswrConverterPanel } from "@/app/tools/rf-basic-link-calculator/components/VswrConverterPanel";
+import { VswrConverterPanel } from "@/app/tools/_components/VswrConverterPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";
