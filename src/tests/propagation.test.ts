@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { calculateFsplDb } from "@/lib/rf/fspl";
 import { calculatePropagationLoss } from "@/lib/rf/propagation";
 
 const base = {
@@ -76,5 +77,21 @@ describe("Okumura-Hata propagation loss", () => {
     const farOutside = calculatePropagationLoss({ ...base, distanceKm: 50, area: "urbanMedium" });
     expect(farOutside.outOfRange).toBe(true);
     expect(() => calculatePropagationLoss({ ...base, frequencyMHz: 0, area: "open" })).toThrow();
+  });
+
+  it("floors the median loss at free-space loss for short-distance extrapolation", () => {
+    // 適用範囲外の近距離(1m)では、Hataの経験式が自由空間損失を下回る非物理値を返す。
+    // 中央値損失は自由空間損失を下回れないため、FSPLで下限を張る。
+    const fsplDb = calculateFsplDb(900, 0.001);
+    const shortRange = calculatePropagationLoss({ ...base, distanceKm: 0.001, area: "urbanMedium" });
+    expect(shortRange.pathLossDb).toBeCloseTo(fsplDb, 6);
+    expect(shortRange.outOfRange).toBe(true);
+  });
+
+  it("keeps in-range loss unchanged (floor does not bind above 1km)", () => {
+    const inRange = calculatePropagationLoss({ ...base, area: "urbanMedium" });
+    const fsplDb = calculateFsplDb(900, 1);
+    expect(inRange.pathLossDb).toBeGreaterThan(fsplDb);
+    expect(inRange.pathLossDb).toBeCloseTo(126.4, 1);
   });
 });

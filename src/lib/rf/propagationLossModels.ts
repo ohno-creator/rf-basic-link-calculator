@@ -57,7 +57,12 @@ function assertPositiveFinite(value: number, label: string): void {
   }
 }
 
-/** 平面大地2波の遠方近似。ブレークポイント手前では自由空間損失に張り付く。 */
+/**
+ * 平面大地2波の遠方近似（一点見積り用の包絡線）。ブレークポイント手前では自由空間損失に張り付く。
+ * 注意：この max(FSPL, 40log d…) 包絡線が FSPL から 40log d へ切り替わる数学的なクロスオーバーは
+ * d = 4π·ht·hr/λ で、twoRayBreakpointM が返す教科書的ブレークポイント d_bp = 4·ht·hr/λ（最後の
+ * 強め合いピーク）とは π 倍ずれる。両者は別定義で用途も異なるため、一方に合わせて他方を変更しないこと。
+ */
 function twoRayPathLossDb(params: PropagationLossParams): number {
   assertPositiveFinite(params.txHeightM, "送信側アンテナ高");
   assertPositiveFinite(params.rxHeightM, "受信側アンテナ高");

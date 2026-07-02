@@ -18,6 +18,8 @@
  *   開放地 : L = L_urban − 4.78·(log10 f)² + 18.33·log10 f − 40.94
  */
 
+import { calculateFsplDb } from "./fspl";
+
 export type AreaType = "urbanLarge" | "urbanMedium" | "suburban" | "open";
 
 export type PropagationModel = "Hata" | "COST231-Hata";
@@ -114,9 +116,14 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
     pathLossDb = urbanLoss - 4.78 * logF ** 2 + 18.33 * logF - 40.94;
   }
 
+  // 中央値損失の物理下限として FSPL で床を張る。経験式は近距離(d≪1km)や極端な開放地条件で
+  // 自由空間損失を下回る非物理値を返すため。標準的な市街地パラメータ(hb30/hm1.5)では
+  // 適用範囲(d≥1km)で床は拘束しないが、開放地×高基地局×高周波では範囲内でも床が効き得る。
+  const pathLossFlooredDb = Math.max(pathLossDb, calculateFsplDb(f, d));
+
   return {
     model,
-    pathLossDb,
+    pathLossDb: pathLossFlooredDb,
     outOfRange: isOutOfRange(input, model)
   };
 }

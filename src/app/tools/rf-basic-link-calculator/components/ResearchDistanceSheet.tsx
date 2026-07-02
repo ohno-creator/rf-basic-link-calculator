@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, BookOpen, Calculator, RefreshCw, Route, ShieldCheck } from "lucide-react";
 import {
   CartesianGrid,
@@ -24,7 +24,6 @@ import {
   defaultResearchDistanceInput,
   formatResearchDistance,
   generateResearchDistanceCurveData,
-  normalizeResearchFrequencyGHz,
   type ReliabilityPercent,
   type ResearchDistanceInput,
   type ResearchDistanceModel
@@ -147,6 +146,10 @@ function buildResearchInputFromLinkBudget(input: LinkBudgetInput): ResearchDista
   };
 }
 
+// 共有 NumberField と同じ入力セマンティクス（文字列ドラフト保持、クリア・「-」・「1.」等の
+// 編集途中でも0に戻さず親へ通知しない、離脱時に min/max へクランプ）を、このシートの
+// カード型レイアウトを保ったまま適用する。空欄→0を親へ流さないことで、計算・グラフ側の
+// 黙示フォールバックを防ぐ。
 function NumberField({
   id,
   label,
@@ -158,8 +161,37 @@ function NumberField({
   value,
   onChange
 }: NumberFieldProps) {
-  const inputValue = Number.isFinite(value) ? value : 0;
-  const sliderValue = Math.min(max, Math.max(min, inputValue));
+  const [draft, setDraft] = useState(() => String(value));
+  const committedRef = useRef(value);
+
+  useEffect(() => {
+    if (value !== committedRef.current) {
+      committedRef.current = value;
+      setDraft(String(value));
+    }
+  }, [value]);
+
+  const handleChange = (raw: string) => {
+    setDraft(raw);
+    const parsed = Number(raw);
+    if (raw.trim() !== "" && Number.isFinite(parsed)) {
+      committedRef.current = parsed;
+      onChange(parsed);
+    }
+  };
+
+  const handleBlur = () => {
+    let next = committedRef.current;
+    if (next < min) next = min;
+    if (next > max) next = max;
+    if (next !== committedRef.current) {
+      committedRef.current = next;
+      onChange(next);
+    }
+    setDraft(String(next));
+  };
+
+  const sliderValue = Math.min(max, Math.max(min, Number.isFinite(value) ? value : min));
 
   return (
     <label htmlFor={`research-${id}`} className="block rounded-lg border border-slate-200 bg-white p-4">
@@ -173,13 +205,13 @@ function NumberField({
       <span className="mt-3 grid gap-3 sm:grid-cols-[1fr_110px]">
         <input
           id={`research-${id}`}
-          type="number"
-          min={min}
-          max={max}
+          type="text"
+          inputMode={min >= 0 ? "decimal" : "text"}
           step={step}
-          value={inputValue}
+          value={draft}
           className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-          onChange={(event) => onChange(event.target.value === "" ? 0 : Number(event.target.value))}
+          onChange={(event) => handleChange(event.target.value)}
+          onBlur={handleBlur}
         />
         <span className="flex h-10 items-center justify-center rounded-md bg-slate-50 text-sm font-semibold text-slate-700">
           {unit}
@@ -325,6 +357,8 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
   const [input, setInput] = useState<ResearchDistanceInput>(() => buildResearchInputFromLinkBudget(baseInput));
   const result = useMemo(() => calculateResearchDistance(input), [input]);
   const selectedModel = modelOptions.find((option) => option.value === input.model) ?? modelOptions[0];
+  // 周波数が0以下/非有限のときは計算が既定値へフォールバックするため、その旨をバナーで明示する。
+  const frequencyInvalid = !Number.isFinite(input.frequencyGHz) || input.frequencyGHz <= 0;
 
   const update = <K extends keyof ResearchDistanceInput>(key: K, value: ResearchDistanceInput[K]) => {
     setInput((current) => ({ ...current, [key]: value }));
@@ -422,10 +456,14 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 max={100}
                 step={0.01}
                 value={input.frequencyGHz}
-                onChange={(value) =>
-                  update("frequencyGHz", normalizeResearchFrequencyGHz(value))
-                }
+                onChange={(value) => update("frequencyGHz", value)}
               />
+              {frequencyInvalid ? (
+                <Callout tone="caution" title="周波数が未入力または不正です">
+                  周波数が0以下のため、既定値 {defaultResearchDistanceInput.frequencyGHz}GHz で暫定計算しています。
+                  正しい周波数（GHz）を入力すると結果が更新されます。
+                </Callout>
+              ) : null}
               <NumberField
                 id="shadowFadingStdDb"
                 label="シャドウフェージング標準偏差 σ"
