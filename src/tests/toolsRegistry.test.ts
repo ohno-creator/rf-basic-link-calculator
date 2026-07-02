@@ -30,7 +30,7 @@ describe("tool registries", () => {
   });
 
   it("every directory tool has a known category", () => {
-    const categoryIds = new Set(toolCategories.map((c) => c.id));
+    const categoryIds = new Set<string>(toolCategories.map((c) => c.id));
     for (const tool of toolDirectory) {
       expect(categoryIds.has(tool.category)).toBe(true);
     }
