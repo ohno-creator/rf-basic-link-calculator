@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Card } from "@/components/Card";
+import { Callout } from "@/components/Callout";
 import { NumberField } from "@/components/NumberField";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
@@ -29,7 +30,6 @@ export function CoaxCableLossPanel() {
     }
   }, [cable.points, frequencyMHz, quantity]);
 
-  const outOfRange = frequencyMHz < 500 || frequencyMHz > 8000;
   const eirp = result
     ? calculateEirp({
         txPowerDbm,
@@ -75,7 +75,7 @@ export function CoaxCableLossPanel() {
               周波数（MHz）
             </label>
             <Tooltip term="周波数">
-              損失を求めたい運用周波数をMHzで入力します。実測点は500〜8000MHzで、範囲外は線形外挿の参考値です。代表例: Wi-Fi 2.4GHz帯 → 2400、5GHz帯 → 5200。高周波ほど損失は増えます。
+              損失を求めたい運用周波数をMHzで入力します。実測点は500〜8000MHzで、範囲外は√f外挿（最終測定周波数の2倍を上限）の参考値です。代表例: Wi-Fi 2.4GHz帯 → 2400、5GHz帯 → 5200。高周波ほど損失は増えます。
             </Tooltip>
           </div>
           <input
@@ -143,10 +143,10 @@ export function CoaxCableLossPanel() {
             </div>
           </div>
 
-          {outOfRange ? (
-            <p className="mt-2 text-xs leading-relaxed text-amber-700">
-              指定周波数が測定点の範囲（500〜8000MHz）の外側です。外挿による参考値としてご利用ください。
-            </p>
+          {result.extrapolated ? (
+            <Callout tone="caution" size="sm" className="mt-2">
+              <p className="text-xs leading-relaxed">測定範囲外のため√f外挿（上限あり）</p>
+            </Callout>
           ) : null}
 
           <div className="mt-5">
