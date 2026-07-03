@@ -372,7 +372,7 @@ export function SimpleLinkBudgetPanel() {
               </Link>
               <Link
                 href="/tools/free-space-loss"
-                className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                className="inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
                 FSPLだけ見る
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />

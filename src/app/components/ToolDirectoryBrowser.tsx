@@ -157,7 +157,7 @@ export function ToolDirectoryBrowser() {
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                 activeCategory === "all"
                   ? "border-staf bg-staf text-white"
-                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf"
+                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
               }`}
             >
               すべて
@@ -175,7 +175,7 @@ export function ToolDirectoryBrowser() {
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                     active
                       ? "border-staf bg-staf text-white"
-                      : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf"
+                      : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
                   }`}
                 >
                   {category.label}
@@ -194,7 +194,7 @@ export function ToolDirectoryBrowser() {
             <button
               type="button"
               onClick={resetFilters}
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-staf/40 hover:text-staf-dark"
             >
               <X aria-hidden="true" className="h-4 w-4" />
               検索・絞り込みをクリア
@@ -256,7 +256,7 @@ export function ToolDirectoryBrowser() {
                         <Icon aria-hidden="true" className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf">
+                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf-dark">
                           {tool.name}
                           <ArrowUpRight
                             aria-hidden="true"

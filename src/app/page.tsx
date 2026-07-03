@@ -98,7 +98,7 @@ export default function HomePage() {
                     <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-staf-dark opacity-0 transition group-hover:opacity-100" />
                   </div>
                   <p className="mt-4 text-xs font-semibold text-staf-dark">{path.label}</p>
-                  <h3 className="mt-1 text-base font-bold leading-snug text-slate-950 group-hover:text-staf">
+                  <h3 className="mt-1 text-base font-bold leading-snug text-slate-950 group-hover:text-staf-dark">
                     {path.title}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-slate-600">{path.body}</p>

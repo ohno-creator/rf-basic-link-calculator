@@ -39,7 +39,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
           </button>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/30 hover:text-staf"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:border-staf/30 hover:text-staf-dark"
             onClick={onSample}
           >
             <ArrowDown aria-hidden="true" className="h-4 w-4" />

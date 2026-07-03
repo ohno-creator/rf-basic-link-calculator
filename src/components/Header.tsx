@@ -89,7 +89,7 @@ export function Header() {
               aria-expanded={toolsOpen}
               aria-haspopup="true"
               onClick={() => setToolsOpen((open) => !open)}
-              className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
             >
               ツールを切り替え
               <ChevronDown aria-hidden="true" className={`h-4 w-4 transition ${toolsOpen ? "rotate-180" : ""}`} />
@@ -132,13 +132,13 @@ export function Header() {
           </div>
           <Link
             href="/"
-            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
           >
             ツール一覧
           </Link>
           <a
             href={COLUMN_URL}
-            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            className="rounded-md px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
           >
             解説コラム
           </a>

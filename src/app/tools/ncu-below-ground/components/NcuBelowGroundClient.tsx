@@ -675,7 +675,7 @@ export function NcuBelowGroundClient() {
             </div>
             <button
               type="button"
-              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-staf/40 hover:text-staf"
+              className="mt-3 inline-flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2 text-xs font-bold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark"
               onClick={() => setInput(defaultNcuBelowGroundInput)}
             >
               <RotateCcw aria-hidden="true" className="h-4 w-4" />

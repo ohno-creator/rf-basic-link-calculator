@@ -39,7 +39,7 @@ export function Footer() {
                     <li key={tool.href}>
                       <Link
                         href={tool.href}
-                        className="rounded text-sm text-slate-600 transition hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                        className="rounded text-sm text-slate-600 transition hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                       >
                         {tool.name}
                       </Link>

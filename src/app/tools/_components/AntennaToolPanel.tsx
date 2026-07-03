@@ -1797,7 +1797,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
             <button
               key={preset.label}
               type="button"
-              className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              className="rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               onClick={() => applyPreset(preset)}
             >
               {preset.label}

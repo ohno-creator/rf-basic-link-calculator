@@ -166,7 +166,7 @@ export function CalculatorTabs({
             <Link
               key={tool.href}
               href={tool.href}
-              className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf"
+              className="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark"
             >
               {tool.label}
             </Link>

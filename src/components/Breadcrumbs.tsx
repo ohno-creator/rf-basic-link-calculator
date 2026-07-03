@@ -24,7 +24,7 @@ export function Breadcrumbs() {
         <li>
           <Link
             href="/"
-            className="rounded hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            className="rounded hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
           >
             ホーム
           </Link>
