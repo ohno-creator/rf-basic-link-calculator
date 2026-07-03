@@ -116,6 +116,7 @@ describe("antenna calculations", () => {
       2 * result.apertureGainDbi;
 
     expect(result.twoHopLossUpperBoundDb).toBeCloseTo(expectedLossDb, 8);
+    expect(result.clampedToMirrorLimit).toBe(false);
   });
 
   it("clamps the passive reflector loss at the mirror limit FSPL(d1+d2)", () => {
@@ -131,5 +132,6 @@ describe("antenna calculations", () => {
 
     expect(result.twoHopLossUpperBoundDb).toBeCloseTo(mirrorLimitDb, 8);
     expect(result.excessVsDirectDb).toBeCloseTo(0, 8);
+    expect(result.clampedToMirrorLimit).toBe(true);
   });
 });
