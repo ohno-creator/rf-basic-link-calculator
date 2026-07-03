@@ -102,6 +102,18 @@ test("RF calculator keeps each number field's intentional empty-value behavior",
   await expect(researchFrequency).toHaveValue("0.92");
 });
 
+test("research distance delays the invalid-frequency banner while typing", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
+
+  const researchFrequency = page.locator("#research-frequencyGHz");
+  const invalidBanner = page.getByText("周波数が未入力または不正です");
+  await researchFrequency.fill("0.");
+  await expect(invalidBanner).toHaveCount(0);
+  await page.waitForTimeout(400);
+  await expect(invalidBanner).toBeVisible();
+});
+
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
