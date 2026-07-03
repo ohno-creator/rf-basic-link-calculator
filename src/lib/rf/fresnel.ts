@@ -106,7 +106,8 @@ export function analyzeObstacle(
   positionRatio: number,
   txHeightM: number,
   rxHeightM: number,
-  obstacleHeightM: number
+  obstacleHeightM: number,
+  options?: { earthCurvatureK?: number }
 ): ObstacleAnalysis {
   assertPositiveFinite(frequencyMHz, "frequency");
   assertPositiveFinite(totalDistanceKm, "distance");
@@ -122,7 +123,17 @@ export function analyzeObstacle(
   const d2Km = totalDistanceKm * (1 - positionRatio);
   const firstZoneRadiusM = fresnelRadiusM(frequencyMHz, d1Km, d2Km, 1);
 
-  const losHeightM = txHeightM + (rxHeightM - txHeightM) * positionRatio;
+  const earthCurvatureK = options?.earthCurvatureK;
+  if (earthCurvatureK !== undefined) {
+    assertPositiveFinite(earthCurvatureK, "earth_curvature_k");
+  }
+  const d1M = d1Km * 1000;
+  const d2M = d2Km * 1000;
+  // 有効地球半径kRでの地球膨らみ[m]。Rは平均地球半径6,371,000m。
+  const curvatureDropM =
+    earthCurvatureK === undefined ? 0 : (d1M * d2M) / (2 * earthCurvatureK * 6_371_000);
+  const losHeightM =
+    txHeightM + (rxHeightM - txHeightM) * positionRatio - curvatureDropM;
   const clearanceM = losHeightM - obstacleHeightM;
   const clearanceRatio = clearanceM / firstZoneRadiusM;
   const diffractionParamV = -clearanceRatio * Math.SQRT2;
