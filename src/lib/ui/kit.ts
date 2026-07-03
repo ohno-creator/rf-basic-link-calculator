@@ -81,3 +81,28 @@ export const judgementDotClass: Record<LinkJudgementLevel, string> = {
 export function shouldShowMobileResultBar(isIntersecting: boolean, top: number): boolean {
   return !isIntersecting && top > 0;
 }
+
+/**
+ * ChoiceChips の重症度（選択肢の「効きやすさ」目安）。緑=有利〜赤=最も不利。
+ * 数値計算は lib/rf 側が担い、これは選択UIの色分けのための順序付き分類。
+ */
+export type ChoiceChipSeverity = "ok" | "warn" | "bad" | "severe";
+
+/** 重症度 → 選択時のカード面クラスとドット色（NcuBelowGroundClient の配色を昇格）。 */
+export const choiceChipToneClass: Record<ChoiceChipSeverity, { selected: string; dot: string }> = {
+  ok: { selected: "border-emerald-300 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200", dot: "bg-emerald-500" },
+  warn: { selected: "border-amber-300 bg-amber-50 text-amber-900 ring-1 ring-amber-200", dot: "bg-amber-500" },
+  bad: { selected: "border-orange-300 bg-orange-50 text-orange-900 ring-1 ring-orange-200", dot: "bg-orange-500" },
+  severe: { selected: "border-rose-300 bg-rose-50 text-rose-900 ring-1 ring-rose-200", dot: "bg-rose-500" }
+};
+
+/** 凡例・並びの重症度順（緑→赤）。 */
+export const CHOICE_CHIP_SEVERITY_ORDER: readonly ChoiceChipSeverity[] = ["ok", "warn", "bad", "severe"];
+
+/** 重症度 → 凡例ラベル（緑=有利〜赤=不利）。 */
+export const choiceChipSeverityLabel: Record<ChoiceChipSeverity, string> = {
+  ok: "有利",
+  warn: "やや不利",
+  bad: "不利",
+  severe: "最も不利"
+};

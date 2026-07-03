@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  CHOICE_CHIP_SEVERITY_ORDER,
+  choiceChipSeverityLabel,
+  choiceChipToneClass,
   collapsibleStorageKey,
   judgementDotClass,
   judgementStatTone,
@@ -8,6 +11,7 @@ import {
   nextRovingIndex,
   resolveCollapsibleOpen,
   shouldShowMobileResultBar,
+  type ChoiceChipSeverity,
   type MetricTone
 } from "@/lib/ui/kit";
 import type { LinkJudgementLevel } from "@/lib/rf/judgement";
@@ -107,5 +111,30 @@ describe("resolveCollapsibleOpen", () => {
 
   it("namespaces the storage key", () => {
     expect(collapsibleStorageKey("fspl:beginner-guide")).toBe("collapsible:fspl:beginner-guide");
+  });
+});
+
+describe("ChoiceChips severity", () => {
+  const ALL: ChoiceChipSeverity[] = ["ok", "warn", "bad", "severe"];
+
+  it("凡例順は緑→赤（ok→severe）", () => {
+    expect(CHOICE_CHIP_SEVERITY_ORDER).toEqual(["ok", "warn", "bad", "severe"]);
+  });
+
+  it("全重症度にトーン（選択面・ドット）と凡例ラベルがある", () => {
+    for (const s of ALL) {
+      expect(choiceChipToneClass[s].selected).toBeTruthy();
+      expect(choiceChipToneClass[s].dot).toBeTruthy();
+      expect(choiceChipSeverityLabel[s]).toBeTruthy();
+    }
+  });
+
+  it("ドット色が緑/琥珀/橙/薔薇で区別される", () => {
+    expect(choiceChipToneClass.ok.dot).toBe("bg-emerald-500");
+    expect(choiceChipToneClass.warn.dot).toBe("bg-amber-500");
+    expect(choiceChipToneClass.bad.dot).toBe("bg-orange-500");
+    expect(choiceChipToneClass.severe.dot).toBe("bg-rose-500");
+    const dots = ALL.map((s) => choiceChipToneClass[s].dot);
+    expect(new Set(dots).size).toBe(4);
   });
 });
