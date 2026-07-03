@@ -26,9 +26,18 @@ describe("VSWR / return loss / reflection conversions", () => {
     expect(result.reflectedPowerPercent).toBe(0);
   });
 
+  it("treats reflection coefficient 1 the same as return loss 0 dB", () => {
+    const fromReflection = convertVswr("reflection", 1);
+    const fromReturnLoss = convertVswr("returnLoss", 0);
+
+    expect(fromReflection).toEqual(fromReturnLoss);
+    expect(fromReflection.vswr).toBe(Number.POSITIVE_INFINITY);
+    expect(fromReflection.mismatchLossDb).toBe(Number.POSITIVE_INFINITY);
+  });
+
   it("rejects invalid inputs", () => {
     expect(() => convertVswr("vswr", 0.5)).toThrow();
     expect(() => convertVswr("returnLoss", -1)).toThrow();
-    expect(() => convertVswr("reflection", 1)).toThrow();
+    expect(() => convertVswr("reflection", 1.0001)).toThrow();
   });
 });

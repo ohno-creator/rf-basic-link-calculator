@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: [["list"]],
   testMatch: process.env.TEST_VISUAL
-    ? ["**/measure.spec.ts", "**/visual.spec.ts", "**/axe.spec.ts"]
+    ? ["**/measure.spec.ts", "**/visual.spec.ts", "**/axe.spec.ts", "**/foldBudget.spec.ts"]
     : ["**/tools.spec.ts"],
   use: {
     baseURL: "http://localhost:3000",

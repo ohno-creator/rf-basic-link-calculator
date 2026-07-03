@@ -43,8 +43,9 @@ export function interpolateCableLoss(points: LossPoint[], frequencyMHz: number):
     throw new RfError(RfErrorCode.Empty, { field: "cable_measurements" });
   }
 
-  const first = points[0];
-  const last = points[points.length - 1];
+  const sortedPoints = [...points].sort((a, b) => a.freqMHz - b.freqMHz);
+  const first = sortedPoints[0];
+  const last = sortedPoints[sortedPoints.length - 1];
 
   // 測定範囲の外側は、表皮効果が支配的な同軸減衰の √f 物理に合わせてスケール外挿する
   // （referenceLossPoints と同じモデル。誘電損 ∝f は無視した近似で、範囲内は実測の線形補間を使う）。
@@ -53,12 +54,13 @@ export function interpolateCableLoss(points: LossPoint[], frequencyMHz: number):
   }
 
   if (frequencyMHz >= last.freqMHz) {
-    return Math.max(0, last.lossDb * Math.sqrt(frequencyMHz / last.freqMHz));
+    const cappedFrequencyMHz = Math.min(frequencyMHz, last.freqMHz * 2);
+    return Math.max(0, last.lossDb * Math.sqrt(cappedFrequencyMHz / last.freqMHz));
   }
 
-  for (let i = 0; i < points.length - 1; i += 1) {
-    const a = points[i];
-    const b = points[i + 1];
+  for (let i = 0; i < sortedPoints.length - 1; i += 1) {
+    const a = sortedPoints[i];
+    const b = sortedPoints[i + 1];
     if (frequencyMHz >= a.freqMHz && frequencyMHz <= b.freqMHz) {
       const t = (frequencyMHz - a.freqMHz) / (b.freqMHz - a.freqMHz);
       return a.lossDb + t * (b.lossDb - a.lossDb);
@@ -72,6 +74,7 @@ export type CableLossResult = {
   perPieceDb: number;
   totalDb: number;
   powerRemainingPercent: number;
+  extrapolated: boolean;
 };
 
 /** 指定品番（測定点）・周波数・本数から、合計損失と残る電力を求める。 */
@@ -84,10 +87,15 @@ export function cableAssemblyLoss(
 
   const perPieceDb = interpolateCableLoss(points, frequencyMHz);
   const totalDb = perPieceDb * quantity;
+  const measuredFrequenciesMHz = points.map((point) => point.freqMHz);
+  const minMeasuredFrequencyMHz = Math.min(...measuredFrequenciesMHz);
+  const maxMeasuredFrequencyMHz = Math.max(...measuredFrequenciesMHz);
 
   return {
     perPieceDb,
     totalDb,
-    powerRemainingPercent: 10 ** (-totalDb / 10) * 100
+    powerRemainingPercent: 10 ** (-totalDb / 10) * 100,
+    extrapolated:
+      frequencyMHz < minMeasuredFrequencyMHz || frequencyMHz > maxMeasuredFrequencyMHz
   };
 }

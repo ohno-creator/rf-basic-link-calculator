@@ -138,6 +138,7 @@ export function PropagationExplorer() {
   }, [selectedOrder, params]);
 
   const minLoss = results.length > 0 ? results[0].pathLossDb : null;
+  const flooredByFspl = results.some((result) => result.flooredByFspl);
   const chartModels = selectedOrder.map((model) => ({
     value: model,
     label: getPropagationModelOption(model).label,
@@ -483,6 +484,13 @@ export function PropagationExplorer() {
             })}
           </ul>
         )}
+        {flooredByFspl ? (
+          <Callout tone="caution" size="sm" className="mt-2">
+            <p className="text-xs leading-relaxed">
+              経験式が自由空間損失を下回ったため下限値を表示
+            </p>
+          </Callout>
+        ) : null}
       </div>
 
       {/* 実測値の入力 */}
@@ -556,6 +564,7 @@ export function PropagationExplorer() {
         params={{ frequencyMHz, txHeightM, rxHeightM, area, pathLossExponent }}
         currentDistanceKm={distanceKm}
         measured={chartMeasured}
+        flooredByFspl={flooredByFspl}
       />
 
       {/* 書き出し */}

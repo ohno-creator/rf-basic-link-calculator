@@ -44,6 +44,8 @@ export type PropagationLossResult = {
   pathLossDb: number;
   /** モデルの一般的な適用目安の外側か（Hata系のみ判定。他は false） */
   outOfRange: boolean;
+  /** Hata系の経験式がFSPLを下回り、下限値を採用した場合にtrue。 */
+  flooredByFspl: boolean;
 };
 
 function log10(value: number): number {
@@ -86,12 +88,23 @@ export function calculatePropagationLossResult(
       return {
         model,
         pathLossDb: calculateFsplDb(params.frequencyMHz, params.distanceKm),
-        outOfRange: false
+        outOfRange: false,
+        flooredByFspl: false
       };
     case "two_ray":
-      return { model, pathLossDb: twoRayPathLossDb(params), outOfRange: false };
+      return {
+        model,
+        pathLossDb: twoRayPathLossDb(params),
+        outOfRange: false,
+        flooredByFspl: false
+      };
     case "log_distance":
-      return { model, pathLossDb: logDistancePathLossDb(params), outOfRange: false };
+      return {
+        model,
+        pathLossDb: logDistancePathLossDb(params),
+        outOfRange: false,
+        flooredByFspl: false
+      };
     case "okumura_hata":
     case "cost231_hata": {
       const propagation = calculatePropagationLoss({
@@ -103,7 +116,12 @@ export function calculatePropagationLossResult(
         preferredModel: model === "okumura_hata" ? "Hata" : "COST231-Hata"
       });
 
-      return { model, pathLossDb: propagation.pathLossDb, outOfRange: propagation.outOfRange };
+      return {
+        model,
+        pathLossDb: propagation.pathLossDb,
+        outOfRange: propagation.outOfRange,
+        flooredByFspl: propagation.flooredByFspl
+      };
     }
   }
 }
