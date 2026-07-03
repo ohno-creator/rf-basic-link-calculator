@@ -42,4 +42,12 @@ describe("simulateImprovements", () => {
       expect(sim.deltaDb).toBeGreaterThanOrEqual(0);
     }
   });
+
+  it("matches each improvement scenario's actual margin delta", () => {
+    const expectedDeltaDb = [3, 1, 3, 9.0309, 10];
+
+    expect(sims.map((sim) => sim.deltaDb)).toEqual(
+      expectedDeltaDb.map((expected) => expect.closeTo(expected, 4))
+    );
+  });
 });
