@@ -58,6 +58,10 @@ describe("cable assembly loss with quantity", () => {
     expect(result.powerRemainingPercent).toBeCloseTo(25.5, 1);
   });
 
+  it("marks frequencies above the measured range as extrapolated", () => {
+    expect(cableAssemblyLoss(points, 9000, 1).extrapolated).toBe(true);
+  });
+
   it("rejects a quantity below 1", () => {
     expect(() => cableAssemblyLoss(points, 2000, 0)).toThrow();
   });
