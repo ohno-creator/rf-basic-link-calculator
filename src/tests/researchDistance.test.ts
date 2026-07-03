@@ -19,6 +19,16 @@ describe("research distance calculations", () => {
     }
   );
 
+  it("evaluates frequency-range warnings after normalizing an invalid frequency", () => {
+    const result = calculateResearchDistance({
+      ...defaultResearchDistanceInput,
+      model: "tr38901_umi_nlos",
+      frequencyGHz: 0
+    });
+
+    expect(result.warnings.filter((warning) => warning.id === "tr38901-frequency-range")).toHaveLength(0);
+  });
+
   it("solves CI distance from the allowed median path loss", () => {
     const input = {
       ...defaultResearchDistanceInput,
