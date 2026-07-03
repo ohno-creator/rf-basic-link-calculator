@@ -46,6 +46,13 @@ describe("microstrip mitered bend", () => {
     expect(miterCutbackMm(2.0, 50)).toBeCloseTo(2.0 * 0.5 * Math.SQRT2, 5);
     expect(recommendedBendRadiusMm(3.0)).toBeCloseTo(9.0, 5);
   });
+
+  it("accepts miter boundaries and rejects out-of-range percentages", () => {
+    expect(miterCutbackMm(2.0, 0)).toBe(0);
+    expect(miterCutbackMm(2.0, 100)).toBeCloseTo(2.0 * Math.SQRT2, 5);
+    expect(() => miterCutbackMm(2.0, -0.1)).toThrow();
+    expect(() => miterCutbackMm(2.0, 100.1)).toThrow();
+  });
 });
 
 describe("does the bend matter (frequency-based)", () => {
