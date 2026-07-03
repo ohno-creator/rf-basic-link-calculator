@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feature/initial-rf-basic-link-calculator
+      - track/ux0-baseline
   workflow_dispatch:
 
 permissions:
