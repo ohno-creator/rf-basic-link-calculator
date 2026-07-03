@@ -26,7 +26,7 @@
      - **ビーム走査をしない（正面固定照射 $\theta_0 = 0^\circ$）場合**: **$d_{\text{max}} < \lambda$** (1波長以上でグレーティングローブが出現)。
      - **全角走査（最大 $\theta_{0,\text{max}} \to \pm 90^\circ$）を行う場合**: **$d_{\text{max}} < 0.5 \lambda$** (半波長以上でグレーティングローブが出現)。
      - **走査角を最大 $\theta_0 = 45^\circ$ に限定する場合**: **$d_{\text{max}} < 0.586 \lambda$**。
-     - **走査角を最大 $\theta_0 = 60^\circ$ に限定する場合**: **$d_{\text{max}} < 0.535 \lambda$**。
+     - **走査角を最大 $\theta_0 = 60^\circ$ に限定する場合**: **$d_{\text{max}} < 0.536 \lambda$**。
    - **出典**: [S1] Balanis Chapter 6.3.3 / [S2] Mailloux Chapter 3。
 
 2. **グレーティングローブの発生限界比熱減衰**
