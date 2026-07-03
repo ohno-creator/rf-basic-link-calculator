@@ -2,9 +2,12 @@ import { describe, expect, it } from "vitest";
 import {
   analyzeObstacle,
   calculateFresnel,
+  EARTH_RADIUS_M,
   fresnelRadiusM,
-  knifeEdgeDiffractionLossDb
+  knifeEdgeDiffractionLossDb,
+  radioHorizonKm
 } from "@/lib/rf/fresnel";
+import { RfError } from "@/lib/rf/errors";
 
 describe("Fresnel zone radius", () => {
   it("computes the first zone radius at the midpoint", () => {
@@ -80,5 +83,49 @@ describe("obstacle analysis (Fresnel clearance + diffraction)", () => {
   it("rejects invalid heights", () => {
     expect(() => analyzeObstacle(2400, 1, 0.5, -1, 10, 5)).toThrow();
     expect(() => analyzeObstacle(2400, 1, 0.5, 10, 10, -1)).toThrow();
+  });
+});
+
+describe("地球曲率モード（E6 / A3a）", () => {
+  it("options未指定は従来動作（curvatureDropM=0・losHeight不変）＝後方互換", () => {
+    const a = analyzeObstacle(2400, 1, 0.5, 10, 10, 5);
+    expect(a.curvatureDropM).toBe(0);
+    expect(a.losHeightM).toBe(10);
+  });
+
+  it("k=4/3・全長10km中点で曲率降下 ≈ 1.4715m", () => {
+    const a = analyzeObstacle(2400, 10, 0.5, 50, 50, 5, { earthCurvatureK: 4 / 3 });
+    expect(a.curvatureDropM).toBeCloseTo(1.4715, 4);
+    // 降下分だけLOS高が下がる（従来50m→約48.53m）。
+    expect(a.losHeightM).toBeCloseTo(50 - 1.4715, 4);
+  });
+
+  it("全長1km中点では曲率降下は3cm未満（微小）", () => {
+    const a = analyzeObstacle(2400, 1, 0.5, 10, 10, 5, { earthCurvatureK: 4 / 3 });
+    expect(a.curvatureDropM).toBeCloseTo(0.014715, 5);
+    expect(a.curvatureDropM).toBeLessThan(0.03);
+  });
+
+  it("earthCurvatureK が 0/負/NaN は RfError", () => {
+    expect(() => analyzeObstacle(2400, 10, 0.5, 50, 50, 5, { earthCurvatureK: 0 })).toThrowError(RfError);
+    expect(() => analyzeObstacle(2400, 10, 0.5, 50, 50, 5, { earthCurvatureK: -1 })).toThrowError(RfError);
+    expect(() =>
+      analyzeObstacle(2400, 10, 0.5, 50, 50, 5, { earthCurvatureK: Number.NaN })
+    ).toThrowError(RfError);
+  });
+});
+
+describe("radioHorizonKm（電波見通し距離）", () => {
+  it("h1=h2=10m → 約26.06km（k=4/3, 4.12·(√h1+√h2)）", () => {
+    expect(radioHorizonKm(10, 10)).toBeCloseTo(26.06, 2);
+  });
+
+  it("高さ0は許容（√0=0）、負値は RfError", () => {
+    expect(radioHorizonKm(0, 0)).toBe(0);
+    expect(() => radioHorizonKm(-1, 10)).toThrowError(RfError);
+  });
+
+  it("地球半径定数は 6371km", () => {
+    expect(EARTH_RADIUS_M).toBe(6_371_000);
   });
 });
