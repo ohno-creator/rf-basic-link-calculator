@@ -7,7 +7,7 @@ import {
   knifeEdgeDiffractionLossDb,
   radioHorizonKm
 } from "@/lib/rf/fresnel";
-import { RfError } from "@/lib/rf/errors";
+import { RfError, RfErrorCode } from "@/lib/rf/errors";
 
 describe("Fresnel zone radius", () => {
   it("computes the first zone radius at the midpoint", () => {
@@ -44,6 +44,19 @@ describe("knife-edge diffraction loss", () => {
 
   it("increases as the obstacle rises above the LOS", () => {
     expect(knifeEdgeDiffractionLossDb(1)).toBeGreaterThan(knifeEdgeDiffractionLossDb(0));
+  });
+
+  it("rejects NaN with a coded non-finite error", () => {
+    let thrown: unknown;
+    try {
+      knifeEdgeDiffractionLossDb(Number.NaN);
+    } catch (error) {
+      thrown = error;
+    }
+
+    expect(thrown).toBeInstanceOf(RfError);
+    expect((thrown as RfError).code).toBe(RfErrorCode.NonFinite);
+    expect((thrown as RfError).field).toBe("diffraction_parameter");
   });
 });
 
