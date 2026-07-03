@@ -25,6 +25,7 @@ describe("format helpers", () => {
   it("formatMeters switches to cm below 1m and guards non-finite", () => {
     expect(formatMeters(2.5)).toBe("2.50m");
     expect(formatMeters(1)).toBe("1.00m");
+    expect(formatMeters(0.999)).toBe("99.9cm");
     expect(formatMeters(0.326)).toBe("32.6cm");
     expect(formatMeters(Number.NaN)).toBe("-");
   });

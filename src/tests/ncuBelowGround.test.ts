@@ -86,6 +86,35 @@ describe("NCU below-ground calculator", () => {
     expect(applyMeasuredCorrectionDb(-6, 2)).toBeCloseTo(-4, 8);
   });
 
+  it("makes the recommended correction approximately zero after applying it once", () => {
+    const initialResult = calculateNcuBelowGround(baseInput);
+    const measurements = {
+      ...defaultNcuFieldMeasurements,
+      boxClosedDryDbm: initialResult.receivedPowerRangeDbm.typical - 6
+    };
+    const initialAnalysis = calculateNcuFieldAnalysis(
+      measurements,
+      initialResult.receivedPowerRangeDbm.typical
+    );
+    const appliedCorrectionDb = Number(
+      applyMeasuredCorrectionDb(
+        baseInput.measuredCorrectionDb,
+        initialAnalysis.recommendedCorrectionDb
+      ).toFixed(1)
+    );
+    const correctedResult = calculateNcuBelowGround({
+      ...baseInput,
+      measuredCorrectionDb: appliedCorrectionDb
+    });
+    const correctedAnalysis = calculateNcuFieldAnalysis(
+      measurements,
+      correctedResult.receivedPowerRangeDbm.typical
+    );
+
+    expect(appliedCorrectionDb).toBeCloseTo(-6, 6);
+    expect(correctedAnalysis.recommendedCorrectionDb).toBeCloseTo(0, 6);
+  });
+
   it("ranks field-analysis causes from RSSI differences", () => {
     const analysis = calculateNcuFieldAnalysis(
       {
