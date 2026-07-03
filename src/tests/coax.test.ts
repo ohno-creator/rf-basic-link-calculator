@@ -52,9 +52,9 @@ describe("reference cable loss curve", () => {
   it("generates √f-scaled points at the standard frequencies", () => {
     const ref = referenceLossPoints(1.2, 1);
     expect(ref).toHaveLength(9);
-    const at2400 = ref.find((p) => p.freqMHz === 2000);
+    const at2000 = ref.find((p) => p.freqMHz === 2000);
     // 1.2 * sqrt(2000/2400) * 1 ≈ 1.095
-    expect(at2400?.lossDb).toBeCloseTo(1.095, 2);
+    expect(at2000?.lossDb).toBeCloseTo(1.095, 2);
     // loss increases with frequency
     expect(ref[ref.length - 1].lossDb).toBeGreaterThan(ref[0].lossDb);
   });
