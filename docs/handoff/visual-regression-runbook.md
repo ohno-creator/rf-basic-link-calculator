@@ -48,13 +48,17 @@ OSやブラウザが搭載するフォントラスタライザ（アンチエイ
    - **意図通りである場合**: ステップ 3 に進みます。
    - **意図しない箇所の崩れやフォントずれが混入している場合**: コードを修正し、再度プッシュしてステップ 1 からやり直します。
 
-### ステップ 3: CI による基準画像の更新とコミットバック
-GitHub Actions 上で最新の Linux 用スナップショットを自動生成し、ブランチにプッシュバックさせます。
+### ステップ 3: 基準スナップショット画像の更新とコミット
+CI で実際に生成された「現在のレンダリング画像」をローカルに上書きコミットしてプッシュします。
 
-1. GitHub Actions のワークフロー一覧から `Update Visual Snapshots on CI`（または手動実行可能なワークフロー）を選択します。
-2. 実行対象のブランチ名（例: `track/ux1-ui-redesign`）を選択し、**Run workflow** を実行します。
-3. ワークフローが完了すると、自動的に `-linux.png` 基準画像が更新され、対象ブランチへ `chore(visual): update visual snapshots on Linux CI` というコミットが自動プッシュバックされます。
-4. ローカル環境で `git pull` を実行し、更新された基準画像をローカルに取り込みます。
+1. ダウンロードした `playwright-report` (または `test-results`) のフォルダ内、もしくは Artifacts から、テストが失敗したページの「最新のレンダリング画像（`*-actual.png`）」を取得します。
+2. 取得した画像を、リポジトリの該当するスナップショットディレクトリ（`e2e/*-snapshots/` 配下）の対応するファイル（例: `<page>-<viewport>-linux.png`）として**上書き保存（リネーム）**します。
+3. 更新したスナップショット画像を Git にコミットします：
+   ```bash
+   git add e2e/*-snapshots/<page>-<viewport>-linux.png
+   git commit -m "chore(visual): update visual snapshot for <page> [UX-1/2]"
+   ```
+4. リモートへプッシュ（`git push`）し、再実行された GitHub Actions CI がすべて **GREEN (成功)** になることを確認します。
 
 ---
 
