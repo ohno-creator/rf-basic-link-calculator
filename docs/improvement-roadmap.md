@@ -185,7 +185,18 @@
 | **GPT系（Codex）** | 実装主担当（.codex/instructions.md）。パターンが確立した後の高スループット適用・テスト量産 | Track A 一括、UX-2 22ツール移行（Claudeの手本PR 2本の後）、UX-4 掃討、B3、D組み込み、E系パネル実装 | 仕様が未確定の設計判断、巨大ファイルの初回分割 |
 | **Antigravity** | ブラウザ実機操作・視覚検証・Web調査 | UX-0 計測基盤（スクショ基準線・フォールド計測・axe）、各ウェーブの**視覚回帰レビュー**、D系の文献調査・リンク検証、e2e保守 | lib/rf の計算ロジック変更（レビュー体制外のため禁止） |
 
-### 8.2 コンフリクト回避（ファイル所有権）
+### 8.2 コンフリクト回避（ファイル所有権 ＋ 作業ツリー隔離）
+
+**★作業ツリー隔離（必須・恒久ルール）**: 複数エージェントが同一チェックアウトを共有する事故を防ぐため、各エージェントは専用の git worktree で作業する:
+```bash
+git fetch origin
+git worktree add ../<slot>-<id> origin/feature/initial-rf-basic-link-calculator
+cd ../<slot>-<id> && npm ci
+```
+- **`git add -A` / `git add .` は全面禁止**（他セッションの未コミット変更を巻き込むため）。必ず変更ファイルをパス指定で add する。
+- 完了後は `git worktree remove <path>`、マージ済み枝は削除、`git worktree prune` で残骸を掃除する。
+- 実績: この規約導入前に共有ツリーで `git add -A` による混線が1件発生（UIコミットに他枠の未コミット変更が混入）。worktree隔離で以降は再発なし。
+
 同一ウェーブ内で同じファイルを2エージェントが触らないこと。境界:
 - W2: Codex=`src/app/tools/_components/**`＋基本ツール22ページ／Claude=`src/lib/rf/linkBudget.ts`系（B1）／Antigravity=`e2e/**`・`docs/**`
 - W3: Claude=旗艦・NCU・ナミの `components/**`／Codex=`chartTheme`掃討（対象一覧を事前にgrepで固定しPR分割）

@@ -53,6 +53,12 @@
 
 > 方針: 新規部品を `src/components/` に追加 → 各ツールを段階移行 → 旧ローカル変種を削除。1PR=1部品。
 
+**進捗（2026-07時点・Claude枠）**:
+- ✅ **追加専用の新部品（既存描画不変・デプロイ済み）**: MetricCard・SegmentedControl・CollapsibleSection（`285bc72`）／ResultBar・MobileResultBar（`809087e`）＋純ロジック `src/lib/ui/kit.ts`（vitest検証）。
+- ✅ **§2.7の安全な先行分**: hover:text-staf→staf-dark のAAコントラスト修正18箇所（`d306bc4`・既定描画不変）。
+- ⬜ **残（＝既定描画/挙動を変える移行系。UX-0の視覚回帰基準線の完成後に着手）**: 2.2 Field（NumberField拡張・help二重表示廃止）／2.3 ヘルプ一本化（usePopoverDismiss・Tooltipヒット領域）／2.5 ChoiceChips共通化／2.7 残（rounded/ring/hex統一）。
+  - 理由: これらは全ツールの既定レンダリングを変えるため、Antigravityの UX-0 スクショ基準線が固定される前に入れると差分の是非を機械検証できない。§5のウェーブ順（UX-0→UX-2）を厳守する。
+
 ### 2.1 `MetricCard`（結果表示の統一・D5解消）
 新規 `src/components/MetricCard.tsx`。既存 `Stat` を内部利用。
 
