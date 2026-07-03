@@ -204,8 +204,9 @@ cd ../<slot>-<id> && npm ci
 - **`src/lib/rf/**` はテスト先行が無いPRをマージ禁止**（AGENTS.md準拠）。
 
 ### 8.3 共通ゲート（全PR）
-1. `npm run test` / `npm run lint` / `GITHUB_PAGES=true npm run build` / `npm run test:e2e` すべて緑。
-2. UI変更PRは視覚回帰スクショの差分添付（UX-0の基盤で自動化）。
+1. `npm run test` / `npm run lint` / **`npx tsc --noEmit`（全体型チェック）** / `GITHUB_PAGES=true npm run build` / `npm run test:e2e` すべて緑。
+   - ★`tsc --noEmit` を必須化する理由: `next build` は app/pages 中心の型チェックで **e2e/ など非import ファイルの型エラーを見逃す**。実例として UX-0 の `e2e/axe.spec.ts` に型エラーがあったが build/lint/e2e はすべて緑で、統合時の `tsc --noEmit` で初めて発覚した。全PRで全体型チェックを回す。
+2. UI変更PRは視覚回帰スクショの差分添付（UX-0の `npm run test:visual` を Linux/CI で実行して比較。macローカルでは `-linux` 基準線と一致しないため生成・比較しない）。
 3. `src/lib/rf/**` に差分がある場合: 期待値テストの同時追加＋数式根拠（出典）をPR本文に記載。
 4. 1PR=1目的。リネーム/移動と、ロジック変更を同一PRに混ぜない。
 5. コミットは `feat|fix|refactor|docs(scope): 日本語要約`、本文にトラックID（例: `[A2]`、`[UX-2]`）を記載。
