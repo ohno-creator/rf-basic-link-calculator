@@ -48,14 +48,15 @@ test("axe accessibility scan", async ({ page }) => {
     if (targetViolations.length > 0) {
       allViolations[p.name] = targetViolations.map(v => ({
         id: v.id,
-        impact: v.impact,
+        // serious/critical に絞り込み済みのため impact は常に定義される。型上の undefined を握り潰す。
+        impact: v.impact ?? "unknown",
         description: v.description,
         help: v.help,
         helpUrl: v.helpUrl,
         nodes: v.nodes.map(n => ({
           target: n.target,
           html: n.html,
-          failureSummary: n.failureSummary
+          failureSummary: n.failureSummary ?? ""
         }))
       }));
     }
