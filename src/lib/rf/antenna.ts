@@ -340,6 +340,7 @@ export function calculateReflectorRisEffect(input: {
     calculateFsplDb(input.frequencyMHz, input.rxDistanceM / 1000) -
     2 * apertureGainDbi;
   // 大開口・近距離ではプロダクト式が鏡面反射の物理下限 FSPL(d1+d2) を下回るため、鏡面極限で飽和させる。
+  const clampedToMirrorLimit = farFieldProductLossDb < directLossDb;
   const twoHopLossUpperBoundDb = Math.max(farFieldProductLossDb, directLossDb);
   return {
     wavelengthM,
@@ -348,6 +349,7 @@ export function calculateReflectorRisEffect(input: {
     apertureGainDbi,
     fraunhoferM: (2 * equivalentDiameterM ** 2) / wavelengthM,
     twoHopLossUpperBoundDb,
+    clampedToMirrorLimit,
     directLossDb,
     excessVsDirectDb: twoHopLossUpperBoundDb - directLossDb,
     fresnelNumberTx: equivalentDiameterM ** 2 / (wavelengthM * input.txDistanceM),

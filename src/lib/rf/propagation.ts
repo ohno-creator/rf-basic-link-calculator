@@ -30,6 +30,8 @@ export type PropagationResult = {
   pathLossDb: number;
   /** 適用目安の範囲を外れている場合に true（外挿） */
   outOfRange: boolean;
+  /** 経験式がFSPLを下回り、自由空間損失を下限として採用した場合にtrue。 */
+  flooredByFspl: boolean;
 };
 
 export type PropagationInput = {
@@ -114,11 +116,14 @@ export function calculatePropagationLoss(input: PropagationInput): PropagationRe
   // 中央値損失の物理下限として FSPL で床を張る。経験式は近距離(d≪1km)や極端な開放地条件で
   // 自由空間損失を下回る非物理値を返すため。標準的な市街地パラメータ(hb30/hm1.5)では
   // 適用範囲(d≥1km)で床は拘束しないが、開放地×高基地局×高周波では範囲内でも床が効き得る。
-  const pathLossFlooredDb = Math.max(pathLossDb, calculateFsplDb(f, d));
+  const fsplDb = calculateFsplDb(f, d);
+  const flooredByFspl = pathLossDb < fsplDb;
+  const pathLossFlooredDb = Math.max(pathLossDb, fsplDb);
 
   return {
     model,
     pathLossDb: pathLossFlooredDb,
-    outOfRange: isOutOfRange(input, model)
+    outOfRange: isOutOfRange(input, model),
+    flooredByFspl
   };
 }

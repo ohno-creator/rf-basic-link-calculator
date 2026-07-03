@@ -201,7 +201,9 @@ export function MicrostripLinePanel() {
       return null;
     }
     try {
-      const miterPercent = optimalMiterPercent(widthMm, heightMm);
+      // マイター率は物理的に 0〜100%。細線・厚基板では式が100%超を返し得るため
+      // クランプし、範囲外は formulaInRange(=false) で明示する（曲げセクションは表示を維持）。
+      const miterPercent = Math.min(100, Math.max(0, optimalMiterPercent(widthMm, heightMm)));
       const lambdaGMm = guidedWavelengthMm(frequencyMHz, result.effectiveDielectric);
       return {
         miterPercent,
