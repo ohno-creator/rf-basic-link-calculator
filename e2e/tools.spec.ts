@@ -275,6 +275,24 @@ test("propagation page includes the Okumura-Hata column", async ({ page }) => {
   await expect(page.getByText("2波モデル実験室：干渉で波打つ様子を見る")).toBeVisible();
 });
 
+test("propagation page warns when Hata is floored by free-space loss", async ({ page }) => {
+  await page.goto("/tools/propagation-loss/");
+  const floorWarning = page.getByText("経験式が自由空間損失を下回ったため下限値を表示");
+
+  await expect(floorWarning).toHaveCount(0);
+  await page.locator("#propFrequency").fill("1500");
+  await page.locator("#propDistance").fill("1");
+  await page.locator("#propTxHeight").fill("200");
+  await page.locator("#propRxHeight").fill("10");
+  await page.locator("#propArea").selectOption("open");
+  await expect(floorWarning).toHaveCount(2);
+  await expect(floorWarning.first()).toBeVisible();
+  await expect(floorWarning.nth(1)).toBeVisible();
+
+  await page.locator("#propArea").selectOption("urbanMedium");
+  await expect(floorWarning).toHaveCount(0);
+});
+
 test("RF learning quest answers immediately and saves progress", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
   await expect(
