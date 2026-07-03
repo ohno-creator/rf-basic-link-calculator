@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useId, useRef, useState } from "react";
+import { usePopoverDismiss } from "./usePopoverDismiss";
 
 // アプリ共通のヘルプツールチップ（単一の正本）。
 // デスクトップはホバー/フォーカス、タッチ端末はタップで開閉。タッチターゲットを実質40px以上に
@@ -10,27 +11,7 @@ export function HelpHint({ text }: { text: string }) {
   const tooltipId = useId();
   const ref = useRef<HTMLSpanElement>(null);
 
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-    const onPointer = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as Node)) {
-        setOpen(false);
-      }
-    };
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", onPointer);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onPointer);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  usePopoverDismiss(ref, open, () => setOpen(false));
 
   return (
     <span ref={ref} className="group/hint relative inline-flex align-middle">
