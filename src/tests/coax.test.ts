@@ -23,10 +23,24 @@ describe("measured cable loss interpolation", () => {
     expect(interpolateCableLoss(points, 2500)).toBeCloseTo(3.345, 3);
   });
 
+  it("sorts reversed measurement points before interpolation", () => {
+    expect(interpolateCableLoss([...points].reverse(), 2500)).toBeCloseTo(
+      interpolateCableLoss(points, 2500),
+      5
+    );
+  });
+
   it("extrapolates below and above the measured range", () => {
     expect(interpolateCableLoss(points, 9000)).toBeGreaterThan(6.77);
     expect(interpolateCableLoss(points, 100)).toBeGreaterThanOrEqual(0);
     expect(interpolateCableLoss(points, 100)).toBeLessThan(1.39);
+  });
+
+  it("caps high-frequency extrapolation at twice the final measured frequency", () => {
+    expect(interpolateCableLoss(points, 24_000)).toBeCloseTo(
+      interpolateCableLoss(points, 16_000),
+      5
+    );
   });
 
   it("rejects an invalid frequency", () => {
@@ -39,6 +53,7 @@ describe("cable assembly loss with quantity", () => {
     const result = cableAssemblyLoss(points, 2000, 2);
     expect(result.perPieceDb).toBeCloseTo(2.97, 5);
     expect(result.totalDb).toBeCloseTo(5.94, 5);
+    expect(result.extrapolated).toBe(false);
     // 10^(-0.594) ≈ 25.5%
     expect(result.powerRemainingPercent).toBeCloseTo(25.5, 1);
   });
