@@ -46,6 +46,40 @@ describe("knife-edge diffraction loss", () => {
 
 describe("obstacle analysis (Fresnel clearance + diffraction)", () => {
   // 2.4GHz, 1km, midpoint, both antennas 10m → r1 ≈ 5.59 m, LOS height = 10 m
+  it("preserves the legacy LOS height when earth curvature is omitted", () => {
+    const legacy = analyzeObstacle(2400, 10, 0.5, 20, 20, 5);
+    const explicitUndefined = analyzeObstacle(2400, 10, 0.5, 20, 20, 5, undefined);
+
+    expect(legacy.losHeightM).toBe(20);
+    expect(explicitUndefined).toEqual(legacy);
+  });
+
+  it("applies a 1.47m earth-curvature drop at the midpoint of a 10km path", () => {
+    const flat = analyzeObstacle(2400, 10, 0.5, 20, 20, 5);
+    const curved = analyzeObstacle(2400, 10, 0.5, 20, 20, 5, {
+      earthCurvatureK: 4 / 3
+    });
+
+    expect(flat.losHeightM - curved.losHeightM).toBeCloseTo(1.4715, 2);
+  });
+
+  it("keeps the midpoint earth-curvature drop below 3cm for a 1km path", () => {
+    const flat = analyzeObstacle(2400, 1, 0.5, 10, 10, 5);
+    const curved = analyzeObstacle(2400, 1, 0.5, 10, 10, 5, {
+      earthCurvatureK: 4 / 3
+    });
+    const dropM = flat.losHeightM - curved.losHeightM;
+
+    expect(dropM).toBeGreaterThan(0);
+    expect(dropM).toBeLessThan(0.03);
+  });
+
+  it("rejects a non-positive effective earth-radius factor", () => {
+    expect(() =>
+      analyzeObstacle(2400, 10, 0.5, 20, 20, 5, { earthCurvatureK: 0 })
+    ).toThrow();
+  });
+
   it("treats a 60% clearance as clear with negligible diffraction", () => {
     const r1 = calculateFresnel(2400, 1).firstZoneRadiusM;
     const obstacleHeight = 10 - 0.6 * r1; // ちょうど60%クリアランス
