@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { Callout } from "@/components/Callout";
 import { chartTheme } from "@/lib/chartTheme";
 import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
 import {
@@ -38,6 +39,7 @@ type PropagationModelComparisonChartProps = {
   params: Omit<PropagationLossParams, "distanceKm">;
   currentDistanceKm: number;
   measured?: MeasuredChartPoint[];
+  flooredByFspl?: boolean;
 };
 
 const MIN_DISTANCE_KM = 0.01;
@@ -127,7 +129,8 @@ export function PropagationModelComparisonChart({
   models,
   params,
   currentDistanceKm,
-  measured = []
+  measured = [],
+  flooredByFspl = false
 }: PropagationModelComparisonChartProps) {
   const [isMounted, setIsMounted] = useState(false);
   useEffect(() => {
@@ -242,6 +245,13 @@ export function PropagationModelComparisonChart({
           : null}
         Hata系は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。
       </p>
+      {flooredByFspl ? (
+        <Callout tone="caution" size="sm" className="mt-2">
+          <p className="text-xs leading-relaxed">
+            経験式が自由空間損失を下回ったため下限値を表示
+          </p>
+        </Callout>
+      ) : null}
     </figure>
   );
 }
