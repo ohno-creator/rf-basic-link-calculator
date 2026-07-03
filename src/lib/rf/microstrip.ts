@@ -1,4 +1,4 @@
-import { assertAtLeast, assertPositiveFinite } from "./errors";
+import { assertAtLeast, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
 import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 
 /**
@@ -42,6 +42,8 @@ export function microstripImpedance(
     u >= 1 ? base + delta * fringe : base + delta * (fringe + 0.04 * (1 - u) ** 2);
 
   const sqrtEeff = Math.sqrt(effectiveDielectric);
+  // Hammerstad-Wheelerの区分近似はu=1で約0.4%不連続となる既知の性質を持つ。
+  // 境界値は従来どおりu≤1側の式で評価する。
   const impedanceOhms =
     u <= 1
       ? (60 / sqrtEeff) * Math.log(8 / u + u / 4)
@@ -107,6 +109,10 @@ export function recommendedBendRadiusMm(widthMm: number): number {
 /** マイターで角から斜めに切り取る対角方向の長さ[mm]。 */
 export function miterCutbackMm(widthMm: number, miterPercent: number): number {
   assertPositiveFinite(widthMm, "線路幅 W");
+  assertAtLeast(miterPercent, 0, "miter_percent");
+  if (miterPercent > 100) {
+    throw new RfError(RfErrorCode.TooLarge, { field: "miter_percent", max: 100 });
+  }
   return (miterPercent / 100) * widthMm * Math.SQRT2;
 }
 
