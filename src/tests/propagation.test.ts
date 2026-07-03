@@ -86,6 +86,21 @@ describe("Okumura-Hata propagation loss", () => {
     const shortRange = calculatePropagationLoss({ ...base, distanceKm: 0.001, area: "urbanMedium" });
     expect(shortRange.pathLossDb).toBeCloseTo(fsplDb, 6);
     expect(shortRange.outOfRange).toBe(true);
+    expect(shortRange.flooredByFspl).toBe(true);
+  });
+
+  it("reports an in-range open-area estimate that is floored by FSPL", () => {
+    const result = calculatePropagationLoss({
+      frequencyMHz: 1500,
+      baseHeightM: 200,
+      mobileHeightM: 10,
+      distanceKm: 1,
+      area: "open"
+    });
+
+    expect(result.pathLossDb).toBeCloseTo(calculateFsplDb(1500, 1), 6);
+    expect(result.outOfRange).toBe(false);
+    expect(result.flooredByFspl).toBe(true);
   });
 
   it("keeps in-range loss unchanged (floor does not bind above 1km)", () => {
@@ -93,5 +108,6 @@ describe("Okumura-Hata propagation loss", () => {
     const fsplDb = calculateFsplDb(900, 1);
     expect(inRange.pathLossDb).toBeGreaterThan(fsplDb);
     expect(inRange.pathLossDb).toBeCloseTo(126.4, 1);
+    expect(inRange.flooredByFspl).toBe(false);
   });
 });

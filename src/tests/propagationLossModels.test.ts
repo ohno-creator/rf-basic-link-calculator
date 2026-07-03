@@ -53,6 +53,20 @@ describe("propagation loss models", () => {
     });
     expect(hata.pathLossDb).toBeCloseTo(reference.pathLossDb, 6);
     expect(hata.outOfRange).toBe(reference.outOfRange);
+    expect(hata.flooredByFspl).toBe(reference.flooredByFspl);
+  });
+
+  it("forwards the FSPL-floor flag for Hata and keeps other models false", () => {
+    const extremeOpen = {
+      ...baseParams,
+      frequencyMHz: 1500,
+      txHeightM: 200,
+      rxHeightM: 10,
+      area: "open" as const
+    };
+
+    expect(calculatePropagationLossResult("cost231_hata", extremeOpen).flooredByFspl).toBe(true);
+    expect(calculatePropagationLossResult("free_space", extremeOpen).flooredByFspl).toBe(false);
   });
 
   it("forces COST231-Hata even below 1500MHz when selected", () => {
