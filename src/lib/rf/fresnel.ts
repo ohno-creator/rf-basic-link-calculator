@@ -1,4 +1,10 @@
-import { assertNonNegative, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
+import {
+  assertFinite,
+  assertNonNegative,
+  assertPositiveFinite,
+  RfError,
+  RfErrorCode
+} from "./errors";
 import { SPEED_OF_LIGHT_M_PER_S } from "./frequency";
 
 /**
@@ -66,7 +72,8 @@ export function calculateFresnel(
  * v は回折パラメータ。v<=-0.78 ではほぼ損失なし。
  */
 export function knifeEdgeDiffractionLossDb(v: number): number {
-  if (!Number.isFinite(v) || v <= -0.78) {
+  assertFinite(v, "diffraction_parameter");
+  if (v <= -0.78) {
     return 0;
   }
   const loss = 6.9 + 20 * Math.log10(Math.sqrt((v - 0.1) ** 2 + 1) + v - 0.1);
