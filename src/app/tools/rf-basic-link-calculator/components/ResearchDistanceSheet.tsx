@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { AlertTriangle, BookOpen, Calculator, RefreshCw, Route, ShieldCheck } from "lucide-react";
 import {
   CartesianGrid,
@@ -330,6 +330,16 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
   const selectedModel = modelOptions.find((option) => option.value === input.model) ?? modelOptions[0];
   // 周波数が0以下/非有限のときは計算が既定値へフォールバックするため、その旨をバナーで明示する。
   const frequencyInvalid = !Number.isFinite(input.frequencyGHz) || input.frequencyGHz <= 0;
+  const deferredFrequencyInvalid = useDeferredValue(frequencyInvalid);
+  const [showFrequencyInvalidBanner, setShowFrequencyInvalidBanner] = useState(false);
+
+  useEffect(() => {
+    const timeoutId = window.setTimeout(
+      () => setShowFrequencyInvalidBanner(deferredFrequencyInvalid),
+      deferredFrequencyInvalid ? 300 : 0
+    );
+    return () => window.clearTimeout(timeoutId);
+  }, [deferredFrequencyInvalid]);
 
   const update = <K extends keyof ResearchDistanceInput>(key: K, value: ResearchDistanceInput[K]) => {
     setInput((current) => ({ ...current, [key]: value }));
@@ -429,7 +439,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 value={input.frequencyGHz}
                 onChange={(value) => update("frequencyGHz", value)}
               />
-              {frequencyInvalid ? (
+              {showFrequencyInvalidBanner ? (
                 <Callout tone="caution" title="周波数が未入力または不正です">
                   周波数が0以下のため、既定値 {defaultResearchDistanceInput.frequencyGHz}GHz で暫定計算しています。
                   正しい周波数（GHz）を入力すると結果が更新されます。

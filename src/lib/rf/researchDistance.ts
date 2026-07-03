@@ -418,6 +418,7 @@ function solveMaximumDistanceM(
 
 function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<ResearchDistanceResult, "warnings">) {
   const warnings: ResearchDistanceWarning[] = [];
+  const normalizedFrequencyGHz = normalizeResearchFrequencyGHz(input.frequencyGHz);
   const is3gppModel = input.model.startsWith("tr38901");
   const isSuiModel = input.model.startsWith("sui");
   const isCost231WiModel = input.model === "cost231_wi_nlos";
@@ -460,7 +461,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
   }
 
   if (isSuiModel) {
-    if (input.frequencyGHz < 2 || input.frequencyGHz > 11) {
+    if (normalizedFrequencyGHz < 2 || normalizedFrequencyGHz > 11) {
       warnings.push({
         id: "sui-frequency-range",
         message:
@@ -492,7 +493,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
   }
 
   if (isCost231WiModel) {
-    if (input.frequencyGHz < 0.8 || input.frequencyGHz > 2) {
+    if (normalizedFrequencyGHz < 0.8 || normalizedFrequencyGHz > 2) {
       warnings.push({
         id: "cost231-wi-frequency-range",
         message:
@@ -524,7 +525,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
   }
 
   if (is3gppModel) {
-    if (input.frequencyGHz < 0.5 || input.frequencyGHz > 100) {
+    if (normalizedFrequencyGHz < 0.5 || normalizedFrequencyGHz > 100) {
       warnings.push({
         id: "tr38901-frequency-range",
         message:
@@ -572,7 +573,7 @@ function buildResearchWarnings(input: ResearchDistanceInput, result: Omit<Resear
       });
     }
 
-    if (input.frequencyGHz >= 7 && input.frequencyGHz <= 24) {
+    if (normalizedFrequencyGHz >= 7 && normalizedFrequencyGHz <= 24) {
       warnings.push({
         id: "rel19-fr3-note",
         message:
