@@ -31,15 +31,15 @@ import {
   calculateNearTerminalLossDb,
   getCommunicationMode,
   normalizeDistanceKm,
-  type LinkBudgetInput,
-  type ValidationErrors
+  type LinkBudgetInput
 } from "@/lib/rf/linkBudget";
+import type { LinkBudgetErrorMessages } from "@/lib/linkBudgetErrorMessages";
 import { InputImpactGuide } from "./InputImpactGuide";
 import { ModelAssumptionGuide } from "./ModelAssumptionGuide";
 
 type LinkBudgetPanelProps = {
   input: LinkBudgetInput;
-  errors: ValidationErrors;
+  errors: LinkBudgetErrorMessages;
   onChange: (input: LinkBudgetInput) => void;
 };
 
@@ -456,7 +456,7 @@ function IotHataCalibrationPanel({
   update
 }: {
   input: LinkBudgetInput;
-  errors: ValidationErrors;
+  errors: LinkBudgetErrorMessages;
   onChange: (input: LinkBudgetInput) => void;
   update: <K extends keyof LinkBudgetInput>(key: K, value: LinkBudgetInput[K]) => void;
 }) {

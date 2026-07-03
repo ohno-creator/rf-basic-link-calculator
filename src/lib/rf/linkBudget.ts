@@ -85,7 +85,32 @@ export type IotHataCalibrationResult = {
   correctedReferenceModel: "Hata" | "COST231-Hata";
 };
 
-export type ValidationErrors = Partial<Record<keyof LinkBudgetInput, string>>;
+// 入力検証の結果コード。表示文言は持たず（lib層は日本語非依存）、
+// UI層 src/lib/linkBudgetErrorMessages.ts が (field, code) → 日本語へ解決する。
+export type LinkBudgetErrorCode =
+  | "system_required"
+  | "link_type_required"
+  | "propagation_model_required"
+  | "propagation_area_required"
+  | "path_loss_exponent_range"
+  | "iot_anchor_distance_positive"
+  | "iot_anchor_unit_required"
+  | "iot_measured_power_number"
+  | "iot_slope_range"
+  | "frequency_positive"
+  | "frequency_too_large"
+  | "distance_positive"
+  | "distance_too_large"
+  | "tx_power_number"
+  | "tx_gain_number"
+  | "rx_gain_number"
+  | "tx_height_positive"
+  | "rx_height_positive"
+  | "non_negative"
+  | "calibration_offset_number"
+  | "sensitivity_number";
+
+export type ValidationErrors = Partial<Record<keyof LinkBudgetInput, LinkBudgetErrorCode>>;
 
 // 初期表示はLoRa（920MHz LPWA）プリセットを既定にする。
 // quickStartPresets の "lpwa-920" と同値（循環import回避のためここでは値を直書き）。
@@ -151,9 +176,9 @@ function isMissingNumber(value: number) {
   return !Number.isFinite(value);
 }
 
-function validateNonNegative(errors: ValidationErrors, key: keyof LinkBudgetInput, value: number, label: string) {
+function validateNonNegative(errors: ValidationErrors, key: keyof LinkBudgetInput, value: number) {
   if (isMissingNumber(value) || value < 0) {
-    errors[key] = `${label}は0以上の値を入力してください。`;
+    errors[key] = "non_negative";
   }
 }
 
@@ -161,35 +186,35 @@ export function validateLinkBudgetInput(input: LinkBudgetInput): ValidationError
   const errors: ValidationErrors = {};
 
   if (!input.system.trim()) {
-    errors.system = "通信方式を選択してください。";
+    errors.system = "system_required";
   }
 
   if (!input.linkType) {
-    errors.linkType = "通信形態を選択してください。";
+    errors.linkType = "link_type_required";
   }
 
   if (!input.propagationModel) {
-    errors.propagationModel = "伝搬モデルを選択してください。";
+    errors.propagationModel = "propagation_model_required";
   }
 
   if (!["urbanLarge", "urbanMedium", "suburban", "open"].includes(input.propagationArea)) {
-    errors.propagationArea = "奥村・秦モデルのエリア種別を選択してください。";
+    errors.propagationArea = "propagation_area_required";
   }
 
   if (isMissingNumber(input.pathLossExponent) || input.pathLossExponent < 1 || input.pathLossExponent > 6) {
-    errors.pathLossExponent = "Log-distanceの距離損失指数は1〜6の範囲で入力してください。";
+    errors.pathLossExponent = "path_loss_exponent_range";
   }
 
   if (isMissingNumber(input.iotCalibrationDistance) || input.iotCalibrationDistance <= 0) {
-    errors.iotCalibrationDistance = "IoT実測アンカー距離は0より大きい値を入力してください。";
+    errors.iotCalibrationDistance = "iot_anchor_distance_positive";
   }
 
   if (input.iotCalibrationDistanceUnit !== "m" && input.iotCalibrationDistanceUnit !== "km") {
-    errors.iotCalibrationDistanceUnit = "IoT実測アンカー距離の単位を選択してください。";
+    errors.iotCalibrationDistanceUnit = "iot_anchor_unit_required";
   }
 
   if (isMissingNumber(input.iotMeasuredReceivedPowerDbm)) {
-    errors.iotMeasuredReceivedPowerDbm = "IoT実測受信電力をdBmで入力してください。";
+    errors.iotMeasuredReceivedPowerDbm = "iot_measured_power_number";
   }
 
   if (
@@ -197,65 +222,55 @@ export function validateLinkBudgetInput(input: LinkBudgetInput): ValidationError
     input.iotSlopeCorrectionDbPerDecade < -40 ||
     input.iotSlopeCorrectionDbPerDecade > 40
   ) {
-    errors.iotSlopeCorrectionDbPerDecade = "距離勾配補正は-40〜40dB/decadeの範囲で入力してください。";
+    errors.iotSlopeCorrectionDbPerDecade = "iot_slope_range";
   }
 
   if (isMissingNumber(input.frequencyMHz) || input.frequencyMHz <= 0) {
-    errors.frequencyMHz = "周波数は0より大きい値をMHzで入力してください。";
+    errors.frequencyMHz = "frequency_positive";
   } else if (input.frequencyMHz > 1_000_000) {
-    errors.frequencyMHz = "周波数が大きすぎます。MHz単位で入力してください。";
+    errors.frequencyMHz = "frequency_too_large";
   }
 
   if (isMissingNumber(input.distance) || input.distance <= 0) {
-    errors.distance = "通信距離は0より大きい値を入力してください。";
+    errors.distance = "distance_positive";
   } else if (normalizeDistanceKm(input.distance, input.distanceUnit) > 1_000_000) {
-    errors.distance = "通信距離が大きすぎます。初期検討に適した範囲で入力してください。";
+    errors.distance = "distance_too_large";
   }
 
   if (isMissingNumber(input.txPowerDbm)) {
-    errors.txPowerDbm = "送信電力をdBmで入力してください。";
+    errors.txPowerDbm = "tx_power_number";
   }
 
   if (isMissingNumber(input.txAntennaGainDbi)) {
-    errors.txAntennaGainDbi = "送信アンテナ利得をdBiで入力してください。";
+    errors.txAntennaGainDbi = "tx_gain_number";
   }
 
   if (isMissingNumber(input.rxAntennaGainDbi)) {
-    errors.rxAntennaGainDbi = "受信アンテナ利得をdBiで入力してください。";
+    errors.rxAntennaGainDbi = "rx_gain_number";
   }
 
   if (isMissingNumber(input.txAntennaHeightM) || input.txAntennaHeightM <= 0) {
-    errors.txAntennaHeightM = "送信側アンテナ高は0より大きい値をmで入力してください。";
+    errors.txAntennaHeightM = "tx_height_positive";
   }
 
   if (isMissingNumber(input.rxAntennaHeightM) || input.rxAntennaHeightM <= 0) {
-    errors.rxAntennaHeightM = "受信側アンテナ高は0より大きい値をmで入力してください。";
+    errors.rxAntennaHeightM = "rx_height_positive";
   }
 
-  validateNonNegative(errors, "cableLossDb", input.cableLossDb, "ケーブル・コネクタ損失");
-  validateNonNegative(errors, "environmentLossDb", input.environmentLossDb, "環境損失");
-  validateNonNegative(errors, "groundProximityLossDb", input.groundProximityLossDb, "地面近接損失");
-  validateNonNegative(errors, "enclosureLossDb", input.enclosureLossDb, "筐体損失");
-  validateNonNegative(
-    errors,
-    "polarizationMismatchLossDb",
-    input.polarizationMismatchLossDb,
-    "偏波ミスマッチ損失"
-  );
-  validateNonNegative(
-    errors,
-    "vehicleBodyObstructionLossDb",
-    input.vehicleBodyObstructionLossDb,
-    "車両・人体遮蔽損失"
-  );
-  validateNonNegative(errors, "installationMarginDb", input.installationMarginDb, "設置ばらつきマージン");
+  validateNonNegative(errors, "cableLossDb", input.cableLossDb);
+  validateNonNegative(errors, "environmentLossDb", input.environmentLossDb);
+  validateNonNegative(errors, "groundProximityLossDb", input.groundProximityLossDb);
+  validateNonNegative(errors, "enclosureLossDb", input.enclosureLossDb);
+  validateNonNegative(errors, "polarizationMismatchLossDb", input.polarizationMismatchLossDb);
+  validateNonNegative(errors, "vehicleBodyObstructionLossDb", input.vehicleBodyObstructionLossDb);
+  validateNonNegative(errors, "installationMarginDb", input.installationMarginDb);
 
   if (isMissingNumber(input.calibrationOffsetDb)) {
-    errors.calibrationOffsetDb = "実測補正値をdBで入力してください。未入力の場合は0dBにしてください。";
+    errors.calibrationOffsetDb = "calibration_offset_number";
   }
 
   if (isMissingNumber(input.receiverSensitivityDbm)) {
-    errors.receiverSensitivityDbm = "受信感度をdBmで入力してください。";
+    errors.receiverSensitivityDbm = "sensitivity_number";
   }
 
   return errors;

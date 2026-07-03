@@ -1,18 +1,15 @@
 import { Callout, calloutToneClass, LEVEL_TO_TONE } from "@/components/Callout";
 import { Stat } from "@/components/Stat";
 import { formatDbm } from "@/lib/rf/format";
-import type {
-  LinkBudgetInput,
-  LinkBudgetResult,
-  ValidationErrors
-} from "@/lib/rf/linkBudget";
+import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
+import type { LinkBudgetErrorMessages } from "@/lib/linkBudgetErrorMessages";
 import { LinkBudgetWaterfallChart } from "./LinkBudgetWaterfallChart";
 import { PropagationWarnings } from "./PropagationWarnings";
 
 type ResultHeroProps = {
   input: LinkBudgetInput;
   result: LinkBudgetResult | null;
-  errors: ValidationErrors;
+  errors: LinkBudgetErrorMessages;
   onStepSelect?: (key: keyof LinkBudgetInput) => void;
 };
 

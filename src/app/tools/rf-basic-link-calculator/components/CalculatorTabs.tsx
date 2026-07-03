@@ -8,6 +8,7 @@ import {
   type LinkBudgetInput,
   validateLinkBudgetInput
 } from "@/lib/rf/linkBudget";
+import { resolveLinkBudgetErrors } from "@/lib/linkBudgetErrorMessages";
 import { HataColumn } from "@/app/tools/_components/HataColumn";
 import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
@@ -75,6 +76,8 @@ export function CalculatorTabs({
 }: CalculatorTabsProps) {
   const [activeSheet, setActiveSheet] = useState<SheetId>("link-budget");
   const errors = useMemo(() => validateLinkBudgetInput(input), [input]);
+  // コード → 表示用の日本語文言はUI境界のここで解決し、以降の表示コンポーネントへは文言を渡す。
+  const errorMessages = useMemo(() => resolveLinkBudgetErrors(errors), [errors]);
   const result = useMemo(() => {
     if (hasValidationErrors(errors)) {
       return null;
@@ -128,12 +131,12 @@ export function CalculatorTabs({
       {activeSheet === "link-budget" ? (
         <>
           <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <LinkBudgetPanel input={input} errors={errors} onChange={onInputChange} />
+            <LinkBudgetPanel input={input} errors={errorMessages} onChange={onInputChange} />
             <div
               id={RESULT_ANCHOR_ID}
               className="scroll-mt-24 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1"
             >
-              <ResultHero input={input} result={result} errors={errors} onStepSelect={jumpToInput} />
+              <ResultHero input={input} result={result} errors={errorMessages} onStepSelect={jumpToInput} />
             </div>
           </div>
 
