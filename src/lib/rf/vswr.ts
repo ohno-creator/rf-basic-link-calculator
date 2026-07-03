@@ -39,7 +39,7 @@ function reflectionFromSource(kind: VswrSourceKind, value: number): number {
   }
 
   // reflection coefficient
-  if (value < 0 || value >= 1) {
+  if (value < 0 || value > 1) {
     throw new RfError(RfErrorCode.OutOfDomain, { field: "reflection_coefficient" });
   }
   return value;
