@@ -5,6 +5,7 @@
 
 import type { CalloutTone } from "@/components/Callout";
 import type { StatTone } from "@/components/Stat";
+import type { LinkJudgementLevel } from "@/lib/rf/judgement";
 
 /** 結果カードの意味トーン。判定を持つ値のみ neutral/primary 以外を指定する（呼び出し側の規律）。 */
 export type MetricTone = "neutral" | "primary" | "success" | "info" | "caution" | "warning" | "danger";
@@ -52,4 +53,31 @@ export function resolveCollapsibleOpen(stored: string | null, defaultOpen: boole
 /** 折りたたみ状態の localStorage キー（docs/ui-redesign-plan.md §2.7 の命名規約）。 */
 export function collapsibleStorageKey(key: string): string {
   return `collapsible:${key}`;
+}
+
+/** 判定レベル → 主役数値の色（Stat のトーン）。Stat に orange が無いため unstable は amber に寄せる。 */
+export const judgementStatTone: Record<LinkJudgementLevel, StatTone> = {
+  excellent: "emerald",
+  good: "sky",
+  caution: "amber",
+  unstable: "amber",
+  poor: "rose"
+};
+
+/** 判定レベル → 状態ドットの背景色（ResultBar/MobileResultBar 用。unstable は orange で区別）。 */
+export const judgementDotClass: Record<LinkJudgementLevel, string> = {
+  excellent: "bg-emerald-500",
+  good: "bg-sky-500",
+  caution: "bg-amber-500",
+  unstable: "bg-orange-500",
+  poor: "bg-rose-500"
+};
+
+/**
+ * モバイルの結果追従バーを表示すべきか。
+ * 結果カードがまだ画面より下にある（＝編集中で見えていない）ときだけ true。
+ * StickyResultSummary の判定を汎用化したもの。
+ */
+export function shouldShowMobileResultBar(isIntersecting: boolean, top: number): boolean {
+  return !isIntersecting && top > 0;
 }
