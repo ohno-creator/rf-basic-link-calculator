@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import type { CalloutTone } from "@/lib/ui/tones";
 
-export type CalloutTone = "success" | "info" | "caution" | "warning" | "danger" | "neutral";
+export type { CalloutTone } from "@/lib/ui/tones";
 export type CalloutSize = "sm" | "md" | "lg";
 
 // 注記・警告・情報・結果状態を表す共通サーフェス。tailwind.config の意味トークン

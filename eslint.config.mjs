@@ -41,6 +41,34 @@ const eslintConfig = [
         }
       ]
     }
+  },
+  {
+    files: ["src/lib/**/*.{js,jsx,ts,tsx}"],
+    // libは純粋な計算・データ・UI非依存ロジック層。type importも含め、app/componentsから
+    // libへ依存が逆流することを禁止する。共有型はsrc/lib配下へ置く。
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: [
+                "@/app/**",
+                "@/components/**",
+                "../app/**",
+                "../components/**",
+                "../../app/**",
+                "../../components/**",
+                "../../../app/**",
+                "../../../components/**"
+              ],
+              message:
+                "src/lib から src/app・src/components を import しないでください。共有ロジック・型は src/lib 配下へ移してください。"
+            }
+          ]
+        }
+      ]
+    }
   }
 ];
 
