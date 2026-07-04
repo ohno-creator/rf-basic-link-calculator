@@ -1,6 +1,7 @@
 import { AlertTriangle, Ruler, Settings2 } from "lucide-react";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import {
   getLinkTypeLabel,
   getPropagationAreaOption,
@@ -8,6 +9,7 @@ import {
 } from "@/data/linkBudgetOptions";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import { normalizeDistanceKm, type LinkBudgetInput, type LinkBudgetResult } from "@/lib/rf/linkBudget";
+import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
 
 type LinkAssumptionDiagramProps = {
   input: LinkBudgetInput;
@@ -169,20 +171,12 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
             viewBox={`0 0 ${drawing.width} ${drawing.height}`}
             className="h-auto w-full"
           >
-            <defs>
-              <linearGradient id="assumptionSky" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0%" stopColor="#EFF6FF" />
-                <stop offset="100%" stopColor="#F8FAFC" />
-              </linearGradient>
-              <pattern id="groundPattern" width="12" height="8" patternUnits="userSpaceOnUse">
-                <path d="M0 8L12 0" stroke="#CBD5E1" strokeWidth="1" />
-              </pattern>
-            </defs>
+            <DiagramDefs />
 
-            <rect width={drawing.width} height={drawing.height} fill="url(#assumptionSky)" />
-            <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill="#E2E8F0" />
-            <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill="url(#groundPattern)" opacity="0.55" />
-            <line x1="70" x2="910" y1={drawing.groundY} y2={drawing.groundY} stroke="#64748B" strokeWidth="3" />
+            <rect width={drawing.width} height={drawing.height} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} />
+            <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSoil)} />
+            <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)} opacity="0.25" />
+            <line x1="70" x2="910" y1={drawing.groundY} y2={drawing.groundY} stroke="#64748B" strokeWidth={diagramStroke.emphasis} />
 
             <ellipse
               cx={midX}
@@ -222,10 +216,14 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
               地面反射・低高度影響
             </text>
 
-            <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="11" strokeLinecap="round" />
-            <circle cx={drawing.txX} cy={txAntennaY} r="16" fill="#0071BD" stroke="#FFFFFF" strokeWidth="4" />
-            <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="11" strokeLinecap="round" />
-            <circle cx={drawing.rxX} cy={rxAntennaY} r="16" fill="#10B981" stroke="#FFFFFF" strokeWidth="4" />
+            <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
+              <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="11" strokeLinecap="round" />
+              <circle cx={drawing.txX} cy={txAntennaY} r="16" fill="#0071BD" stroke="#FFFFFF" strokeWidth="4" />
+            </g>
+            <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
+              <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="11" strokeLinecap="round" />
+              <circle cx={drawing.rxX} cy={rxAntennaY} r="16" fill="#10B981" stroke="#FFFFFF" strokeWidth="4" />
+            </g>
 
             <rect x={drawing.txX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
             <text x={drawing.txX} y={drawing.groundY + 43} textAnchor="middle" className="fill-slate-800 text-[18px] font-bold">
