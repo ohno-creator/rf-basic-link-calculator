@@ -252,11 +252,11 @@ export function ToolDirectoryBrowser() {
                       href={tool.href}
                       className="group flex items-start gap-4 rounded-2xl border border-slate-200/70 bg-white p-6 transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                     >
-                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-staf/10 text-staf-dark transition group-hover:bg-staf group-hover:text-white">
-                        <Icon aria-hidden="true" className="h-5 w-5" />
+                      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-staf/15 to-staf/5 text-staf-dark ring-1 ring-inset ring-staf/15 transition group-hover:from-staf group-hover:to-staf-dark group-hover:text-white">
+                        <Icon aria-hidden="true" strokeWidth={1.75} className="h-5 w-5" />
                       </span>
                       <span className="min-w-0 flex-1">
-                        <span className="flex items-center justify-between gap-2 text-[15px] font-bold leading-tight text-slate-900 group-hover:text-staf-dark">
+                        <span className="flex items-center justify-between gap-2 text-base font-bold leading-tight text-slate-900 group-hover:text-staf-dark">
                           {tool.name}
                           <ArrowUpRight
                             aria-hidden="true"

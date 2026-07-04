@@ -126,7 +126,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
         </p>
       </Accordion>
 
-      <ConsultationCta input={input} result={result} ctaLabel={result.judgement.ctaLabel} />
+      <ConsultationCta input={input} result={result} ctaLabel={result.judgement.ctaLabel} variant="inline" />
     </div>
   );
 }
