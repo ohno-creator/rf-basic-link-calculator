@@ -5,14 +5,13 @@ on:
     branches:
       - main
       - feature/initial-rf-basic-link-calculator
-      - track/ux3-merge-visual
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -37,7 +36,7 @@ jobs:
       - name: Test
         run: npm run test
 
-      # e2e はデプロイ前のゲート。失敗時は Build/Deploy に進まず、壊れた内容 of 公開を防ぐ。
+      # e2e はデプロイ前のゲート。失敗時は Build/Deploy に進まず、壊れた内容の公開を防ぐ。
       # ブラウザはキャッシュしてデプロイ時間の増加を抑える（キャッシュヒット時はダウンロードを省略）。
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -50,22 +49,6 @@ jobs:
 
       - name: E2E test
         run: npm run test:e2e
-
-      - name: Run Visual Tests and Update Snapshots
-        if: github.ref == 'refs/heads/track/ux3-merge-visual'
-        run: |
-          npx playwright test -g "rf-basic-link-calculator|ncu-below-ground" --update-snapshots
-        env:
-          TEST_VISUAL: "true"
-
-      - name: Auto Commit and Push Snapshots
-        if: github.ref == 'refs/heads/track/ux3-merge-visual'
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add e2e/visual.spec.ts-snapshots/*-chromium-linux.png
-          git commit -m "chore(visual): auto-update merged visual baseline snapshots on CI [UX-3]" || true
-          git push origin HEAD:track/ux3-merge-visual
 
       - name: Build static app
         run: npm run build
