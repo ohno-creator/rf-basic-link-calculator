@@ -25,7 +25,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
 
   return (
     <Card as="section" padding="lg">
-      <h3 className="text-base font-semibold text-slate-950">Decibel Scale Visual</h3>
+      <h3 className="text-base font-semibold text-slate-950">dBmと電力のスケール</h3>
 
       {hasMarker ? (
         <p className="mt-1 text-sm text-slate-600">
