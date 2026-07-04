@@ -338,6 +338,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <Field
             id="frequencyMHz"
+            showSlider
             label="周波数"
             unit="MHz"
             help="使用する無線方式の中心周波数です。周波数が高いほど波長は短くなり、同じ距離でも自由空間損失は大きくなります。（推奨レンジ: 100-6000MHz）"
@@ -353,6 +354,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <Field
             id="distance"
+            showSlider
             label="通信距離"
             help="送信側と受信側のおおよその距離です。距離が2倍になると自由空間損失は約6dB増え、受信電力は小さくなります。（推奨レンジ: 1m-10km）"
             example="10m / 1km"
@@ -392,6 +394,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
         >
           <Field
             id="txPowerDbm"
+            showSlider
             label="送信電力"
             unit="dBm"
             help="無線モジュールや送信機から出る電波の強さです。0dBm = 1mW、10dBm = 10mW、20dBm = 100mWです。LTE-Mでは23dBm程度の出力が使われる場合があります。（推奨レンジ: -20-30dBm）"
@@ -437,9 +440,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <Field
             id="txAntennaHeightM"
+            showSlider
             label="送信側 空中線地上高（アンテナ高 hb）"
             unit="m"
-            help="送信側アンテナの地上高（空中線地上高）です。奥村・秦／COST231-Hataモデルでは基地局高 hb として伝搬損失に反映されます（固定値ではありません）。奥村・秦モデルの基地局空中線地上高 hb は固定ではなく、この入力値が計算に反映されます。一般的な適用目安は30m〜200m。低高度端末同士では地面反射やフレネルゾーン欠損にも効きます。（推奨レンジ: 0.1-200m）"
+            help="送信側アンテナの地上高。奥村・秦／COST231-Hataでは基地局高 hb としてこの入力値が伝搬損失計算に反映されます（固定値ではありません。適用目安30〜200m）。低高度端末同士では地面反射やフレネルゾーン欠損にも効きます。（推奨レンジ: 0.1-200m）"
             example="1.5 / 10 / 30"
             min={0.1}
             max={200}
@@ -452,9 +456,10 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
 
           <Field
             id="rxAntennaHeightM"
+            showSlider
             label="受信側 空中線地上高（アンテナ高 hm）"
             unit="m"
-            help="受信側アンテナの地上高（空中線地上高）です。奥村・秦／COST231-Hataモデルでは移動局高 hm として伝搬損失に反映されます（固定値ではありません）。地上近傍端末では近傍損失を別途見ます。奥村・秦モデルの移動局空中線地上高 hm は固定ではなく、この入力値が計算に反映されます。一般的な適用目安は1m〜10m。地上近傍では地面反射、筐体、車両・人体遮蔽の影響が大きくなります。（推奨レンジ: 0.1-50m）"
+            help="受信側アンテナの地上高。奥村・秦／COST231-Hataでは移動局高 hm としてこの入力値が伝搬損失計算に反映されます（固定値ではありません。適用目安1〜10m）。地上近傍では地面反射・筐体・車両/人体遮蔽の影響が大きく、近傍損失は別途見ます。（推奨レンジ: 0.1-50m）"
             example="0.8 / 1.5 / 10"
             min={0.1}
             max={50}
