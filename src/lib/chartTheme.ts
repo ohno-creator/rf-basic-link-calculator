@@ -105,12 +105,25 @@ export function rfTickProps() {
   } as const;
 }
 
-/** recharts <Tooltip> へ spread する統一スタイル一式。 */
+/**
+ * recharts <Tooltip> へ spread する統一スタイル一式（Track H2）。
+ * cursor はホバー位置を示す縦のスナップガイド線。実線から破線へ変更し、色は AA 適合の
+ * axis.label.fill(#64748B) にして「計測器のカーソル」らしい細い破線ガイドに統一する。
+ */
 export function rfTooltipProps() {
   return {
     contentStyle: chartTheme.tooltip.content,
     labelStyle: chartTheme.tooltip.label,
     itemStyle: chartTheme.tooltip.item,
-    cursor: { stroke: chartTheme.grid.secondary, strokeWidth: 1 }
+    cursor: { stroke: chartTheme.axis.label.fill, strokeWidth: 1, strokeDasharray: "4 4" }
   } as const;
+}
+
+/**
+ * recharts <Line>/<Area> の activeDot へ渡す「スナップ強調ドット」（Track H2）。
+ * ホバー時に最近傍点へスナップした位置を、白ハロー付きの塗り円で強調する（商用ダッシュボード標準）。
+ * color は系列色（線の stroke）を渡す。白縁 2px で背景から浮かせ、どの点を読んでいるかを明確化。
+ */
+export function rfActiveDot(color: string) {
+  return { r: 5, fill: color, stroke: "#FFFFFF", strokeWidth: 2 } as const;
 }

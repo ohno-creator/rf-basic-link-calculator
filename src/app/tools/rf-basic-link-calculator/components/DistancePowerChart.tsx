@@ -12,7 +12,7 @@ import {
   YAxis
 } from "recharts";
 import { Card } from "@/components/Card";
-import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { generateDistancePowerData } from "@/lib/rf/chartData";
 import type { LinkBudgetInput } from "@/lib/rf/linkBudget";
 
@@ -88,6 +88,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                     />
                   );
                 }}
+                activeDot={rfActiveDot(chartTheme.series.source)}
                 name="受信電力"
               />
             </LineChart>

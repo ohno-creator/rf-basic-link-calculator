@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps, seriesColor } from "@/lib/chartTheme";
+import {
+  chartTheme,
+  rfActiveDot,
+  rfGridProps,
+  rfTickProps,
+  rfTooltipProps,
+  seriesColor
+} from "@/lib/chartTheme";
 
 describe("chartTheme v2（Track H1）", () => {
   it("後方互換: 既存の semantic 系列色は不変", () => {
@@ -36,6 +43,21 @@ describe("chartTheme v2（Track H1）", () => {
     const tooltip = rfTooltipProps();
     expect(tooltip.contentStyle.borderRadius).toBe(8);
     expect(tooltip.itemStyle.fontVariantNumeric).toBe("tabular-nums");
-    expect(tooltip.cursor.stroke).toBe(chartTheme.grid.secondary);
+  });
+});
+
+describe("チャートのマイクロインタラクション（Track H2）", () => {
+  it("cursor は AA 適合色の破線ガイド線", () => {
+    const { cursor } = rfTooltipProps();
+    expect(cursor.stroke).toBe(chartTheme.axis.label.fill);
+    expect(cursor.strokeDasharray).toBe("4 4");
+  });
+
+  it("rfActiveDot は白ハロー付きの系列色スナップドット", () => {
+    const dot = rfActiveDot(chartTheme.series.source);
+    expect(dot.fill).toBe(chartTheme.series.source);
+    expect(dot.stroke).toBe("#FFFFFF");
+    expect(dot.strokeWidth).toBe(2);
+    expect(dot.r).toBeGreaterThan(0);
   });
 });

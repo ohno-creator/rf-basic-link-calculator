@@ -15,7 +15,7 @@ import {
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { NumberInput } from "@/components/NumberField";
-import { rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import {
   calculateNearTerminalLossDb,
   normalizeDistanceKm,
@@ -312,6 +312,7 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
                 stroke="#0071BD"
                 strokeWidth={3}
                 dot={{ r: 4, fill: "#FFFFFF", stroke: "#0071BD", strokeWidth: 2 }}
+                activeDot={rfActiveDot("#0071BD")}
                 name="リンク余裕"
               />
             </LineChart>
