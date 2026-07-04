@@ -108,6 +108,17 @@ test("dBm converter keeps a derived primary result visible beside the input", as
   await expect(primaryResult).toContainText("mW");
 });
 
+test("frequency tool keeps wavelength visible beside the input", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/frequency-wavelength/");
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+  await page.locator("#waveFrequency").fill("2400");
+  await expect(primaryResult).toContainText("12.5cm");
+});
+
 test("dB feel slider reacts to dB", async ({ page }) => {
   await page.goto("/tools/db-feel/");
   const slider = page.locator("#dbValue");

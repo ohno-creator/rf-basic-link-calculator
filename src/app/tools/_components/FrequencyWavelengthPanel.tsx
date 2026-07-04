@@ -1,8 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
+import { MobileResultBar } from "@/components/MobileResultBar";
+import { ResultBar } from "@/components/ResultBar";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
@@ -75,13 +78,15 @@ export function FrequencyWavelengthPanel() {
     }
   }, [frequencyMHz, velocityFactorPercent]);
 
+  const primary = {
+    label: "波長 λ",
+    value: result ? formatMeters(result.wavelengthM) : "—"
+  };
+
   return (
-    <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+    <section className="grid gap-6 lg:grid-cols-[5fr_4fr]">
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
-        <h2 className="text-xl font-bold text-slate-950">周波数・波長計算</h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          周波数から波長 λ、λ/2、λ/4、λ/8 を計算します。
-        </p>
+        <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
 
         <div className="mt-5">
           <Field
@@ -102,14 +107,13 @@ export function FrequencyWavelengthPanel() {
             min={0.001}
             step={unit === "GHz" ? 0.01 : 0.1}
             error={result ? undefined : "周波数は0より大きい値を入力してください。"}
-            emptyBehavior="invalid"
+            emptyBehavior="preserve"
           />
         </div>
 
         {result ? (
           <div className="mt-5 grid gap-3 sm:grid-cols-2">
             {[
-              ["波長 λ", result.wavelengthM],
               ["λ/2", result.halfM],
               ["λ/4", result.quarterM],
               ["λ/8", result.eighthM]
@@ -125,20 +129,9 @@ export function FrequencyWavelengthPanel() {
         ) : null}
 
         {antennaLengths ? (
-          <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
-            <div className="flex flex-wrap items-start justify-between gap-2">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-950">
-                  アンテナ物理長・短縮率
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                  λ/4・λ/2・5/8λを、端部効果や誘電体・ヘリカル化を想定した短縮率込みで換算します。
-                </p>
-              </div>
-              <Tooltip term="短縮率">
-                理想波長に対する実際の物理長の比率です。外部ホイップなら90〜98%、誘電体や装荷コイルを使う小型アンテナではさらに短くなることがあります。
-              </Tooltip>
-            </div>
+          <div className="mt-5">
+            <CollapsibleSection title="アンテナ物理長・短縮率" storageKey="frequency-wavelength:antenna-lengths">
+            <p className="text-xs leading-relaxed">端部効果や誘電体を想定した短縮率込みで換算します。</p>
             <div className="mt-3 max-w-xs">
               <Field
                 id="antennaVelocityFactor"
@@ -149,6 +142,7 @@ export function FrequencyWavelengthPanel() {
                 max={100}
                 step={1}
                 showSlider
+                emptyBehavior="preserve"
                 onChange={setVelocityFactorPercent}
               />
             </div>
@@ -173,11 +167,12 @@ export function FrequencyWavelengthPanel() {
                 </div>
               ))}
             </div>
+            </CollapsibleSection>
           </div>
         ) : null}
 
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
+        <div className="mt-5">
+          <CollapsibleSection title="使い方・用語" storageKey="frequency-wavelength:guide">
           <div className="mt-3 grid gap-4 md:grid-cols-2">
             <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
               <li>
@@ -205,12 +200,14 @@ export function FrequencyWavelengthPanel() {
               </div>
             </dl>
           </div>
+          </CollapsibleSection>
         </div>
 
         <div className="mt-5">
           <FormulaExplanationCard
             title="計算式を見る"
             formula={"λ[m] = 299,792,458 / 周波数[Hz]\n物理長 = 電気長 × 短縮率"}
+            showColumnLink={false}
           >
             <p>
               920MHzの場合、波長は約{formatMeters(calculateWavelengthFromMHz(920))}です。アンテナ長は単純なλ/4だけでは決まらず、筐体やGND、誘電体の影響を受けます。
@@ -218,7 +215,11 @@ export function FrequencyWavelengthPanel() {
           </FormulaExplanationCard>
         </div>
       </div>
-      <WavelengthVisual frequencyMHz={frequencyMHz} hasInput={Boolean(result)} />
+      <div id="wavelength-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <ResultBar primary={primary} />
+        <WavelengthVisual frequencyMHz={frequencyMHz} hasInput={Boolean(result)} />
+      </div>
+      <MobileResultBar primary={primary} targetId="wavelength-primary-result" />
     </section>
   );
 }
