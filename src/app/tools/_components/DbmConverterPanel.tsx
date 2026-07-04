@@ -137,19 +137,16 @@ export function DbmConverterPanel() {
             <MetricCard
               label="dBm"
               value={formatPower(result.dbm)}
-              tone="primary"
               hint="入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。"
             />
             <MetricCard
               label="mW"
               value={formatPower(result.mw)}
-              tone="primary"
               hint="入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。"
             />
             <MetricCard
               label="W"
               value={formatPower(result.w)}
-              tone="primary"
               hint="入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。"
             />
           </div>
@@ -222,7 +219,6 @@ export function DbmConverterPanel() {
                 label="dBd換算"
                 value={formatPower(dbiToDbd(antennaGainDbi))}
                 unit="dBd"
-                tone="primary"
                 size="sm"
                 sub={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
               />
@@ -230,14 +226,12 @@ export function DbmConverterPanel() {
                 label="アンテナ端子電力"
                 value={formatPower(eirp.antennaInputDbm)}
                 unit="dBm"
-                tone="neutral"
                 size="sm"
               />
               <MetricCard
                 label="EIRP"
                 value={formatPower(eirp.eirpDbm)}
                 unit="dBm"
-                tone="success"
                 size="sm"
                 sub={`${formatPower(eirp.eirpW)} W`}
               />
@@ -245,7 +239,6 @@ export function DbmConverterPanel() {
                 label="ERP"
                 value={formatPower(eirp.erpDbm)}
                 unit="dBm"
-                tone="primary"
                 size="sm"
                 sub={`${formatPower(eirp.erpW)} W`}
               />

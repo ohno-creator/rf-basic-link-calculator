@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { NumberField } from "@/components/NumberField";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Stat } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { glossary } from "@/data/glossary";
@@ -83,43 +84,26 @@ export function FrequencyWavelengthPanel() {
         </p>
 
         <div className="mt-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="waveFrequency" className="text-sm font-semibold text-slate-950">
-              周波数
-            </label>
-            <div className="flex flex-wrap items-center gap-2">
-              <Tooltip term={glossary.frequency.term}>{glossary.frequency.description}</Tooltip>
-              <Tooltip term="単位">
-                入力した数値の単位です。MHz=百万Hz、GHz=十億Hz（=1000MHz）。920は「MHz」、2.4や5.8は「GHz」を選びます。単位を切り替えると表示値は自動で換算され、実周波数は保たれます。
-              </Tooltip>
-            </div>
-          </div>
-          <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_120px]">
-            <input
-              id="waveFrequency"
-              type="number"
-              min={0.001}
-              step={unit === "GHz" ? 0.01 : 0.1}
-              value={Number.isFinite(frequency) ? frequency : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-              onChange={(event) => setFrequency(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-              aria-invalid={!result}
-            />
-            <select
-              value={unit}
-              aria-label="周波数の単位"
-              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-              onChange={(event) => handleUnitChange(event.target.value as "MHz" | "GHz")}
-            >
-              <option value="MHz">MHz（百万ヘルツ。サブGHz帯：LPWA/RFID 920MHz等）</option>
-              <option value="GHz">GHz（十億ヘルツ＝1000MHz。WiFi/BLE 2.4/5/6GHz等）</option>
-            </select>
-          </div>
-          {!result ? (
-            <p className="mt-2 text-sm font-medium text-rose-700">
-              周波数は0より大きい値を入力してください。
-            </p>
-          ) : null}
+          <Field
+            id="waveFrequency"
+            label="周波数"
+            help={`${glossary.frequency.description}\n\n入力した数値の単位です。MHz=百万Hz、GHz=十億Hz（=1000MHz）。920は「MHz」、2.4や5.8は「GHz」を選びます。単位を切り替えると表示値は自動で換算され、実周波数は保たれます。`}
+            unitSelect={{
+              value: unit,
+              options: [
+                { value: "MHz", label: "MHz（百万ヘルツ。サブGHz帯：LPWA/RFID 920MHz等）" },
+                { value: "GHz", label: "GHz（十億ヘルツ＝1000MHz。WiFi/BLE 2.4/5/6GHz等）" }
+              ],
+              ariaLabel: "周波数の単位",
+              onChange: (u) => handleUnitChange(u as "MHz" | "GHz")
+            }}
+            value={frequency}
+            onChange={setFrequency}
+            min={0.001}
+            step={unit === "GHz" ? 0.01 : 0.1}
+            error={result ? undefined : "周波数は0より大きい値を入力してください。"}
+            emptyBehavior="invalid"
+          />
         </div>
 
         {result ? (
@@ -130,15 +114,12 @@ export function FrequencyWavelengthPanel() {
               ["λ/4", result.quarterM],
               ["λ/8", result.eighthM]
             ].map(([label, value]) => (
-              <div key={label as string} className="rounded-lg bg-slate-50 p-4">
-                <div className="flex items-center justify-between gap-2">
-                  <p className="text-xs text-slate-500">{label as string}</p>
-                  <Tooltip term={RESULT_HINTS[label as string].term}>
-                    {RESULT_HINTS[label as string].description}
-                  </Tooltip>
-                </div>
-                <Stat className="mt-1" value={formatMeters(value as number)} tone="staf" size="md" />
-              </div>
+              <MetricCard
+                key={label as string}
+                label={label as string}
+                value={formatMeters(value as number)}
+                hint={RESULT_HINTS[label as string].description}
+              />
             ))}
           </div>
         ) : null}
@@ -159,7 +140,7 @@ export function FrequencyWavelengthPanel() {
               </Tooltip>
             </div>
             <div className="mt-3 max-w-xs">
-              <NumberField
+              <Field
                 id="antennaVelocityFactor"
                 label="短縮率"
                 unit="%"
