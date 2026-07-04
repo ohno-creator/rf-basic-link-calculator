@@ -33,9 +33,7 @@ export function VswrConverterPanel() {
   const handleModeChange = (nextMode: VswrSourceKind) => {
     setMode(nextMode);
     const nextPlaceholder = modes.find((item) => item.id === nextMode)?.placeholder;
-    if (nextPlaceholder !== undefined) {
-      setValue(nextPlaceholder);
-    }
+    if (nextPlaceholder !== undefined) setValue(nextPlaceholder);
   };
 
   const computation = useMemo(() => {
@@ -61,9 +59,7 @@ export function VswrConverterPanel() {
   };
 
   const powerFlow = useMemo(() => {
-    if (!result) {
-      return null;
-    }
+    if (!result) return null;
     const inputPowerW = dbmToW(inputPowerDbm);
     const reflectedRatio = result.reflectionCoefficient ** 2;
     const acceptedRatio = Math.max(0, 1 - reflectedRatio);

@@ -73,7 +73,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
               key={item.dbm}
               className={`rounded-lg border p-4 text-center transition ${
                 isActive
-                  ? "border-staf bg-staf/10 ring-2 ring-staf/30"
+                  ? "border-staf bg-staf/10 ring-2 ring-staf/40"
                   : "border-slate-200 bg-slate-50"
               }`}
             >

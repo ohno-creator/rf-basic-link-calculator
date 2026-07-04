@@ -5,10 +5,11 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
-import { NumberField } from "@/components/NumberField";
-import { Stat, type StatTone } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
 import { formatDb, formatDbm, formatNumber, formatSigned } from "@/lib/rf/format";
+import type { MetricTone } from "@/lib/ui/kit";
 import {
   calculateSimpleLinkBudget,
   type SimpleDistanceUnit,
@@ -56,12 +57,14 @@ const presets: Array<{ label: string; input: SimpleLinkBudgetInput }> = [
   }
 ];
 
-const judgementTone: Record<SimpleLinkBudgetResult["judgement"]["level"], StatTone> = {
-  excellent: "emerald",
-  good: "staf",
-  caution: "amber",
-  unstable: "amber",
-  poor: "rose"
+// 判定レベル → MetricCard の意味トーン。リンク余裕は良否判定を持つため色付けする（§2.1）。
+// 数値色は従来の judgementTone と一致（success=emerald / primary=staf / caution・warning=amber / danger=rose）。
+const judgementMetricTone: Record<SimpleLinkBudgetResult["judgement"]["level"], MetricTone> = {
+  excellent: "success",
+  good: "primary",
+  caution: "caution",
+  unstable: "warning",
+  poor: "danger"
 };
 
 const judgementClass: Record<SimpleLinkBudgetResult["judgement"]["level"], string> = {
@@ -138,7 +141,6 @@ export function SimpleLinkBudgetPanel() {
 
   const marginPercent = result ? clampPercent(((result.linkMarginDb + 30) / 60) * 100) : 0;
   const thresholdPercent = 50;
-  const resultTone = result ? judgementTone[result.judgement.level] : "neutral";
 
   return (
     <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
@@ -164,7 +166,7 @@ export function SimpleLinkBudgetPanel() {
         </div>
 
         <div className="mt-5 space-y-4">
-          <NumberField
+          <Field
             id="simpleFrequencyMHz"
             label="周波数"
             help="使う無線の中心周波数です。920MHz帯、2.4GHz帯なら、それぞれ 920 / 2400 のように入力します。"
@@ -175,39 +177,26 @@ export function SimpleLinkBudgetPanel() {
             onChange={updateNumber("frequencyMHz")}
           />
 
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold text-slate-900">通信距離</span>
-              <Tooltip term="通信距離">
-                送信側と受信側の距離です。屋内や机上の確認は m、屋外の見通し確認は km が扱いやすいです。
-              </Tooltip>
-            </div>
-            <div className="mt-2 grid gap-3 sm:grid-cols-[1fr_120px]">
-              <NumberField
-                id="simpleDistance"
-                label="距離"
-                unit={input.distanceUnit}
-                value={input.distance}
-                min={input.distanceUnit === "m" ? 0.1 : 0.001}
-                step={input.distanceUnit === "m" ? 1 : 0.01}
-                onChange={updateNumber("distance")}
-              />
-              <label className="block" htmlFor="simpleDistanceUnit">
-                <span className="text-sm font-semibold text-slate-900">単位</span>
-                <select
-                  id="simpleDistanceUnit"
-                  value={input.distanceUnit}
-                  className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15"
-                  onChange={(event) => handleDistanceUnitChange(event.target.value as SimpleDistanceUnit)}
-                >
-                  <option value="m">m</option>
-                  <option value="km">km</option>
-                </select>
-              </label>
-            </div>
-          </div>
+          <Field
+            id="simpleDistance"
+            label="通信距離"
+            help="送信側と受信側の距離です。屋内や机上の確認は m、屋外の見通し確認は km が扱いやすいです。"
+            unitSelect={{
+              value: input.distanceUnit,
+              options: [
+                { value: "m", label: "m" },
+                { value: "km", label: "km" }
+              ],
+              ariaLabel: "距離の単位",
+              onChange: (u) => handleDistanceUnitChange(u as SimpleDistanceUnit)
+            }}
+            value={input.distance}
+            min={input.distanceUnit === "m" ? 0.1 : 0.001}
+            step={input.distanceUnit === "m" ? 1 : 0.01}
+            onChange={updateNumber("distance")}
+          />
 
-          <NumberField
+          <Field
             id="simpleTxPowerDbm"
             label="送信電力"
             help="無線機の送信出力です。0dBm=1mW、10dBm=10mW、20dBm=100mWです。"
@@ -217,7 +206,7 @@ export function SimpleLinkBudgetPanel() {
             onChange={updateNumber("txPowerDbm")}
           />
 
-          <NumberField
+          <Field
             id="simpleSensitivityDbm"
             label="受信感度"
             help="受信機が復調できる最小レベルです。仕様書の -120dBm などの値を入れます。"
@@ -236,7 +225,7 @@ export function SimpleLinkBudgetPanel() {
             </Tooltip>
           </div>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
-            <NumberField
+            <Field
               id="simpleGainTotal"
               label="アンテナ利得（送受信合計）"
               unit="dBi"
@@ -244,7 +233,7 @@ export function SimpleLinkBudgetPanel() {
               step={0.5}
               onChange={updateNumber("antennaGainTotalDbi")}
             />
-            <NumberField
+            <Field
               id="simpleExtraLoss"
               label="追加損失"
               unit="dB"
@@ -275,35 +264,29 @@ export function SimpleLinkBudgetPanel() {
         {result ? (
           <>
             <div className="mt-5 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg bg-staf-light p-4">
-                <Stat
-                  label="リンク余裕"
-                  value={formatSigned(result.linkMarginDb, "dB", 1)}
-                  tone={resultTone}
-                  size="lg"
-                  note="0dBを上回るほど余裕あり"
-                />
-              </div>
-              <div className="rounded-lg bg-slate-50 p-4">
-                <Stat
-                  label="受信電力"
-                  value={formatNumber(result.receivedPowerDbm)}
-                  unit="dBm"
-                  tone="neutral"
-                  size="md"
-                  note={`感度 ${formatDbm(input.receiverSensitivityDbm)}`}
-                />
-              </div>
-              <div className="rounded-lg bg-slate-50 p-4">
-                <Stat
-                  label="自由空間損失"
-                  value={formatNumber(result.fsplDb)}
-                  unit="dB"
-                  tone="neutral"
-                  size="md"
-                  note={formatDistance(input.distance, input.distanceUnit)}
-                />
-              </div>
+              <MetricCard
+                label="リンク余裕"
+                value={formatSigned(result.linkMarginDb, "dB", 1)}
+                tone={judgementMetricTone[result.judgement.level]}
+                size="lg"
+                sub="0dBを上回るほど余裕あり"
+              />
+              <MetricCard
+                label="受信電力"
+                value={formatNumber(result.receivedPowerDbm)}
+                unit="dBm"
+                tone="neutral"
+                size="md"
+                sub={`感度 ${formatDbm(input.receiverSensitivityDbm)}`}
+              />
+              <MetricCard
+                label="自由空間損失"
+                value={formatNumber(result.fsplDb)}
+                unit="dB"
+                tone="neutral"
+                size="md"
+                sub={formatDistance(input.distance, input.distanceUnit)}
+              />
             </div>
 
             <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">

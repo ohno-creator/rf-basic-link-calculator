@@ -2,6 +2,9 @@
 // 「なぜ半波長で共振するのか」を視覚的に伝えるための図。
 // 電流分布は I(z) = I0·cos(π·z / L)（中央で最大＝腹、両端でゼロ＝節）。
 
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
+import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+
 const X0 = 70;
 const X1 = 490;
 const XC = (X0 + X1) / 2;
@@ -37,26 +40,42 @@ export function HalfWaveResonanceDiagram() {
         aria-label="半波長ダイポール上の電流分布。中央の給電点で電流が最大、両端で電流がゼロになる定在波を示す図。"
         className="mt-2 w-full"
       >
-        <defs>
-          <marker id="dimArrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-            <path d="M0,0 L8,4 L0,8 Z" fill="#94a3b8" />
-          </marker>
-        </defs>
+        <DiagramDefs />
 
         {/* 振れ幅（定在波の包絡線） */}
-        <path d={posPath} fill="none" stroke="#93c5fd" strokeWidth="1.5" strokeDasharray="4 4" />
-        <path d={negPath} fill="none" stroke="#93c5fd" strokeWidth="1.5" strokeDasharray="4 4" />
+        <path d={posPath} fill="none" stroke="#93c5fd" strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
+        <path d={negPath} fill="none" stroke="#93c5fd" strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
 
-        {/* 導体（ダイポールの2本のアーム） */}
-        <line x1={X0} y1={AXIS_Y} x2={XC - 12} y2={AXIS_Y} stroke="#334155" strokeWidth="5" strokeLinecap="round" />
-        <line x1={XC + 12} y1={AXIS_Y} x2={X1} y2={AXIS_Y} stroke="#334155" strokeWidth="5" strokeLinecap="round" />
+        {/* 導体（ダイポールの2本のアーム）：金属素材のグラデーション */}
+        <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
+          <rect
+            x={X0 - 2.5}
+            y={AXIS_Y - 2.5}
+            width={XC - 12 - (X0 - 2.5) + 2.5}
+            height="5"
+            rx="2.5"
+            fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)}
+            stroke="#64748b"
+            strokeWidth={diagramStroke.support}
+          />
+          <rect
+            x={XC + 12 - 2.5}
+            y={AXIS_Y - 2.5}
+            width={X1 + 2.5 - (XC + 12 - 2.5)}
+            height="5"
+            rx="2.5"
+            fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)}
+            stroke="#64748b"
+            strokeWidth={diagramStroke.support}
+          />
+        </g>
 
         {/* 端（電流ゼロ＝節） */}
         <circle cx={X0} cy={AXIS_Y} r="5" fill="#94a3b8" />
         <circle cx={X1} cy={AXIS_Y} r="5" fill="#94a3b8" />
 
         {/* 電流の定在波（時間とともに腹が上下する） */}
-        <path d={posPath} fill="none" stroke="#0071BD" strokeWidth="3" strokeLinejoin="round">
+        <path d={posPath} fill="none" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} strokeLinejoin="round">
           <animate
             attributeName="d"
             dur="2.6s"
@@ -66,19 +85,19 @@ export function HalfWaveResonanceDiagram() {
         </path>
 
         {/* 給電点 */}
-        <circle cx={XC} cy={AXIS_Y} r="7" fill="#ffffff" stroke="#0071BD" strokeWidth="3" />
+        <circle cx={XC} cy={AXIS_Y} r="7" fill="#ffffff" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} />
 
         {/* ラベル */}
         <text x={XC} y={AXIS_Y - AMP - 12} textAnchor="middle" fontSize="13" fontWeight="700" fill="#0071BD">
           電流 最大（腹）
         </text>
-        <text x={X0} y={AXIS_Y - 14} textAnchor="middle" fontSize="11" fill="#64748b">
+        <text x={X0} y={AXIS_Y - 14} textAnchor="middle" {...diagramText.label}>
           電流ゼロ（節）
         </text>
-        <text x={X1} y={AXIS_Y - 14} textAnchor="middle" fontSize="11" fill="#64748b">
+        <text x={X1} y={AXIS_Y - 14} textAnchor="middle" {...diagramText.label}>
           電流ゼロ（節）
         </text>
-        <text x={XC} y={AXIS_Y + 26} textAnchor="middle" fontSize="11" fontWeight="600" fill="#334155">
+        <text x={XC} y={AXIS_Y + 26} textAnchor="middle" {...diagramText.label} fontWeight="600">
           給電点
         </text>
 
@@ -89,11 +108,19 @@ export function HalfWaveResonanceDiagram() {
           x2={X1}
           y2={AXIS_Y + 54}
           stroke="#94a3b8"
-          strokeWidth="1.5"
-          markerStart="url(#dimArrow)"
-          markerEnd="url(#dimArrow)"
+          strokeWidth={diagramStroke.support}
+          markerStart={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+          markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
         />
-        <text x={XC} y={AXIS_Y + 74} textAnchor="middle" fontSize="13" fontWeight="700" fill="#475569">
+        <text
+          x={XC}
+          y={AXIS_Y + 74}
+          textAnchor="middle"
+          fill={diagramText.value.fill}
+          fontSize={diagramText.value.fontSize}
+          fontWeight={diagramText.value.fontWeight}
+          style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+        >
           λ/2（半波長）
         </text>
       </svg>

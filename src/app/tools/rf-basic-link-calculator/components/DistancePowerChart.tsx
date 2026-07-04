@@ -12,7 +12,7 @@ import {
   YAxis
 } from "recharts";
 import { Card } from "@/components/Card";
-import { chartTheme } from "@/lib/chartTheme";
+import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { generateDistancePowerData } from "@/lib/rf/chartData";
 import type { LinkBudgetInput } from "@/lib/rf/linkBudget";
 
@@ -51,18 +51,11 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
-              <XAxis
-                dataKey="distanceLabel"
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
-                interval={0}
-              />
-              <YAxis
-                unit="dBm"
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
-                domain={["dataMin - 12", "dataMax + 8"]}
-              />
+              <CartesianGrid {...rfGridProps()} />
+              <XAxis dataKey="distanceLabel" tick={rfTickProps()} interval={0} />
+              <YAxis unit="dBm" tick={rfTickProps()} domain={["dataMin - 12", "dataMax + 8"]} />
               <RechartsTooltip
+                {...rfTooltipProps()}
                 formatter={(value) => [`${value} dBm`, "受信電力"]}
                 labelFormatter={(label) => `距離 ${label}`}
               />

@@ -25,7 +25,7 @@ import {
 import { NamiGateHeatmap } from "./NamiGateHeatmap";
 
 const selectClass =
-  "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15";
+  "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40";
 
 const evalToneText: Record<string, string> = {
   success: "text-emerald-800",

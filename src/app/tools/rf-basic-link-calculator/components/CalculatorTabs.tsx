@@ -113,7 +113,7 @@ export function CalculatorTabs({
                 type="button"
                 role="tab"
                 aria-selected={selected}
-                className={`rounded-md px-4 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
+                className={`rounded-md px-4 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
                   selected ? "bg-staf text-white shadow-card" : "bg-slate-50 text-slate-700 hover:bg-slate-100"
                 }`}
                 onClick={() => setActiveSheet(sheet.id)}
