@@ -28,7 +28,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
-    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "自由空間損失 FSPL 計算" }
+    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" }
   ];
 
   for (const { slug, h1, fig } of pages) {
@@ -60,6 +60,21 @@ test("VSWR diagram reacts to input", async ({ page }) => {
   await input.fill("3");
   await expect(page.getByText("3.00").first()).toBeVisible();
   await expect(page.getByText("25.0%").first()).toBeVisible();
+});
+
+test("FSPL keeps its primary result visible beside the inputs", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/free-space-loss/");
+
+  await expect(page.getByRole("heading", { name: "入力条件" })).toBeVisible();
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+
+  await page.locator("#fsplFrequency").fill("2400");
+  await expect(primaryResult).toContainText("dB");
+  await expect(page.getByText("送信機 ● ))) ))) ))) ))) 受信機")).toHaveCount(0);
 });
 
 test("dB feel slider reacts to dB", async ({ page }) => {

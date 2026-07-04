@@ -6,12 +6,15 @@ type FormulaExplanationCardProps = {
   title: string;
   formula: string;
   children: ReactNode;
+  /** BasicToolPageShell側にコラム導線がある場合はfalseにして重複を避ける。 */
+  showColumnLink?: boolean;
 };
 
 export function FormulaExplanationCard({
   title,
   formula,
-  children
+  children,
+  showColumnLink = true
 }: FormulaExplanationCardProps) {
   return (
     <div className="space-y-3">
@@ -21,9 +24,11 @@ export function FormulaExplanationCard({
         </pre>
         <div className="mt-3">{children}</div>
       </Accordion>
-      <a className="text-sm font-semibold text-staf-dark hover:text-staf-dark" href={COLUMN_URL}>
-        この計算の詳しい解説を読む
-      </a>
+      {showColumnLink ? (
+        <a className="text-sm font-semibold text-staf-dark hover:text-staf-dark" href={COLUMN_URL}>
+          この計算の詳しい解説を読む
+        </a>
+      ) : null}
     </div>
   );
 }
