@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import type { StatTone } from "@/lib/ui/tones";
 
-export type StatTone = "staf" | "sky" | "emerald" | "rose" | "amber" | "neutral";
+export type { StatTone } from "@/lib/ui/tones";
 export type StatSize = "sm" | "md" | "lg";
 
 // 結果・指標の主役数値を統一する。桁幅を tabular-nums で固定し、値/単位/ラベル/トーン/サイズの

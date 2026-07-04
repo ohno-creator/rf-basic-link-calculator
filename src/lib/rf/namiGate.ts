@@ -14,7 +14,7 @@
 // ・入射角損失はガラス透過の角度依存として OFF 電力に反映し、利得側にも off-axis ロールオフとして一部反映する。
 // ・反射・什器・人体・実機アンテナ指向性・MIMO等は含まない。色は固定dBmスケールの相対比較で、絶対値は未校正。
 
-import type { CalloutTone } from "@/components/Callout";
+import type { CalloutTone } from "@/lib/ui/tones";
 
 export type GlassType = "standard" | "double" | "lowe" | "reinforced";
 

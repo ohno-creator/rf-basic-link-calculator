@@ -3,9 +3,8 @@
 // キー操作→次インデックスといった判断をここに集約し、描画は各 .tsx が担う。
 // 設計方針は docs/ui-redesign-plan.md §2。
 
-import type { CalloutTone } from "@/components/Callout";
-import type { StatTone } from "@/components/Stat";
 import type { LinkJudgementLevel } from "@/lib/rf/judgement";
+import type { CalloutTone, StatTone } from "@/lib/ui/tones";
 
 /** 結果カードの意味トーン。判定を持つ値のみ neutral/primary 以外を指定する（呼び出し側の規律）。 */
 export type MetricTone = "neutral" | "primary" | "success" | "info" | "caution" | "warning" | "danger";
