@@ -9,7 +9,7 @@ import {
 } from "@/data/linkBudgetOptions";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import { normalizeDistanceKm, type LinkBudgetInput, type LinkBudgetResult } from "@/lib/rf/linkBudget";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
+import { DIAGRAM_DEF_IDS, diagramPalette, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
 
 type LinkAssumptionDiagramProps = {
   input: LinkBudgetInput;
@@ -176,16 +176,16 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
             <rect width={drawing.width} height={drawing.height} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} />
             <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSoil)} />
             <rect x="0" y={drawing.groundY} width={drawing.width} height={drawing.height - drawing.groundY} fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)} opacity="0.25" />
-            <line x1="70" x2="910" y1={drawing.groundY} y2={drawing.groundY} stroke="#64748B" strokeWidth={diagramStroke.emphasis} />
+            <line x1="70" x2="910" y1={drawing.groundY} y2={drawing.groundY} stroke={diagramPalette.muted} strokeWidth={diagramStroke.emphasis} />
 
             <ellipse
               cx={midX}
               cy={fresnelCy}
               rx={fresnelRx}
               ry={fresnelRy}
-              fill="#BAE6FD"
+              fill={diagramPalette.skyFill}
               opacity="0.22"
-              stroke="#38BDF8"
+              stroke={diagramPalette.skyStroke}
               strokeDasharray="7 6"
             />
             <text x={midX} y={fresnelCy - fresnelRy - 14} textAnchor="middle" className="fill-sky-700 text-[18px] font-bold">
@@ -197,7 +197,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
               x2={drawing.rxX}
               y1={txAntennaY}
               y2={rxAntennaY}
-              stroke="#0F172A"
+              stroke={diagramPalette.ink}
               strokeWidth="5"
             />
             <text x={midX} y={(txAntennaY + rxAntennaY) / 2 - 20} textAnchor="middle" className="fill-slate-900 text-[20px] font-bold">
@@ -207,7 +207,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
             <path
               d={`M ${drawing.txX} ${txAntennaY} Q ${midX} ${reflectionY} ${drawing.rxX} ${rxAntennaY}`}
               fill="none"
-              stroke={showReflection ? "#F97316" : "#94A3B8"}
+              stroke={showReflection ? diagramPalette.warn : diagramPalette.faint}
               strokeWidth={showReflection ? 5 : 3}
               strokeDasharray={showReflection ? "0" : "8 6"}
               opacity={showReflection ? 0.9 : 0.55}
@@ -217,34 +217,34 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
             </text>
 
             <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
-              <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="11" strokeLinecap="round" />
-              <circle cx={drawing.txX} cy={txAntennaY} r="16" fill="#0071BD" stroke="#FFFFFF" strokeWidth="4" />
+              <line x1={drawing.txX} x2={drawing.txX} y1={drawing.groundY} y2={txAntennaY} stroke={diagramPalette.staf} strokeWidth="11" strokeLinecap="round" />
+              <circle cx={drawing.txX} cy={txAntennaY} r="16" fill={diagramPalette.staf} stroke={diagramPalette.white} strokeWidth="4" />
             </g>
             <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
-              <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="11" strokeLinecap="round" />
-              <circle cx={drawing.rxX} cy={rxAntennaY} r="16" fill="#10B981" stroke="#FFFFFF" strokeWidth="4" />
+              <line x1={drawing.rxX} x2={drawing.rxX} y1={drawing.groundY} y2={rxAntennaY} stroke={diagramPalette.success} strokeWidth="11" strokeLinecap="round" />
+              <circle cx={drawing.rxX} cy={rxAntennaY} r="16" fill={diagramPalette.success} stroke={diagramPalette.white} strokeWidth="4" />
             </g>
 
-            <rect x={drawing.txX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+            <rect x={drawing.txX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill={diagramPalette.white} stroke={diagramPalette.line} />
             <text x={drawing.txX} y={drawing.groundY + 43} textAnchor="middle" className="fill-slate-800 text-[18px] font-bold">
               送信側
             </text>
-            <rect x={drawing.rxX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+            <rect x={drawing.rxX - 72} y={drawing.groundY + 16} width="144" height="42" rx="8" fill={diagramPalette.white} stroke={diagramPalette.line} />
             <text x={drawing.rxX} y={drawing.groundY + 43} textAnchor="middle" className="fill-slate-800 text-[18px] font-bold">
               受信側
             </text>
 
-            <line x1={drawing.txX + 18} x2={drawing.txX + 18} y1={drawing.groundY} y2={txAntennaY} stroke="#0071BD" strokeDasharray="5 5" />
+            <line x1={drawing.txX + 18} x2={drawing.txX + 18} y1={drawing.groundY} y2={txAntennaY} stroke={diagramPalette.staf} strokeDasharray="5 5" />
             <text x={drawing.txX + 34} y={(drawing.groundY + txAntennaY) / 2} className="fill-staf text-[18px] font-bold">
               Tx高 {input.txAntennaHeightM.toFixed(1)}m
             </text>
-            <line x1={drawing.rxX - 18} x2={drawing.rxX - 18} y1={drawing.groundY} y2={rxAntennaY} stroke="#047857" strokeDasharray="5 5" />
+            <line x1={drawing.rxX - 18} x2={drawing.rxX - 18} y1={drawing.groundY} y2={rxAntennaY} stroke={diagramPalette.successDeep} strokeDasharray="5 5" />
             <text x={drawing.rxX - 34} y={(drawing.groundY + rxAntennaY) / 2} textAnchor="end" className="fill-emerald-700 text-[18px] font-bold">
               Rx高 {input.rxAntennaHeightM.toFixed(1)}m
             </text>
 
             <g>
-              <rect x="282" y="18" width="416" height="72" rx="12" fill="#FFFFFF" stroke="#CBD5E1" />
+              <rect x="282" y="18" width="416" height="72" rx="12" fill={diagramPalette.white} stroke={diagramPalette.line} />
               <text x="490" y="47" textAnchor="middle" className="fill-slate-950 text-[18px] font-bold">
                 {input.frequencyMHz.toFixed(0)} MHz / {result.propagationModelLabel}
               </text>
