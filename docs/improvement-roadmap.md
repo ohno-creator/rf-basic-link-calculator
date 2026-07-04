@@ -23,6 +23,7 @@
   Track F  プラットフォーム化（manifest駆動・単位ブランド型）    … 最後
   Track G  新規基礎ツール20本（事業直結） = new-tools-proposal.md … E完了を待たずTier順に並行可
   Track H  ビジュアル品質（チャート・図・3Dの商用レベル化）      … §7C。基盤→主役→3Dの順
+  Track I  デザインベースv3（コンセプト整合の全面最適化）        … §7D。正本=docs/design-base-v3.md
 ```
 
 **推奨ウェーブ**（並行実行の束）:
@@ -33,6 +34,7 @@
 | W2 | UX-2 22ツール移行（→Codex）／B1（→Claude）／D パイロット3本（→Antigravity調査+Claude執筆） |
 | W3 | UX-3 大型3ツール（→Claude）／E1-E3 lib＋テスト（→Claude設計・Codex実装）／UX-4 掃討（→Codex）／**G Tier1 8本**（→Claude lib・Codexパネル） |
 | W4 | E4-E6／D 全展開（→Codex統合）／**G Tier2-3**（[DATA]は文献パック先行→Antigravity）／F1-F3（→Claude設計・Codex実装） |
+| W6 | **Track I デザインベースv3**: I1タイポ統一→I2余白リズム→I3シェルv3→I4エレベーション→I5旗艦§4.1残（Fableベース設計→Opus整合レビュー→Codex/Fable量産→Antigravity視覚ループ） |
 | W5 | **Track H ビジュアル品質**: H1基盤＋H3図言語（→Claude設計・Codex/Fable適用）→ H4/H5主役2枚 → H2対話 → H6 3Dスパイク（→Claude）→ H7/H8（→Codex/Antigravity）。UX-2/3の視覚ループ資産を流用 |
 
 ---
@@ -220,6 +222,26 @@
 - 機械検査: 直書きhex（チャート系）0件／系列色は chartTheme 経由100%／`prefers-reduced-motion` でアニメーション0。
 - 性能: 3D非同梱ページのJSサイズ増 0、3DページはLCP 2.5s以内（CI計測）。
 - a11y: axe 重大違反0、チャートの数値テーブル代替・キーボード操作の既存資産維持。
+
+---
+
+## 7D. Track I: デザインベースv3 — コンセプト整合の全面最適化
+
+**正本**: [docs/design-base-v3.md](./design-base-v3.md)（Fable作成のベースデザイン）。
+コンセプト「**計測器の精度、教科書の親しみ**」の3原則（数値が主役／視線は1方向／色は意味）に、
+トップデザイナーのセオリー（Rams・Refactoring UI・Tufte・Stripe/Linear・HIG・8ptグリッド・60-30-10）を適用先つきで落とし込み済み。
+
+| WO | 内容 | 担当 |
+|---|---|---|
+| I1 | タイポ7ロール統一（Display/Title/Heading/Label/Body/Caption/Metric） | Codex/Fable量産 |
+| I2 | 余白リズム統一（8ptスケール外の恣意値を置換） | Codex/Fable量産 |
+| I3 | シェルv3（BasicToolPageShell余白・prose幅・ホームHero圧縮） | Opus→Codex |
+| I4 | エレベーション監査（2層規約: Flat/Raisedのみ） | Codex/Fable量産 |
+| I5 | 旗艦§4.1残（ステップ1系統化・CTA削減）を本設計図で実施 | Opus |
+
+- 運用は確立済みの視覚ループ: trackブランチ→機能ゲート→Antigravity視覚検証・差分承認→マージ。
+- 受け入れ基準（grep-able）は design-base-v3.md §4 を正とする（ロール外タイポ新規0・スケール外余白新規0・直書きhex新規0・axe/AA/fold維持）。
+- 手本ページ＝dbm-converter／NCU断面／ナミヒートマップ／旗艦滝v2（追加モックは作らない: 実装=モック）。
 
 ---
 
