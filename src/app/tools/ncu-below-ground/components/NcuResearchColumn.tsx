@@ -6,7 +6,7 @@ import { BookOpen, ExternalLink } from "lucide-react";
 export function ResearchColumn() {
   return (
     <Callout tone="info" size="lg" icon={<BookOpen aria-hidden="true" className="h-5 w-5 text-sky-700" />}>
-      <h2 className="text-lg font-bold">コラム：世界の研究ではどう扱っているか</h2>
+      <h2 className="text-base font-bold">コラム：世界の研究ではどう扱っているか</h2>
       <div className="mt-3 space-y-3 text-sm leading-relaxed text-sky-950/90">
         <p>
           GL以下NCUに対して、奥村・秦モデルのアンテナ高へマイナス値を入れる、という扱いは主流ではありません。
@@ -62,7 +62,7 @@ export function ResearchColumn() {
             では、埋設深さや土壌含水率が接続確率に大きく効くことが扱われています。
           </li>
         </ul>
-        <p className="rounded-lg border border-sky-200 bg-white/70 p-3 text-xs">
+        <p className="rounded-lg border border-sky-200 bg-white/70 p-4 text-xs">
           実務上の落としどころは、万能な「地下距離式」を探すことではなく、蓋・BOX・水分・開口・アンテナ位置を分解し、現地測定で補正することです。
         </p>
       </div>

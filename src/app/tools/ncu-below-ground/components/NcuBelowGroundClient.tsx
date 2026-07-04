@@ -576,7 +576,7 @@ export function NcuBelowGroundClient() {
       ) : null}
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-        <div className="space-y-5">
+        <div className="space-y-4">
           <Card as="section">
             <SectionTitle icon={RadioTower} eyebrow="Preset" title="現場条件プリセット">
               最初は近い条件を選び、写真・図面・実測値が分かったら細かく調整してください。
@@ -587,7 +587,7 @@ export function NcuBelowGroundClient() {
                   key={preset.label}
                   type="button"
                   title={`${preset.description}｜${preset.operatorHint} クリックすると、この典型条件が各入力欄に一括セットされます（あとから個別に微調整できます）。`}
-                  className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-left transition hover:border-staf/50 hover:bg-white"
+                  className="rounded-lg border border-slate-200 bg-slate-50 p-4 text-left transition hover:border-staf/50 hover:bg-white"
                   onClick={() =>
                     // プリセットは「既定値 → プリセット」で適用し、順番に依存しない確定状態にする。
                     // 通信モジュール/アンテナのスペックは現場条件プリセットでは変えず、現在値を保持する。
@@ -734,13 +734,13 @@ export function NcuBelowGroundClient() {
             <SectionTitle icon={Box} eyebrow="Below ground" title="GL以下・BOXまわりの条件">
               蓋、BOX、深さ、水分、アンテナ位置、地表上の遮蔽を、端末近傍損失として分けて入力します。
             </SectionTitle>
-            <div className="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/70 p-3 text-xs leading-relaxed text-amber-900">
+            <div className="mb-4 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50/70 p-4 text-xs leading-relaxed text-amber-900">
               <Target aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
               <span>
                 ここがこのツールの肝です。まず<span className="font-bold">「深さ」と「蓋」</span>を現場写真に合わせ、続けて水分・アンテナ位置を選ぶと、結果パネルに主因が出ます。
               </span>
             </div>
-            <div className="space-y-5">
+            <div className="space-y-4">
               <div className="grid gap-4 sm:grid-cols-2">
                 <NumberField
                   id="ncu-depth"
@@ -835,22 +835,22 @@ export function NcuBelowGroundClient() {
       <Card as="section">
         <div className="flex items-center gap-2">
           <Info aria-hidden="true" className="h-5 w-5 text-staf-dark" />
-          <h2 className="text-lg font-bold text-slate-950">入力の前提をどう説明するか</h2>
+          <h2 className="text-base font-bold text-slate-950">入力の前提をどう説明するか</h2>
         </div>
         <div className="mt-3 grid gap-3 text-sm leading-relaxed text-slate-600 md:grid-cols-3">
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3" open>
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4" open>
             <summary className="cursor-pointer font-bold text-slate-950">高さ入力の考え方</summary>
             <p className="mt-2">
               GL以下の深さは、Hataの移動局高や2波モデルのアンテナ高に負値として入れません。地表までの抜け道、蓋、BOX、湿潤、配置による追加損失として扱います。
             </p>
           </details>
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer font-bold text-slate-950">実測補正の入れ方</summary>
             <p className="mt-2">
               現地RSSI/RSRPから、計算受信電力との差を入力します。同じ場所で乾燥時・雨天後・車両ありを比べると、損失レンジを狭められます。
             </p>
           </details>
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer font-bold text-slate-950">改善の優先順位</summary>
             <p className="mt-2">
               金属蓋、底面設置、水溜まり、密閉、駐車車両の順に疑います。蓋直下・非金属部・開口部へアンテナを寄せる改善が効くことがあります。
@@ -864,7 +864,7 @@ export function NcuBelowGroundClient() {
       <Card as="section" variant="slate" padding="lg" shadow={false}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h2 className="text-lg font-bold text-slate-950">通常のリンクバジェットへつなぐ</h2>
+            <h2 className="text-base font-bold text-slate-950">通常のリンクバジェットへつなぐ</h2>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
               このページで得た標準BOX追加損失 {result.belowGroundLossRangeDb.typical.toFixed(1)} dB は、総合診断の端末近傍損失・環境損失として転記できます。
             </p>
@@ -882,7 +882,7 @@ export function NcuBelowGroundClient() {
       <Card as="section">
         <div className="flex items-center gap-2">
           <Ruler aria-hidden="true" className="h-5 w-5 text-staf-dark" />
-          <h2 className="text-lg font-bold text-slate-950">現地で最低限メモしたい項目</h2>
+          <h2 className="text-base font-bold text-slate-950">現地で最低限メモしたい項目</h2>
         </div>
         <ul className="mt-3 grid gap-2 text-sm leading-relaxed text-slate-600 md:grid-cols-2">
           <li>BOX写真：蓋、枠、アンテナ位置、周囲の車両・建物が分かるもの</li>

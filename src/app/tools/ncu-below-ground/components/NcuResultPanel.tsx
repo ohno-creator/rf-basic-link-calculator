@@ -122,7 +122,7 @@ export function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
             <details
               key={item.id}
               title={`${item.label}（${item.valueLabel}）：${item.note}`}
-              className="rounded-lg border border-slate-200 bg-slate-50 p-3"
+              className="rounded-lg border border-slate-200 bg-slate-50 p-4"
               open={index === 0}
             >
               <summary className="cursor-pointer list-none">
@@ -238,7 +238,7 @@ export function ResultPanel({ input, result }: { input: NcuBelowGroundInput; res
       </div>
 
       <Card as="section">
-        <h2 className="text-lg font-bold text-slate-950">計算の流れ</h2>
+        <h2 className="text-base font-bold text-slate-950">計算の流れ</h2>
         <div className="mt-4 space-y-2 text-sm">
           <Row label="送信電力 + アンテナ利得" value={`${(input.txPowerDbm + input.gatewayAntennaGainDbi + input.ncuAntennaGainDbi).toFixed(1)} dBm`} />
           <Row label="地上側伝搬損失" value={`-${result.outdoorPathLossDb.toFixed(1)} dB`} />

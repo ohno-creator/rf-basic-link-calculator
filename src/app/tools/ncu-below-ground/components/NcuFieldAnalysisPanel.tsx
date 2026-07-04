@@ -316,7 +316,7 @@ export function WorkflowGuide({ mode }: { mode: WorkMode }) {
     <Card as="section">
       <div className="flex items-center gap-2">
         <Compass aria-hidden="true" className="h-5 w-5 text-staf-dark" />
-        <h2 className="text-lg font-bold text-slate-950">迷わない入力順</h2>
+        <h2 className="text-base font-bold text-slate-950">迷わない入力順</h2>
       </div>
       <div className="mt-4 grid gap-3 md:grid-cols-4">
         {steps.map((step, index) => {
@@ -390,7 +390,7 @@ function FindingCard({ finding, rank }: { finding: NcuFieldAnalysisResult["findi
         </div>
       </summary>
       <p className="mt-3 text-sm leading-relaxed">{finding.summary}</p>
-      <p className="mt-2 rounded-md bg-white/65 p-3 text-xs leading-relaxed">
+      <p className="mt-2 rounded-md bg-white/65 p-4 text-xs leading-relaxed">
         <span className="font-bold">次の一手：</span>{finding.nextAction}
       </p>
     </details>
@@ -399,7 +399,7 @@ function FindingCard({ finding, rank }: { finding: NcuFieldAnalysisResult["findi
 
 function MetricDiagnosisCard({ item }: { item: NcuRadioMetricDiagnosisItem }) {
   return (
-    <details className={`rounded-lg border p-3 ${metricSeverityClass(item.severity)}`} open={item.severity !== "unknown"}>
+    <details className={`rounded-lg border p-4 ${metricSeverityClass(item.severity)}`} open={item.severity !== "unknown"}>
       <summary className="cursor-pointer list-none">
         <div className="flex items-start justify-between gap-3">
           <div>
@@ -456,7 +456,7 @@ function RadioMetricsDiagnosisPanel({
               />
             ))}
           </div>
-          <details className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <details className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer text-sm font-bold text-slate-950">
               指標の読み方と注意点
             </summary>
@@ -542,7 +542,7 @@ export function FieldAnalysisPanel({
   const localFadingFinding = analysis.findings.find((finding) => finding.id === "local-fading");
 
   return (
-    <section className="space-y-5" data-testid="ncu-field-analysis">
+    <section className="space-y-6" data-testid="ncu-field-analysis">
       <Card as="section">
         <SectionTitle icon={Search} eyebrow="Field analysis" title="現場RSSI/RSRPから原因を追い込む">
           すべてを完璧に測らなくても大丈夫です。まずはBOX外、蓋開け、蓋閉めの3点だけで、地上側・BOX内・蓋のどこが怪しいか見えます。
@@ -641,18 +641,18 @@ export function FieldAnalysisPanel({
       <Card as="section">
         <div className="flex items-center gap-2">
           <ClipboardList aria-hidden="true" className="h-5 w-5 text-staf-dark" />
-          <h2 className="text-lg font-bold text-slate-950">現場で使う簡易チェックシート</h2>
+          <h2 className="text-base font-bold text-slate-950">現場で使う簡易チェックシート</h2>
         </div>
         <div className="mt-3 grid gap-3 text-sm leading-relaxed text-slate-600 md:grid-cols-3">
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3" open>
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4" open>
             <summary className="cursor-pointer font-bold text-slate-950">最小3点で始める</summary>
             <p className="mt-2">BOX外、蓋開け、蓋閉めだけで、地上側・BOX内・蓋損失の大まかな切り分けができます。</p>
           </details>
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer font-bold text-slate-950">雨天後に再測する</summary>
             <p className="mt-2">水分が原因なら乾燥時との差が出ます。水が溜まるBOXでは、アンテナ整合ずれも疑います。</p>
           </details>
-          <details className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+          <details className="rounded-lg border border-slate-200 bg-slate-50 p-4">
             <summary className="cursor-pointer font-bold text-slate-950">位置を少し動かす</summary>
             <p className="mt-2">30cm前後は920MHz帯の約1波長に近く、反射や偏波でRSSIが変わることがあります。</p>
           </details>
