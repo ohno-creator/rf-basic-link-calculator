@@ -1,5 +1,7 @@
 import { Card } from "@/components/Card";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { chartTheme } from "@/lib/chartTheme";
+import { DIAGRAM_DEF_IDS, diagramRef } from "@/lib/ui/diagramTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -179,6 +181,7 @@ export function LinkBudgetWaterfallChart({
           viewBox={`0 0 ${chart.width} ${chart.height}`}
           className="h-auto w-full"
         >
+          <DiagramDefs />
           <rect width={chart.width} height={chart.height} fill="#F8FAFC" />
           {ticks.map((tick) => (
             <g key={tick}>
@@ -193,7 +196,7 @@ export function LinkBudgetWaterfallChart({
                 x={chart.left - 12}
                 y={y(tick) + 4}
                 textAnchor="end"
-                className="fill-slate-500 text-[11px]"
+                className="fill-slate-500 text-[11px] tabular-nums"
               >
                 {tick}
               </text>
@@ -207,6 +210,13 @@ export function LinkBudgetWaterfallChart({
             stroke="#94A3B8"
             strokeDasharray="4 4"
           />
+          <text
+            x={chart.left + 4}
+            y={zeroY - 6}
+            className="fill-slate-500 text-[11px] font-semibold tabular-nums"
+          >
+            0 dBm
+          </text>
           <line
             x1={chart.left}
             x2={chart.width - chart.right}
@@ -259,6 +269,8 @@ export function LinkBudgetWaterfallChart({
                     : undefined
                 }
               >
+                {/* ホバー/フォーカスで内訳をネイティブツールチップ表示（JS不要・SRにも読まれる） */}
+                <title>{`${step.label}: ${valueLabel} — ${step.note}`}</title>
                 {index > 0 ? (
                   <line
                     x1={x(index - 1) + chart.barWidth}
@@ -278,12 +290,17 @@ export function LinkBudgetWaterfallChart({
                   fill={style.fill}
                   stroke={style.stroke}
                   strokeWidth={1.5}
+                  filter={
+                    step.kind === "total" || step.kind === "source"
+                      ? diagramRef(DIAGRAM_DEF_IDS.softShadow)
+                      : undefined
+                  }
                 />
                 <text
                   x={centerX}
                   y={step.delta >= 0 || step.kind === "total" ? top - 8 : top + height + 16}
                   textAnchor="middle"
-                  className="fill-slate-900 text-[12px] font-bold"
+                  className="fill-slate-900 text-[12px] font-bold tabular-nums"
                 >
                   {valueLabel}
                 </text>
