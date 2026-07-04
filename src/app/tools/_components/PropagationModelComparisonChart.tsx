@@ -14,7 +14,7 @@ import {
   YAxis
 } from "recharts";
 import { Callout } from "@/components/Callout";
-import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
 import {
   type GeometricPropagationModel,
@@ -193,6 +193,7 @@ export function PropagationModelComparisonChart({
                   stroke={model.color}
                   strokeWidth={chartTheme.stroke.series}
                   dot={false}
+                  activeDot={rfActiveDot(model.color)}
                   isAnimationActive={false}
                   connectNulls
                 />
