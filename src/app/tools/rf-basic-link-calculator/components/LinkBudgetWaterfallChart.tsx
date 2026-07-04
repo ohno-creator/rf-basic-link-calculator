@@ -2,7 +2,7 @@ import { Card } from "@/components/Card";
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme } from "@/lib/chartTheme";
-import { DIAGRAM_DEF_IDS, diagramRef } from "@/lib/ui/diagramTheme";
+import { DIAGRAM_DEF_IDS, diagramPalette, diagramRef } from "@/lib/ui/diagramTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 
@@ -198,7 +198,7 @@ export function LinkBudgetWaterfallChart({
                 x={chart.left - 12}
                 y={y(tick) + 4}
                 textAnchor="end"
-                className="fill-slate-500 text-[11px] tabular-nums"
+                fill={diagramPalette.muted} fontSize={11} style={{ fontVariantNumeric: "tabular-nums" }}
               >
                 {tick}
               </text>
@@ -215,7 +215,7 @@ export function LinkBudgetWaterfallChart({
           <text
             x={chart.left + 4}
             y={zeroY - 6}
-            className="fill-slate-500 text-[11px] font-semibold tabular-nums"
+            fill={diagramPalette.muted} fontSize={11} fontWeight={600} style={{ fontVariantNumeric: "tabular-nums" }}
           >
             0 dBm
           </text>
@@ -232,7 +232,7 @@ export function LinkBudgetWaterfallChart({
             x={chart.width - chart.right}
             y={sensitivityY - 8}
             textAnchor="end"
-            className="fill-rose-700 text-[12px] font-semibold"
+            fill={diagramPalette.dangerDeep} fontSize={12} fontWeight={600}
           >
             受信感度 {formatDbm(input.receiverSensitivityDbm)}
           </text>
@@ -302,7 +302,7 @@ export function LinkBudgetWaterfallChart({
                   x={centerX}
                   y={step.delta >= 0 || step.kind === "total" ? top - 8 : top + height + 16}
                   textAnchor="middle"
-                  className="fill-slate-900 text-[12px] font-bold tabular-nums"
+                  fill={diagramPalette.ink} fontSize={12} fontWeight={700} style={{ fontVariantNumeric: "tabular-nums" }}
                 >
                   {valueLabel}
                 </text>
@@ -310,7 +310,7 @@ export function LinkBudgetWaterfallChart({
                   x={centerX}
                   y={chart.height - 36}
                   textAnchor="middle"
-                  className="fill-slate-700 text-[12px] font-semibold"
+                  fill={diagramPalette.inkSoft} fontSize={12} fontWeight={600}
                 >
                   {step.shortLabel}
                 </text>
@@ -320,7 +320,7 @@ export function LinkBudgetWaterfallChart({
           <text
             x={chart.left}
             y={chart.top - 16}
-            className="fill-slate-500 text-[12px] font-semibold"
+            fill={diagramPalette.muted} fontSize={12} fontWeight={600}
           >
             dBm
           </text>
