@@ -3,8 +3,8 @@
 import { useMemo, useState } from "react";
 import { Card } from "@/components/Card";
 import { Callout } from "@/components/Callout";
-import { NumberField } from "@/components/NumberField";
-import { Stat } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
 import { cableAssemblies, referenceCables } from "@/data/coaxCables";
 import { calculateEirp } from "@/lib/rf/antenna";
@@ -69,78 +69,52 @@ export function CoaxCableLossPanel() {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="cableFreq" className="text-sm font-semibold text-slate-950">
-              周波数（MHz）
-            </label>
-            <Tooltip term="周波数">
-              損失を求めたい運用周波数をMHzで入力します。実測点は500〜8000MHzで、範囲外は√f外挿（最終測定周波数の2倍を上限）の参考値です。代表例: Wi-Fi 2.4GHz帯 → 2400、5GHz帯 → 5200。高周波ほど損失は増えます。
-            </Tooltip>
-          </div>
-          <input
-            id="cableFreq"
-            type="number"
-            min={1}
-            step={10}
-            value={Number.isFinite(frequencyMHz) ? frequencyMHz : ""}
-            aria-invalid={!result}
-            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-            onChange={(event) => setFrequencyMHz(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-          />
-        </div>
-        <div>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="cableQty" className="text-sm font-semibold text-slate-950">
-              本数（直列に繋ぐ数）
-            </label>
-            <Tooltip term="本数">
-              同じ品番を直列に何本つなぐかを整数（1以上）で入力します。合計損失 ＝ 1本あたり × 本数。延長や中継で複数本使う場合に本数分の損失が加算されます。通常は1です。
-            </Tooltip>
-          </div>
-          <input
-            id="cableQty"
-            type="number"
-            min={1}
-            step={1}
-            value={Number.isFinite(quantity) ? quantity : ""}
-            aria-invalid={!result}
-            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-            onChange={(event) => setQuantity(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-          />
-        </div>
+        <Field
+          id="cableFreq"
+          label="周波数"
+          unit="MHz"
+          help="損失を求めたい運用周波数をMHzで入力します。実測点は500〜8000MHzで、範囲外は√f外挿（最終測定周波数の2倍を上限）の参考値です。代表例: Wi-Fi 2.4GHz帯 → 2400、5GHz帯 → 5200。高周波ほど損失は増えます。"
+          min={1}
+          step={10}
+          value={frequencyMHz}
+          onChange={setFrequencyMHz}
+          error={result ? undefined : "周波数は0より大きい値で入力してください。"}
+          emptyBehavior="invalid"
+        />
+        <Field
+          id="cableQty"
+          label="本数（直列に繋ぐ数）"
+          help="同じ品番を直列に何本つなぐかを整数（1以上）で入力します。合計損失 ＝ 1本あたり × 本数。延長や中継で複数本使う場合に本数分の損失が加算されます。通常は1です。"
+          min={1}
+          step={1}
+          value={quantity}
+          onChange={setQuantity}
+          error={result ? undefined : "本数は1以上で入力してください。"}
+          emptyBehavior="invalid"
+        />
       </div>
 
       {result ? (
         <>
           <div className="mt-4 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg bg-staf-light p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold text-staf-dark">1本あたり損失</p>
-                <Tooltip term="1本あたり損失">
-                  選択品番のケーブル1本を、指定周波数で通したときの挿入損失（dB）。実測値を周波数で補間した目安で、個体差・コネクタ・曲げ・温度で変動します。グラフの黒点と同じ値です。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatNumber(result.perPieceDb, 2)} unit="dB" tone="neutral" size="md" />
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs text-slate-500">合計損失（{Number.isFinite(quantity) ? quantity : 1}本）</p>
-                <Tooltip term="合計損失">
-                  1本あたり損失 × 本数の合計（dB）。この値をリンクバジェットの「ケーブル・コネクタ損失」に入力して使います。3dBで電力が半分、6dBで1/4になります。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatNumber(result.totalDb, 2)} unit="dB" tone="staf" size="md" />
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs text-slate-500">アンテナに残る電力</p>
-                <Tooltip term="残る電力">
-                  合計損失を電力比に直した残存率 ＝ 10^(−合計損失 / 10) × 100。ケーブルで失われずアンテナへ届く割合（%）です。例: 3dB → 約50%、6dB → 約25%。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatNumber(result.powerRemainingPercent, 0)} unit="%" tone="staf" size="md" />
-            </div>
+            <MetricCard
+              label="1本あたり損失"
+              value={formatNumber(result.perPieceDb, 2)}
+              unit="dB"
+              hint="選択品番のケーブル1本を、指定周波数で通したときの挿入損失（dB）。実測値を周波数で補間した目安で、個体差・コネクタ・曲げ・温度で変動します。グラフの黒点と同じ値です。"
+            />
+            <MetricCard
+              label={`合計損失（${Number.isFinite(quantity) ? quantity : 1}本）`}
+              value={formatNumber(result.totalDb, 2)}
+              unit="dB"
+              hint="1本あたり損失 × 本数の合計（dB）。この値をリンクバジェットの「ケーブル・コネクタ損失」に入力して使います。3dBで電力が半分、6dBで1/4になります。"
+            />
+            <MetricCard
+              label="アンテナに残る電力"
+              value={formatNumber(result.powerRemainingPercent, 0)}
+              unit="%"
+              hint="合計損失を電力比に直した残存率 ＝ 10^(−合計損失 / 10) × 100。ケーブルで失われずアンテナへ届く割合（%）です。例: 3dB → 約50%、6dB → 約25%。"
+            />
           </div>
 
           {result.extrapolated ? (
@@ -176,7 +150,7 @@ export function CoaxCableLossPanel() {
                 </Tooltip>
               </div>
               <div className="mt-3 grid gap-4 md:grid-cols-2">
-                <NumberField
+                <Field
                   id="coaxTxPower"
                   label="送信機出力"
                   unit="dBm"
@@ -184,7 +158,7 @@ export function CoaxCableLossPanel() {
                   step={0.5}
                   onChange={setTxPowerDbm}
                 />
-                <NumberField
+                <Field
                   id="coaxAntennaGain"
                   label="アンテナ利得"
                   unit="dBi"
@@ -194,36 +168,27 @@ export function CoaxCableLossPanel() {
                 />
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg bg-white p-3 shadow-card">
-                  <Stat
-                    label="アンテナ端子電力"
-                    value={formatNumber(eirp.antennaInputDbm, 1)}
-                    unit="dBm"
-                    tone="neutral"
-                    size="sm"
-                    note={`送信機から ${formatNumber(result.totalDb, 2)} dB 減`}
-                  />
-                </div>
-                <div className="rounded-lg bg-white p-3 shadow-card">
-                  <Stat
-                    label="EIRP"
-                    value={formatNumber(eirp.eirpDbm, 1)}
-                    unit="dBm"
-                    tone="emerald"
-                    size="sm"
-                    note={`${formatNumber(eirp.eirpW, 3)} W`}
-                  />
-                </div>
-                <div className="rounded-lg bg-white p-3 shadow-card">
-                  <Stat
-                    label="ERP"
-                    value={formatNumber(eirp.erpDbm, 1)}
-                    unit="dBm"
-                    tone="staf"
-                    size="sm"
-                    note={`${formatNumber(eirp.erpW, 3)} W`}
-                  />
-                </div>
+                <MetricCard
+                  label="アンテナ端子電力"
+                  value={formatNumber(eirp.antennaInputDbm, 1)}
+                  unit="dBm"
+                  size="sm"
+                  sub={`送信機から ${formatNumber(result.totalDb, 2)} dB 減`}
+                />
+                <MetricCard
+                  label="EIRP"
+                  value={formatNumber(eirp.eirpDbm, 1)}
+                  unit="dBm"
+                  size="sm"
+                  sub={`${formatNumber(eirp.eirpW, 3)} W`}
+                />
+                <MetricCard
+                  label="ERP"
+                  value={formatNumber(eirp.erpDbm, 1)}
+                  unit="dBm"
+                  size="sm"
+                  sub={`${formatNumber(eirp.erpW, 3)} W`}
+                />
               </div>
             </div>
           ) : null}
@@ -259,11 +224,7 @@ export function CoaxCableLossPanel() {
             </div>
           </div>
         </>
-      ) : (
-        <p className="mt-4 text-sm font-medium text-rose-700">
-          周波数は0より大きい値、本数は1以上で入力してください。
-        </p>
-      )}
+      ) : null}
 
       <div className="mt-5">
         <FormulaExplanationCard

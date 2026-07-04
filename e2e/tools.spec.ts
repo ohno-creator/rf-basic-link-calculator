@@ -56,7 +56,8 @@ test("basic tool shell keeps the calculator near the first viewport", async ({ p
 
 test("VSWR diagram reacts to input", async ({ page }) => {
   await page.goto("/tools/vswr-return-loss/");
-  const input = page.locator('input[type="number"]').first();
+  // Field 移行で入力が type="number" → text になったため id で特定する。
+  const input = page.locator("#vswrInput");
   await input.fill("3");
   await expect(page.getByText("3.00").first()).toBeVisible();
   await expect(page.getByText("25.0%").first()).toBeVisible();
@@ -274,7 +275,8 @@ test("NCU field analysis ranks causes from measurement deltas", async ({ page })
 test("microstrip impedance reacts to trace width", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   await expect(page.getByText("50.8 Ω").first()).toBeVisible();
-  const width = page.locator('input[type="number"]').first();
+  // Field 移行で入力が type="number" → text になったため id で特定する。
+  const width = page.locator("#msW");
   await width.fill("1.0");
   await expect(page.getByText("87.5 Ω").first()).toBeVisible();
 });
