@@ -142,13 +142,9 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
     [input.propagationArea]
   );
   const nearTerminalLossDb = calculateNearTerminalLossDb(input);
-  // 通信距離は数値入力とスライダーで同じ範囲を使い、スライダー値は範囲内にクランプする。
+  // 通信距離は単位（m/km）で下限・上限が変わる。Field の min/max・クランプに使う。
   const distanceMin = input.distanceUnit === "m" ? 1 : 0.01;
   const distanceMax = input.distanceUnit === "m" ? 10000 : 20;
-  const distanceSliderValue = Math.min(
-    distanceMax,
-    Math.max(distanceMin, Number.isFinite(input.distance) ? input.distance : distanceMin)
-  );
 
   return (
     <section className="space-y-4">
@@ -355,35 +351,20 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onChange={(value) => update("frequencyMHz", value)}
           />
 
-          <Card padding="md" shadow={false}>
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="distance" className="text-sm font-semibold text-slate-950">
-              通信距離
-            </label>
-            <Tooltip term={glossary.fspl.term}>
-              距離が2倍になると、自由空間損失は約6dB増えます。距離が伸びるほど、受信電力は小さくなります。
-            </Tooltip>
-          </div>
-          <p className="mt-1 text-xs leading-relaxed text-slate-500">
-            送信側と受信側のおおよその距離です。
-          </p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_120px]">
-            <input
-              id="distance"
-              type="number"
-              value={Number.isFinite(input.distance) ? input.distance : ""}
-              min={distanceMin}
-              max={distanceMax}
-              step={input.distanceUnit === "m" ? 1 : 0.01}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-              onChange={(event) => update("distance", event.target.value === "" ? Number.NaN : Number(event.target.value))}
-              aria-invalid={Boolean(errors.distance)}
-            />
-            <select
-              value={input.distanceUnit}
-              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-              onChange={(event) => {
-                const nextUnit = event.target.value as LinkBudgetInput["distanceUnit"];
+          <Field
+            id="distance"
+            label="通信距離"
+            help="送信側と受信側のおおよその距離です。距離が2倍になると自由空間損失は約6dB増え、受信電力は小さくなります。（推奨レンジ: 1m-10km）"
+            example="10m / 1km"
+            unitSelect={{
+              value: input.distanceUnit,
+              options: [
+                { value: "m", label: "m" },
+                { value: "km", label: "km" }
+              ],
+              ariaLabel: "通信距離の単位",
+              onChange: (nextUnitRaw) => {
+                const nextUnit = nextUnitRaw as LinkBudgetInput["distanceUnit"];
                 const converted =
                   input.distanceUnit === nextUnit
                     ? input.distance
@@ -391,28 +372,16 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                       ? input.distance / 1000
                       : input.distance * 1000;
                 onChange({ ...input, distanceUnit: nextUnit, distance: Number(converted.toFixed(3)) });
-              }}
-            >
-              <option value="m">m</option>
-              <option value="km">km</option>
-            </select>
-          </div>
-          <input
-            type="range"
+              }
+            }}
             min={distanceMin}
             max={distanceMax}
             step={input.distanceUnit === "m" ? 1 : 0.01}
-            value={distanceSliderValue}
-            className="mt-4 w-full"
-            onChange={(event) => update("distance", Number(event.target.value))}
-            aria-label="通信距離のスライダー"
+            value={input.distance}
+            error={errors.distance}
+            emptyBehavior="invalid"
+            onChange={(value) => update("distance", value)}
           />
-          <div className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-slate-500">
-            <span>入力例: 10m / 1km</span>
-            <span>推奨レンジ: 1m-10km</span>
-          </div>
-          {errors.distance ? <p className="mt-2 text-sm font-medium text-rose-700">{errors.distance}</p> : null}
-          </Card>
         </InputGroup>
 
         <InputGroup
