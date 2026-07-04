@@ -46,3 +46,42 @@ export const diagramText = {
   value: { fontSize: 12, fill: "#0F172A", fontWeight: 600, fontVariantNumeric: "tabular-nums" as const },
   caption: { fontSize: 10, fill: "#94A3B8" }
 } as const;
+
+/**
+ * 図版の色パレット（Track I 便4b）。SVG図版の直書きhexの受け皿で、
+ * 値は既存図版で使用中の色の**同値集約**（置換で色は1つも変えない）。
+ * 用途名で参照し、新規図版はここ以外の色を使わない（design-base-v3 §3.4）。
+ */
+export const diagramPalette = {
+  // 墨・線（濃→淡。muted/faint は diagramText の label/caption と同値）
+  ink: "#0F172A", // 主要輪郭・値テキスト
+  inkSoft: "#334155", // 構造物・人・車両など第二輪郭
+  inkMuted: "#475569", // 補助形状
+  muted: "#64748B", // ラベル・地面線
+  faint: "#94A3B8", // 補助線・淡い輪郭
+  line: "#CBD5E1", // 罫線・枠
+  grid: "#E2E8F0", // グリッド（chartTheme.grid.primary と同値）
+  canvas: "#F8FAFC", // 図版背景（chartTheme.surface.canvas と同値）
+  white: "#FFFFFF", // 白面・白縁取り
+  // ブランド・電波経路
+  staf: "#0071BD", // ブランド青（アンテナ・主要経路）
+  stafDark: "#005A95", // 濃ブランド青（テキスト級の強調）
+  path: "#0284C7", // 電波経路・リンク線（sky-600）
+  // 空・環境
+  skyFill: "#BAE6FD",
+  skyStroke: "#38BDF8",
+  skyPale: "#EFF6FF",
+  skySoft: "#93C5FD",
+  // 状態（chartTheme の series/seriesText/reference と同系）
+  success: "#10B981",
+  successDeep: "#047857",
+  danger: "#E11D48",
+  dangerDeep: "#BE123C",
+  dangerDark: "#9F1239",
+  warn: "#F97316",
+  warnDeep: "#C2410C",
+  amber: "#F59E0B",
+  amberDeep: "#B45309"
+} as const;
+
+export type DiagramPaletteColor = keyof typeof diagramPalette;
