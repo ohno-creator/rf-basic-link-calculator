@@ -1,7 +1,9 @@
 import Link from "next/link";
-import { ArrowRight, Compass, Eye, ListChecks, Target } from "lucide-react";
+import { ArrowRight, Eye, ListChecks, Target } from "lucide-react";
 import type { ReactNode } from "react";
 import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
+import { HelpHint } from "@/components/HelpHint";
 import type { BasicToolMeta } from "@/data/basicTools";
 import { toolDirectory } from "@/data/toolDirectory";
 import { COLUMN_URL } from "@/lib/rf/presets";
@@ -71,33 +73,20 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
         <header>
-          <p className="text-sm font-semibold text-staf-dark">RF計算ツール</p>
-          <h1 className="mt-2 text-3xl font-bold text-slate-950 sm:text-4xl">{tool.title}</h1>
-          <p className="mt-3 max-w-3xl text-base leading-relaxed text-slate-700">
+          <div className="flex flex-wrap items-center gap-2">
+            <h1 className="text-3xl font-bold text-slate-950">{tool.title}</h1>
+            {tool.scopeNote ? <HelpHint text={tool.scopeNote} /> : null}
+          </div>
+          <p className="mt-2 line-clamp-2 max-w-4xl text-sm leading-relaxed text-slate-700">
             {tool.description}
           </p>
-          {tool.scopeNote ? (
-            <p className="mt-3 flex max-w-3xl items-start gap-2 rounded-lg border border-staf/20 bg-staf-light px-3 py-2 text-sm leading-relaxed text-slate-700">
-              <Compass aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-staf-dark" />
-              <span>
-                <span className="font-semibold text-staf-dark">対象：</span>
-                {tool.scopeNote}
-              </span>
-            </p>
-          ) : null}
         </header>
 
-        <section className="mt-6 border-y border-slate-200 bg-slate-50/80 px-4 py-5 sm:px-5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
-            <div className="lg:w-48 lg:shrink-0">
-              <p className="text-xs font-semibold text-staf-dark">はじめての見方</p>
-              <p className="mt-1 text-sm font-semibold leading-relaxed text-slate-900">
-                式より先に、ここだけ見れば大丈夫です。
-              </p>
-            </div>
-            <div className="grid flex-1 gap-4 md:grid-cols-3 md:divide-x md:divide-slate-200">
+        <div className="mt-4">
+          <CollapsibleSection title="はじめての見方" defaultOpen={false} storageKey="beginner-guide">
+            <div className="grid gap-4 md:grid-cols-3 md:divide-x md:divide-slate-200">
               {beginnerItems.map((item) => {
                 const Icon = item.icon;
                 return (
@@ -111,15 +100,12 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
                 );
               })}
             </div>
-          </div>
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
-            用語が分からない場合は、ページ内の「？」や用語ミニ辞典を開いてください。まずは近いプリセットや初期値から動かすと、変化がつかみやすくなります。
-          </p>
-        </section>
+          </CollapsibleSection>
+        </div>
 
-        <div className="mt-8 space-y-6">{children}</div>
+        <div data-testid="tool-calculator" className="mt-6 space-y-6">{children}</div>
 
-        <section className="mt-10">
+        <section className="mt-8">
           <h2 className="text-base font-semibold text-slate-950">ほかのツール</h2>
           <div className="mt-3 grid gap-3 sm:grid-cols-3">
             {related.map((item) => (
