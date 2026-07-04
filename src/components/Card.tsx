@@ -5,7 +5,8 @@ type CardVariant = "white" | "slate";
 type CardPadding = "sm" | "md" | "lg";
 
 const variantBg: Record<CardVariant, string> = {
-  white: "bg-white",
+  // v4-4: 白面は僅かな縦グラデで2.5D化（上端が明るい「トップハイライト」。文字コントラストには影響しない）。
+  white: "bg-gradient-to-b from-white to-slate-50/40",
   slate: "bg-slate-50"
 };
 

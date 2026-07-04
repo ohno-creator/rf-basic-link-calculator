@@ -19,9 +19,13 @@ const flagshipHrefs = ["/tools/rf-basic-link-calculator", "/tools/rf-learning-qu
 export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) {
   const currentHref = `/tools/${tool.slug}`;
   const others = toolDirectory.filter((item) => item.href !== currentHref);
+  // 回遊の関連度を上げる: 看板ツール → 同カテゴリ → その他 の優先順（v4 R3）。
+  const currentCategory = toolDirectory.find((item) => item.href === currentHref)?.category;
+  const nonFlagship = others.filter((item) => !flagshipHrefs.includes(item.href));
   const related = [
     ...others.filter((item) => flagshipHrefs.includes(item.href)),
-    ...others.filter((item) => !flagshipHrefs.includes(item.href))
+    ...nonFlagship.filter((item) => item.category === currentCategory),
+    ...nonFlagship.filter((item) => item.category !== currentCategory)
   ].slice(0, 6);
   const beginnerItems = [
     {
@@ -79,6 +83,13 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
             <h1 className="text-3xl font-bold tracking-tight text-slate-950">{tool.title}</h1>
             {tool.scopeNote ? <HelpHint text={tool.scopeNote} /> : null}
           </div>
+          {/* v4 R3: 各ツールの一文の本質（essenceLead）を「わかること」として見出し直下に昇格 */}
+          <p className="mt-3 flex max-w-prose items-start gap-2 text-sm leading-relaxed">
+            <span className="mt-0.5 inline-flex shrink-0 items-center rounded-full bg-staf-light px-2 py-0.5 text-xs font-semibold text-staf-dark">
+              わかること
+            </span>
+            <span className="font-medium text-slate-900">{tool.essenceLead}</span>
+          </p>
           <p className="mt-2 line-clamp-2 max-w-prose text-sm leading-relaxed text-slate-600">
             {tool.description}
           </p>
