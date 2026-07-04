@@ -29,7 +29,7 @@ const chart = {
   width: 860,
   height: 380,
   top: 42,
-  right: 42,
+  right: 56, // マージン寸法ブラケットとラベルの余白（v4 R4）
   bottom: 74,
   left: 58,
   barWidth: 54
@@ -156,6 +156,18 @@ export function LinkBudgetWaterfallChart({
   );
   const sensitivityY = y(input.receiverSensitivityDbm);
 
+  // マージン寸法ブラケット（v4-6: 結論=リンクマージンを図中に直接ラベリング。JIS寸法線の語彙）。
+  const receivedY = y(result.receivedPowerDbm);
+  const marginPositive = result.linkMarginDb >= 0;
+  const bracketX = x(steps.length - 1) + chart.barWidth + 10;
+  const bracketTop = Math.min(receivedY, sensitivityY);
+  const bracketBottom = Math.max(receivedY, sensitivityY);
+  const bracketMidY = (bracketTop + bracketBottom) / 2;
+  const bracketColor = marginPositive ? chartTheme.seriesText.gain : chartTheme.seriesText.loss;
+  // 感度ラベル（sensitivityY-8 付近・右端）との衝突を避けるため、近い場合はラベルを上へ退避。
+  const marginLabelY =
+    Math.abs(bracketMidY - (sensitivityY - 8)) < 16 ? bracketTop - 10 : bracketMidY;
+
   return (
     <Card as="section" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -236,6 +248,40 @@ export function LinkBudgetWaterfallChart({
           >
             受信感度 {formatDbm(input.receiverSensitivityDbm)}
           </text>
+
+          {/* リンクマージンの寸法ブラケット（v4-6: 結論を図中に直接ラベリング） */}
+          <g>
+            <line
+              x1={bracketX}
+              x2={bracketX}
+              y1={bracketTop}
+              y2={bracketBottom}
+              stroke={bracketColor}
+              strokeWidth={1.5}
+            />
+            <line x1={bracketX - 4} x2={bracketX + 4} y1={bracketTop} y2={bracketTop} stroke={bracketColor} strokeWidth={1.5} />
+            <line
+              x1={bracketX - 4}
+              x2={bracketX + 4}
+              y1={bracketBottom}
+              y2={bracketBottom}
+              stroke={bracketColor}
+              strokeWidth={1.5}
+            />
+            <text x={bracketX + 6} y={marginLabelY - 3} fill={bracketColor} fontSize={11} fontWeight={700}>
+              マージン
+            </text>
+            <text
+              x={bracketX + 6}
+              y={marginLabelY + 11}
+              fill={bracketColor}
+              fontSize={11}
+              fontWeight={700}
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {formatSigned(result.linkMarginDb, "dB")}
+            </text>
+          </g>
 
           {steps.map((step, index) => {
             const startY = y(step.start);
