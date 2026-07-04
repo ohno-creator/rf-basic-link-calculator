@@ -26,7 +26,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "ncu-below-ground", h1: "GL以下NCU・水道BOX診断", fig: "NCUが地面より下にある場合" },
     { slug: "simple-link-budget", h1: "かんたんリンク計算", fig: "リンク余裕" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
-    { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
+    { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" }
   ];
@@ -91,6 +91,21 @@ test("FSPL keeps its primary result visible beside the inputs", async ({ page })
   await page.locator("#fsplFrequency").fill("2400");
   await expect(primaryResult).toContainText("dB");
   await expect(page.getByText("送信機 ● ))) ))) ))) ))) 受信機")).toHaveCount(0);
+});
+
+test("dBm converter keeps a derived primary result visible beside the input", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/dbm-converter/");
+
+  await expect(page.getByRole("radio", { name: "dBm" })).toBeChecked();
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+
+  await page.locator("#dbInput").fill("30");
+  await expect(primaryResult).toContainText("1000");
+  await expect(primaryResult).toContainText("mW");
 });
 
 test("dB feel slider reacts to dB", async ({ page }) => {
