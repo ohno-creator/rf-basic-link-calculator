@@ -83,7 +83,7 @@ export function ResultTabs({ input, result }: ResultTabsProps) {
         })}
       </div>
 
-      <div id={`panel-${active}`} role="tabpanel" aria-labelledby={`tab-${active}`} className="mt-5 space-y-5">
+      <div id={`panel-${active}`} role="tabpanel" aria-labelledby={`tab-${active}`} className="mt-5 space-y-6">
         {active === "read" ? (
           <>
             <ResultReadingGuide input={input} result={result} />

@@ -161,7 +161,7 @@ export function LinkBudgetWaterfallChart({
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">滝グラフ</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">リンクバジェット滝グラフ</h3>
+          <h3 className="mt-1 text-base font-bold text-slate-950">リンクバジェット滝グラフ</h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             送信電力からスタートし、アンテナ利得で増え、伝搬損失・ケーブル・環境・端末近傍損失で落ち、実測補正値を反映する流れをdBm軸で表示します。
             {onStepSelect ? "バーをクリックすると、その入力スライダーへジャンプします。" : null}

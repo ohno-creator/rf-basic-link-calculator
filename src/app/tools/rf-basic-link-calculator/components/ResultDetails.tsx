@@ -61,7 +61,7 @@ export function ResultDetails({ input, result }: ResultDetailsProps) {
   const propagationArea = getPropagationAreaOption(input.propagationArea);
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <Accordion title="なぜこの判定？" defaultOpen>
         <p>{result.judgement.technicalComment}</p>
         <p className="mt-2">

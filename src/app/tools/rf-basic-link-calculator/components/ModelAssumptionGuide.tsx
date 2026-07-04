@@ -189,17 +189,17 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
               </Tooltip>
             </p>
             <ul className="mt-3 grid gap-2 text-sm leading-relaxed sm:grid-cols-3">
-              <li className="rounded-md bg-white/70 p-3">
+              <li className="rounded-md bg-white/70 p-4">
                 <span className="font-semibold">環境損失</span>
                 <br />
                 建物、壁、クラッタ、設置環境の広めの追加損失。
               </li>
-              <li className="rounded-md bg-white/70 p-3">
+              <li className="rounded-md bg-white/70 p-4">
                 <span className="font-semibold">端末近傍損失</span>
                 <br />
                 地面、筐体、偏波、人体・車両、設置ばらつきなど端末直近の損失。
               </li>
-              <li className="rounded-md bg-white/70 p-3">
+              <li className="rounded-md bg-white/70 p-4">
                 <span className="font-semibold">実測補正値</span>
                 <br />
                 現地

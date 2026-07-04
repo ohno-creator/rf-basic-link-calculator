@@ -59,7 +59,7 @@ export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
       <div className="flex flex-col gap-2 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-sm font-semibold text-staf-dark">結果の読み方</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">
+          <h3 className="mt-1 text-base font-bold text-slate-950">
             初心者はこの順番で見ればOK
           </h3>
         </div>

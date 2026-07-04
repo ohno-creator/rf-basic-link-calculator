@@ -24,7 +24,7 @@ export function LinkActionsBar({ onReset, onShare, shareState }: LinkActionsBarP
   const ShareIcon = shareState === "copied" ? Check : shareState === "error" ? TriangleAlert : Link2;
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-card">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-4 shadow-card">
       <p className="text-xs leading-relaxed text-slate-500">
         入力した条件はこの端末に自動保存され、URLにも反映されます。共有リンクを送れば、同じ条件をそのまま開けます。
       </p>
