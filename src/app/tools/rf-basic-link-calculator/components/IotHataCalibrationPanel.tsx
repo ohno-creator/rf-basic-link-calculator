@@ -1,8 +1,8 @@
 "use client";
 
 import type { LinkBudgetErrorMessages } from "@/lib/linkBudgetErrorMessages";
+import { Field } from "@/components/Field";
 import { normalizeDistanceKm, type LinkBudgetInput } from "@/lib/rf/linkBudget";
-import { LinkBudgetNumberField } from "./LinkBudgetNumberField";
 
 export function IotHataCalibrationPanel({
   input,
@@ -100,35 +100,33 @@ export function IotHataCalibrationPanel({
           ) : null}
         </div>
 
-        <LinkBudgetNumberField
+        <Field
           id="iotMeasuredReceivedPowerDbm"
           label="実測受信電力"
           unit="dBm"
-          description="アンカー距離で取得したRSSIまたはRSRPです。値が小さいほどHata基準から大きな追加損失として校正されます。"
-          tooltip="RSSIとRSRPは意味が異なります。セルラーではRSRP、LPWAではRSSIなど、実機で継続的に取得できる同じ指標で比較してください。"
+          help="アンカー距離で取得したRSSIまたはRSRPです。値が小さいほどHata基準から大きな追加損失として校正されます。RSSIとRSRPは意味が異なります。セルラーではRSRP、LPWAではRSSIなど、実機で継続的に取得できる同じ指標で比較してください。（推奨レンジ: -150--20dBm）"
           example="-80 / -95 / -110"
-          range="-150--20dBm"
           min={-150}
           max={-20}
           step={0.5}
           value={input.iotMeasuredReceivedPowerDbm}
           error={errors.iotMeasuredReceivedPowerDbm}
+          emptyBehavior="invalid"
           onChange={(value) => update("iotMeasuredReceivedPowerDbm", value)}
         />
 
-        <LinkBudgetNumberField
+        <Field
           id="iotSlopeCorrectionDbPerDecade"
           label="距離勾配補正"
           unit="dB/decade"
-          description="距離が10倍になったときにHata基準へ加える補正です。1点実測のみなら0、複数点で遠距離側が悪い場合は正の値を入れます。"
-          tooltip="近年のIoT測定研究では、現地データに合わせた距離勾配や環境特徴量の補正が有効です。単一点だけでは勾配は推定できないため、通常は0から始めます。"
+          help="距離が10倍になったときにHata基準へ加える補正です。1点実測のみなら0、複数点で遠距離側が悪い場合は正の値を入れます。近年のIoT測定研究では、現地データに合わせた距離勾配や環境特徴量の補正が有効です。単一点だけでは勾配は推定できないため、通常は0から始めます。（推奨レンジ: -40-40dB/decade）"
           example="0 / 5 / 10"
-          range="-40-40dB/decade"
           min={-40}
           max={40}
           step={0.5}
           value={input.iotSlopeCorrectionDbPerDecade}
           error={errors.iotSlopeCorrectionDbPerDecade}
+          emptyBehavior="invalid"
           onChange={(value) => update("iotSlopeCorrectionDbPerDecade", value)}
         />
       </div>

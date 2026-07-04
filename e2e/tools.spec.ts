@@ -171,14 +171,14 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 
   await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
   await expect(page.getByLabel("実測アンカー距離")).toBeVisible();
-  const measuredPower = page.getByRole("spinbutton", { name: "実測受信電力" });
+  const measuredPower = page.getByRole("textbox", { name: "実測受信電力" });
   await expect(measuredPower).toBeVisible();
   await expect(page.getByText("Urban LoRa大規模測定")).toBeVisible();
 
   await measuredPower.fill("-100");
   await expect(page.getByText(/実測受信電力から、基準モデルに対して/)).toBeVisible();
 
-  await page.getByRole("spinbutton", { name: "実測補正値" }).fill("5");
+  await page.getByRole("textbox", { name: "実測補正値" }).fill("5");
   await expect(page.getByText("実測補正値との二重計上を確認してください")).toBeVisible();
 });
 
