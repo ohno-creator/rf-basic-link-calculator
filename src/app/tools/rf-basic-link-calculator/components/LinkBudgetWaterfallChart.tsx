@@ -1,5 +1,6 @@
 import { Card } from "@/components/Card";
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme } from "@/lib/chartTheme";
 import { DIAGRAM_DEF_IDS, diagramRef } from "@/lib/ui/diagramTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
@@ -174,7 +175,8 @@ export function LinkBudgetWaterfallChart({
         </div>
       </div>
 
-      <div className="mt-5 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+      <DiagramExportButton filenameBase="link-budget-waterfall">
+      <div className="mt-3 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
         <svg
           role="img"
           aria-label="送信電力から受信電力までのリンクバジェット滝グラフ"
@@ -324,6 +326,7 @@ export function LinkBudgetWaterfallChart({
           </text>
         </svg>
       </div>
+      </DiagramExportButton>
 
       <p className="mt-4 text-sm leading-relaxed text-slate-600">
         最後の受信電力 {formatDbm(result.receivedPowerDbm)} が、受信感度{" "}
