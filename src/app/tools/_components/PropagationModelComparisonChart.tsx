@@ -14,7 +14,7 @@ import {
   YAxis
 } from "recharts";
 import { Callout } from "@/components/Callout";
-import { chartTheme } from "@/lib/chartTheme";
+import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
 import {
   type GeometricPropagationModel,
@@ -167,7 +167,7 @@ export function PropagationModelComparisonChart({
         {isMounted && models.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <ComposedChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
+              <CartesianGrid {...rfGridProps()} />
               <XAxis
                 dataKey="d"
                 type="number"
@@ -175,14 +175,11 @@ export function PropagationModelComparisonChart({
                 domain={[MIN_DISTANCE_KM, MAX_DISTANCE_KM]}
                 ticks={[0.01, 0.1, 1, 10]}
                 tickFormatter={(value) => (value < 1 ? `${value * 1000}m` : `${value}km`)}
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
+                tick={rfTickProps()}
               />
-              <YAxis
-                unit="dB"
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
-                domain={["dataMin - 6", "dataMax + 6"]}
-              />
+              <YAxis unit="dB" tick={rfTickProps()} domain={["dataMin - 6", "dataMax + 6"]} />
               <RechartsTooltip
+                {...rfTooltipProps()}
                 formatter={(value, name) => [`${value} dB`, name as string]}
                 labelFormatter={(label) => `距離 ${Number(label) < 1 ? `${Number(label) * 1000}m` : `${label}km`}`}
               />

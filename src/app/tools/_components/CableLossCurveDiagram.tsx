@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { chartTheme } from "@/lib/chartTheme";
+import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import type { ReferenceCable } from "@/data/coaxCables";
 import type { LossPoint } from "@/lib/rf/coax";
 
@@ -71,18 +71,19 @@ export function CableLossCurveDiagram({
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 4, right: 16, top: 12, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
+              <CartesianGrid {...rfGridProps()} />
               <XAxis
                 dataKey="f"
                 type="number"
                 scale="log"
                 domain={[300, 9000]}
                 ticks={[500, 1000, 2000, 4000, 8000]}
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
+                tick={rfTickProps()}
                 unit="MHz"
               />
-              <YAxis unit="dB" tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }} domain={[0, "dataMax + 1"]} />
+              <YAxis unit="dB" tick={rfTickProps()} domain={[0, "dataMax + 1"]} />
               <RechartsTooltip
+                {...rfTooltipProps()}
                 formatter={(value, name) => [`${value} dB`, name as string]}
                 labelFormatter={(label) => `${label} MHz`}
               />

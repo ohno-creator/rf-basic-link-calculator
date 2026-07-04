@@ -1,4 +1,4 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import type { HTMLAttributes, ReactNode } from "react";
 import { calloutToneClass, type CalloutTone } from "./Callout";
 
 type CardVariant = "white" | "slate";
@@ -22,9 +22,16 @@ const radiusClass: Record<CardRadius, string> = {
   lg: "rounded-lg"
 };
 
+/**
+ * Card が受けるHTMLタグの明示ユニオン。ElementType にしない理由:
+ * three.js系ライブラリ（@react-three/fiber）が JSX.IntrinsicElements をグローバル拡張すると
+ * ElementType 全域のprops交差で children が never に潰れるため、実使用タグに制約して免疫化する。
+ */
+type CardTag = "div" | "section" | "article" | "aside" | "li" | "figure";
+
 type CardProps = {
   /** 既定は div。元が <section> 等のときは as="section" で意味付けを保つ。 */
-  as?: ElementType;
+  as?: CardTag;
   variant?: CardVariant;
   padding?: CardPadding;
   /** 入れ子・補助的な小カードは radius="md"。既定は rounded-lg。 */
@@ -35,7 +42,7 @@ type CardProps = {
   interactive?: boolean;
   className?: string;
   children: ReactNode;
-} & Omit<ComponentPropsWithoutRef<"div">, "className" | "children" | "ref">;
+} & Omit<HTMLAttributes<HTMLElement>, "className" | "children">;
 
 // アプリ標準のサーフェス（rounded-lg + border-slate-200 + bg + 任意のpadding/影）を1か所に集約。
 // 状態色（注記・警告など）は持たせない。色付き面は StateCard / Callout を使う。
@@ -70,7 +77,7 @@ type StateCardProps = {
   radius?: CardRadius;
   className?: string;
   children: ReactNode;
-} & Omit<ComponentPropsWithoutRef<"div">, "className" | "children" | "ref">;
+} & Omit<HTMLAttributes<HTMLElement>, "className" | "children">;
 
 // 状態を表す色付きの面（Callout のメッセージ用レイアウトを持たない、汎用の色付きコンテナ）。
 // トーン語彙は Callout と共有する。影は持たせない。

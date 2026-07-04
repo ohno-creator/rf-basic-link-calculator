@@ -1,3 +1,6 @@
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
+import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
+
 type PropagationGeometryDiagramProps = {
   frequencyMHz: number;
   distanceKm: number;
@@ -59,17 +62,9 @@ export function PropagationGeometryDiagram({
         viewBox={`0 0 ${view.width} ${view.height}`}
         className="h-auto w-full"
       >
-        <defs>
-          <linearGradient id="propSky" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0%" stopColor="#EFF6FF" />
-            <stop offset="100%" stopColor="#F8FAFC" />
-          </linearGradient>
-          <pattern id="propGround" width="12" height="8" patternUnits="userSpaceOnUse">
-            <path d="M0 8L12 0" stroke="#CBD5E1" strokeWidth="1" />
-          </pattern>
-        </defs>
+        <DiagramDefs />
 
-        <rect width={view.width} height={view.height} fill="url(#propSky)" />
+        <rect width={view.width} height={view.height} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} />
 
         {/* 市街地クラッタ（Hata系のとき） */}
         {showBuildings
@@ -81,23 +76,23 @@ export function PropagationGeometryDiagram({
                 width={building.w}
                 height={building.h}
                 rx={4}
-                fill="#CBD5E1"
+                fill={diagramRef(DIAGRAM_DEF_IDS.gradientConcrete)}
                 opacity={0.7}
                 stroke="#94A3B8"
               />
             ))
           : null}
 
-        <rect x="0" y={view.groundY} width={view.width} height={view.height - view.groundY} fill="#E2E8F0" />
+        <rect x="0" y={view.groundY} width={view.width} height={view.height - view.groundY} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSoil)} />
         <rect
           x="0"
           y={view.groundY}
           width={view.width}
           height={view.height - view.groundY}
-          fill="url(#propGround)"
-          opacity="0.55"
+          fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)}
+          opacity="0.25"
         />
-        <line x1="60" x2="900" y1={view.groundY} y2={view.groundY} stroke="#64748B" strokeWidth="3" />
+        <line x1="60" x2="900" y1={view.groundY} y2={view.groundY} stroke="#64748B" strokeWidth={diagramStroke.emphasis} />
 
         {/* 見通し・フレネルゾーン */}
         <ellipse
@@ -108,6 +103,7 @@ export function PropagationGeometryDiagram({
           fill="#BAE6FD"
           opacity="0.2"
           stroke="#38BDF8"
+          strokeWidth={diagramStroke.main}
           strokeDasharray="7 6"
         />
 
@@ -163,7 +159,7 @@ export function PropagationGeometryDiagram({
         </text>
 
         {/* 上部バッジ：周波数・エリア */}
-        <g>
+        <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
           <rect x="332" y="16" width="296" height="64" rx="12" fill="#FFFFFF" stroke="#CBD5E1" />
           <text x="480" y="44" textAnchor="middle" className="fill-slate-950 text-[18px] font-bold">
             {Number.isFinite(frequencyMHz) ? frequencyMHz.toFixed(0) : "—"} MHz

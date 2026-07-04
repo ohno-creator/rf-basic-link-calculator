@@ -4,14 +4,35 @@ import { memo, useState } from "react";
 import {
   GRID_COLS,
   GRID_ROWS,
-  cellColor,
   modeToCellMode,
   signed,
-  stopsFor,
+  type CellMode,
   type HeatmapMode,
   type NamiGateInput,
   type NamiGateSimulation
 } from "@/lib/rf/namiGate";
+import { colormapLegendStops, colormapTextColor, normalizeToUnit, viridisColor } from "@/lib/ui/colormap";
+
+// H5: セル配色は知覚均等の viridis 連続スケール（lib の離散 cellColor から移行）。
+// スケールは入力に依らず固定にして、条件を変えても色の意味が変わらないようにする。
+const POWER_SCALE = { min: -100, max: -50 } as const; // 受信電力 dBm
+const DIFF_SCALE = { min: 0, max: 8 } as const; // 改善量 dB（0未満=改善なし・グレー）
+const DIFF_NEUTRAL = { fill: "#CBD5E1", text: "#1F2933" } as const;
+
+function heatCellColor(value: number, mode: CellMode): { fill: string; text: string } {
+  if (mode === "diff") {
+    if (!Number.isFinite(value) || value < 0) return DIFF_NEUTRAL;
+    const fill = viridisColor(normalizeToUnit(value, DIFF_SCALE.min, DIFF_SCALE.max));
+    return { fill, text: colormapTextColor(fill) };
+  }
+  // 非有限は normalizeToUnit が 0 を返すため最弱色（旧実装の最弱フォールバックと同義）。
+  const fill = viridisColor(normalizeToUnit(value, POWER_SCALE.min, POWER_SCALE.max));
+  return { fill, text: colormapTextColor(fill) };
+}
+
+const LEGEND_GRADIENT = `linear-gradient(to right, ${colormapLegendStops(9)
+  .map((stop) => `${stop.color} ${Math.round(stop.t * 100)}%`)
+  .join(", ")})`;
 
 type NamiGateHeatmapProps = {
   sim: NamiGateSimulation;
@@ -55,7 +76,7 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
 
   const data = mode === "off" ? sim.off : mode === "diff" ? sim.diff : sim.on;
   const cellMode = modeToCellMode(mode);
-  const stops = stopsFor(cellMode);
+  const scale = cellMode === "diff" ? DIFF_SCALE : POWER_SCALE;
   const meta = MODE_META[mode];
   const stats = mode === "off" ? sim.offStats : mode === "diff" ? sim.diffStats : sim.onStats;
 
@@ -96,19 +117,32 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
         <span className="text-xs font-semibold text-slate-500">上辺＝窓面・中央がナミゲート（30cm角）</span>
       </figcaption>
 
-      {/* 凡例（モードで切替） */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs">
+      {/* 凡例（連続カラーバー・モードで目盛り切替） */}
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1.5 text-xs">
         <span className="font-bold text-slate-500">{meta.scaleLabel}</span>
-        {stops.map((stop) => (
-          <span key={stop.label} className="inline-flex items-center gap-1">
+        <span className="tabular-nums text-slate-600">
+          {cellMode === "diff" ? `+${scale.min}` : scale.min}
+          {meta.unit}
+        </span>
+        <span
+          aria-hidden
+          className="h-3 w-28 rounded-sm ring-1 ring-slate-300 sm:w-36"
+          style={{ background: LEGEND_GRADIENT }}
+        />
+        <span className="tabular-nums text-slate-600">
+          {cellMode === "diff" ? `+${scale.max}` : scale.max}
+          {meta.unit}
+        </span>
+        {cellMode === "diff" ? (
+          <span className="inline-flex items-center gap-1">
             <span
               aria-hidden
               className="h-3 w-3 rounded-[2px] ring-1 ring-slate-300"
-              style={{ backgroundColor: stop.fill }}
+              style={{ backgroundColor: DIFF_NEUTRAL.fill }}
             />
-            <span className="tabular-nums text-slate-600">{stop.label}</span>
+            <span className="text-slate-600">0未満（改善なし）</span>
           </span>
-        ))}
+        ) : null}
       </div>
 
       <div
@@ -148,7 +182,7 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
             {Array.from({ length: GRID_ROWS }, (_, row) =>
               Array.from({ length: GRID_COLS }, (_, col) => {
                 const value = data[row * GRID_COLS + col];
-                const { fill } = cellColor(value, cellMode);
+                const { fill } = heatCellColor(value, cellMode);
                 return (
                   <rect
                     key={row * GRID_COLS + col}
@@ -169,7 +203,7 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
               Array.from({ length: GRID_COLS }, (_, col) => {
                 if (row % 4 !== 0 || col % 5 !== 0) return null;
                 const value = data[row * GRID_COLS + col];
-                const { text } = cellColor(value, cellMode);
+                const { text } = heatCellColor(value, cellMode);
                 return (
                   <text
                     key={`t-${row * GRID_COLS + col}`}

@@ -26,7 +26,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "ncu-below-ground", h1: "GL以下NCU・水道BOX診断", fig: "NCUが地面より下にある場合" },
     { slug: "simple-link-budget", h1: "かんたんリンク計算", fig: "リンク余裕" },
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
-    { slug: "dbm-converter", h1: "dBm 変換", fig: "dBm / mW / W 変換" },
+    { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" }
   ];
@@ -56,10 +56,26 @@ test("basic tool shell keeps the calculator near the first viewport", async ({ p
 
 test("VSWR diagram reacts to input", async ({ page }) => {
   await page.goto("/tools/vswr-return-loss/");
-  const input = page.locator('input[type="number"]').first();
+  const input = page.locator("#vswrValue");
   await input.fill("3");
-  await expect(page.getByText("3.00").first()).toBeVisible();
+  await expect(page.getByText("0.500").first()).toBeVisible();
   await expect(page.getByText("25.0%").first()).toBeVisible();
+});
+
+test("VSWR keeps its derived primary result visible beside the inputs", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/vswr-return-loss/");
+
+  await expect(page.getByRole("heading", { name: "入力条件" })).toBeVisible();
+  await expect(page.getByRole("radio", { name: "VSWR" })).toBeChecked();
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+
+  await page.locator("#vswrValue").fill("3");
+  await expect(primaryResult).toContainText("1.25");
+  await expect(primaryResult).toContainText("dB");
 });
 
 test("FSPL keeps its primary result visible beside the inputs", async ({ page }) => {
@@ -75,6 +91,21 @@ test("FSPL keeps its primary result visible beside the inputs", async ({ page })
   await page.locator("#fsplFrequency").fill("2400");
   await expect(primaryResult).toContainText("dB");
   await expect(page.getByText("送信機 ● ))) ))) ))) ))) 受信機")).toHaveCount(0);
+});
+
+test("dBm converter keeps a derived primary result visible beside the input", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/dbm-converter/");
+
+  await expect(page.getByRole("radio", { name: "dBm" })).toBeChecked();
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+
+  await page.locator("#dbInput").fill("30");
+  await expect(primaryResult).toContainText("1000");
+  await expect(primaryResult).toContainText("mW");
 });
 
 test("dB feel slider reacts to dB", async ({ page }) => {
@@ -200,14 +231,14 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 
   await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
   await expect(page.getByLabel("実測アンカー距離")).toBeVisible();
-  const measuredPower = page.getByRole("spinbutton", { name: "実測受信電力" });
+  const measuredPower = page.getByRole("textbox", { name: "実測受信電力" });
   await expect(measuredPower).toBeVisible();
   await expect(page.getByText("Urban LoRa大規模測定")).toBeVisible();
 
   await measuredPower.fill("-100");
   await expect(page.getByText(/実測受信電力から、基準モデルに対して/)).toBeVisible();
 
-  await page.getByRole("spinbutton", { name: "実測補正値" }).fill("5");
+  await page.getByRole("textbox", { name: "実測補正値" }).fill("5");
   await expect(page.getByText("実測補正値との二重計上を確認してください")).toBeVisible();
 });
 
@@ -274,7 +305,8 @@ test("NCU field analysis ranks causes from measurement deltas", async ({ page })
 test("microstrip impedance reacts to trace width", async ({ page }) => {
   await page.goto("/tools/microstrip-line/");
   await expect(page.getByText("50.8 Ω").first()).toBeVisible();
-  const width = page.locator('input[type="number"]').first();
+  // Field 移行で入力が type="number" → text になったため id で特定する。
+  const width = page.locator("#msW");
   await width.fill("1.0");
   await expect(page.getByText("87.5 Ω").first()).toBeVisible();
 });

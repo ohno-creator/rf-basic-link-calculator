@@ -15,6 +15,7 @@ import {
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { NumberInput } from "@/components/NumberField";
+import { rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import {
   calculateNearTerminalLossDb,
   normalizeDistanceKm,
@@ -288,10 +289,11 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 8, right: 18, top: 12, bottom: 8 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
-              <XAxis dataKey="distanceLabel" tick={{ fontSize: 12, fill: "#64748B" }} interval="preserveStartEnd" />
-              <YAxis unit="dB" tick={{ fontSize: 12, fill: "#64748B" }} domain={["dataMin - 6", "dataMax + 6"]} />
+              <CartesianGrid {...rfGridProps()} />
+              <XAxis dataKey="distanceLabel" tick={rfTickProps()} interval="preserveStartEnd" />
+              <YAxis unit="dB" tick={rfTickProps()} domain={["dataMin - 6", "dataMax + 6"]} />
               <RechartsTooltip
+                {...rfTooltipProps()}
                 formatter={(value, name) => [
                   `${value} ${name === "pathLossDb" ? "dB" : "dB"}`,
                   name === "pathLossDb" ? "伝搬損失" : "リンク余裕"

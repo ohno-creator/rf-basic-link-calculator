@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { dbToDistanceRatio, dbToPowerRatio } from "@/lib/rf/db";
 import { Card } from "@/components/Card";
-import { Stat } from "@/components/Stat";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DbFeelDiagram } from "./DbFeelDiagram";
@@ -81,36 +81,20 @@ export function DbFeelPanel() {
       </div>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg bg-staf-light p-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs font-semibold text-staf-dark">電力の倍率</p>
-            <Tooltip term="電力の倍率">
-              10^(dB/10)。dBが示す電力の倍率です。+10dB=×10、+3dB≒×2、-3dB≒1/2。送信電力や利得の効きを表します。距離の倍率は10^(dB/20)で、指数の分母が異なる点に注意してください。
-            </Tooltip>
-          </div>
-          <Stat
-            className="mt-1"
-            value={formatRatio(powerRatio)}
-            tone="neutral"
-            size="lg"
-            note="+10dBで10倍、+3dBで約2倍"
-          />
-        </div>
-        <div className="rounded-lg bg-slate-50 p-4">
-          <div className="flex items-center justify-between gap-2">
-            <p className="text-xs text-slate-500">到達距離の倍率（自由空間の目安）</p>
-            <Tooltip term="距離の倍率">
-              10^(dB/20)。自由空間損失は距離の2乗（20log）で効くため、電力(10log)より緩やかに伸び、+6dBで距離2倍／+20dBで10倍になります。屋内や障害物では目安より短くなります。
-            </Tooltip>
-          </div>
-          <Stat
-            className="mt-1"
-            value={formatRatio(distanceRatio)}
-            tone="staf"
-            size="lg"
-            note="+6dBで距離2倍、+20dBで距離10倍"
-          />
-        </div>
+        <MetricCard
+          label="電力の倍率"
+          value={formatRatio(powerRatio)}
+          size="lg"
+          sub="+10dBで10倍、+3dBで約2倍"
+          hint="10^(dB/10)。dBが示す電力の倍率です。+10dB=×10、+3dB≒×2、-3dB≒1/2。送信電力や利得の効きを表します。距離の倍率は10^(dB/20)で、指数の分母が異なる点に注意してください。"
+        />
+        <MetricCard
+          label="到達距離の倍率（自由空間の目安）"
+          value={formatRatio(distanceRatio)}
+          size="lg"
+          sub="+6dBで距離2倍、+20dBで距離10倍"
+          hint="10^(dB/20)。自由空間損失は距離の2乗（20log）で効くため、電力(10log)より緩やかに伸び、+6dBで距離2倍／+20dBで10倍になります。屋内や障害物では目安より短くなります。"
+        />
       </div>
 
       <div className="mt-5">
