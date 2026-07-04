@@ -29,6 +29,9 @@ describe("chartTheme v2（Track H1）", () => {
   it("prop ファクトリはテーマ値を反映する", () => {
     expect(rfGridProps().stroke).toBe(chartTheme.grid.primary);
     expect(rfTickProps().fontSize).toBe(chartTheme.axis.tick.fontSize);
+    // 目盛りテキストは AA 適合色（axis.label.fill）。装飾用 axis.tick.fill は使わない。
+    expect(rfTickProps().fill).toBe(chartTheme.axis.label.fill);
+    expect(rfTickProps().fill).not.toBe(chartTheme.axis.tick.fill);
     expect(rfTickProps().fontVariantNumeric).toBe("tabular-nums");
     const tooltip = rfTooltipProps();
     expect(tooltip.contentStyle.borderRadius).toBe(8);

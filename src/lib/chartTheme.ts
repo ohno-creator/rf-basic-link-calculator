@@ -92,11 +92,15 @@ export function rfGridProps() {
   return { strokeDasharray: "3 3", stroke: chartTheme.grid.primary, vertical: false } as const;
 }
 
-/** recharts <XAxis>/<YAxis> の tick へ渡す統一目盛りスタイル。 */
+/**
+ * recharts <XAxis>/<YAxis> の tick へ渡す統一目盛りスタイル。
+ * fill は AA 適合の axis.label.fill(#64748B) を使う（axis.tick.fill #94A3B8 は白背景で
+ * 4.5:1 未満のため、目盛りテキストには使わない=装飾ティック用）。数値は tabular-nums。
+ */
 export function rfTickProps() {
   return {
     fontSize: chartTheme.axis.tick.fontSize,
-    fill: chartTheme.axis.tick.fill,
+    fill: chartTheme.axis.label.fill,
     fontVariantNumeric: chartTheme.font.tabularNums
   } as const;
 }
