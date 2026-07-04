@@ -13,7 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import type { ReferenceCable } from "@/data/coaxCables";
 import type { LossPoint } from "@/lib/rf/coax";
 
@@ -108,6 +108,7 @@ export function CableLossCurveDiagram({
                 stroke={chartTheme.series.source}
                 strokeWidth={chartTheme.stroke.emphasis}
                 dot={{ r: 3, fill: chartTheme.series.source }}
+                activeDot={rfActiveDot(chartTheme.series.source)}
                 isAnimationActive={false}
               />
               {showTotalLine ? (

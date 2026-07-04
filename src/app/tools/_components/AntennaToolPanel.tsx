@@ -17,7 +17,7 @@ import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import type { StatTone } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
-import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import type { MetricTone } from "@/lib/ui/kit";
 import {
   calculateAntennaSpacing,
@@ -1517,7 +1517,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
                   stroke={series.color}
                   strokeWidth={chartTheme.stroke.emphasis}
                   dot={{ r: 3, strokeWidth: 1.5, fill: "#FFFFFF" }}
-                  activeDot={{ r: 5 }}
+                  activeDot={rfActiveDot(series.color)}
                 />
               ))}
             </LineChart>
