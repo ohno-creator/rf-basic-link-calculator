@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import colors from "tailwindcss/colors";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config: Config = {
   content: [
@@ -8,6 +9,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // 自己ホストフォント（layout.tsx の next/font 変数）。欧文数字=Inter、和文=Noto Sans JP。
+      fontFamily: {
+        sans: ["var(--font-inter)", "var(--font-noto-sans-jp)", ...defaultTheme.fontFamily.sans]
+      },
       colors: {
         staf: {
           DEFAULT: "#0071BD",
