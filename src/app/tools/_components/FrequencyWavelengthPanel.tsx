@@ -174,7 +174,7 @@ export function FrequencyWavelengthPanel() {
         <div className="mt-5">
           <CollapsibleSection title="使い方・用語" storageKey="frequency-wavelength:guide">
           <div className="mt-3 grid gap-4 md:grid-cols-2">
-            <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
+            <ol className="space-y-2 text-sm leading-relaxed text-slate-600">
               <li>
                 <span className="font-semibold text-staf-dark">1.</span> まず周波数と単位を合わせます。920MHzならMHz、2.4GHzならGHzが便利です。
               </li>

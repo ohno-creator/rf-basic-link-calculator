@@ -79,7 +79,7 @@ export function WavelengthVisual({ frequencyMHz, hasInput = true }: WavelengthVi
 
       <div className="mt-4 rounded-lg border border-staf/20 bg-staf-light p-4">
         <p className="text-sm font-semibold text-slate-950">なぜ半波長なのか</p>
-        <p className="mt-2 text-sm leading-relaxed text-slate-700">
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
           アンテナが電波を効率よく放射するには、導体の長さが波長と釣り合っている必要があります。長さがちょうど半波長（λ/2）のとき、導体上の電流分布が定在波としてきれいに収まり「共振」します。共振時は給電点インピーダンスが純抵抗（半波長ダイポールで約73Ω）になり、反射が少なく、給電した電力を効率よく電波に変えられます。これが半波長がアンテナ設計の基準寸法になる本質的な理由です。
         </p>
       </div>

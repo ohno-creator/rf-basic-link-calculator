@@ -51,7 +51,7 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
       </div>
 
       <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
-        <p className="text-sm leading-relaxed text-slate-700">
+        <p className="text-sm leading-relaxed text-slate-600">
           アンテナ改善、配置改善、筐体影響の低減が通信余裕に効くことを確認できます。
           実機条件に合わせた改善案は、スタッフ株式会社へご相談ください。
         </p>

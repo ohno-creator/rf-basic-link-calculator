@@ -1699,7 +1699,7 @@ function GuidanceSection({ toolId }: { toolId: AntennaToolId }) {
                 <span className="flex h-7 w-7 items-center justify-center rounded-full bg-staf text-xs font-bold text-white">
                   {index + 1}
                 </span>
-                <span className="text-sm leading-relaxed text-slate-700">{step}</span>
+                <span className="text-sm leading-relaxed text-slate-600">{step}</span>
               </li>
             ))}
           </ol>
@@ -1733,7 +1733,7 @@ function ResearchBridgeSection({ toolId }: { toolId: AntennaToolId }) {
         <div>
           <p className="text-xs font-semibold text-indigo-700">この計算で決められること</p>
           <h3 className="mt-1 text-base font-semibold text-slate-950">{bridge.plainTitle}</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-700">{bridge.plainSummary}</p>
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">{bridge.plainSummary}</p>
         </div>
         <Tooltip term="最初の見方">
           式を暗記するより、入力を少し動かして結果が急変する場所を見るのが近道です。まず主役の数値、判定、グラフの傾きを見てください。
@@ -1914,7 +1914,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
               {computation.view.column.map((paragraph, index) => (
                 <div key={paragraph} className="rounded-lg bg-slate-50 p-4">
                   <p className="text-xs font-semibold text-staf-dark">Point {index + 1}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-700">{paragraph}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{paragraph}</p>
                 </div>
               ))}
             </div>
