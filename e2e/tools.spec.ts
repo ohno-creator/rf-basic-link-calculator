@@ -56,10 +56,26 @@ test("basic tool shell keeps the calculator near the first viewport", async ({ p
 
 test("VSWR diagram reacts to input", async ({ page }) => {
   await page.goto("/tools/vswr-return-loss/");
-  const input = page.locator('input[type="number"]').first();
+  const input = page.locator("#vswrValue");
   await input.fill("3");
-  await expect(page.getByText("3.00").first()).toBeVisible();
+  await expect(page.getByText("0.500").first()).toBeVisible();
   await expect(page.getByText("25.0%").first()).toBeVisible();
+});
+
+test("VSWR keeps its derived primary result visible beside the inputs", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/vswr-return-loss/");
+
+  await expect(page.getByRole("heading", { name: "入力条件" })).toBeVisible();
+  await expect(page.getByRole("radio", { name: "VSWR" })).toBeChecked();
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+
+  await page.locator("#vswrValue").fill("3");
+  await expect(primaryResult).toContainText("1.25");
+  await expect(primaryResult).toContainText("dB");
 });
 
 test("FSPL keeps its primary result visible beside the inputs", async ({ page }) => {
