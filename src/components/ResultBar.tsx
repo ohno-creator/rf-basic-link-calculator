@@ -16,7 +16,7 @@ type ResultBarProps = {
 export function ResultBar({ primary, judgement, className = "" }: ResultBarProps) {
   const surface = judgement ? calloutToneClass[LEVEL_TO_TONE[judgement.level]] : "border-slate-200 bg-white";
   return (
-    <div data-testid="primary-result" className={`rounded-lg border p-4 ${surface} ${className}`.trim()}>
+    <div data-testid="primary-result" className={`rounded-lg border p-4 shadow-card ${surface} ${className}`.trim()}>
       {judgement ? <p className="text-sm font-bold">{judgement.label}</p> : null}
       <div className={judgement ? "mt-2" : ""}>
         <p className="text-xs font-semibold text-slate-500">{primary.label}</p>
