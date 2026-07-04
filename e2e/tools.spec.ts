@@ -140,6 +140,17 @@ test("dB feel keeps power ratio visible beside the slider", async ({ page }) => 
   expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
 });
 
+test("coax tool keeps total loss visible beside the inputs", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/coaxial-cable-loss/");
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+  await page.locator("#cableQty").fill("2");
+  await expect(primaryResult).toContainText("dB");
+});
+
 test("RF calculator switches to the research distance sheet", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();

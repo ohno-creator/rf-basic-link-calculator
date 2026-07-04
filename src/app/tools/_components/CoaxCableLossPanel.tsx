@@ -5,6 +5,8 @@ import { Card } from "@/components/Card";
 import { Callout } from "@/components/Callout";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
+import { MobileResultBar } from "@/components/MobileResultBar";
+import { ResultBar } from "@/components/ResultBar";
 import { Tooltip } from "@/components/Tooltip";
 import { cableAssemblies, referenceCables } from "@/data/coaxCables";
 import { calculateEirp } from "@/lib/rf/antenna";
@@ -37,13 +39,17 @@ export function CoaxCableLossPanel() {
         cableLossDb: result.totalDb
       })
     : null;
+  const primary = {
+    label: "合計損失",
+    value: result ? formatNumber(result.totalDb, 2) : "—",
+    unit: "dB"
+  };
 
   return (
-    <Card as="section" padding="lg" className="flex flex-col">
-      <h2 className="text-xl font-bold text-slate-950">同軸ケーブル損失（実測値）</h2>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">
-        標準品（変換・延長用）の同軸ケーブルについて、品番と周波数から1本あたりの挿入損失（実測値）を求めます。求めた合計を、リンクバジェットの「ケーブル・コネクタ損失」に入れて使えます。
-      </p>
+    <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
+      <Card as="section" padding="lg" className="flex flex-col">
+      <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
 
       <div className="mt-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
@@ -79,7 +85,7 @@ export function CoaxCableLossPanel() {
           value={frequencyMHz}
           onChange={setFrequencyMHz}
           error={result ? undefined : "周波数は0より大きい値で入力してください。"}
-          emptyBehavior="invalid"
+          emptyBehavior="preserve"
         />
         <Field
           id="cableQty"
@@ -90,24 +96,18 @@ export function CoaxCableLossPanel() {
           value={quantity}
           onChange={setQuantity}
           error={result ? undefined : "本数は1以上で入力してください。"}
-          emptyBehavior="invalid"
+          emptyBehavior="preserve"
         />
       </div>
 
       {result ? (
         <>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
             <MetricCard
               label="1本あたり損失"
               value={formatNumber(result.perPieceDb, 2)}
               unit="dB"
               hint="選択品番のケーブル1本を、指定周波数で通したときの挿入損失（dB）。実測値を周波数で補間した目安で、個体差・コネクタ・曲げ・温度で変動します。グラフの黒点と同じ値です。"
-            />
-            <MetricCard
-              label={`合計損失（${Number.isFinite(quantity) ? quantity : 1}本）`}
-              value={formatNumber(result.totalDb, 2)}
-              unit="dB"
-              hint="1本あたり損失 × 本数の合計（dB）。この値をリンクバジェットの「ケーブル・コネクタ損失」に入力して使います。3dBで電力が半分、6dBで1/4になります。"
             />
             <MetricCard
               label="アンテナに残る電力"
@@ -122,17 +122,6 @@ export function CoaxCableLossPanel() {
               <p className="text-xs leading-relaxed">測定範囲外のため√f外挿（上限あり）</p>
             </Callout>
           ) : null}
-
-          <div className="mt-5">
-            <CableLossCurveDiagram
-              partNumber={cable.partNumber}
-              points={cable.points}
-              frequencyMHz={frequencyMHz}
-              currentLossDb={result.perPieceDb}
-              quantity={quantity}
-              referenceCables={referenceCables}
-            />
-          </div>
 
           {eirp ? (
             <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
@@ -156,6 +145,7 @@ export function CoaxCableLossPanel() {
                   unit="dBm"
                   value={txPowerDbm}
                   step={0.5}
+                  emptyBehavior="preserve"
                   onChange={setTxPowerDbm}
                 />
                 <Field
@@ -164,6 +154,7 @@ export function CoaxCableLossPanel() {
                   unit="dBi"
                   value={antennaGainDbi}
                   step={0.1}
+                  emptyBehavior="preserve"
                   onChange={setAntennaGainDbi}
                 />
               </div>
@@ -230,12 +221,29 @@ export function CoaxCableLossPanel() {
         <FormulaExplanationCard
           title="損失の見方を見る"
           formula={"合計損失[dB] = 1本あたり損失（実測の補間値） × 本数\n残る電力[%] = 10^(-損失/10) × 100"}
+          showColumnLink={false}
         >
           <p>
             数値はスタッフ標準品の実測挿入損失（S12, 100〜9000MHz）を、指定周波数で補間したものです。高周波ほど損失は増えます。3dBで電力は半分、6dBで1/4になります。複数本を直列に繋ぐ場合は本数を入れてください。実測値ですが、個体差・コネクタ品質・曲げ・温度で多少変わる目安です。
           </p>
         </FormulaExplanationCard>
       </div>
-    </Card>
+      </Card>
+      <div id="coax-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <ResultBar primary={primary} />
+        {result ? (
+          <CableLossCurveDiagram
+            partNumber={cable.partNumber}
+            points={cable.points}
+            frequencyMHz={frequencyMHz}
+            currentLossDb={result.perPieceDb}
+            quantity={quantity}
+            referenceCables={referenceCables}
+          />
+        ) : null}
+      </div>
+      </div>
+      <MobileResultBar primary={primary} targetId="coax-primary-result" />
+    </div>
   );
 }
