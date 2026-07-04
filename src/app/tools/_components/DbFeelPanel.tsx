@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { dbToDistanceRatio, dbToPowerRatio } from "@/lib/rf/db";
 import { Card } from "@/components/Card";
 import { MetricCard } from "@/components/MetricCard";
+import { MobileResultBar } from "@/components/MobileResultBar";
+import { ResultBar } from "@/components/ResultBar";
 import { Tooltip } from "@/components/Tooltip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DbFeelDiagram } from "./DbFeelDiagram";
@@ -34,6 +36,7 @@ export function DbFeelPanel() {
 
   const stackTotalDb = selectedChips.reduce((sum, value) => sum + value, 0);
   const stackRatio = dbToPowerRatio(stackTotalDb);
+  const primary = { label: "電力の倍率", value: formatRatio(powerRatio) };
 
   function toggleChip(value: number) {
     setSelectedChips((current) =>
@@ -42,11 +45,10 @@ export function DbFeelPanel() {
   }
 
   return (
-    <Card as="section" padding="lg" className="flex flex-col">
-      <h2 className="text-xl font-bold text-slate-950">dBを体感する</h2>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">
-        dBは「掛け算を足し算にするものさし」です。スライダーを動かして、dBが電力の倍率・到達距離の倍率にどう効くかを体感してください。
-      </p>
+    <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
+      <Card as="section" padding="lg" className="flex flex-col">
+      <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
 
       <div className="mt-4">
         <div className="flex items-center justify-between gap-2">
@@ -80,14 +82,7 @@ export function DbFeelPanel() {
         />
       </div>
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <MetricCard
-          label="電力の倍率"
-          value={formatRatio(powerRatio)}
-          size="lg"
-          sub="+10dBで10倍、+3dBで約2倍"
-          hint="10^(dB/10)。dBが示す電力の倍率です。+10dB=×10、+3dB≒×2、-3dB≒1/2。送信電力や利得の効きを表します。距離の倍率は10^(dB/20)で、指数の分母が異なる点に注意してください。"
-        />
+      <div className="mt-4 grid gap-3">
         <MetricCard
           label="到達距離の倍率（自由空間の目安）"
           value={formatRatio(distanceRatio)}
@@ -95,16 +90,6 @@ export function DbFeelPanel() {
           sub="+6dBで距離2倍、+20dBで距離10倍"
           hint="10^(dB/20)。自由空間損失は距離の2乗（20log）で効くため、電力(10log)より緩やかに伸び、+6dBで距離2倍／+20dBで10倍になります。屋内や障害物では目安より短くなります。"
         />
-      </div>
-
-      <div className="mt-5">
-        <div className="mb-2 flex items-center gap-2">
-          <span className="text-sm font-semibold text-slate-950">ものさし図</span>
-          <Tooltip term="ものさし図">
-            スライダーのdBを軸上のマーカー（青い▼）で表示します。目盛りは等間隔でも倍率は×2・×10・×100と急増します。表示域はスライダーと同じ±30dB。チップ合計はグレーの▽で同じ軸に重ねて表示されます。
-          </Tooltip>
-        </div>
-        <DbFeelDiagram db={db} stackTotalDb={stackTotalDb} />
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
@@ -202,6 +187,13 @@ export function DbFeelPanel() {
           </p>
         </FormulaExplanationCard>
       </div>
-    </Card>
+      </Card>
+      <div id="db-feel-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+        <ResultBar primary={primary} />
+        <DbFeelDiagram db={db} stackTotalDb={stackTotalDb} />
+      </div>
+      </div>
+      <MobileResultBar primary={primary} targetId="db-feel-primary-result" />
+    </div>
   );
 }
