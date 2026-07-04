@@ -1,5 +1,6 @@
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme } from "@/lib/chartTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { NcuBelowGroundInput, NcuBelowGroundResult } from "@/lib/rf/ncuBelowGround";
@@ -172,6 +173,16 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
   const marginTypical = result.linkMarginRangeDb.typical;
   const marginPass = marginTypical >= 0;
 
+  // マージン寸法ブラケット（v4-6: 旗艦滝グラフと双子の直接ラベリング）。
+  const typicalY = y(result.receivedPowerRangeDbm.typical);
+  const bracketX = x(totalIndex) + chart.barWidth + 8;
+  const bracketTop = Math.min(typicalY, sensitivityY);
+  const bracketBottom = Math.max(typicalY, sensitivityY);
+  const bracketMidY = (bracketTop + bracketBottom) / 2;
+  const bracketColor = marginPass ? chartTheme.seriesText.gain : chartTheme.seriesText.loss;
+  // 右余白の受信感度ラベル（sensitivityY±12）との衝突時はラベルを上へ退避。
+  const marginLabelY = Math.abs(bracketMidY - sensitivityY) < 30 ? bracketTop - 10 : bracketMidY;
+
   return (
     <Card as="section" padding="lg" data-testid="ncu-budget-waterfall">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -194,6 +205,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
       </div>
 
       <p className="mt-5 text-[11px] font-medium text-slate-400 sm:hidden">← 横スクロールで全体を表示できます →</p>
+      <DiagramExportButton filenameBase="ncu-link-budget-waterfall">
       <div className="mt-1.5 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 sm:mt-5">
         <svg
           role="img"
@@ -312,23 +324,32 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
             <line x1={totalCenterX - 9} x2={totalCenterX + 9} y1={y(result.receivedPowerRangeDbm.min)} y2={y(result.receivedPowerRangeDbm.min)} stroke="#0f172a" strokeWidth={2} />
           </g>
 
-          {/* マージン注記 */}
-          <text
-            x={totalCenterX}
-            y={chart.height - 38}
-            textAnchor="middle"
-            fill={marginPass ? "#047857" : "#be123c"}
-            fontSize="11.5"
-            fontWeight="700"
-          >
-            ﾏｰｼﾞﾝ {formatSigned(marginTypical, "dB")}
-          </text>
+          {/* マージン寸法ブラケット（v4-6: 受信電力(標準)↔受信感度を図中で直接ラベリング） */}
+          <g>
+            <line x1={bracketX} x2={bracketX} y1={bracketTop} y2={bracketBottom} stroke={bracketColor} strokeWidth={1.5} />
+            <line x1={bracketX - 4} x2={bracketX + 4} y1={bracketTop} y2={bracketTop} stroke={bracketColor} strokeWidth={1.5} />
+            <line x1={bracketX - 4} x2={bracketX + 4} y1={bracketBottom} y2={bracketBottom} stroke={bracketColor} strokeWidth={1.5} />
+            <text x={bracketX + 6} y={marginLabelY - 3} fill={bracketColor} fontSize={11} fontWeight={700}>
+              マージン
+            </text>
+            <text
+              x={bracketX + 6}
+              y={marginLabelY + 11}
+              fill={bracketColor}
+              fontSize={11}
+              fontWeight={700}
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {formatSigned(marginTypical, "dB")}
+            </text>
+          </g>
 
           <text x={chart.left} y={chart.top - 18} fill="#94a3b8" fontSize="12" fontWeight="700">
             dBm
           </text>
         </svg>
       </div>
+      </DiagramExportButton>
 
       <div className="mt-4 grid gap-3 sm:grid-cols-[1.4fr_1fr]">
         <p className="text-sm leading-relaxed text-slate-600">
