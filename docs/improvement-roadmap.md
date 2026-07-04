@@ -211,7 +211,7 @@
 - H3適用（SVG図 14）: `NcuCrossSectionDiagram`★ / `FresnelZoneDiagram`★ / `VswrStandingWaveDiagram`★ / `LinkBudgetWaterfallChart` / `NcuBudgetWaterfall` / `MiniWaterfall` / `NamiGateHeatmap`(H5と統合) / `MicrostripCrossSectionDiagram` / `MicrostripBendDiagram` / `HalfWaveResonanceDiagram` / `PropagationGeometryDiagram` / `DbFeelDiagram` / `LinkAssumptionDiagram` / `RadioPathDiagram`（★=優先: 事業直結・閲覧上位）
 
 **順序と分担の原則**:
-1. **H1（基盤✅）→ H3（図の共通言語✅・適用はこれから）→ H4/H5（主役2枚）→ H2（対話）→ H6（3D）→ H7/H8（仕上げ・常時）**。基盤なしの個別磨き込みは禁止（ばらつきが再発するため）。
+1. **H1（✅適用完了 recharts6/6）→ H3（✅9図適用・滝はH4へ）→ H4（✅旗艦滝v2）/H5（✅viridisヒートマップ＋連続凡例）→ H2（対話）→ H6（3D）→ H7/H8（仕上げ・常時）**。基盤なしの個別磨き込みは禁止（ばらつきが再発するため）。
 2. UX-2/UX-3 の部品移行と同じ運用: **Claude がデザイン言語と手本1枚 → Codex/Fable が量産適用 → Antigravity が視覚検証＋再ベースライン**。
 3. H6（3D）だけは例外的に段階ゲート: 技術検証スパイク（バンドル・静的export・低スペック端末）→ 1シーン本実装 → 評価 → 横展開判断。**スパイクで予算超過なら2.5D（等角SVG＝`iso.ts` 実装済み）に切替**（沈没コスト回避）。
 
