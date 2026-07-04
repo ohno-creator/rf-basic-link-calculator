@@ -48,7 +48,7 @@ export function DbFeelPanel() {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
       <Card as="section" padding="lg" className="flex flex-col">
-      <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+      <h2 className="text-base font-bold text-slate-950">入力条件</h2>
 
       <div className="mt-4">
         <div className="flex items-center justify-between gap-2">
@@ -93,7 +93,7 @@ export function DbFeelPanel() {
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
-        <h3 className="text-lg font-bold text-slate-950">掛け算を足し算にする体験</h3>
+        <h3 className="text-base font-bold text-slate-950">掛け算を足し算にする体験</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           dBは「足すだけ」。でも倍率は「掛け算」で増えます。チップを選んで、合計dBと倍率の関係を確かめてください。
         </p>
@@ -118,7 +118,7 @@ export function DbFeelPanel() {
         </div>
         <div className="mt-3 rounded-lg bg-slate-50 p-4">
           <div className="flex items-start justify-between gap-2">
-            <p className="text-sm text-slate-700">
+            <p className="text-sm leading-relaxed text-slate-600">
               選んだdBの<span className="font-semibold">合計</span> ={" "}
               <span className="font-bold text-staf-dark">+{stackTotalDb} dB</span>
               <span className="mx-2 text-slate-400">→</span>
@@ -135,19 +135,19 @@ export function DbFeelPanel() {
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
-        <h3 className="text-lg font-bold text-slate-950">なぜ体感が「鈍い」のか</h3>
+        <h3 className="text-base font-bold text-slate-950">なぜ体感が「鈍い」のか</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           身近な音で考えると分かります。出力を10倍（+10dB）にしても、音の体感は「少し大きい」だけ。人の感覚も電波の減衰も「割合（対数）」で効くので、dBで扱うと自然なのです。
         </p>
         <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-          <div className="rounded-md bg-slate-50 p-3">会話：約 60 dB</div>
-          <div className="rounded-md bg-slate-50 p-3">掃除機：約 70 dB（出力10倍でも体感は少し大きいだけ）</div>
+          <div className="rounded-md bg-slate-50 p-4">会話：約 60 dB</div>
+          <div className="rounded-md bg-slate-50 p-4">掃除機：約 70 dB（出力10倍でも体感は少し大きいだけ）</div>
         </div>
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-bold text-slate-950">早見表</h3>
+          <h3 className="text-base font-bold text-slate-950">早見表</h3>
           <Tooltip term="早見表">
             代表的なdBに対する電力倍率(10^(dB/10))と距離倍率(10^(dB/20))の早見です。マイナスは逆数になります（-3dB≒1/2）。距離は自由空間の目安です。
           </Tooltip>

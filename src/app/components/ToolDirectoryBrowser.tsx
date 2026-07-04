@@ -216,7 +216,7 @@ export function ToolDirectoryBrowser() {
                   </span>
                 ) : null}
                 <div>
-                  <h2 className="flex items-baseline gap-2 text-lg font-bold tracking-tight text-slate-900">
+                  <h2 className="flex items-baseline gap-2 text-xl font-bold tracking-tight text-slate-950">
                     {group.label}
                     <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
                   </h2>

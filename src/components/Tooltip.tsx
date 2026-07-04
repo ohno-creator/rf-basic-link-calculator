@@ -34,7 +34,7 @@ export function Tooltip({ term, children }: TooltipProps) {
       <span
         id={tooltipId}
         role="tooltip"
-        className={`pointer-events-none absolute left-0 top-full z-50 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-700 bg-slate-900 p-3 text-left text-xs leading-relaxed text-white shadow-xl group-hover/tip:block group-focus-within/tip:block ${
+        className={`pointer-events-none absolute left-0 top-full z-50 mt-2 w-72 max-w-[calc(100vw-2rem)] rounded-lg border border-slate-700 bg-slate-900 p-3 text-left text-xs leading-relaxed text-white shadow-soft group-hover/tip:block group-focus-within/tip:block ${
           open ? "block" : "hidden"
         }`}
       >

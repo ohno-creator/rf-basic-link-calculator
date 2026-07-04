@@ -10,7 +10,7 @@ const variantBg: Record<CardVariant, string> = {
 };
 
 const paddingClass: Record<CardPadding, string> = {
-  sm: "p-3",
+  sm: "p-4",
   md: "p-4",
   lg: "p-5"
 };

@@ -324,7 +324,7 @@ export function MicrostripLinePanel() {
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
-        <h3 className="text-lg font-bold text-slate-950">スルーホール（ビア）の目安</h3>
+        <h3 className="text-base font-bold text-slate-950">スルーホール（ビア）の目安</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           表裏グラウンドをつなぐスティッチングビアは、共振や電磁波の漏れを抑えるため、導波波長 λg の数分の1以下のピッチで並べます。
         </p>
@@ -365,7 +365,7 @@ export function MicrostripLinePanel() {
       </div>
 
       <div className="mt-6 border-t border-slate-200 pt-5">
-        <h3 className="text-lg font-bold text-slate-950">曲げの設計：まず「気にすべきか」</h3>
+        <h3 className="text-base font-bold text-slate-950">曲げの設計：まず「気にすべきか」</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           上で入力した動作周波数をもとに、配線の曲げで反射を気にすべきかを判定し、マイター・45°・円弧などの対策を提案します。
         </p>
@@ -392,7 +392,7 @@ export function MicrostripLinePanel() {
 
             <Card padding="md" shadow={false} className="mt-4">
               <p className="text-sm font-semibold text-slate-950">推奨する曲げ方</p>
-              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-slate-700">
+              <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-relaxed text-slate-600">
                 {bendRecommendations(bend).map((text) => (
                   <li key={text}>{text}</li>
                 ))}

@@ -813,7 +813,7 @@ function ModeReviewPanel({
         <Icon aria-hidden="true" className="h-4 w-4" />
         {guide.reviewName}
       </p>
-      <h2 className="mt-1 text-lg font-bold text-slate-950">{mode.title}</h2>
+      <h2 className="mt-1 text-base font-bold text-slate-950">{mode.title}</h2>
       <p className="mt-2 text-xs leading-relaxed text-slate-600">{mode.description}</p>
       <div className="mt-3">
         <ProgressBar value={completed} max={total} />
@@ -954,7 +954,7 @@ function CardCollectionPanel({
             クリアした問題は「カード」として集まります。章ごとの抜けを埋めて、全{totalCount}枚コンプリートを目指しましょう。？？？は未獲得のカード（ホバーで用語ヒント）、★はボス戦で手に入るレアカードです。気になるカードを押すと、その問題へ直接ジャンプできます。
           </p>
         </div>
-        <div className="min-w-52 rounded-lg border border-staf/20 bg-staf-light p-3 text-staf-dark">
+        <div className="min-w-52 rounded-lg border border-staf/20 bg-staf-light p-4 text-staf-dark">
           <p className="text-xs font-bold">総コレクション</p>
           <p className="mt-1 text-2xl font-bold">
             {collectedCount}/{totalCount}
@@ -998,7 +998,7 @@ function CardCollectionPanel({
         })}
       </div>
 
-      <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-3">
+      <div className="mt-4 rounded-lg border border-slate-100 bg-slate-50 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <p className="text-sm font-bold text-slate-900">
             {viewModeLabel}のカード {modeCollected}/{modeLessons.length}
@@ -1022,7 +1022,7 @@ function CardCollectionPanel({
           const chapterDone = lessons.filter((lesson) => progress[lesson.id]).length;
 
           return (
-            <div key={chapter} className="rounded-md border border-slate-100 bg-white p-3">
+            <div key={chapter} className="rounded-md border border-slate-100 bg-white p-4">
               <div className="flex items-center justify-between gap-2">
                 <p className="text-xs font-bold text-staf-dark">
                   第{chapter}章 {chapterTitleFor(viewMode, chapter)}
@@ -1103,7 +1103,7 @@ function AntennaGuildPanel({
             アンテナメーカーの学習導線として、波長、整合、放射効率、筐体実装、設置トラブルを短い問題で積み上げます。迷ったら今日の修行から始めてください。各バトルには設計レビューの観点も付くので、遊びながら実務目線が身につきます。
           </p>
         </div>
-        <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-3">
+        <div className="min-w-48 rounded-md border border-staf/20 bg-staf-light p-4">
           <p className="text-xs font-bold text-staf-dark">次の称号</p>
           <p className="mt-1 text-sm font-bold text-slate-950">{nextBadge.title}</p>
           <p className="mt-1 text-xs leading-relaxed text-slate-600">
@@ -1122,7 +1122,7 @@ function AntennaGuildPanel({
               <button
                 key={mission.lessonId}
                 type="button"
-                className={`rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
+                className={`rounded-lg border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
                   done
                     ? "border-emerald-200 bg-emerald-50 text-emerald-900"
                     : "border-slate-200 bg-slate-50 text-slate-700 hover:border-staf/30 hover:bg-white"
@@ -1143,7 +1143,7 @@ function AntennaGuildPanel({
           })}
         </div>
 
-        <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
           <p className="flex items-center gap-2 text-sm font-bold text-slate-950">
             <Gauge aria-hidden="true" className="h-4 w-4 text-staf-dark" />
             実績スロット
@@ -1328,7 +1328,7 @@ function LessonBattle({
             </p>
             <p className="mt-2 text-sm font-semibold text-slate-900">{lesson.immediateAnswer}</p>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">{lesson.explanation}</p>
-            <div className="mt-3 rounded-md border border-white/70 bg-white/80 p-3">
+            <div className="mt-3 rounded-md border border-white/70 bg-white/80 p-4">
               <p className="flex items-center gap-2 text-xs font-bold text-slate-600">
                 <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
                 メーカーの判断メモ
@@ -1354,14 +1354,14 @@ function LessonBattle({
             </p>
             {correct ? (
               <div className="mt-3 grid gap-2 sm:grid-cols-2">
-                <div className="rounded-md border border-emerald-200 bg-white/80 p-3">
+                <div className="rounded-md border border-emerald-200 bg-white/80 p-4">
                   <p className="flex items-center gap-2 text-xs font-bold text-emerald-900">
                     <Zap aria-hidden="true" className="h-3.5 w-3.5" />
                     連続正解コンボ
                   </p>
                   <p className="mt-1 text-lg font-bold text-emerald-800">{streak} COMBO</p>
                 </div>
-                <div className="rounded-md border border-staf/20 bg-white/80 p-3">
+                <div className="rounded-md border border-staf/20 bg-white/80 p-4">
                   <p className="text-xs font-bold text-slate-500">アンテナ勘</p>
                   <p className="mt-1 text-sm font-bold text-slate-950">
                     +{Math.min(99, Math.max(1, streak * 3))} / 設計メモに残したい知識
@@ -1370,7 +1370,7 @@ function LessonBattle({
               </div>
             ) : null}
             {!correct ? (
-              <div className="mt-3 rounded-md border border-amber-200 bg-white/80 p-3">
+              <div className="mt-3 rounded-md border border-amber-200 bg-white/80 p-4">
                 <p className="text-xs font-bold text-amber-900">
                   もう一度挑戦できます。左のステージ番号を再クリックするか、このボタンで回答をクリアしてください。
                 </p>
@@ -1391,7 +1391,7 @@ function LessonBattle({
               {lesson.appLink.label}
               <ArrowRight aria-hidden="true" className="h-4 w-4" />
             </Link>
-            <div className="mt-3 rounded-md border border-slate-200 bg-white/80 p-3">
+            <div className="mt-3 rounded-md border border-slate-200 bg-white/80 p-4">
               <p className="text-xs font-bold text-slate-500">次の修行</p>
               <p className="mt-1 text-sm font-bold text-slate-950">
                 STAGE {nextLesson.stage}：{nextLesson.title}
@@ -1433,7 +1433,7 @@ function LessonBattle({
                 ))}
               </div>
             ) : null}
-            <div className="mt-4 rounded-md border border-staf/20 bg-staf-light p-3">
+            <div className="mt-4 rounded-md border border-staf/20 bg-staf-light p-4">
               <p className="flex items-center gap-2 text-xs font-bold text-staf-dark">
                 <Radio aria-hidden="true" className="h-3.5 w-3.5" />
                 アンテナ設計の次の一手
@@ -1491,15 +1491,15 @@ function CertificateView({
         において、全ステージを攻略し、ランダム修了試験10問で100点を達成したことを証明します。
       </p>
       <div className="mt-8 grid gap-3 text-sm sm:grid-cols-3">
-        <div className="rounded-md border border-slate-200 p-3">
+        <div className="rounded-md border border-slate-200 p-4">
           <p className="text-xs font-bold text-slate-500">修了モード</p>
           <p className="mt-1 font-bold text-slate-950">{certificate.modeLabel}</p>
         </div>
-        <div className="rounded-md border border-slate-200 p-3">
+        <div className="rounded-md border border-slate-200 p-4">
           <p className="text-xs font-bold text-slate-500">修了試験</p>
           <p className="mt-1 font-bold text-slate-950">{certificate.score}/100 点</p>
         </div>
-        <div className="rounded-md border border-slate-200 p-3">
+        <div className="rounded-md border border-slate-200 p-4">
           <p className="text-xs font-bold text-slate-500">発行日</p>
           <p className="mt-1 font-bold text-slate-950">{issuedDate}</p>
         </div>
@@ -1633,7 +1633,7 @@ function CertificationPanel({
               </div>
 
               {finished && !passed ? (
-                <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm font-semibold text-amber-900">
+                <div className="mt-3 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm font-semibold text-amber-900">
                   満点まであと{CERTIFICATION_QUESTION_COUNT - correctCount}問です。誤答した問題名をクリックして回答をクリアし、再挑戦してください。
                 </div>
               ) : null}

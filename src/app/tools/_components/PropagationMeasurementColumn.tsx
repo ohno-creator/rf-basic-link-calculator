@@ -7,7 +7,7 @@ import { Callout } from "@/components/Callout";
 export function PropagationMeasurementColumn() {
   return (
     <Callout tone="info" size="lg" icon={<Globe aria-hidden="true" className="h-5 w-5" />}>
-      <h2 className="text-lg font-bold">コラム：実測で深掘りする — Google Earth × モデル比較</h2>
+      <h2 className="text-base font-bold">コラム：実測で深掘りする — Google Earth × モデル比較</h2>
 
       <div className="mt-3 space-y-3 text-sm leading-relaxed">
         <p>
@@ -40,7 +40,7 @@ export function PropagationMeasurementColumn() {
           複数地点（最大10点）を入れると、点の並びから現地の減衰の傾き（実効的な n）が見えてきて、考察が一段深まります。
         </p>
 
-        <p className="rounded-md border border-sky-200 bg-white/70 p-3 text-xs text-sky-900">
+        <p className="rounded-md border border-sky-200 bg-white/70 p-4 text-xs text-sky-900">
           <span className="font-semibold">ヒント：</span>
           「結果をコピー」で条件・各モデルの損失・実測値をまとめて書き出し、ChatGPT などに貼り付けると、実測に合うモデルの選定理由や設計上の注意点まで踏み込んだ考察を補助できます。「PDFで印刷・保存」で測定記録として残せます。
           地図上の距離は水平直線距離なので、実際の反射・回折経路とは差が出る点、電波は時間変動する点に注意し、できれば複数回・複数地点で確認してください。

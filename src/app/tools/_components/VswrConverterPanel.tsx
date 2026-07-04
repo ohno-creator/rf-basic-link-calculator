@@ -102,7 +102,7 @@ export function VswrConverterPanel() {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
         <Card as="section" padding="lg">
-          <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+          <h2 className="text-base font-bold text-slate-950">入力条件</h2>
           <p className="mt-1 text-sm text-slate-600">
             仕様書や測定器に記載された指標を1つ選び、その値を入力します。
           </p>

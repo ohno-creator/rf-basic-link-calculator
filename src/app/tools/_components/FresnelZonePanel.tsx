@@ -95,7 +95,7 @@ export function FresnelZonePanel() {
 
   return (
     <Card as="section" padding="lg" className="flex flex-col">
-      <h3 className="text-lg font-bold text-slate-950">フレネルゾーン半径と障害物チェック</h3>
+      <h3 className="text-base font-bold text-slate-950">フレネルゾーン半径と障害物チェック</h3>
       <p className="mt-2 text-sm leading-relaxed text-slate-600">
         見通し通信で「どれだけ障害物を空けるべきか」の目安になる第1フレネルゾーン半径を計算し、送受間に置いた障害物（車・建物・木・人・丘）が電波を遮るかどうかを判定します。
       </p>

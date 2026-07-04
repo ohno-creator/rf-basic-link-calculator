@@ -65,7 +65,7 @@ type Slider = {
 
 function LabSlider({ id, label, unit, min, max, step, value, onChange }: Slider) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-3">
+    <div className="rounded-md border border-slate-200 bg-white p-4">
       <div className="flex items-center justify-between gap-2">
         <label htmlFor={id} className="text-sm font-semibold text-slate-950">
           {label}
@@ -147,7 +147,7 @@ export function TwoRayInterferenceLab({
         直接波と地面反射波を位相込みで合成（コヒーレント和）した「完全版」と、リンクバジェットで使う「平滑化した包絡線」、基準の「自由空間損失」を重ねています。
         スライダーを動かすと、強め合い（最大 +6dB のピーク）と弱め合い（深い谷＝ヌル）が交互に現れる山谷が変化します。
       </p>
-      <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-3">
+      <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-4">
         <summary className="cursor-pointer text-xs font-bold text-slate-800">
           このグラフの前提と読み方
         </summary>
