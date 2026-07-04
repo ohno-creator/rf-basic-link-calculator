@@ -5,14 +5,13 @@ on:
     branches:
       - main
       - feature/initial-rf-basic-link-calculator
-      - track/ux3-flagship-visual
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: pages-${{ github.ref }}
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -51,31 +50,12 @@ jobs:
       - name: E2E test
         run: npm run test:e2e
 
-      - name: Run Visual Tests
-        if: github.ref == 'refs/heads/track/ux3-flagship-visual'
-        run: |
-          npm run test:visual
-        env:
-          TEST_VISUAL: "true"
-
-      - name: Upload Test Report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: playwright-report
-          path: |
-            playwright-report/
-            test-results/
-          retention-days: 7
-
       - name: Build static app
-        if: github.ref != 'refs/heads/track/ux3-flagship-visual'
         run: npm run build
         env:
           GITHUB_PAGES: "true"
 
       - name: Deploy to gh-pages branch
-        if: github.ref != 'refs/heads/track/ux3-flagship-visual'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
