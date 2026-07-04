@@ -135,7 +135,7 @@ export function ToolDirectoryBrowser() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder="知りたいことを検索（例：届く、損失、アンテナ）"
               aria-label="ツールを検索"
-              className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm text-slate-900 outline-none transition focus:border-staf/50 focus:ring-2 focus:ring-staf/20"
+              className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm text-slate-900 outline-none transition focus:border-staf/50 focus:ring-2 focus:ring-staf/40"
             />
             {query ? (
               <button

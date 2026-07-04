@@ -1834,7 +1834,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
               <select
                 id="short-antenna-kind"
                 value={shortKind}
-                className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => setShortKind(event.target.value as ShortAntennaKind)}
               >
                 <option value="monopole">短いモノポール</option>

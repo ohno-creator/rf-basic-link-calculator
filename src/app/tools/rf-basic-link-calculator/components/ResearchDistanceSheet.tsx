@@ -177,7 +177,7 @@ function ResearchNumberField({
         <NumberInput
           id={`research-${id}`}
           inputMode={min >= 0 ? "decimal" : "text"}
-          className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-10 rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
           value={value}
           min={min}
           max={max}
@@ -367,7 +367,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           </div>
           <button
             type="button"
-            className="inline-flex items-center gap-2 rounded-md border border-staf/30 bg-staf-light px-3 py-2 text-sm font-semibold text-staf-dark transition hover:bg-staf/10 focus:outline-none focus:ring-2 focus:ring-staf/25"
+            className="inline-flex items-center gap-2 rounded-md border border-staf/30 bg-staf-light px-3 py-2 text-sm font-semibold text-staf-dark transition hover:bg-staf/10 focus:outline-none focus:ring-2 focus:ring-staf/40"
             onClick={copyMainConditions}
           >
             <RefreshCw className="h-4 w-4" aria-hidden="true" />
@@ -390,7 +390,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 <select
                   id="research-model"
                   value={input.model}
-                  className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                  className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                   onChange={(event) => update("model", event.target.value as ResearchDistanceModel)}
                 >
                   {modelOptions.map((option) => (
@@ -412,7 +412,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
                 <select
                   id="research-reliability"
                   value={input.reliabilityPercent}
-                  className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                  className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                   onChange={(event) =>
                     update("reliabilityPercent", Number(event.target.value) as ReliabilityPercent)
                   }

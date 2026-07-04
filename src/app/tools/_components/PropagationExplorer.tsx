@@ -72,7 +72,7 @@ function Field({ id, label, unit, value, min, max, step, onChange, hint, tooltip
         max={max}
         step={step}
         value={Number.isFinite(value) ? value : ""}
-        className="mt-2 h-10 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+        className="mt-2 h-10 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
         onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
       />
       <input
@@ -396,7 +396,7 @@ export function PropagationExplorer() {
               <select
                 id="propArea"
                 value={area}
-                className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => setArea(event.target.value as AreaType)}
               >
                 {propagationAreaOptions.map((option) => (
@@ -517,7 +517,7 @@ export function PropagationExplorer() {
                 placeholder="距離 km"
                 aria-label={`実測${index + 1} 距離（km）`}
                 value={point.distanceKm ?? ""}
-                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => updateMeasured(point.id, "distanceKm", event.target.value)}
               />
               <input
@@ -528,7 +528,7 @@ export function PropagationExplorer() {
                 placeholder="損失 dB"
                 aria-label={`実測${index + 1} 経路損失（dB）`}
                 value={point.lossDb ?? ""}
-                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => updateMeasured(point.id, "lossDb", event.target.value)}
               />
               <button

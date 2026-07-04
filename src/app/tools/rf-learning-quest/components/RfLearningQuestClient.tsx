@@ -759,7 +759,7 @@ function ModeSelector({
           <button
             key={mode.id}
             type="button"
-            className={`rounded-lg border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
+            className={`rounded-lg border p-4 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
               selected
                 ? "border-staf bg-staf text-white shadow-card"
                 : "border-slate-200 bg-white text-slate-700 hover:border-staf/30 hover:bg-slate-50"
@@ -893,7 +893,7 @@ function StageMap({
                     <button
                       key={lesson.id}
                       type="button"
-                      className={`aspect-square rounded-md border text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${
+                      className={`aspect-square rounded-md border text-xs font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
                         selected
                           ? "border-staf bg-staf text-white"
                           : done
@@ -1052,7 +1052,7 @@ function CardCollectionPanel({
                           ? `獲得済みカード ${lesson.title}${rare ? " ★レア" : ""}`
                           : `未獲得カード（${lesson.title}）。問題へ進んで獲得する`
                       }
-                      className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/25 ${chipClass}`}
+                      className={`inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${chipClass}`}
                     >
                       {done ? (
                         rare ? (
@@ -1122,7 +1122,7 @@ function AntennaGuildPanel({
               <button
                 key={mission.lessonId}
                 type="button"
-                className={`rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/20 ${
+                className={`rounded-lg border p-3 text-left transition focus:outline-none focus:ring-2 focus:ring-staf/40 ${
                   done
                     ? "border-emerald-200 bg-emerald-50 text-emerald-900"
                     : "border-slate-200 bg-slate-50 text-slate-700 hover:border-staf/30 hover:bg-white"
@@ -1748,7 +1748,7 @@ function CertificationPanel({
                   <input
                     value={certificateForm.recipientName}
                     onChange={(event) => onFormChange(mode.id, "recipientName", event.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/15"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                     placeholder="例：山田 太郎"
                   />
                 </label>
@@ -1757,7 +1757,7 @@ function CertificationPanel({
                   <input
                     value={certificateForm.companyName}
                     onChange={(event) => onFormChange(mode.id, "companyName", event.target.value)}
-                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/15"
+                    className="mt-1 w-full rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                     placeholder="例：スタッフ株式会社"
                   />
                 </label>

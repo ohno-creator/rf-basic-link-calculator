@@ -57,7 +57,7 @@ export function CoaxCableLossPanel() {
         <select
           id="cablePart"
           value={cableIndex}
-          className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
           onChange={(event) => setCableIndex(Number(event.target.value))}
         >
           {cableAssemblies.map((item, index) => (
@@ -85,7 +85,7 @@ export function CoaxCableLossPanel() {
             step={10}
             value={Number.isFinite(frequencyMHz) ? frequencyMHz : ""}
             aria-invalid={!result}
-            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
             onChange={(event) => setFrequencyMHz(event.target.value === "" ? Number.NaN : Number(event.target.value))}
           />
         </div>
@@ -105,7 +105,7 @@ export function CoaxCableLossPanel() {
             step={1}
             value={Number.isFinite(quantity) ? quantity : ""}
             aria-invalid={!result}
-            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+            className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
             onChange={(event) => setQuantity(event.target.value === "" ? Number.NaN : Number(event.target.value))}
           />
         </div>

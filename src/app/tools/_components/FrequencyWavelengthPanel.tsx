@@ -101,14 +101,14 @@ export function FrequencyWavelengthPanel() {
               min={0.001}
               step={unit === "GHz" ? 0.01 : 0.1}
               value={Number.isFinite(frequency) ? frequency : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) => setFrequency(event.target.value === "" ? Number.NaN : Number(event.target.value))}
               aria-invalid={!result}
             />
             <select
               value={unit}
               aria-label="周波数の単位"
-              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) => handleUnitChange(event.target.value as "MHz" | "GHz")}
             >
               <option value="MHz">MHz（百万ヘルツ。サブGHz帯：LPWA/RFID 920MHz等）</option>

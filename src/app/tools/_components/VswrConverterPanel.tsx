@@ -99,13 +99,13 @@ export function VswrConverterPanel() {
           placeholder={activeMode ? String(activeMode.placeholder) : undefined}
           aria-label={`${activeMode?.label}の入力`}
           aria-invalid={!result}
-          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 placeholder:font-normal placeholder:text-slate-400 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 placeholder:font-normal placeholder:text-slate-400 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
           onChange={(event) => setValue(event.target.value === "" ? Number.NaN : Number(event.target.value))}
         />
         <select
           value={mode}
           aria-label="入力する指標"
-          className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
           onChange={(event) => handleModeChange(event.target.value as VswrSourceKind)}
         >
           {modes.map((item) => (

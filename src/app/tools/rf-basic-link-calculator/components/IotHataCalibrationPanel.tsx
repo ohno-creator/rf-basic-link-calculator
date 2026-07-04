@@ -67,7 +67,7 @@ export function IotHataCalibrationPanel({
               min={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.001}
               step={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.01}
               value={Number.isFinite(input.iotCalibrationDistance) ? input.iotCalibrationDistance : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) =>
                 update("iotCalibrationDistance", event.target.value === "" ? Number.NaN : Number(event.target.value))
               }
@@ -75,7 +75,7 @@ export function IotHataCalibrationPanel({
             />
             <select
               value={input.iotCalibrationDistanceUnit}
-              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) => {
                 const nextUnit = event.target.value as LinkBudgetInput["iotCalibrationDistanceUnit"];
                 const converted =

@@ -125,7 +125,7 @@ export function DbmConverterPanel() {
               step={mode === "dbm" ? 0.5 : 0.001}
               min={mode === "dbm" ? undefined : 0.000001}
               value={Number.isFinite(value) ? value : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) => setValue(event.target.value === "" ? Number.NaN : Number(event.target.value))}
               aria-invalid={!result}
             />
@@ -133,7 +133,7 @@ export function DbmConverterPanel() {
               <select
                 value={mode}
                 aria-label="単位選択"
-                className="h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => handleModeChange(event.target.value as Mode)}
               >
                 <option value="dbm">dBm</option>

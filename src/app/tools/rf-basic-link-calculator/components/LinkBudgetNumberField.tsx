@@ -57,7 +57,7 @@ export function LinkBudgetNumberField({
           max={max}
           step={step}
           emptyBehavior="invalid"
-          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 shadow-card focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
           onChange={onChange}
           ariaInvalid={Boolean(error)}
         />

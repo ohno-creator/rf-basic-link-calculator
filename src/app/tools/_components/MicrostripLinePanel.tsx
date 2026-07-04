@@ -124,7 +124,7 @@ function NumberInput({
         step={step}
         value={Number.isFinite(value) ? value : ""}
         aria-invalid={invalid}
-        className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+        className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
         onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
       />
     </div>

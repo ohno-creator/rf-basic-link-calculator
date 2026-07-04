@@ -197,7 +197,7 @@ export function SimpleLinkBudgetPanel() {
                 <select
                   id="simpleDistanceUnit"
                   value={input.distanceUnit}
-                  className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15"
+                  className="mt-2 h-11 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40"
                   onChange={(event) => handleDistanceUnitChange(event.target.value as SimpleDistanceUnit)}
                 >
                   <option value="m">m</option>
