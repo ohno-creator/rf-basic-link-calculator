@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { calculateFsplDb } from "@/lib/rf/fspl";
 import {
   calculatePropagationLossResult,
@@ -170,27 +171,28 @@ export function TwoRayInterferenceLab({
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#E2E8F0" />
+              <CartesianGrid {...rfGridProps()} />
               <XAxis
                 dataKey="d"
                 type="number"
                 domain={["dataMin", "dataMax"]}
                 tickFormatter={formatDistance}
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={rfTickProps()}
               />
               <YAxis
                 unit="dB"
                 reversed
-                tick={{ fontSize: 12, fill: "#64748B" }}
+                tick={rfTickProps()}
                 domain={["dataMin - 4", "dataMax + 4"]}
               />
               <RechartsTooltip
+                {...rfTooltipProps()}
                 formatter={(value, name) => [`${value} dB`, name as string]}
                 labelFormatter={(label) => `距離 ${formatDistance(Number(label))}`}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
               <Line type="linear" dataKey="full" name="2波（干渉・完全版）" stroke="#ea580c" strokeWidth={2} dot={false} isAnimationActive={false} />
-              <Line type="linear" dataKey="envelope" name="2波（平滑化・包絡線）" stroke="#0071BD" strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
+              <Line type="linear" dataKey="envelope" name="2波（平滑化・包絡線）" stroke={chartTheme.series.source} strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
               <Line type="linear" dataKey="fspl" name="自由空間損失" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="2 4" dot={false} isAnimationActive={false} />
               {breakpointM >= MIN_DISTANCE_M && breakpointM <= maxDistanceM ? (
                 <ReferenceLine
