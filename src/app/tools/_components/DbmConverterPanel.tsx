@@ -1,10 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { NumberField } from "@/components/NumberField";
-import { Stat } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
-import { glossary } from "@/data/glossary";
 import { calculateEirp, dbiToDbd, dbiToLinear } from "@/lib/rf/antenna";
 import { dbmToMw, mwToDbm, mwToW, wToDbm, wToMw } from "@/lib/rf/db";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
@@ -110,75 +109,49 @@ export function DbmConverterPanel() {
         </p>
 
         <div className="mt-5">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor="dbInput" className="text-sm font-semibold text-slate-950">
-              入力値
-            </label>
-            <Tooltip term={glossary.dbm.term}>
-              1mWを基準にした電力の対数単位です。0dBm=1mW、20dBm=100mW。リンクバジェットの基本単位で、利得・損失をdBで加減算できます。
-            </Tooltip>
-          </div>
-          <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_120px]">
-            <input
-              id="dbInput"
-              type="number"
-              step={mode === "dbm" ? 0.5 : 0.001}
-              min={mode === "dbm" ? undefined : 0.000001}
-              value={Number.isFinite(value) ? value : ""}
-              className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-              onChange={(event) => setValue(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-              aria-invalid={!result}
-            />
-            <div className="flex items-center gap-1.5">
-              <select
-                value={mode}
-                aria-label="単位選択"
-                className="h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-                onChange={(event) => handleModeChange(event.target.value as Mode)}
-              >
-                <option value="dbm">dBm</option>
-                <option value="mw">mW</option>
-                <option value="w">W</option>
-              </select>
-              <Tooltip term="単位">
-                入力値の単位を選びます。選んだ単位として数値が解釈され、他の2単位へ自動換算されます。単位を切り替えると、入力値は物理量を保ったまま新しい単位へ換算されます。送信出力なら通常dBmかmWを使用します。
-              </Tooltip>
-            </div>
-          </div>
-          {!result ? (
-            <p className="mt-2 text-sm font-medium text-rose-700">{errorMessage}</p>
-          ) : null}
+          <Field
+            id="dbInput"
+            label="入力値"
+            help="1mWを基準にした電力の対数単位です。0dBm=1mW、20dBm=100mW。リンクバジェットの基本単位で、利得・損失をdBで加減算できます。入力値の単位を選びます。選んだ単位として数値が解釈され、他の2単位へ自動換算されます。単位を切り替えると、入力値は物理量を保ったまま新しい単位へ換算されます。送信出力なら通常dBmかmWを使用します。"
+            unitSelect={{
+              value: mode,
+              options: [
+                { value: "dbm", label: "dBm" },
+                { value: "mw", label: "mW" },
+                { value: "w", label: "W" }
+              ],
+              ariaLabel: "単位選択",
+              onChange: (m) => handleModeChange(m as Mode)
+            }}
+            value={value}
+            onChange={(v) => setValue(v)}
+            min={mode === "dbm" ? undefined : 0.000001}
+            step={mode === "dbm" ? 0.5 : 0.001}
+            error={result ? undefined : errorMessage}
+            emptyBehavior="invalid"
+          />
         </div>
 
         {result ? (
           <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <div className="rounded-lg bg-slate-50 p-4">
-              <div className="flex items-center justify-between gap-1">
-                <p className="text-xs text-slate-500">dBm</p>
-                <Tooltip term="dBm換算">
-                  入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatPower(result.dbm)} tone="staf" size="md" />
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <div className="flex items-center justify-between gap-1">
-                <p className="text-xs text-slate-500">mW</p>
-                <Tooltip term="mW換算">
-                  入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatPower(result.mw)} tone="staf" size="md" />
-            </div>
-            <div className="rounded-lg bg-slate-50 p-4">
-              <div className="flex items-center justify-between gap-1">
-                <p className="text-xs text-slate-500">W</p>
-                <Tooltip term="W換算">
-                  入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。
-                </Tooltip>
-              </div>
-              <Stat className="mt-1" value={formatPower(result.w)} tone="staf" size="md" />
-            </div>
+            <MetricCard
+              label="dBm"
+              value={formatPower(result.dbm)}
+              tone="primary"
+              hint="入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。"
+            />
+            <MetricCard
+              label="mW"
+              value={formatPower(result.mw)}
+              tone="primary"
+              hint="入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。"
+            />
+            <MetricCard
+              label="W"
+              value={formatPower(result.w)}
+              tone="primary"
+              hint="入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。"
+            />
           </div>
         ) : null}
 
@@ -226,7 +199,7 @@ export function DbmConverterPanel() {
               </Tooltip>
             </div>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
-              <NumberField
+              <Field
                 id="dbmAntennaGain"
                 label="アンテナ利得"
                 unit="dBi"
@@ -234,7 +207,7 @@ export function DbmConverterPanel() {
                 step={0.1}
                 onChange={setAntennaGainDbi}
               />
-              <NumberField
+              <Field
                 id="dbmCableLoss"
                 label="ケーブル・整合損失"
                 unit="dB"
@@ -245,45 +218,37 @@ export function DbmConverterPanel() {
               />
             </div>
             <div className="mt-4 grid gap-3 sm:grid-cols-4">
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="dBd換算"
-                  value={formatPower(dbiToDbd(antennaGainDbi))}
-                  unit="dBd"
-                  tone="staf"
-                  size="sm"
-                  note={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
-                />
-              </div>
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="アンテナ端子電力"
-                  value={formatPower(eirp.antennaInputDbm)}
-                  unit="dBm"
-                  tone="neutral"
-                  size="sm"
-                />
-              </div>
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="EIRP"
-                  value={formatPower(eirp.eirpDbm)}
-                  unit="dBm"
-                  tone="emerald"
-                  size="sm"
-                  note={`${formatPower(eirp.eirpW)} W`}
-                />
-              </div>
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="ERP"
-                  value={formatPower(eirp.erpDbm)}
-                  unit="dBm"
-                  tone="staf"
-                  size="sm"
-                  note={`${formatPower(eirp.erpW)} W`}
-                />
-              </div>
+              <MetricCard
+                label="dBd換算"
+                value={formatPower(dbiToDbd(antennaGainDbi))}
+                unit="dBd"
+                tone="primary"
+                size="sm"
+                sub={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
+              />
+              <MetricCard
+                label="アンテナ端子電力"
+                value={formatPower(eirp.antennaInputDbm)}
+                unit="dBm"
+                tone="neutral"
+                size="sm"
+              />
+              <MetricCard
+                label="EIRP"
+                value={formatPower(eirp.eirpDbm)}
+                unit="dBm"
+                tone="success"
+                size="sm"
+                sub={`${formatPower(eirp.eirpW)} W`}
+              />
+              <MetricCard
+                label="ERP"
+                value={formatPower(eirp.erpDbm)}
+                unit="dBm"
+                tone="primary"
+                size="sm"
+                sub={`${formatPower(eirp.erpW)} W`}
+              />
             </div>
           </div>
         ) : null}
