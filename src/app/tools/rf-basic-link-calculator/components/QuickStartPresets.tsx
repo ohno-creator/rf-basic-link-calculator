@@ -33,7 +33,7 @@ export function QuickStartPresets({ onSelect }: QuickStartPresetsProps) {
             <span className="w-fit rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
               {preset.label}
             </span>
-            <h3 className="mt-4 text-lg font-bold text-slate-950">{preset.system}</h3>
+            <h3 className="mt-4 text-base font-bold text-slate-950">{preset.system}</h3>
             <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
               <div className="rounded-md bg-slate-50 p-2">
                 <span className="block text-xs text-slate-500">周波数</span>

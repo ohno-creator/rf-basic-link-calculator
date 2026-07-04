@@ -54,7 +54,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
 
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-soft">
         <div className="mb-4">
-          <h2 className="text-lg font-bold text-slate-950">足し算と引き算で見る通信余裕</h2>
+          <h2 className="text-base font-bold text-slate-950">足し算と引き算で見る通信余裕</h2>
           <p className="mt-1 text-sm text-slate-600">
             電波が届くまでの流れを、リンクバジェットとして整理します。
           </p>
@@ -64,7 +64,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
             <div key={item.label}>
               <div className="flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                 <span className="text-sm font-medium text-slate-700">{item.label}</span>
-                <span className="text-lg font-bold text-staf-dark">{item.value}</span>
+                <span className="text-lg font-bold tabular-nums text-staf-dark">{item.value}</span>
               </div>
               {index < flow.length - 1 ? (
                 <div className="flex justify-center py-1 text-slate-400">↓</div>

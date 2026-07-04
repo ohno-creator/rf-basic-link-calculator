@@ -19,7 +19,7 @@ export function RadioPathDiagram({ input, result }: RadioPathDiagramProps) {
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-sm font-semibold text-staf-dark">経路図</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">
+          <h3 className="mt-1 text-base font-bold text-slate-950">
             電波が弱くなる場所を分けて見る
           </h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">

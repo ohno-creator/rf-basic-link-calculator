@@ -34,7 +34,7 @@ export function IotHataCalibrationPanel({
         測定時と同じ送信電力、アンテナ利得、環境損失、端末近傍損失を入力してください。
       </p>
       {input.calibrationOffsetDb !== 0 ? (
-        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-4 text-xs leading-relaxed text-amber-950">
           <p className="font-semibold">実測補正値との二重計上を確認してください</p>
           <p className="mt-1">
             このモードは実測受信電力からHata基準との差分を推定します。ステップ4の実測補正値
@@ -43,7 +43,7 @@ export function IotHataCalibrationPanel({
         </div>
       ) : null}
       {extrapolationRatio >= 10 ? (
-        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-3 text-xs leading-relaxed text-amber-950">
+        <div className="mt-3 rounded-md border border-amber-300 bg-amber-50 p-4 text-xs leading-relaxed text-amber-950">
           <p className="font-semibold">アンカー距離から大きく外挿しています</p>
           <p className="mt-1">
             現在の通信距離と実測アンカー距離が約{extrapolationRatio.toFixed(1)}倍離れています。
@@ -131,7 +131,7 @@ export function IotHataCalibrationPanel({
         />
       </div>
 
-      <div className="mt-4 rounded-md border border-indigo-200 bg-white/80 p-3 text-xs leading-relaxed text-indigo-950">
+      <div className="mt-4 rounded-md border border-indigo-200 bg-white/80 p-4 text-xs leading-relaxed text-indigo-950">
         <p className="font-semibold">根拠</p>
         <p className="mt-1">
           都市LoRaの大規模測定では、Okumura系やLog-distance系は有効な候補ですが、現地データで係数を求めることが重要とされています。

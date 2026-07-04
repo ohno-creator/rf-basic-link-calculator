@@ -152,7 +152,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <p className="text-sm font-semibold text-staf-dark">設定前提の2D図</p>
-          <h3 className="mt-1 text-lg font-bold text-slate-950">計算・シミュレーション前提と指定パラメータ</h3>
+          <h3 className="mt-1 text-base font-bold text-slate-950">計算・シミュレーション前提と指定パラメータ</h3>
           <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             現在の入力を、送信側・受信側・地面・見通し線・反射経路の2D断面として整理します。
             図は計算の前提を説明するための模式図で、実際の地形や建物を再現するものではありません。
@@ -262,7 +262,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
           </div>
           <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2 2xl:grid-cols-3">
             {parameterRows.map(([label, value]) => (
-              <div key={label} className="rounded-md border border-slate-200 bg-white p-3">
+              <div key={label} className="rounded-md border border-slate-200 bg-white p-4">
                 <dt className="font-semibold text-slate-500">{label}</dt>
                 <dd className="mt-1 font-bold text-slate-900">{value}</dd>
               </div>
@@ -289,7 +289,7 @@ export function LinkAssumptionDiagram({ input, result }: LinkAssumptionDiagramPr
       >
         <ul className="grid gap-2 text-xs leading-relaxed md:grid-cols-2">
           {cautionItems.map((item) => (
-            <li key={item} className="rounded-md bg-white/65 p-3">
+            <li key={item} className="rounded-md bg-white/65 p-4">
               {item}
             </li>
           ))}

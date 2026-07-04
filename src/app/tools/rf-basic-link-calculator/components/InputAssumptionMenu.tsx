@@ -50,7 +50,7 @@ export function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
       </div>
 
       <div className="mt-3 grid gap-2">
-        <details className="rounded-md border border-slate-200 bg-slate-50 p-3" open>
+        <details className="rounded-md border border-slate-200 bg-slate-50 p-4" open>
           <summary className="cursor-pointer text-xs font-bold text-slate-900">1. 通信形態と推奨モデル</summary>
           <div className="mt-2 space-y-1.5 text-xs leading-relaxed text-slate-600">
             <p>
@@ -74,7 +74,7 @@ export function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
           </div>
         </details>
 
-        <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
+        <details className="rounded-md border border-slate-200 bg-slate-50 p-4">
           <summary className="cursor-pointer text-xs font-bold text-slate-900">2. 伝搬モデルが含むもの・含まないもの</summary>
           <div className="mt-2 space-y-1.5 text-xs leading-relaxed text-slate-600">
             <p>
@@ -93,7 +93,7 @@ export function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
           </div>
         </details>
 
-        <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
+        <details className="rounded-md border border-slate-200 bg-slate-50 p-4">
           <summary className="cursor-pointer text-xs font-bold text-slate-900">3. 距離・高さの前提</summary>
           <div className="mt-2 grid gap-2 text-xs leading-relaxed text-slate-600 sm:grid-cols-3">
             <p className="rounded-md bg-white p-2">
@@ -114,7 +114,7 @@ export function InputAssumptionMenu({ input }: { input: LinkBudgetInput }) {
           </div>
         </details>
 
-        <details className="rounded-md border border-slate-200 bg-slate-50 p-3">
+        <details className="rounded-md border border-slate-200 bg-slate-50 p-4">
           <summary className="cursor-pointer text-xs font-bold text-slate-900">4. 損失の入れ分けと二重計上</summary>
           <div className="mt-2 grid gap-2 text-xs leading-relaxed text-slate-600">
             {lossBucketRows.map((row) => (

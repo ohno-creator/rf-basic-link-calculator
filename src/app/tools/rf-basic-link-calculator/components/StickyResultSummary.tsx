@@ -62,7 +62,7 @@ export function StickyResultSummary({ result, input, targetId }: StickyResultSum
         type="button"
         onClick={scrollToResult}
         tabIndex={visible ? 0 : -1}
-        className="pointer-events-auto mx-auto block w-full max-w-xl rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-soft backdrop-blur transition hover:border-staf/40"
+        className="pointer-events-auto mx-auto block w-full max-w-xl rounded-xl border border-slate-200 bg-white/95 px-4 py-3 shadow-card backdrop-blur transition hover:border-staf/40"
       >
         <span className="flex items-center justify-between gap-3">
           <span className="flex items-center gap-2">
@@ -72,7 +72,7 @@ export function StickyResultSummary({ result, input, targetId }: StickyResultSum
           <span className="flex items-center gap-2">
             <span className="text-right">
               <span className="block text-[10px] leading-none text-slate-500">リンクマージン</span>
-              <span className="text-lg font-bold text-staf-dark">{formatSigned(result.linkMarginDb, "dB")}</span>
+              <span className="text-lg font-bold tabular-nums text-staf-dark">{formatSigned(result.linkMarginDb, "dB")}</span>
             </span>
             <ChevronDown aria-hidden="true" className="h-4 w-4 text-slate-400" />
           </span>

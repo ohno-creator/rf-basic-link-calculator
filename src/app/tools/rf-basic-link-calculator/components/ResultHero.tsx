@@ -27,7 +27,7 @@ export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroPr
     const errorMessages = Object.values(errors);
     return (
       <Callout tone="danger" size="lg">
-        <h3 className="text-lg font-bold">入力値を確認してください</h3>
+        <h3 className="text-base font-bold">入力値を確認してください</h3>
         <ul className="mt-3 space-y-2 text-sm">
           {errorMessages.map((message) => (
             <li key={message}>{message}</li>
@@ -41,7 +41,7 @@ export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroPr
   const marginValue = Number.isFinite(margin) ? `${margin > 0 ? "+" : ""}${margin.toFixed(1)}` : "-";
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-6">
       <section className={`rounded-lg border p-5 shadow-card ${levelToneClass(result.judgement.level)}`}>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div>

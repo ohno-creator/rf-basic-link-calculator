@@ -251,12 +251,12 @@ function CalculationFlow({ input, result }: { input: ResearchDistanceInput; resu
   return (
     <div className="grid gap-3 sm:grid-cols-5">
       {steps.map((step, index) => (
-        <div key={step.label} className={`rounded-lg border p-3 ${step.tone}`}>
+        <div key={step.label} className={`rounded-lg border p-4 ${step.tone}`}>
           <div className="flex items-center justify-between gap-2">
             <p className="text-xs font-semibold">{step.label}</p>
             {index < steps.length - 1 ? <span className="text-xs font-bold">→</span> : null}
           </div>
-          <p className="mt-2 text-lg font-bold">{step.value}</p>
+          <p className="mt-2 text-lg font-bold tabular-nums">{step.value}</p>
         </div>
       ))}
     </div>
@@ -353,7 +353,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
   };
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <Card padding="lg">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
@@ -380,7 +380,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr] lg:items-start">
-        <div className="space-y-5">
+        <div className="space-y-6">
           <Card as="section" padding="lg">
             <div className="flex items-center gap-2">
               <Calculator className="h-5 w-5 text-staf-dark" aria-hidden="true" />
@@ -712,7 +712,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
           </Card>
         </div>
 
-        <div className="space-y-5 lg:sticky lg:top-20">
+        <div className="space-y-6 lg:sticky lg:top-20">
           <Card as="section" padding="lg">
             <div className="flex items-center gap-2">
               <Route className="h-5 w-5 text-staf-dark" aria-hidden="true" />
@@ -761,7 +761,7 @@ export function ResearchDistanceSheet({ baseInput }: ResearchDistanceSheetProps)
               <h3 className="text-base font-bold">適用範囲と注意</h3>
               <div className="mt-3 space-y-3">
                 {result.warnings.map((warning) => (
-                  <p key={warning.id} className="rounded-md bg-white/70 p-3 text-sm leading-relaxed text-amber-950">
+                  <p key={warning.id} className="rounded-md bg-white/70 p-4 text-sm leading-relaxed text-amber-950">
                     {warning.message}
                   </p>
                 ))}

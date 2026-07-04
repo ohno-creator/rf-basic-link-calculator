@@ -54,7 +54,7 @@ export function LinkTypeCards({
           return (
             <label
               key={option.value}
-              className={`group relative flex cursor-pointer gap-3 rounded-lg border p-3 transition peer-focus-visible:ring-2 peer-focus-visible:ring-staf peer-focus-visible:ring-offset-2 ${
+              className={`group relative flex cursor-pointer gap-3 rounded-lg border p-4 transition peer-focus-visible:ring-2 peer-focus-visible:ring-staf peer-focus-visible:ring-offset-2 ${
                 selected
                   ? "border-staf bg-staf-light/40"
                   : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50"
