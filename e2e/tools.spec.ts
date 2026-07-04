@@ -128,7 +128,27 @@ test("dB feel slider reacts to dB", async ({ page }) => {
     el.dispatchEvent(new Event("input", { bubbles: true }));
   });
   // +20dB -> power ×100, distance ×10
-  await expect(page.getByText("×100").first()).toBeVisible();
+  await expect(page.getByTestId("primary-result")).toContainText("×100");
+});
+
+test("dB feel keeps power ratio visible beside the slider", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/db-feel/");
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+});
+
+test("coax tool keeps total loss visible beside the inputs", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/coaxial-cable-loss/");
+  const primaryResult = page.getByTestId("primary-result");
+  await expect(primaryResult).toBeVisible();
+  const box = await primaryResult.boundingBox();
+  expect((box?.y ?? 901) + (box?.height ?? 0)).toBeLessThanOrEqual(900);
+  await page.locator("#cableQty").fill("2");
+  await expect(primaryResult).toContainText("dB");
 });
 
 test("RF calculator switches to the research distance sheet", async ({ page }) => {
