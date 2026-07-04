@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { ChoiceChips } from "@/components/ChoiceChips";
 import { HelpHint as FieldHint } from "@/components/HelpHint";
 import { NumberField } from "@/components/NumberField";
 import { NcuBudgetWaterfall } from "./NcuBudgetWaterfall";
@@ -37,6 +38,7 @@ import {
   type NcuFieldMeasurementsInput,
   type NcuRadioMetricsInput
 } from "@/lib/rf/ncuBelowGround";
+import type { ChoiceChipSeverity } from "@/lib/ui/kit";
 import { NcuCrossSectionDiagram } from "./NcuCrossSectionDiagram";
 import { LossBreakdown, RangeTriplet, ResultPanel } from "./NcuResultPanel";
 import { ResearchColumn } from "./NcuResearchColumn";
@@ -455,10 +457,8 @@ function SelectField<T extends string>({
   );
 }
 
-type ChipSeverity = "ok" | "warn" | "bad" | "severe";
-
 // 各選択肢の「効きやすさ」目安。選択UIの色とドットに使う（数値計算はlib側が担当）。
-const chipSeverityByValue: Record<string, ChipSeverity> = {
+const chipSeverityByValue: Record<string, ChoiceChipSeverity> = {
   open: "ok",
   resin: "ok",
   concrete: "warn",
@@ -483,70 +483,12 @@ const chipSeverityByValue: Record<string, ChipSeverity> = {
   parked_vehicle: "severe"
 };
 
-const chipToneClass: Record<ChipSeverity, { selected: string; dot: string }> = {
-  ok: { selected: "border-emerald-300 bg-emerald-50 text-emerald-900 ring-1 ring-emerald-200", dot: "bg-emerald-500" },
-  warn: { selected: "border-amber-300 bg-amber-50 text-amber-900 ring-1 ring-amber-200", dot: "bg-amber-500" },
-  bad: { selected: "border-orange-300 bg-orange-50 text-orange-900 ring-1 ring-orange-200", dot: "bg-orange-500" },
-  severe: { selected: "border-rose-300 bg-rose-50 text-rose-900 ring-1 ring-rose-200", dot: "bg-rose-500" }
-};
-
-// ドロップダウンより速くタップで選べる、重症度カラー付きのチップ選択UI。
-function ChoiceChips<T extends string>({
-  label,
-  help,
-  value,
-  options,
-  onChange
-}: {
-  label: string;
-  help: string;
-  value: T;
-  options: Array<{ value: T; label: string; description: string }>;
-  onChange: (value: T) => void;
-}) {
-  const selected = options.find((option) => option.value === value);
-
-  return (
-    <div>
-      <div className="flex items-center gap-2 text-sm font-bold text-slate-900">
-        {label}
-        <FieldHint text={help} />
-      </div>
-      <div className="mt-2 flex flex-wrap gap-2">
-        {options.map((option) => {
-          const isSelected = option.value === value;
-          const tone = chipToneClass[chipSeverityByValue[option.value] ?? "warn"];
-          return (
-            <button
-              key={option.value}
-              type="button"
-              aria-pressed={isSelected}
-              title={option.description}
-              onClick={() => onChange(option.value)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
-                isSelected
-                  ? tone.selected
-                  : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-slate-900"
-              }`}
-            >
-              <span className={`h-2 w-2 rounded-full ${tone.dot}`} aria-hidden="true" />
-              {option.label}
-            </button>
-          );
-        })}
-      </div>
-      <p className="mt-2 rounded-md bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600">
-        {selected ? (
-          <>
-            <span className="font-bold text-slate-800">{selected.label}：</span>
-            {selected.description}
-          </>
-        ) : (
-          help
-        )}
-      </p>
-    </div>
-  );
+// options に severity を注入し、共有 ChoiceChips（@/components/ChoiceChips）へ渡す。
+// 数値計算は lib/rf 側が担い、severity は選択UIの色分けのための目安。
+function withChipSeverity<T extends string>(
+  options: Array<{ value: T; label: string; description: string }>
+): Array<{ value: T; label: string; description: string; severity: ChoiceChipSeverity }> {
+  return options.map((option) => ({ ...option, severity: chipSeverityByValue[option.value] ?? "warn" }));
 }
 
 export function NcuBelowGroundClient() {
@@ -827,42 +769,42 @@ export function NcuBelowGroundClient() {
                 label="蓋・地表面"
                 help="NCUの上にある蓋・地表面の主な材質です。金属（鋳鉄・鋼板）ほど遮蔽が強くなります。"
                 value={input.coverMaterial}
-                options={ncuCoverMaterialOptions}
+                options={withChipSeverity(ncuCoverMaterialOptions)}
                 onChange={(value) => update("coverMaterial", value)}
               />
               <ChoiceChips
                 label="BOX・ピット材質"
                 help="NCUが入っているBOXやピットの主な材質です。"
                 value={input.boxMaterial}
-                options={ncuBoxMaterialOptions}
+                options={withChipSeverity(ncuBoxMaterialOptions)}
                 onChange={(value) => update("boxMaterial", value)}
               />
               <ChoiceChips
                 label="水分・湿潤状態"
                 help="雨天後、結露、水溜まりなどの状態を選びます。"
                 value={input.moistureCondition}
-                options={ncuMoistureOptions}
+                options={withChipSeverity(ncuMoistureOptions)}
                 onChange={(value) => update("moistureCondition", value)}
               />
               <ChoiceChips
                 label="アンテナ位置"
                 help="BOX内でアンテナがどこにあるかを選びます。蓋直下が比較的有利です。"
                 value={input.antennaPosition}
-                options={ncuAntennaPositionOptions}
+                options={withChipSeverity(ncuAntennaPositionOptions)}
                 onChange={(value) => update("antennaPosition", value)}
               />
               <ChoiceChips
                 label="開口・隙間"
                 help="地表側へ電波が抜ける経路の有無です。"
                 value={input.openingCondition}
-                options={ncuOpeningOptions}
+                options={withChipSeverity(ncuOpeningOptions)}
                 onChange={(value) => update("openingCondition", value)}
               />
               <ChoiceChips
                 label="地表上の遮蔽"
                 help="BOXの上に人や車両が来る可能性を見ます。"
                 value={input.surfaceObstruction}
-                options={ncuSurfaceObstructionOptions}
+                options={withChipSeverity(ncuSurfaceObstructionOptions)}
                 onChange={(value) => update("surfaceObstruction", value)}
               />
             </div>
