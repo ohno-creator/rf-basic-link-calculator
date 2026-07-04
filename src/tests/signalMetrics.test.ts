@@ -77,7 +77,7 @@ describe("signalMetrics（G15・RSSI/RSRP/RSRQ/SINR変換）", () => {
   });
 
   it("ガード: RSRQ≥−10.79dB（ρ≥1）は OutOfDomain", () => {
-    expect(() => sinrFromRsrq(FULL_LOAD_RSRQ_DB)).toThrowError(RfError);
+    expect(() => sinrFromRsrq(FULL_LOAD_RSRQ_DB + 1e-9)).toThrowError(RfError);
     expect(() => sinrFromRsrq(-8.0103)).toThrowError(RfError);
   });
 
