@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { basicTools } from "../src/data/basicTools";
 import { rfQuestLessons } from "../src/data/rfLearningQuestLessons";
 import { toolDirectory } from "../src/data/toolDirectory";
 
@@ -34,9 +35,22 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     test(`${slug} renders`, async ({ page }) => {
       await page.goto(`/tools/${slug}/`);
       await expect(page.getByRole("heading", { level: 1, name: h1 })).toBeVisible();
-      await expect(page.getByText(fig).first()).toBeVisible();
+      await expect(page.getByText(fig).filter({ visible: true }).first()).toBeVisible();
       await expect(page.getByRole("heading", { name: "ほかのツール" })).toBeVisible();
     });
+  }
+});
+
+test("basic tool shell keeps the calculator near the first viewport", async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  for (const tool of basicTools) {
+    await page.goto(`/tools/${tool.slug}/`);
+    const calculator = page.getByTestId("tool-calculator");
+    await expect(calculator).toBeVisible();
+    const box = await calculator.boundingBox();
+    expect(box?.y, tool.slug).toBeLessThanOrEqual(400);
   }
 });
 
