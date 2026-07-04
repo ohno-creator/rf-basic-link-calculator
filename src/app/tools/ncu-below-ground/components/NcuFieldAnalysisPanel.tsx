@@ -580,12 +580,12 @@ export function FieldAnalysisPanel({
           <aside className="space-y-3">
             <div className="rounded-lg border border-staf/20 bg-staf/5 p-4">
               <p className="text-sm font-bold text-staf-dark">計算値との照合</p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 現在の見積もりでは、蓋閉め・乾燥時の標準受信電力を
                 <span className="font-bold text-slate-950"> {predictedReceivedPowerDbm.toFixed(1)} dBm </span>
                 と見ています。
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">
                 実測との差分は
                 <span className="font-bold text-slate-950"> {formatSigned(analysis.recommendedCorrectionDb)} </span>
                 です。

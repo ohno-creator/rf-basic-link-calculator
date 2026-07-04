@@ -8,7 +8,7 @@ export function FresnelDeepDive() {
   return (
     <Card as="section" padding="lg">
       <h2 className="text-lg font-bold text-slate-950">IoTの現場でフレネルゾーンをどう活かすか</h2>
-      <p className="mt-2 text-sm leading-relaxed text-slate-700">
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">
         フレネルゾーンは「見通しが取れている理想的な状況」を前提に語られがちです。しかし実際のIoT現場では、送受信点の間に什器、棚、在庫、配管、人、車などが入り込み、第1フレネルゾーンの60%を常に確保できる環境はむしろ稀です。だからこそこの半径は、「どれだけ余裕（クリアランス）を見込むべきか」「どこに置けば損をしにくいか」を考えるための“ものさし”になります。
       </p>
 
@@ -42,7 +42,7 @@ export function FresnelDeepDive() {
 
       <div className="mt-4 rounded-lg border border-staf/20 bg-staf-light p-4">
         <p className="text-sm font-semibold text-slate-950">だからこそ、マージンが重要</p>
-        <p className="mt-2 text-sm leading-relaxed text-slate-700">
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
           見通しが不確実で、環境も時間とともに変わる以上、ぎりぎりの設計は危険です。フレネルゾーンの確保には限界があるからこそ、リンクバジェット上のリンクマージンに、フェージングや遮蔽、将来の環境変化を見込んだ余裕（数dB〜十数dB）を上乗せしておくことが、現場で「止まらない」無線をつくる鍵になります。
         </p>
         <a

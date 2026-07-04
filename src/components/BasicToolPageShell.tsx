@@ -73,13 +73,13 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-5xl px-4 py-5 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 pb-8 pt-6 sm:px-6 lg:px-8">
         <header>
           <div className="flex flex-wrap items-center gap-2">
-            <h1 className="text-3xl font-bold text-slate-950">{tool.title}</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-slate-950">{tool.title}</h1>
             {tool.scopeNote ? <HelpHint text={tool.scopeNote} /> : null}
           </div>
-          <p className="mt-2 line-clamp-2 max-w-4xl text-sm leading-relaxed text-slate-700">
+          <p className="mt-2 line-clamp-2 max-w-prose text-sm leading-relaxed text-slate-600">
             {tool.description}
           </p>
         </header>
@@ -106,13 +106,13 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         <div data-testid="tool-calculator" className="mt-6 space-y-6">{children}</div>
 
         <section className="mt-8">
-          <h2 className="text-base font-semibold text-slate-950">ほかのツール</h2>
-          <div className="mt-3 grid gap-3 sm:grid-cols-3">
+          <h2 className="text-base font-bold text-slate-950">ほかのツール</h2>
+          <div className="mt-3 grid gap-4 sm:grid-cols-3">
             {related.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="group rounded-lg border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                className="group rounded-lg border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
                 <p className="text-sm font-semibold text-slate-900 group-hover:text-staf-dark">
                   {item.name}

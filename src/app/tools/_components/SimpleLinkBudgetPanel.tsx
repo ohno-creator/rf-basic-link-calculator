@@ -313,7 +313,7 @@ export function SimpleLinkBudgetPanel() {
                 <span>0dB</span>
                 <span>+30dB</span>
               </div>
-              <p className="mt-3 text-sm leading-relaxed text-slate-700">{result.judgement.summary}</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-600">{result.judgement.summary}</p>
             </div>
 
             <div className="mt-5 rounded-lg border border-slate-200 p-4">

@@ -40,7 +40,7 @@ export function ConsultationCta({
       <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
           <h3 className="text-lg font-bold text-slate-950">{title}</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-700">
+          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
             リンクバジェット上は通信可能に見えても、実際のIoT機器では筐体、基板GND、金属部品、アンテナ配置、ケーブル、設置姿勢により通信性能が大きく変わります。スタッフ株式会社では、IoTアンテナの選定、内蔵アンテナの配置相談、実機評価に向けた技術相談を承っています。
           </p>
         </div>
