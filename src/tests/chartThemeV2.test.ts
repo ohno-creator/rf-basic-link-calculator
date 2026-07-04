@@ -46,6 +46,17 @@ describe("chartTheme v2（Track H1）", () => {
   });
 });
 
+describe("面・系列テキストトークン（Track I 便4a）", () => {
+  it("surface トークンは図版背景と白面の単一ソース", () => {
+    expect(chartTheme.surface.canvas).toBe("#F8FAFC");
+    expect(chartTheme.surface.plain).toBe("#FFFFFF");
+  });
+
+  it("seriesText.total は合計バーの縁・値テキスト用の墨色", () => {
+    expect(chartTheme.seriesText.total).toBe("#0F172A");
+  });
+});
+
 describe("チャートのマイクロインタラクション（Track H2）", () => {
   it("cursor は AA 適合色の破線ガイド線", () => {
     const { cursor } = rfTooltipProps();

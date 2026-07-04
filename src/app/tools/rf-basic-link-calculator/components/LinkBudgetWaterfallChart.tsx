@@ -37,10 +37,10 @@ const chart = {
 
 // 系列色は chartTheme を単一ソースとして参照（NCU滝グラフと双子に揃える）。
 export const stepStyles = {
-  source: { fill: chartTheme.series.source, stroke: "#005A95", text: "#005A95" },
-  gain: { fill: chartTheme.series.gain, stroke: "#047857", text: "#047857" },
-  loss: { fill: chartTheme.series.loss, stroke: "#BE123C", text: "#BE123C" },
-  total: { fill: chartTheme.series.total, stroke: "#0F172A", text: "#0F172A" }
+  source: { fill: chartTheme.series.source, stroke: chartTheme.seriesText.source, text: chartTheme.seriesText.source },
+  gain: { fill: chartTheme.series.gain, stroke: chartTheme.seriesText.gain, text: chartTheme.seriesText.gain },
+  loss: { fill: chartTheme.series.loss, stroke: chartTheme.seriesText.loss, text: chartTheme.seriesText.loss },
+  total: { fill: chartTheme.series.total, stroke: chartTheme.seriesText.total, text: chartTheme.seriesText.total }
 };
 
 function buildSteps(input: LinkBudgetInput, result: LinkBudgetResult): WaterfallStep[] {
@@ -184,7 +184,7 @@ export function LinkBudgetWaterfallChart({
           className="h-auto w-full"
         >
           <DiagramDefs />
-          <rect width={chart.width} height={chart.height} fill="#F8FAFC" />
+          <rect width={chart.width} height={chart.height} fill={chartTheme.surface.canvas} />
           {ticks.map((tick) => (
             <g key={tick}>
               <line
@@ -192,7 +192,7 @@ export function LinkBudgetWaterfallChart({
                 x2={chart.width - chart.right}
                 y1={y(tick)}
                 y2={y(tick)}
-                stroke="#E2E8F0"
+                stroke={chartTheme.grid.primary}
               />
               <text
                 x={chart.left - 12}
@@ -209,7 +209,7 @@ export function LinkBudgetWaterfallChart({
             x2={chart.width - chart.right}
             y1={zeroY}
             y2={zeroY}
-            stroke="#94A3B8"
+            stroke={chartTheme.reference.baseline}
             strokeDasharray="4 4"
           />
           <text
@@ -224,7 +224,7 @@ export function LinkBudgetWaterfallChart({
             x2={chart.width - chart.right}
             y1={sensitivityY}
             y2={sensitivityY}
-            stroke="#E11D48"
+            stroke={chartTheme.reference.sensitivity}
             strokeDasharray="7 5"
             strokeWidth={2}
           />
@@ -279,7 +279,7 @@ export function LinkBudgetWaterfallChart({
                     x2={x(index)}
                     y1={y(steps[index - 1].end)}
                     y2={y(steps[index - 1].end)}
-                    stroke="#94A3B8"
+                    stroke={chartTheme.reference.baseline}
                     strokeDasharray="4 4"
                   />
                 ) : null}
