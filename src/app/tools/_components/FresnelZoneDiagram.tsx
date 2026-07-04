@@ -1,6 +1,8 @@
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import type { ObstacleKind } from "@/data/fresnelPresets";
 import type { ObstacleAnalysis } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
+import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 
 // フレネルゾーンの本質＝電波は直線ではなく楕円体の空間を通る。送受間に置いた障害物が
 // この楕円（特に60%）に食い込むかを、縦方向は実寸スケールの断面図で示す。
@@ -171,14 +173,17 @@ export function FresnelZoneDiagram({
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
       <figcaption className="text-sm font-semibold text-slate-950">経路の断面図（縦は実寸スケール）</figcaption>
       <svg viewBox="0 0 580 248" role="img" aria-label="送受信アンテナの間に広がる第1フレネルゾーンと、置いた障害物が遮るかどうかを示す断面図。" className="mt-2 w-full">
+        <DiagramDefs />
+        {/* 空（背景） */}
+        <rect x="20" y="12" width="540" height={GROUND_Y - 12} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} />
         {/* 地面 */}
-        <rect x="20" y={GROUND_Y} width="540" height="10" fill="#e2e8f0" />
-        <line x1="20" y1={GROUND_Y} x2="560" y2={GROUND_Y} stroke="#cbd5e1" strokeWidth="1.5" />
+        <rect x="20" y={GROUND_Y} width="540" height="10" fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)} />
+        <line x1="20" y1={GROUND_Y} x2="560" y2={GROUND_Y} stroke="#cbd5e1" strokeWidth={diagramStroke.main} />
 
         {/* 第1フレネルゾーン */}
-        <path d={zonePath} fill="rgba(0,113,189,0.12)" stroke="#0071BD" strokeWidth="1.4" />
+        <path d={zonePath} fill="rgba(0,113,189,0.12)" stroke="#0071BD" strokeWidth={diagramStroke.main} />
         {/* 60%クリアランス境界（この線より下に障害物が無ければ実務上クリア） */}
-        <path d={clr60Path} fill="none" stroke="#16a34a" strokeWidth="1.4" strokeDasharray="5 4" />
+        <path d={clr60Path} fill="none" stroke="#16a34a" strokeWidth={diagramStroke.main} strokeDasharray="5 4" />
 
         {/* 見通し線(LOS) */}
         <line x1={x(0)} y1={y(txHeightM)} x2={x(1)} y2={y(rxHeightM)} stroke="#0071BD" strokeWidth="1.8" strokeDasharray="6 4" />
@@ -189,21 +194,23 @@ export function FresnelZoneDiagram({
           { ax: x(1), h: rxHeightM, label: "受信" }
         ].map((ant) => (
           <g key={ant.label}>
-            <line x1={ant.ax} y1={GROUND_Y} x2={ant.ax} y2={y(ant.h)} stroke="#334155" strokeWidth="2.5" />
+            <line x1={ant.ax} y1={GROUND_Y} x2={ant.ax} y2={y(ant.h)} stroke="#334155" strokeWidth={diagramStroke.emphasis} />
             <circle cx={ant.ax} cy={y(ant.h)} r="4" fill="#0071BD" />
-            <text x={ant.ax} y={GROUND_Y + 18} textAnchor="middle" fontSize="11" fill="#475569">
+            <text x={ant.ax} y={GROUND_Y + 18} textAnchor="middle" fontSize={diagramText.label.fontSize} fill={diagramText.label.fill}>
               {ant.label} {formatNumber(ant.h, 1)}m
             </text>
           </g>
         ))}
 
         {/* 障害物 */}
-        {renderObstacle(obstacleKind, obstacleX, GROUND_Y, obstacleTopY, color.fill, color.stroke)}
+        <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
+          {renderObstacle(obstacleKind, obstacleX, GROUND_Y, obstacleTopY, color.fill, color.stroke)}
+        </g>
 
         {/* 障害物頂点と見通し線の関係（クリアランス） */}
         <line x1={obstacleX} y1={obstacleTopY} x2={obstacleX} y2={losYatObstacle} stroke={color.stroke} strokeWidth="1" strokeDasharray="3 3" />
         <circle cx={obstacleX} cy={obstacleTopY} r="2.6" fill={color.stroke} />
-        <text x={obstacleX} y={Math.min(obstacleTopY, losYatObstacle) - 6} textAnchor="middle" fontSize="10" fontWeight="700" fill={color.text}>
+        <text x={obstacleX} y={Math.min(obstacleTopY, losYatObstacle) - 6} textAnchor="middle" fontSize={diagramText.label.fontSize} fontWeight="700" fill={color.text}>
           {obstacleLabel} {formatNumber(obstacleHeightM, 1)}m
         </text>
       </svg>

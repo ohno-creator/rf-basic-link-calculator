@@ -2,6 +2,8 @@
 // 入力（反射係数Γ）に連動して包絡線の波打ちが深くなる動的SVG。
 
 import { Tooltip } from "@/components/Tooltip";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
+import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 
 type VswrStandingWaveDiagramProps = {
   reflection: number;
@@ -53,6 +55,9 @@ export function VswrStandingWaveDiagram({
   const vswrText = formatInfinite(vswr, 2);
   const mismatchLossText = formatInfinite(mismatchLossDb, 2);
   const reflectedWidth = Math.min(100, Math.max(0, reflectedPowerPercent));
+  const envelope = envelopePath(gamma);
+  // 波形下の淡い塗り用に、包絡線を伝送線路（BASE）まで閉じたパス。
+  const envelopeFillPath = `${envelope} L${X1},${BASE} L${X0},${BASE} Z`;
 
   return (
     <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
@@ -65,26 +70,41 @@ export function VswrStandingWaveDiagram({
         </Tooltip>
       </div>
       <svg viewBox="0 0 560 200" role="img" aria-label="伝送線路上の電圧定在波。反射が大きいほど山と谷の差が広がる図。" className="mt-2 w-full">
+        <DiagramDefs />
+
+        {/* 波形下の淡い塗り（基準線・包絡線より背面） */}
+        <path d={envelopeFillPath} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} fillOpacity="0.5" stroke="none" />
+
         {/* Vmax / Vmin の基準線 */}
-        <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth="1" strokeDasharray="4 4" />
-        <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke="#93c5fd" strokeWidth="1" strokeDasharray="4 4" />
-        <text x={X1} y={vMaxLabelY} textAnchor="end" fontSize="11" fill="#dc2626">
+        <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
+        <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke="#93c5fd" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
+        <text x={X1} y={vMaxLabelY} textAnchor="end" {...diagramText.label} fill="#dc2626">
           Vmax = 1 + Γ
         </text>
-        <text x={X1} y={vMinLabelY} textAnchor="end" fontSize="11" fill="#2563eb">
+        <text x={X1} y={vMinLabelY} textAnchor="end" {...diagramText.label} fill="#2563eb">
           Vmin = 1 − Γ
         </text>
 
         {/* 定在波の包絡線 */}
-        <path d={envelopePath(gamma)} fill="none" stroke="#0071BD" strokeWidth="2.5" strokeLinejoin="round" />
+        <path d={envelope} fill="none" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} strokeLinejoin="round" />
 
         {/* 伝送線路と負荷 */}
-        <line x1={X0} y1={BASE} x2={X1 - 36} y2={BASE} stroke="#334155" strokeWidth="3" />
-        <rect x={X1 - 36} y={BASE - 16} width="36" height="32" rx="4" fill="#e2e8f0" stroke="#334155" />
+        <line x1={X0} y1={BASE} x2={X1 - 36} y2={BASE} stroke="#334155" strokeWidth={diagramStroke.emphasis} />
+        <rect
+          x={X1 - 36}
+          y={BASE - 16}
+          width="36"
+          height="32"
+          rx="4"
+          fill={diagramRef(DIAGRAM_DEF_IDS.gradientConcrete)}
+          stroke="#334155"
+          strokeWidth={diagramStroke.main}
+          filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}
+        />
         <text x={X1 - 18} y={BASE + 4} textAnchor="middle" fontSize="9" fill="#334155">
           負荷
         </text>
-        <text x={X0} y={BASE + 18} fontSize="10" fill="#64748b">
+        <text x={X0} y={BASE + 18} {...diagramText.label}>
           送信機側 →
         </text>
       </svg>
