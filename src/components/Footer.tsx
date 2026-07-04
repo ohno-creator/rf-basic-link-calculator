@@ -51,8 +51,36 @@ export function Footer() {
           </nav>
         </div>
 
-        <div className="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">
-          © スタッフ株式会社　アンテナ・無線 基礎計算ツール集
+        {/* 会社情報行（v4-7: 運営者の実在を明示。所在地等の未確認情報は載せない） */}
+        <div className="mt-10 flex flex-col gap-3 border-t border-slate-100 pt-6 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <p>© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</p>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            <li>
+              <a
+                href="https://www.staf.co.jp/"
+                className="rounded transition hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              >
+                会社概要
+              </a>
+            </li>
+            <li>
+              <a
+                href={CONTACT_URL}
+                className="rounded transition hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              >
+                お問い合わせ
+              </a>
+            </li>
+            <li>
+              <a
+                href={COLUMN_URL}
+                className="rounded transition hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              >
+                解説コラム
+              </a>
+            </li>
+          </ul>
+          <p className="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
         </div>
       </div>
     </footer>
