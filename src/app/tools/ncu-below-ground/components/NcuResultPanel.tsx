@@ -159,7 +159,7 @@ export function LossBreakdown({ result }: { result: NcuBelowGroundResult }) {
               </summary>
               <p className="mt-3 text-xs leading-relaxed text-slate-600">{item.note}</p>
               {hint ? (
-                <p className="mt-2 flex items-start gap-1.5 rounded-md bg-white p-2 text-xs leading-relaxed text-slate-700">
+                <p className="mt-2 flex items-start gap-1.5 rounded-md bg-white p-2 text-xs leading-relaxed text-slate-600">
                   <Wrench aria-hidden="true" className="mt-0.5 h-3.5 w-3.5 shrink-0 text-staf-dark" />
                   <span>
                     <span className="font-bold">改善案：</span>

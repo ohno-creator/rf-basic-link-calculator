@@ -66,7 +66,7 @@ export function InputImpactGuide() {
               </div>
               <p className="mt-3 text-sm font-bold text-slate-950">{impact.title}</p>
               <p className="mt-1 text-xs font-semibold text-slate-500">{impact.change}</p>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">{impact.result}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{impact.result}</p>
               <p className="mt-3 rounded-md bg-white/70 px-3 py-2 text-xs font-semibold text-slate-700">
                 {impact.example}
               </p>

@@ -830,7 +830,7 @@ function ModeReviewPanel({
         ].map((item) => (
           <Card key={item.label} variant="slate" padding="sm" radius="md" shadow={false}>
             <p className="text-[11px] font-bold text-slate-400">{item.label}</p>
-            <p className="mt-1 text-xs leading-relaxed text-slate-700">{item.value}</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.value}</p>
           </Card>
         ))}
       </div>
@@ -1284,7 +1284,7 @@ function LessonBattle({
             {preparationSteps.map((step, index) => (
               <Card key={step} variant="slate" padding="sm" radius="md" shadow={false}>
                 <p className="text-[11px] font-bold text-staf-dark">CHECK {index + 1}</p>
-                <p className="mt-1 text-xs leading-relaxed text-slate-700">{step}</p>
+                <p className="mt-1 text-xs leading-relaxed text-slate-600">{step}</p>
               </Card>
             ))}
           </div>
@@ -1327,7 +1327,7 @@ function LessonBattle({
               {correct ? "正解" : "惜しい"}
             </p>
             <p className="mt-2 text-sm font-semibold text-slate-900">{lesson.immediateAnswer}</p>
-            <p className="mt-2 text-sm leading-relaxed text-slate-700">{lesson.explanation}</p>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">{lesson.explanation}</p>
             <div className="mt-3 rounded-md border border-white/70 bg-white/80 p-3">
               <p className="flex items-center gap-2 text-xs font-bold text-slate-600">
                 <ClipboardCheck aria-hidden="true" className="h-3.5 w-3.5 text-staf-dark" />
@@ -1485,7 +1485,7 @@ function CertificateView({
         <p className="mt-5 text-sm font-bold text-slate-500">氏名</p>
         <p className="mt-1 text-3xl font-bold text-slate-950">{certificate.recipientName}</p>
       </div>
-      <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-slate-700">
+      <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-slate-600">
         上記の方は、スタッフ株式会社 RF Basic Link Calculator の
         <span className="font-bold text-slate-950"> {certificate.modeLabel} </span>
         において、全ステージを攻略し、ランダム修了試験10問で100点を達成したことを証明します。
