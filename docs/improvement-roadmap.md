@@ -45,6 +45,7 @@
 | lib層エラーコード化（B群10＋A群 antenna/vswr＋C群 judgement）＋ `rfErrorMessages.ts` | `5d3d0f4`, `f8bea0c` | lib/rf に日本語throwゼロ |
 | NumberField/NumberInput 統一（emptyBehavior: preserve/invalid） | `dcf2e76` | **preserve/invalid の二挙動は仕様。壊さない** |
 | 逆向き結合解消＋ESLint境界（`@/app/tools/*/components/*` 外部import禁止） | `aaa81ef` | |
+| lib→UI import境界拡張（B3） | `cb7527b` | type importを含め `src/lib/**` → `src/app/**`・`src/components/**` を禁止 |
 | レジストリ単一ソース化（`src/data/tools.ts`、旧2ファイルは派生） | `8b6c5eb` | **ツール追加は tools.ts のみ編集** |
 | NCUクライアント分割（2392→956行＋5ファイル） | `c446439` | |
 
@@ -79,7 +80,7 @@
 |---|---|---|---|
 | B1 | **linkBudget ValidationErrors の文字列→コード化**。`validateLinkBudgetInput` が約30箇所で日本語文字列を代入し、`ResultHero.tsx:30` が `Object.values(errors)` を直接表示 | `ValidationErrors = Partial<Record<keyof LinkBudgetInput, RfErrorCode | {code, params}>>` へ移行し、表示は `rfErrorMessages` を拡張して解決。**フィールド名→日本語ラベルのマップはUI層**。`linkBudget.ts:707` の再throwも RfError 化。テスト（`linkBudget.test.ts:119` 等の文言依存）を同時更新 | **Claude**（型変更が広く波及するため） |
 | B2 | 旗艦の残フラット構成30ファイルの自己完結パターン化 | **UX-3に統合**（同じファイルを2度触らない）。ui-redesign-plan.md §4.1 の分割と同時に `rf-basic-link-calculator/components/` 内をセクション別サブフォルダへ | Claude |
-| B3 | import境界の拡張 | ESLintに「`src/lib/**` から `src/app/**`・`src/components/**` への import 禁止」を追加（現状違反ゼロを grep 確認済みの状態で固定化） | Codex |
+| B3 | import境界の拡張 | **【実装済 `cb7527b`】** ESLintで`src/lib/**`から`src/app/**`・`src/components/**`へのimportを禁止。既存の逆向きtype importは共有tone型を`src/lib/ui/tones.ts`へ抽出して解消 | Codex |
 
 ---
 
