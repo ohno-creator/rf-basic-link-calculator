@@ -76,7 +76,7 @@ export function ResultReadingGuide({ input, result }: ResultReadingGuideProps) {
             <StateCard key={card.title} tone={card.tone} padding="md">
               <Icon aria-hidden="true" className="h-7 w-7" />
               <h4 className="mt-3 text-sm font-bold text-slate-950">{card.title}</h4>
-              <p className="mt-2 text-sm leading-relaxed text-slate-700">{card.body}</p>
+              <p className="mt-2 text-sm leading-relaxed text-slate-600">{card.body}</p>
             </StateCard>
           );
         })}

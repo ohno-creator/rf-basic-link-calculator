@@ -21,7 +21,7 @@ export function HeroSection({ onStart, onSample }: HeroSectionProps) {
         <h1 className="mt-3 text-4xl font-bold tracking-normal text-slate-950 sm:text-5xl">
           通信距離・リンクバジェット簡易診断
         </h1>
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-700">
+        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-slate-600">
           周波数、距離、送信電力、アンテナ利得、受信感度から、無線通信の「届きやすさ」を簡易チェックできます。
         </p>
         <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
