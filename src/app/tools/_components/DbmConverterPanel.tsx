@@ -1,9 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Card } from "@/components/Card";
+import { CollapsibleSection } from "@/components/CollapsibleSection";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
-import { Tooltip } from "@/components/Tooltip";
+import { MobileResultBar } from "@/components/MobileResultBar";
+import { ResultBar } from "@/components/ResultBar";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { calculateEirp, dbiToDbd, dbiToLinear } from "@/lib/rf/antenna";
 import { dbmToMw, mwToDbm, mwToW, wToDbm, wToMw } from "@/lib/rf/db";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
@@ -11,20 +15,17 @@ import { DecibelScaleVisual } from "./DecibelScaleVisual";
 
 type Mode = "dbm" | "mw" | "w";
 
-/** 値の桁に応じて有効数字で表示し、極大・極小値の丸めや桁あふれを防ぐ。 */
+const modes: Array<{ id: Mode; label: string }> = [
+  { id: "dbm", label: "dBm" },
+  { id: "mw", label: "mW" },
+  { id: "w", label: "W" }
+];
+
 function formatPower(value: number): string {
-  if (!Number.isFinite(value)) {
-    return "—";
-  }
-  if (value === 0) {
-    return "0";
-  }
+  if (!Number.isFinite(value)) return "—";
+  if (value === 0) return "0";
   const abs = Math.abs(value);
-  // 極端に大きい/小さい値は指数表記でつぶれを防ぐ。
-  if (abs !== 0 && (abs >= 1e6 || abs < 1e-4)) {
-    return value.toExponential(3);
-  }
-  // 通常域は有効数字4桁。末尾の不要な0を落とす。
+  if (abs >= 1e6 || abs < 1e-4) return value.toExponential(3);
   return Number.parseFloat(value.toPrecision(4)).toString();
 }
 
@@ -51,233 +52,154 @@ export function DbmConverterPanel() {
     }
   }, [mode, value]);
 
-  // 単位を切り替えたら、現在の物理量を保ったまま新単位の数値に換算する。
-  // 例: 20dBm → mW切替なら value を 100mW にする。
   const handleModeChange = (nextMode: Mode) => {
-    if (nextMode === mode) {
-      return;
-    }
-
+    if (nextMode === mode) return;
     try {
-      // 現在の入力を一旦 mW（共通の物理量）に変換する。
-      let mw: number;
-      if (mode === "dbm") {
-        mw = dbmToMw(value);
-      } else if (mode === "mw") {
-        mw = value;
-      } else {
-        mw = wToMw(value);
-      }
-
-      // 共通の mW から新単位の数値へ換算する。
-      let nextValue: number;
-      if (nextMode === "dbm") {
-        nextValue = mwToDbm(mw);
-      } else if (nextMode === "mw") {
-        nextValue = mw;
-      } else {
-        nextValue = mwToW(mw);
-      }
-
-      // 表示桁の都合で過剰な桁が出ないように丸める。
+      const mw = mode === "dbm" ? dbmToMw(value) : mode === "mw" ? value : wToMw(value);
+      const nextValue = nextMode === "dbm" ? mwToDbm(mw) : nextMode === "mw" ? mw : mwToW(mw);
       setValue(Number.parseFloat(nextValue.toPrecision(6)));
     } catch {
-      // 換算できない入力（空欄など）はそのまま値を保持する。
+      // 空欄など換算不能な入力は保持し、単位だけを切り替える。
     }
-
     setMode(nextMode);
   };
 
-  const errorMessage =
-    mode === "dbm"
-      ? "数値を入力してください。"
-      : "0より大きい値を入力してください。";
+  const activeMode = modes.find((item) => item.id === mode) ?? modes[0];
+  const errorMessage = mode === "dbm" ? "数値を入力してください。" : "0より大きい値を入力してください。";
   const eirp = result
-    ? calculateEirp({
-        txPowerDbm: result.dbm,
-        antennaGainDbi,
-        cableLossDb
-      })
+    ? calculateEirp({ txPowerDbm: result.dbm, antennaGainDbi, cableLossDb })
     : null;
+  const primaryKind: Mode = mode === "dbm" ? "mw" : "dbm";
+  const primary = {
+    label: primaryKind === "dbm" ? "dBm換算" : "mW換算",
+    value: result ? formatPower(result[primaryKind]) : "—",
+    unit: primaryKind === "dbm" ? "dBm" : "mW"
+  };
+  const secondaryMetrics = result
+    ? (["dbm", "mw", "w"] as Mode[])
+        .filter((kind) => kind !== mode && kind !== primaryKind)
+        .map((kind) => ({
+          kind,
+          label: `${kind === "dbm" ? "dBm" : kind === "mw" ? "mW" : "W"}換算`,
+          value: formatPower(result[kind]),
+          unit: kind === "dbm" ? "dBm" : kind === "mw" ? "mW" : "W"
+        }))
+    : [];
 
   return (
-    <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
-      <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
-        <h2 className="text-xl font-bold text-slate-950">dBm / mW / W 変換</h2>
-        <p className="mt-2 text-sm leading-relaxed text-slate-600">
-          どれか1つを入力すると、他の単位へ自動変換します。
-        </p>
-
-        <div className="mt-5">
-          <Field
-            id="dbInput"
-            label="入力値"
-            help="1mWを基準にした電力の対数単位です。0dBm=1mW、20dBm=100mW。リンクバジェットの基本単位で、利得・損失をdBで加減算できます。入力値の単位を選びます。選んだ単位として数値が解釈され、他の2単位へ自動換算されます。単位を切り替えると、入力値は物理量を保ったまま新しい単位へ換算されます。送信出力なら通常dBmかmWを使用します。"
-            unitSelect={{
-              value: mode,
-              options: [
-                { value: "dbm", label: "dBm" },
-                { value: "mw", label: "mW" },
-                { value: "w", label: "W" }
-              ],
-              ariaLabel: "単位選択",
-              onChange: (m) => handleModeChange(m as Mode)
-            }}
-            value={value}
-            onChange={(v) => setValue(v)}
-            min={mode === "dbm" ? undefined : 0.000001}
-            step={mode === "dbm" ? 0.5 : 0.001}
-            error={result ? undefined : errorMessage}
-            emptyBehavior="invalid"
-          />
-        </div>
-
-        {result ? (
-          <div className="mt-5 grid gap-3 sm:grid-cols-3">
-            <MetricCard
-              label="dBm"
-              value={formatPower(result.dbm)}
-              hint="入力値を換算した電力（dBm）。+10dBごとに10倍、+3dBで約2倍になります。0dBm=1mWが基準です。"
-            />
-            <MetricCard
-              label="mW"
-              value={formatPower(result.mw)}
-              hint="入力値をミリワット換算した電力です。0dBm=1mW、20dBm=100mW。小電力IoT機器の出力表記でよく使います。"
-            />
-            <MetricCard
-              label="W"
-              value={formatPower(result.w)}
-              hint="入力値をワット換算した電力です。1W=30dBm=1000mW。比較的大出力の送信機の表記に使います。"
+    <div className="space-y-6">
+      <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
+        <Card as="section" padding="lg">
+          <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+          <p className="mt-1 text-sm text-slate-600">分かっている電力単位を選び、その値を入力します。</p>
+          <div className="mt-5">
+            <SegmentedControl
+              options={modes}
+              value={mode}
+              onChange={handleModeChange}
+              ariaLabel="入力する電力単位"
+              className="w-full justify-center"
             />
           </div>
-        ) : null}
-
-        <div className="mt-5">
-          <div className="flex items-center justify-between gap-2">
-            <h3 className="text-sm font-semibold text-slate-950">早見表</h3>
-            <Tooltip term="早見表">
-              代表的な対応関係の早見です。+10dBで10倍、+3dBで約2倍、-10dBで1/10という対数の感覚をつかむ目安にしてください。
-            </Tooltip>
+          <div className="mt-5">
+            <Field
+              id="dbInput"
+              label={`電力（${activeMode.label}）`}
+              unit={activeMode.label}
+              help="単位切替時も物理量を保ったまま値を換算します。dBmは絶対電力、mWとWは線形電力です。"
+              value={value}
+              onChange={setValue}
+              min={mode === "dbm" ? undefined : 0.000001}
+              step={mode === "dbm" ? 0.5 : 0.001}
+              error={result ? undefined : errorMessage}
+              emptyBehavior="preserve"
+            />
           </div>
-          <div className="mt-2 grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
-            <p>0dBm = 1mW</p>
-            <p>10dBm = 10mW</p>
-            <p>20dBm = 100mW</p>
-            <p>30dBm = 1W</p>
-            <p>+3dB は約2倍</p>
-            <p>-10dB は1/10</p>
-          </div>
-        </div>
+          <p className="mt-5 rounded-lg bg-slate-50 p-4 text-xs leading-relaxed text-slate-600">
+            0dBm = 1mW、30dBm = 1Wです。+10dBで電力は10倍になります。
+          </p>
+        </Card>
 
-        <div className="mt-5">
-          <FormulaExplanationCard
-            title="dB/dBm/dBiの違いを見る"
-            formula={"mW = 10 ^ (dBm / 10)\ndBm = 10 × log10(mW)\nW = mW / 1000\nEIRP[dBm] = 送信電力[dBm] + 利得[dBi] - 損失[dB]"}
-          >
-            <p>
-              dBmは電力そのもの、dBは比率や損失、dBiはアンテナ利得の単位です。リンクバジェットではこれらを足し算・引き算で扱います。
-            </p>
-          </FormulaExplanationCard>
-        </div>
-
-        {result && eirp ? (
-          <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
-            <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-950">
-                  dBi / dBd / EIRP 計算
-                </h3>
-                <p className="mt-1 text-xs leading-relaxed text-slate-600">
-                  入力電力を送信機出力として、アンテナ利得とケーブル損失を加味した実効放射電力を計算します。
-                </p>
-              </div>
-              <Tooltip term="EIRP / ERP">
-                EIRPは等方性アンテナ基準、ERPは半波長ダイポール基準の実効放射電力です。ERPはEIRPより2.15dB小さい値になります。
-              </Tooltip>
-            </div>
-            <div className="mt-3 grid gap-4 md:grid-cols-2">
-              <Field
-                id="dbmAntennaGain"
-                label="アンテナ利得"
-                unit="dBi"
-                value={antennaGainDbi}
-                step={0.1}
-                onChange={setAntennaGainDbi}
-              />
-              <Field
-                id="dbmCableLoss"
-                label="ケーブル・整合損失"
-                unit="dB"
-                value={cableLossDb}
-                min={0}
-                step={0.1}
-                onChange={setCableLossDb}
-              />
-            </div>
-            <div className="mt-4 grid gap-3 sm:grid-cols-4">
-              <MetricCard
-                label="dBd換算"
-                value={formatPower(dbiToDbd(antennaGainDbi))}
-                unit="dBd"
-                size="sm"
-                sub={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
-              />
-              <MetricCard
-                label="アンテナ端子電力"
-                value={formatPower(eirp.antennaInputDbm)}
-                unit="dBm"
-                size="sm"
-              />
-              <MetricCard
-                label="EIRP"
-                value={formatPower(eirp.eirpDbm)}
-                unit="dBm"
-                size="sm"
-                sub={`${formatPower(eirp.eirpW)} W`}
-              />
-              <MetricCard
-                label="ERP"
-                value={formatPower(eirp.erpDbm)}
-                unit="dBm"
-                size="sm"
-                sub={`${formatPower(eirp.erpW)} W`}
-              />
-            </div>
-          </div>
-        ) : null}
-
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
-          <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
-          <div className="mt-3 grid gap-4 md:grid-cols-2">
-            <ol className="space-y-2 text-sm leading-relaxed text-slate-700">
-              <li>
-                <span className="font-semibold text-staf-dark">1.</span> 送信機出力や受信電力の単位に合わせて、dBm・mW・Wのいずれかを選びます。
-              </li>
-              <li>
-                <span className="font-semibold text-staf-dark">2.</span> アンテナ利得とケーブル損失を入れ、EIRP/ERPがどう変わるか確認します。
-              </li>
-              <li>
-                <span className="font-semibold text-staf-dark">3.</span> 法規確認やリンクバジェットへ渡す値として、dBmとWの両方を控えます。
-              </li>
-            </ol>
-            <dl className="grid gap-2 text-xs leading-relaxed text-slate-600">
-              <div>
-                <dt className="font-semibold text-slate-900">dBm</dt>
-                <dd>1mWを基準にした絶対電力です。0dBm=1mW、30dBm=1Wです。</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-slate-900">dBi / dBd</dt>
-                <dd>dBiは等方性基準、dBdは半波長ダイポール基準のアンテナ利得です。差は2.15dBです。</dd>
-              </div>
-              <div>
-                <dt className="font-semibold text-slate-900">EIRP / ERP</dt>
-                <dd>送信電力にアンテナ利得と損失を足し引きした実効放射電力です。</dd>
-              </div>
-            </dl>
-          </div>
+        <div id="dbm-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+          <ResultBar primary={primary} />
+          {secondaryMetrics.map((metric) => (
+            <MetricCard
+              key={metric.kind}
+              label={metric.label}
+              value={metric.value}
+              unit={metric.unit}
+              hint="選択した入力単位から換算した派生値です。"
+            />
+          ))}
+          <DecibelScaleVisual currentDbm={result ? result.dbm : null} />
         </div>
       </div>
-      <DecibelScaleVisual currentDbm={result ? result.dbm : null} />
-    </section>
+
+      <MobileResultBar primary={primary} targetId="dbm-primary-result" />
+
+      <CollapsibleSection title="関連計算：dBi / dBd / EIRP" storageKey="dbm-converter:eirp">
+        <p className="mb-4 text-xs leading-relaxed">
+          入力電力を送信機出力として、アンテナ利得とケーブル損失を加味した実効放射電力を計算します。
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field
+            id="dbmAntennaGain"
+            label="アンテナ利得"
+            unit="dBi"
+            value={antennaGainDbi}
+            step={0.1}
+            emptyBehavior="preserve"
+            onChange={setAntennaGainDbi}
+          />
+          <Field
+            id="dbmCableLoss"
+            label="ケーブル・整合損失"
+            unit="dB"
+            value={cableLossDb}
+            min={0}
+            step={0.1}
+            emptyBehavior="preserve"
+            onChange={setCableLossDb}
+          />
+        </div>
+        {result && eirp ? (
+          <div className="mt-4 grid gap-3 sm:grid-cols-4">
+            <MetricCard
+              label="dBd換算"
+              value={formatPower(dbiToDbd(antennaGainDbi))}
+              unit="dBd"
+              size="sm"
+              sub={`利得倍率 ×${formatPower(dbiToLinear(antennaGainDbi))}`}
+            />
+            <MetricCard label="アンテナ端子電力" value={formatPower(eirp.antennaInputDbm)} unit="dBm" size="sm" />
+            <MetricCard label="EIRP" value={formatPower(eirp.eirpDbm)} unit="dBm" size="sm" sub={`${formatPower(eirp.eirpW)} W`} />
+            <MetricCard label="ERP" value={formatPower(eirp.erpDbm)} unit="dBm" size="sm" sub={`${formatPower(eirp.erpW)} W`} />
+          </div>
+        ) : null}
+      </CollapsibleSection>
+
+      <CollapsibleSection title="早見表" storageKey="dbm-converter:quick-reference">
+        <div className="grid gap-2 sm:grid-cols-2">
+          <p>0dBm = 1mW</p><p>10dBm = 10mW</p><p>20dBm = 100mW</p><p>30dBm = 1W</p>
+          <p>+3dB は約2倍</p><p>-10dB は1/10</p>
+        </div>
+      </CollapsibleSection>
+
+      <CollapsibleSection title="使い方・用語" storageKey="dbm-converter:guide">
+        <ol className="space-y-2">
+          <li>1. 仕様書の表記に合わせてdBm・mW・Wを選びます。</li>
+          <li>2. 派生値を確認し、リンクバジェットではdBmへそろえます。</li>
+          <li>3. 必要なら関連計算を開き、EIRPとERPを確認します。</li>
+        </ol>
+      </CollapsibleSection>
+
+      <FormulaExplanationCard
+        title="数式と理論"
+        formula={"mW = 10 ^ (dBm / 10)\ndBm = 10 × log10(mW)\nW = mW / 1000\nEIRP[dBm] = 送信電力[dBm] + 利得[dBi] - 損失[dB]"}
+        showColumnLink={false}
+      >
+        <p>dBmは電力そのもの、dBは比率や損失、dBiはアンテナ利得です。リンクバジェットではdB領域で足し引きします。</p>
+      </FormulaExplanationCard>
+    </div>
   );
 }
