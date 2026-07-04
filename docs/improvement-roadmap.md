@@ -201,10 +201,19 @@
 | H7 | **エクスポート品質** | チャート/図の PNG・SVG 保存ボタン（レポート貼付用途）、印刷CSSでの図の見切れ防止、余白・背景の書き出し最適化 | Codex |
 | H8 | **性能・アクセシビリティのガード** | 各改修で LCP/CLS 非悪化（fold予算 e2e を流用）、axe 重大違反ゼロ維持、系列色のコントラストAA、`aria` とキーボード操作の既存資産を壊さない。視覚回帰は差分承認制（意図した差分のみ再ベースライン） | Antigravity |
 
+**★基盤部品は実装済み（コミット `454d7b2`）— Fable/Codex は「適用のみ」**:
+- **H1**: `src/lib/chartTheme.ts` 拡張済み — `chartTheme.categorical`（Okabe-Ito 8色）/`seriesColor(i)`/`rfGridProps()`/`rfTickProps()`/`rfTooltipProps()`。適用は各チャートで `<CartesianGrid {...rfGridProps()} />`・`<Tooltip {...rfTooltipProps()} />`・`tick={rfTickProps()}`・多系列色を `seriesColor(i)` へ差し替えるだけ。
+- **H3**: `src/lib/ui/diagramTheme.ts`＋`src/components/diagrams/DiagramDefs.tsx` — 各SVG図の `<svg>` 直下に `<DiagramDefs />` を置き、素材塗りを `diagramRef(DIAGRAM_DEF_IDS.gradientMetal)` 等へ、線幅を `diagramStroke.*`、ラベルを `diagramText.*` へ置換。
+- **H6（2.5D経路）**: `src/lib/ui/iso.ts` — `isoProject`/`isoBoxFaces`/`shadeColor`（陰影規約: 上面=基準色・右面=−0.15・左面=−0.3）。WebGL不要で立体表現が可能。three.js スパイクは別途（Claude）。
+
+**Fable適用WOチェックリスト（1ファイル=1エージェント・機能ゲート＋視覚ループで検証）**:
+- H1適用（recharts 6）: `PropagationModelComparisonChart` / `TwoRayInterferenceLab` / `CableLossCurveDiagram` / `AntennaToolPanel`（チャート部） / `DistancePowerChart` / `ResearchDistanceSheet`（チャート部）
+- H3適用（SVG図 14）: `NcuCrossSectionDiagram`★ / `FresnelZoneDiagram`★ / `VswrStandingWaveDiagram`★ / `LinkBudgetWaterfallChart` / `NcuBudgetWaterfall` / `MiniWaterfall` / `NamiGateHeatmap`(H5と統合) / `MicrostripCrossSectionDiagram` / `MicrostripBendDiagram` / `HalfWaveResonanceDiagram` / `PropagationGeometryDiagram` / `DbFeelDiagram` / `LinkAssumptionDiagram` / `RadioPathDiagram`（★=優先: 事業直結・閲覧上位）
+
 **順序と分担の原則**:
-1. **H1（基盤）→ H3（図の共通言語）→ H4/H5（主役2枚）→ H2（対話）→ H6（3D）→ H7/H8（仕上げ・常時）**。基盤なしの個別磨き込みは禁止（ばらつきが再発するため）。
+1. **H1（基盤✅）→ H3（図の共通言語✅・適用はこれから）→ H4/H5（主役2枚）→ H2（対話）→ H6（3D）→ H7/H8（仕上げ・常時）**。基盤なしの個別磨き込みは禁止（ばらつきが再発するため）。
 2. UX-2/UX-3 の部品移行と同じ運用: **Claude がデザイン言語と手本1枚 → Codex/Fable が量産適用 → Antigravity が視覚検証＋再ベースライン**。
-3. H6（3D）だけは例外的に段階ゲート: 技術検証スパイク（バンドル・静的export・低スペック端末）→ 1シーン本実装 → 評価 → 横展開判断。**スパイクで予算超過なら2.5D（等角SVG）に切替**（沈没コスト回避）。
+3. H6（3D）だけは例外的に段階ゲート: 技術検証スパイク（バンドル・静的export・低スペック端末）→ 1シーン本実装 → 評価 → 横展開判断。**スパイクで予算超過なら2.5D（等角SVG＝`iso.ts` 実装済み）に切替**（沈没コスト回避）。
 
 **受け入れ基準（Track H共通）**:
 - 視覚回帰: 意図した差分のみ（全25ページの `-linux` 基準線を差分承認で更新）。
