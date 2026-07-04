@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Callout } from "@/components/Callout";
@@ -42,6 +43,15 @@ import { LossBreakdown, RangeTriplet, ResultPanel } from "./NcuResultPanel";
 import { ResearchColumn } from "./NcuResearchColumn";
 import { FieldAnalysisPanel, PurposeSwitch, WorkflowGuide } from "./NcuFieldAnalysisPanel";
 import { SectionTitle, type WorkMode } from "./ncuShared";
+
+// H6スパイク: three/@react-three/fiber をNCUページのチャンクにのみ遅延読込する。
+// SSR無効＝静的exportでもビルド時にthreeがサーバー実行されない。読み込み中は注記のみ。
+const NcuScene3D = dynamic(() => import("./NcuScene3D"), {
+  ssr: false,
+  loading: () => (
+    <p className="text-xs text-slate-500">3Dプレビューを読み込み中…（WebGL非対応環境では表示されません）</p>
+  )
+});
 
 const scenarioPresets: Array<{
   label: string;
@@ -552,6 +562,8 @@ function ChoiceChips<T extends string>({
 export function NcuBelowGroundClient() {
   const [input, setInput] = useState<NcuBelowGroundInput>(defaultNcuBelowGroundInput);
   const [activeMode, setActiveMode] = useState<WorkMode>("estimate");
+  // H6スパイク: 3Dシーンはボタン押下時のみマウント（threeチャンクの遅延取得）。
+  const [show3d, setShow3d] = useState(false);
   const [fieldMeasurements, setFieldMeasurements] = useState<NcuFieldMeasurementsInput>(
     defaultNcuFieldMeasurements
   );
@@ -875,6 +887,31 @@ export function NcuBelowGroundClient() {
       <NcuBudgetWaterfall input={input} result={result} />
 
       <NcuCrossSectionDiagram input={input} result={result} />
+
+      {/* H6スパイク: ボタンを押した時だけ three チャンクを取得・マウント（初期表示への影響ゼロ）。
+          CollapsibleSection は閉時も子をDOMに残す仕様のため、遅延読込にはボタンゲートを使う。 */}
+      <Card as="section" padding="md">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="text-sm font-bold text-slate-950">3Dプレビュー（実験的機能）</h3>
+          {!show3d ? (
+            <button
+              type="button"
+              onClick={() => setShow3d(true)}
+              className="rounded-full border border-staf/40 px-3 py-1.5 text-xs font-semibold text-staf-dark transition hover:bg-staf-light"
+            >
+              3Dを読み込んで表示
+            </button>
+          ) : null}
+        </div>
+        <p className="mt-1 text-xs leading-relaxed text-slate-500">
+          蓋の材質とアンテナ位置を立体で確認できます。評価は上の断面図・数値が正です。
+        </p>
+        {show3d ? (
+          <div className="mt-3">
+            <NcuScene3D input={input} />
+          </div>
+        ) : null}
+      </Card>
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
         <LossBreakdown result={result} />
