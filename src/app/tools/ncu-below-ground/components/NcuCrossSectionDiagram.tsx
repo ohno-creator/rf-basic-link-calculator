@@ -401,15 +401,15 @@ export function NcuCrossSectionDiagram({
       </div>
 
       <div className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded-lg bg-slate-50 p-4">
           <p className="font-bold text-slate-900">高さの扱い</p>
           <p className="mt-1 text-slate-600">GL以下はアンテナ高の負値ではなく、蓋・BOX・開口の損失として加算します。</p>
         </div>
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded-lg bg-slate-50 p-4">
           <p className="font-bold text-slate-900">実測の役割</p>
           <p className="mt-1 text-slate-600">RSSI/RSRPを1点でも入れると、現場固有のズレを補正できます。</p>
         </div>
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded-lg bg-slate-50 p-4">
           <p className="font-bold text-slate-900">レンジ表示</p>
           <p className="mt-1 text-slate-600">材質・水分・配置の不確かさを、楽観・標準・厳しめで見ます。</p>
         </div>
