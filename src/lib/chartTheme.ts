@@ -16,7 +16,13 @@ export const chartTheme = {
   seriesText: {
     source: "#005A95", // series.source 対応（濃いブランド青）
     gain: "#047857", // series.gain 対応（emerald-700）
-    loss: "#BE123C" // series.loss 対応（rose-700）
+    loss: "#BE123C", // series.loss 対応（rose-700）
+    total: "#0F172A" // series.total 対応（見出し級の墨。合計バーの縁・値テキスト用）
+  },
+  // 図版の面（背景）色。SVG背景・白抜き縁取りの単一ソース（Track I 便4: hex直書き禁止の受け皿）。
+  surface: {
+    canvas: "#F8FAFC", // 図版背景（slate-50相当）
+    plain: "#FFFFFF" // 白面・白縁取り
   },
   // 参照線（感度・基準線など）
   reference: {

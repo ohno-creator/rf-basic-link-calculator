@@ -15,7 +15,7 @@ import {
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { NumberInput } from "@/components/NumberField";
-import { rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import {
   calculateNearTerminalLossDb,
   normalizeDistanceKm,
@@ -302,17 +302,17 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
               />
               <ReferenceLine
                 y={0}
-                stroke="#E11D48"
+                stroke={chartTheme.reference.sensitivity}
                 strokeDasharray="5 5"
-                label={{ value: "成立境界", position: "insideTopRight", fill: "#BE123C", fontSize: 12 }}
+                label={{ value: "成立境界", position: "insideTopRight", fill: chartTheme.seriesText.loss, fontSize: 12 }}
               />
               <Line
                 type="monotone"
                 dataKey="linkMarginDb"
-                stroke="#0071BD"
+                stroke={chartTheme.series.source}
                 strokeWidth={3}
-                dot={{ r: 4, fill: "#FFFFFF", stroke: "#0071BD", strokeWidth: 2 }}
-                activeDot={rfActiveDot("#0071BD")}
+                dot={{ r: 4, fill: chartTheme.surface.plain, stroke: chartTheme.series.source, strokeWidth: 2 }}
+                activeDot={rfActiveDot(chartTheme.series.source)}
                 name="リンク余裕"
               />
             </LineChart>

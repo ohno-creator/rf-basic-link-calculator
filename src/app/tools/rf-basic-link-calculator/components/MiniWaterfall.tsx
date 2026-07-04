@@ -1,6 +1,7 @@
 import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
 import { stepStyles } from "./LinkBudgetWaterfallChart";
+import { chartTheme } from "@/lib/chartTheme";
 
 // モバイルの追従サマリ用の簡易滝グラフ。受信電力と受信感度の上下関係＝リンクマージンだけを示す。
 
@@ -44,17 +45,17 @@ export function MiniWaterfall({ result, input }: MiniWaterfallProps) {
 
   return (
     <svg viewBox="0 0 320 56" role="img" aria-label="受信電力と受信感度の差（リンクマージン）の簡易表示" className="mt-1 w-full">
-      <line x1={X0} y1={TRACK_Y} x2={X1} y2={TRACK_Y} stroke="#e2e8f0" strokeWidth="2" />
+      <line x1={X0} y1={TRACK_Y} x2={X1} y2={TRACK_Y} stroke={chartTheme.grid.primary} strokeWidth="2" />
       {/* マージン区間 */}
-      <rect x={barLeft} y={TRACK_Y - 4} width={barWidth} height="8" rx="2" fill={ok ? "#10B981" : "#FB7185"} opacity="0.5" />
+      <rect x={barLeft} y={TRACK_Y - 4} width={barWidth} height="8" rx="2" fill={ok ? chartTheme.series.gain : chartTheme.series.loss} opacity="0.5" />
       {/* 受信感度マーカー */}
-      <line x1={xS} y1={TRACK_Y - 9} x2={xS} y2={TRACK_Y + 9} stroke="#E11D48" strokeWidth="2.5" />
-      <text x={sensX} y={TRACK_Y + 22} textAnchor={sensAnchor} fontSize="9" fill="#be123c">感度</text>
+      <line x1={xS} y1={TRACK_Y - 9} x2={xS} y2={TRACK_Y + 9} stroke={chartTheme.reference.sensitivity} strokeWidth="2.5" />
+      <text x={sensX} y={TRACK_Y + 22} textAnchor={sensAnchor} fontSize="9" fill={chartTheme.seriesText.loss}>感度</text>
       {/* 受信電力マーカー */}
-      <circle cx={xR} cy={TRACK_Y} r="5" fill={stepStyles.total.fill} stroke="#ffffff" strokeWidth="1.5" />
+      <circle cx={xR} cy={TRACK_Y} r="5" fill={stepStyles.total.fill} stroke={chartTheme.surface.plain} strokeWidth="1.5" />
       <text x={recvX} y={TRACK_Y + 22} textAnchor={recvAnchor} fontSize="9" fill={stepStyles.total.text}>受信</text>
       {/* マージン値 */}
-      <text x={round((barLeft + barLeft + barWidth) / 2)} y={TRACK_Y - 12} textAnchor="middle" fontSize="11" fontWeight="700" fill={ok ? "#047857" : "#be123c"}>
+      <text x={round((barLeft + barLeft + barWidth) / 2)} y={TRACK_Y - 12} textAnchor="middle" fontSize="11" fontWeight="700" fill={ok ? chartTheme.seriesText.gain : chartTheme.seriesText.loss}>
         {formatSigned(result.linkMarginDb, "dB")}
       </text>
     </svg>

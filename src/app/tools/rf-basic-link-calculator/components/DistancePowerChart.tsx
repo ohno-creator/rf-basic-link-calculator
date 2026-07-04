@@ -66,7 +66,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                 label={{
                   value: "受信感度",
                   position: "insideTopRight",
-                  fill: "#BE123C",
+                  fill: chartTheme.seriesText.loss,
                   fontSize: 12
                 }}
               />
@@ -82,7 +82,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
                       cx={props.cx}
                       cy={props.cy}
                       r={payload.current ? 6 : 4}
-                      fill={payload.current ? chartTheme.series.source : "#FFFFFF"}
+                      fill={payload.current ? chartTheme.series.source : chartTheme.surface.plain}
                       stroke={chartTheme.series.source}
                       strokeWidth={2}
                     />
