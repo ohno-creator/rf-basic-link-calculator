@@ -117,3 +117,13 @@
 ## 5. 手本（Fableベースデザインの参照実装）
 - 既に本設計と同言語で実装済みのページ＝**dbm-converter（2ペイン+Field+MetricCard neutral）／NCU断面図（素材defs）／ナミヒートマップ（viridis+連続凡例）／旗艦滝v2**。量産時はこれらを視覚の正とする。
 - 追加の静的モックは作らない（実装＝モック。視覚ループが差分を保証するため）。
+
+
+## 6. 適用スコープの実測（2026-07-04 grep監査）
+
+Track I の量産は**低密度分散のドリフト**であり、ブラインド一括は意図的階層を壊すため禁止。実測:
+- **Codex の2ペイン改修済みツール（VSWR/dBm/周波数波長/FSPL）は既に本設計水準**（h2=text-base font-bold=Heading等）。量産対象外。
+- 残ドリフトは**未改修ページ＋大型コンポーネント**（RfLearningQuestClient/AntennaToolPanel/NcuFieldAnalysisPanel/FresnelDeepDive 等）に各1〜4箇所ずつ分散。
+- 実施済み安全増分（i3-shell-v3ブランチ）: **I3シェルv3**＋**I1段落本文色 slate-700→600（14ファイル21箇所）**。
+- 残WOは per-context 判断が要るため、**Codex（機械的改修の主担当・現在編集障害で停止中）復旧後**か、参照実装（dbm-converter/FSPL/i3）に対する**監督付きFableバッチ＋Antigravity検証**で進める。ブラインドsweepは色/余白の意図を壊すため不可。
+- I5（旗艦§4.1残: ステップ1系統化・CTA削減）は Opus が判断込みで実施。
