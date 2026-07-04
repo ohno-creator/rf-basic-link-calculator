@@ -39,7 +39,30 @@ export function DiagramExportButton({ filenameBase, children, scale = 2 }: Diagr
 
   const readSvgMarkup = (): string | null => {
     const svg = wrapRef.current?.querySelector("svg");
-    return svg ? normalizeSvgMarkup(svg.outerHTML) : null;
+    if (!svg) {
+      return null;
+    }
+    // 忠実度の保険（v4 R4）: クラス由来の文字スタイル（CSSはSVG単体に同梱されない）を
+    // computed style から属性へ焼き込む。recharts等クラス依存の図でも書き出しが画面と一致する。
+    const clone = svg.cloneNode(true) as SVGSVGElement;
+    const sourceTexts = svg.querySelectorAll("text");
+    const cloneTexts = clone.querySelectorAll("text");
+    sourceTexts.forEach((source, index) => {
+      const target = cloneTexts[index];
+      if (!target) {
+        return;
+      }
+      const style = window.getComputedStyle(source);
+      target.setAttribute("fill", style.fill);
+      target.setAttribute("font-size", style.fontSize);
+      target.setAttribute("font-weight", style.fontWeight);
+      target.setAttribute("font-family", style.fontFamily);
+      if (style.fontVariantNumeric && style.fontVariantNumeric !== "normal") {
+        target.setAttribute("font-variant-numeric", style.fontVariantNumeric);
+      }
+      target.removeAttribute("class");
+    });
+    return normalizeSvgMarkup(clone.outerHTML);
   };
 
   const exportSvg = () => {
