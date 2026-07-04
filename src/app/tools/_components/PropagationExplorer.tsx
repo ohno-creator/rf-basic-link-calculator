@@ -205,7 +205,7 @@ export function PropagationExplorer() {
   return (
     <Card as="section" padding="lg" className="flex flex-col gap-4">
       <div>
-        <h3 className="text-lg font-bold text-slate-950">伝搬損失モデル比較</h3>
+        <h3 className="text-base font-bold text-slate-950">伝搬損失モデル比較</h3>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           リンクバジェット計算機に組み込まれている伝搬モデルを、同じ条件（周波数・距離・アンテナ高）で並べて比較できます。
           自由空間損失からHata系まで、どのモデルがどれだけ損失を見積もるかを一目で確認できます。
@@ -393,7 +393,7 @@ export function PropagationExplorer() {
           現在距離 {distanceKm >= 1 ? `${distanceKm}km` : `${Math.round(distanceKm * 1000)}m`} での伝搬損失（届きやすい順）
         </p>
         {results.length === 0 ? (
-          <p className="mt-2 rounded-md bg-rose-50 p-3 text-sm font-medium text-rose-700">
+          <p className="mt-2 rounded-md bg-rose-50 p-4 text-sm font-medium text-rose-700">
             比較するモデルを選び、各入力に0より大きい値を入れてください。
           </p>
         ) : (

@@ -88,8 +88,8 @@ export function NamiGateClient() {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-2">
         {/* 入力条件 */}
-        <Card as="section" padding="lg" className="space-y-5">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-950">
+        <Card as="section" padding="lg" className="space-y-4">
+          <h2 className="flex items-center gap-2 text-base font-bold text-slate-950">
             <Signal aria-hidden="true" className="h-5 w-5 text-staf-dark" />
             入力条件
           </h2>
@@ -210,7 +210,7 @@ export function NamiGateClient() {
 
         {/* 結果サマリー */}
         <Card as="section" variant="slate" padding="lg" className="space-y-4">
-          <h2 className="flex items-center gap-2 text-lg font-bold text-slate-950">
+          <h2 className="flex items-center gap-2 text-base font-bold text-slate-950">
             <Sparkles aria-hidden="true" className="h-5 w-5 text-staf-dark" />
             シミュレーション結果（設置あり）
           </h2>
@@ -285,7 +285,7 @@ export function NamiGateClient() {
       <Card as="section" padding="lg" className="space-y-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
-            <h2 className="text-lg font-bold text-slate-950">室内受信電力ヒートマップ</h2>
+            <h2 className="text-base font-bold text-slate-950">室内受信電力ヒートマップ</h2>
             <p className="mt-1 text-sm text-slate-500">
               窓面（上辺）から室内へ広がる受信電力の分布を、設置前後・改善量で切り替えて確認できます。
             </p>
@@ -325,7 +325,7 @@ export function NamiGateClient() {
       </Card>
 
       {/* 商用デモ用の説明文 */}
-      <Card as="section" variant="slate" padding="lg" className="space-y-3 text-sm leading-7 text-slate-700">
+      <Card as="section" variant="slate" padding="lg" className="space-y-3 text-sm leading-relaxed text-slate-600">
         <h2 className="text-base font-bold text-slate-900">商用デモ用の説明</h2>
         <p>
           窓面中央に30cm×30cmのナミゲートを設置した場合の、屋外から入射する
@@ -333,7 +333,7 @@ export function NamiGateClient() {
           現在の条件では、ガラスは「{deferredGlass?.label}」、入射角{safeInput.incidentAngleDeg}°、
           ナミゲートによる平均改善量は約 {signed(sim.diffStats.avg)}dB です。
         </p>
-        <div className="rounded-lg border border-slate-200 bg-white p-3">
+        <div className="rounded-lg border border-slate-200 bg-white p-4">
           <p className="font-bold text-slate-900">計算式</p>
           <p className="mt-1">
             各セルの受信電力 = 送信電力 − 屋外伝搬損失 − ガラス損失 − 入射角損失 − 屋内スプレッド損失（窓面基準）

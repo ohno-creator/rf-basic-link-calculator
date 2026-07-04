@@ -270,7 +270,7 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
         <summary className="cursor-pointer px-3 py-2 font-semibold text-slate-700">
           数値テーブルで見る（{meta.title}・{MODE_META[mode].unit}）
         </summary>
-        <div className="max-h-72 overflow-auto p-3">
+        <div className="max-h-72 overflow-auto p-4">
           <table className="min-w-full border-collapse tabular-nums">
             <caption className="sr-only">{ariaSummary}</caption>
             <thead>

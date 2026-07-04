@@ -1796,7 +1796,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
   };
 
   return (
-    <section className="space-y-5">
+    <section className="space-y-6">
       <Card as="section" padding="lg">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -1859,7 +1859,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
         </div>
 
         {computation.error ? (
-          <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm font-semibold text-rose-700">
+          <p className="mt-4 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-700">
             {computation.error}
           </p>
         ) : null}
@@ -1891,7 +1891,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
                 ))}
               </div>
               {computation.view.warning ? (
-                <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm leading-relaxed text-amber-800">
+                <p className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-800">
                   {computation.view.warning}
                 </p>
               ) : null}

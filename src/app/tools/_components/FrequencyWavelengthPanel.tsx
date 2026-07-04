@@ -86,7 +86,7 @@ export function FrequencyWavelengthPanel() {
   return (
     <section className="grid gap-6 lg:grid-cols-[5fr_4fr]">
       <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-card">
-        <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+        <h2 className="text-base font-bold text-slate-950">入力条件</h2>
 
         <div className="mt-5">
           <Field
@@ -152,7 +152,7 @@ export function FrequencyWavelengthPanel() {
                 ["λ/2", antennaLengths.physical.halfM, "ダイポールや半波長ホイップの基準"],
                 ["5/8λ", antennaLengths.physical.fiveEighthM, "高めの打上げ角を抑える外部アンテナの目安"]
               ].map(([label, length, help]) => (
-                <div key={label as string} className="rounded-lg bg-white p-3 shadow-card">
+                <div key={label as string} className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
                   <div className="flex items-center justify-between gap-2">
                     <p className="text-xs font-semibold text-slate-500">{label as string}</p>
                     <Tooltip term={label as string}>{help as string}</Tooltip>

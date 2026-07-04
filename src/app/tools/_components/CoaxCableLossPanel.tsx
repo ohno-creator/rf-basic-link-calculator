@@ -49,7 +49,7 @@ export function CoaxCableLossPanel() {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
       <Card as="section" padding="lg" className="flex flex-col">
-      <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+      <h2 className="text-base font-bold text-slate-950">入力条件</h2>
 
       <div className="mt-4">
         <div className="flex flex-wrap items-center justify-between gap-2">

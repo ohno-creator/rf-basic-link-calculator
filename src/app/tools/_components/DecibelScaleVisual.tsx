@@ -48,7 +48,7 @@ export function DecibelScaleVisual({ currentDbm = null }: DecibelScaleVisualProp
               style={{ left: `${markerPercent}%` }}
               aria-hidden="true"
             >
-              <div className="h-5 w-5 rounded-full border-2 border-white bg-staf shadow-md" />
+              <div className="h-5 w-5 rounded-full border-2 border-white bg-staf shadow-card" />
             </div>
           ) : null}
         </div>

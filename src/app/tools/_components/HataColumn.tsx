@@ -7,7 +7,7 @@ import { Callout } from "@/components/Callout";
 export function HataColumn() {
   return (
     <Callout tone="caution" size="lg" icon={<BookOpen aria-hidden="true" className="h-5 w-5" />}>
-      <h2 className="text-lg font-bold">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>
+      <h2 className="text-base font-bold">コラム：奥村-秦モデルと最新IoT伝搬研究</h2>
 
       <div className="mt-3 space-y-3 text-sm leading-relaxed">
         <p>
@@ -43,7 +43,7 @@ export function HataColumn() {
         <p>
           重要なのは、補正値を“魔法の安全率”にしないことです。測定時の送信電力、アンテナ利得、ケーブル損失、端末近傍損失をそろえ、同じRSSI/RSRP指標で比較します。アンカー距離から10倍以上離れた距離へ外挿する場合は、複数地点の実測で距離勾配を確認してください。
         </p>
-        <div className="rounded-md border border-amber-300 bg-white/70 p-3">
+        <div className="rounded-md border border-amber-300 bg-white/70 p-4">
           <p className="font-semibold">参考にした研究・標準</p>
           <ul className="mt-2 list-disc space-y-1 pl-5">
             <li>

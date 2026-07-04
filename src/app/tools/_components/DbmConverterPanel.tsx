@@ -90,7 +90,7 @@ export function DbmConverterPanel() {
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
         <Card as="section" padding="lg">
-          <h2 className="text-lg font-bold text-slate-950">入力条件</h2>
+          <h2 className="text-base font-bold text-slate-950">入力条件</h2>
           <p className="mt-1 text-sm text-slate-600">分かっている電力単位を選び、その値を入力します。</p>
           <div className="mt-5">
             <SegmentedControl

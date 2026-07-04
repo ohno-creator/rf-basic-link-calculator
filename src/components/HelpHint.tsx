@@ -28,7 +28,7 @@ export function HelpHint({ text }: { text: string }) {
       <span
         id={tooltipId}
         role="tooltip"
-        className={`pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-left text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-xl group-hover/hint:block group-focus-within/hint:block sm:w-72 ${
+        className={`pointer-events-none absolute left-1/2 top-full z-50 mt-2 w-64 -translate-x-1/2 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-left text-xs font-normal normal-case leading-relaxed tracking-normal text-white shadow-soft group-hover/hint:block group-focus-within/hint:block sm:w-72 ${
           open ? "block" : "hidden"
         }`}
       >
