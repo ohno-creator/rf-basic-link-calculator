@@ -219,7 +219,7 @@ function DistanceField({
       <span className="mt-1 block text-xs leading-relaxed text-slate-500">
         地上側距離＝GW・基地局からBOX付近までの水平の直線距離。距離が伸びるほど電波は弱まります（自由空間では距離2倍で約6dB増）。右で単位（m/km）を切替。数値はキーボードで直接入力できます。
       </span>
-      <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/15">
+      <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/40">
         <input
           id="ncu-distance"
           className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
@@ -269,7 +269,7 @@ function TextField({
       <span className="mt-1 block text-xs leading-relaxed text-slate-500">{help}</span>
       <input
         id={id}
-        className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15"
+        className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40"
         type="text"
         value={value}
         placeholder={placeholder}
@@ -302,7 +302,7 @@ const commonFrequencies: Array<{ value: number; label: string }> = [
 ];
 
 const selectClass =
-  "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15";
+  "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40";
 
 // 通信方式・周波数をプリセットのプルダウンで選べる。正確な値は手入力欄でキーボード入力も可能。
 function CommPresetFields({
@@ -438,7 +438,7 @@ function SelectField<T extends string>({
       </span>
       <select
         id={id}
-        className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/15"
+        className="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40"
         value={value}
         onChange={(event) => onChange(event.target.value as T)}
       >

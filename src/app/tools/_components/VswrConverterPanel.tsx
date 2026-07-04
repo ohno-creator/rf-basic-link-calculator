@@ -2,8 +2,8 @@
 
 import { useMemo, useState } from "react";
 import { Card } from "@/components/Card";
-import { NumberField } from "@/components/NumberField";
-import { Stat } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
 import { dbmToW, wToDbm } from "@/lib/rf/antenna";
 import { formatNumber } from "@/lib/rf/format";
@@ -77,44 +77,27 @@ export function VswrConverterPanel() {
         アンテナや線路の整合の良さを表す指標を相互変換します。どれか1つを入力してください。
       </p>
 
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-2">
-        <span className="text-sm font-semibold text-slate-950">
-          指標の値{activeMode?.unit ? `（${activeMode.unit}）` : ""}
-        </span>
-        <div className="flex flex-wrap items-center gap-2">
-          <Tooltip term="数値入力">
-            選択中の指標の値を入力します。VSWRは1以上（1.0が完全整合）、リターンロスは0以上のdB（大きいほど良好／14dBが目安）、反射係数Γは0以上1未満です。
-          </Tooltip>
-          <Tooltip term="入力する指標">
-            どの指標で入力するかを選択します。3指標は相互に換算可能で、手元の測定値や仕様書の記載に合わせて選んでください。残り2指標は自動算出されます。
-          </Tooltip>
-        </div>
-      </div>
-
-      <div className="mt-2 grid gap-3 sm:grid-cols-[1fr_140px]">
-        <input
-          type="number"
+      <div className="mt-4">
+        <Field
+          id="vswrInput"
+          label={`指標の値${activeMode?.unit ? `（${activeMode.unit}）` : ""}`}
+          help="選択中の指標の値を入力します。VSWRは1以上（1.0が完全整合）、リターンロスは0以上のdB（大きいほど良好／14dBが目安）、反射係数Γは0以上1未満です。どの指標で入力するかを選択します。3指標は相互に換算可能で、手元の測定値や仕様書の記載に合わせて選んでください。残り2指標は自動算出されます。"
+          unitSelect={{
+            value: mode,
+            options: modes.map((item) => ({
+              value: item.id,
+              label: `${item.label}${item.unit ? `（${item.unit}）` : ""}`
+            })),
+            ariaLabel: "入力する指標",
+            onChange: (next) => handleModeChange(next as VswrSourceKind)
+          }}
+          value={value}
+          onChange={(v) => setValue(v)}
           step={mode === "reflection" ? 0.01 : 0.1}
-          value={Number.isFinite(value) ? value : ""}
-          placeholder={activeMode ? String(activeMode.placeholder) : undefined}
-          aria-label={`${activeMode?.label}の入力`}
-          aria-invalid={!result}
-          className="h-11 rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 placeholder:font-normal placeholder:text-slate-400 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-          onChange={(event) => setValue(event.target.value === "" ? Number.NaN : Number(event.target.value))}
+          example={activeMode ? String(activeMode.placeholder) : undefined}
+          error={computation.error ?? undefined}
+          emptyBehavior="invalid"
         />
-        <select
-          value={mode}
-          aria-label="入力する指標"
-          className="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-          onChange={(event) => handleModeChange(event.target.value as VswrSourceKind)}
-        >
-          {modes.map((item) => (
-            <option key={item.id} value={item.id}>
-              {item.label}
-              {item.unit ? `（${item.unit}）` : ""}
-            </option>
-          ))}
-        </select>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2">
@@ -132,55 +115,43 @@ export function VswrConverterPanel() {
 
       {result ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-2">
-          <div className="rounded-lg bg-staf-light p-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs font-semibold text-staf-dark">VSWR</p>
-              <Tooltip term="VSWR">
-                算出されたVSWR（Vmax/Vmin）。1に近いほど整合が良い状態です。Γ=1（全反射）では∞表示になります。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatInfinite(result.vswr, 2)} tone="neutral" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs text-slate-500">リターンロス</p>
-              <Tooltip term="リターンロス">
-                算出されたリターンロス -20log10(Γ)。大きいほど整合良好です。完全整合（Γ=0）では∞dBになります。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatInfinite(result.returnLossDb, 1)} unit="dB" tone="staf" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs text-slate-500">反射係数 Γ</p>
-              <Tooltip term="反射係数 Γ">
-                算出された反射係数。0＝無反射、1に近いほど反射大。VSWR・リターンロスの基準量です。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatNumber(result.reflectionCoefficient, 3)} tone="staf" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs text-slate-500">反射電力</p>
-              <Tooltip term="反射電力">
-                送信電力のうち負荷で反射して戻る割合 Γ²×100。小さいほど効率的です。例：Γ=0.2で4%。残りが負荷へ伝わる電力です。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatNumber(result.reflectedPowerPercent, 1)} unit="%" tone="staf" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4 sm:col-span-2">
-            <div className="flex items-start justify-between gap-2">
-              <p className="text-xs text-slate-500">ミスマッチ損失（整合損失）</p>
-              <Tooltip term="ミスマッチ損失">
-                不整合により負荷へ伝わらず失われる電力 -10log10(1−Γ²)。小さいほど良好で、リンクバジェットへ直接効きます。完全整合（Γ=0）では0dB、全反射（Γ=1）では∞dB。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatInfinite(result.mismatchLossDb, 2)} unit="dB" tone="staf" size="md" />
+          <MetricCard
+            label="VSWR"
+            value={formatInfinite(result.vswr, 2)}
+            tone="neutral"
+            hint="算出されたVSWR（Vmax/Vmin）。1に近いほど整合が良い状態です。Γ=1（全反射）では∞表示になります。"
+          />
+          <MetricCard
+            label="リターンロス"
+            value={formatInfinite(result.returnLossDb, 1)}
+            unit="dB"
+            tone="neutral"
+            hint="算出されたリターンロス -20log10(Γ)。大きいほど整合良好です。完全整合（Γ=0）では∞dBになります。"
+          />
+          <MetricCard
+            label="反射係数 Γ"
+            value={formatNumber(result.reflectionCoefficient, 3)}
+            tone="neutral"
+            hint="算出された反射係数。0＝無反射、1に近いほど反射大。VSWR・リターンロスの基準量です。"
+          />
+          <MetricCard
+            label="反射電力"
+            value={formatNumber(result.reflectedPowerPercent, 1)}
+            unit="%"
+            tone="neutral"
+            hint="送信電力のうち負荷で反射して戻る割合 Γ²×100。小さいほど効率的です。例：Γ=0.2で4%。残りが負荷へ伝わる電力です。"
+          />
+          <div className="sm:col-span-2">
+            <MetricCard
+              label="ミスマッチ損失（整合損失）"
+              value={formatInfinite(result.mismatchLossDb, 2)}
+              unit="dB"
+              tone="neutral"
+              hint="不整合により負荷へ伝わらず失われる電力 -10log10(1−Γ²)。小さいほど良好で、リンクバジェットへ直接効きます。完全整合（Γ=0）では0dB、全反射（Γ=1）では∞dB。"
+            />
           </div>
         </div>
-      ) : (
-        <p className="mt-4 text-sm font-medium text-rose-700">{computation.error}</p>
-      )}
+      ) : null}
 
       {result ? (
         <div className="mt-5">
@@ -209,7 +180,7 @@ export function VswrConverterPanel() {
             </Tooltip>
           </div>
           <div className="mt-3 grid gap-4 lg:grid-cols-[220px_1fr]">
-            <NumberField
+            <Field
               id="vswrInputPower"
               label="入力電力"
               unit="dBm"
@@ -218,36 +189,30 @@ export function VswrConverterPanel() {
               onChange={setInputPowerDbm}
             />
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="アンテナへ入る電力"
-                  value={Number.isFinite(powerFlow.acceptedDbm) ? formatNumber(powerFlow.acceptedDbm, 1) : "-∞"}
-                  unit="dBm"
-                  tone="emerald"
-                  size="sm"
-                  note={`${formatNumber(powerFlow.acceptedW * 1000, 1)} mW / ${formatNumber(powerFlow.acceptedPercent, 1)}%`}
-                />
-              </div>
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="反射して戻る電力"
-                  value={Number.isFinite(powerFlow.reflectedDbm) ? formatNumber(powerFlow.reflectedDbm, 1) : "-∞"}
-                  unit="dBm"
-                  tone="rose"
-                  size="sm"
-                  note={`${formatNumber(powerFlow.reflectedW * 1000, 1)} mW`}
-                />
-              </div>
-              <div className="rounded-lg bg-white p-3 shadow-card">
-                <Stat
-                  label="整合で失う量"
-                  value={formatInfinite(result.mismatchLossDb, 2)}
-                  unit="dB"
-                  tone="amber"
-                  size="sm"
-                  note="リンクバジェットへ入れられる損失"
-                />
-              </div>
+              <MetricCard
+                label="アンテナへ入る電力"
+                value={Number.isFinite(powerFlow.acceptedDbm) ? formatNumber(powerFlow.acceptedDbm, 1) : "-∞"}
+                unit="dBm"
+                tone="neutral"
+                size="sm"
+                sub={`${formatNumber(powerFlow.acceptedW * 1000, 1)} mW / ${formatNumber(powerFlow.acceptedPercent, 1)}%`}
+              />
+              <MetricCard
+                label="反射して戻る電力"
+                value={Number.isFinite(powerFlow.reflectedDbm) ? formatNumber(powerFlow.reflectedDbm, 1) : "-∞"}
+                unit="dBm"
+                tone="neutral"
+                size="sm"
+                sub={`${formatNumber(powerFlow.reflectedW * 1000, 1)} mW`}
+              />
+              <MetricCard
+                label="整合で失う量"
+                value={formatInfinite(result.mismatchLossDb, 2)}
+                unit="dB"
+                tone="neutral"
+                size="sm"
+                sub="リンクバジェットへ入れられる損失"
+              />
             </div>
           </div>
         </div>

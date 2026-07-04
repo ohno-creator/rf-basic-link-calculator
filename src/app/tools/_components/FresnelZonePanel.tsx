@@ -1,9 +1,10 @@
 "use client";
 
-import { type ReactNode, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Callout, type CalloutTone } from "@/components/Callout";
 import { Card } from "@/components/Card";
-import { Stat } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
 import {
   fresnelFrequencyPresets,
@@ -137,61 +138,49 @@ export function FresnelZonePanel() {
 
       {/* 基本入力 */}
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <NumberInput
+        <Field
           id="fresnelFreq"
-          label="周波数 MHz"
+          label="周波数"
+          unit="MHz"
+          help="電波の周波数です。高いほどフレネルゾーン半径は小さくなります（半径は波長の平方根に比例）。MHz単位で入力してください。"
           value={frequencyMHz}
           min={1}
           step={1}
-          invalid={!result}
           onChange={setFrequencyMHz}
-          tooltip={
-            <Tooltip term="周波数">
-              電波の周波数です。高いほどフレネルゾーン半径は小さくなります（半径は波長の平方根に比例）。MHz単位で入力してください。
-            </Tooltip>
-          }
+          emptyBehavior="invalid"
         />
-        <NumberInput
+        <Field
           id="fresnelDist"
-          label="通信距離 km"
+          label="通信距離"
+          unit="km"
+          help="送信点と受信点の直線距離です。長いほどゾーン半径は大きくなります（経路の中央で最大）。km単位で入力してください。"
           value={distanceKm}
           min={0.001}
           step={0.05}
-          invalid={!result}
           onChange={setDistanceKm}
-          tooltip={
-            <Tooltip term="距離">
-              送信点と受信点の直線距離です。長いほどゾーン半径は大きくなります（経路の中央で最大）。km単位で入力してください。
-            </Tooltip>
-          }
+          emptyBehavior="invalid"
         />
-        <NumberInput
+        <Field
           id="fresnelTxH"
-          label="送信アンテナ高 m"
+          label="送信アンテナ高"
+          unit="m"
+          help="送信アンテナの地上高です。受信側との高さで見通し線(LOS)の傾きが決まり、障害物が遮るかの判定に使います。"
           value={txHeightM}
           min={0}
           step={0.5}
-          invalid={!analysis}
           onChange={setTxHeightM}
-          tooltip={
-            <Tooltip term="送信アンテナ高">
-              送信アンテナの地上高です。受信側との高さで見通し線(LOS)の傾きが決まり、障害物が遮るかの判定に使います。
-            </Tooltip>
-          }
+          emptyBehavior="invalid"
         />
-        <NumberInput
+        <Field
           id="fresnelRxH"
-          label="受信アンテナ高 m"
+          label="受信アンテナ高"
+          unit="m"
+          help="受信アンテナの地上高です。低いほどLOSが下がり、障害物に遮られやすくなります。"
           value={rxHeightM}
           min={0}
           step={0.5}
-          invalid={!analysis}
           onChange={setRxHeightM}
-          tooltip={
-            <Tooltip term="受信アンテナ高">
-              受信アンテナの地上高です。低いほどLOSが下がり、障害物に遮られやすくなります。
-            </Tooltip>
-          }
+          emptyBehavior="invalid"
         />
       </div>
 
@@ -232,19 +221,16 @@ export function FresnelZonePanel() {
       </div>
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
-        <NumberInput
+        <Field
           id="fresnelObsH"
-          label="障害物の高さ m"
+          label="障害物の高さ"
+          unit="m"
+          help="障害物の地上高です。プリセット選択で代表値が入りますが、現場に合わせて変更できます。"
           value={obstacleHeightM}
           min={0}
           step={0.1}
-          invalid={!analysis}
           onChange={setObstacleHeightM}
-          tooltip={
-            <Tooltip term="障害物の高さ">
-              障害物の地上高です。プリセット選択で代表値が入りますが、現場に合わせて変更できます。
-            </Tooltip>
-          }
+          emptyBehavior="invalid"
         />
         <div>
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -297,33 +283,22 @@ export function FresnelZonePanel() {
       {/* 主要な数値 */}
       {result ? (
         <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <div className="rounded-lg bg-staf-light p-4">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs font-semibold text-staf-dark">この位置の第1フレネル半径</p>
-              <Tooltip term="r1">
-                障害物位置での第1フレネルゾーンの半径です。この60%以上を障害物から空けるのが目安です。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatMeters(result.firstZoneRadiusM)} tone="neutral" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs text-slate-500">60%クリアランス目安</p>
-              <Tooltip term="60%クリアランス">
-                第1フレネル半径の60%。見通し通信でこの高さ以上を空けると回り込み損失をほぼ無視できる、という実務則です。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatMeters(result.clearance60M)} tone="staf" size="md" />
-          </div>
-          <div className="rounded-lg bg-slate-50 p-4">
-            <div className="flex items-center justify-between gap-2">
-              <p className="text-xs text-slate-500">波長 λ</p>
-              <Tooltip term="波長">
-                周波数に対応する波長(λ=c/f)です。フレネル半径はλの平方根に比例します。
-              </Tooltip>
-            </div>
-            <Stat className="mt-1" value={formatNumber(result.wavelengthM, 3)} unit="m" tone="staf" size="md" />
-          </div>
+          <MetricCard
+            label="この位置の第1フレネル半径"
+            value={formatMeters(result.firstZoneRadiusM)}
+            hint="障害物位置での第1フレネルゾーンの半径です。この60%以上を障害物から空けるのが目安です。"
+          />
+          <MetricCard
+            label="60%クリアランス目安"
+            value={formatMeters(result.clearance60M)}
+            hint="第1フレネル半径の60%。見通し通信でこの高さ以上を空けると回り込み損失をほぼ無視できる、という実務則です。"
+          />
+          <MetricCard
+            label="波長 λ"
+            value={formatNumber(result.wavelengthM, 3)}
+            unit="m"
+            hint="周波数に対応する波長(λ=c/f)です。フレネル半径はλの平方根に比例します。"
+          />
         </div>
       ) : null}
 
@@ -356,46 +331,5 @@ export function FresnelZonePanel() {
         </FormulaExplanationCard>
       </div>
     </Card>
-  );
-}
-
-function NumberInput({
-  id,
-  label,
-  value,
-  min,
-  step,
-  invalid,
-  onChange,
-  tooltip
-}: {
-  id: string;
-  label: string;
-  value: number;
-  min: number;
-  step: number;
-  invalid: boolean;
-  onChange: (value: number) => void;
-  tooltip?: ReactNode;
-}) {
-  return (
-    <div>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-semibold text-slate-950">
-          {label}
-        </label>
-        {tooltip}
-      </div>
-      <input
-        id={id}
-        type="number"
-        min={min}
-        step={step}
-        value={Number.isFinite(value) ? value : ""}
-        aria-invalid={invalid}
-        className="mt-2 h-11 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-        onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-      />
-    </div>
   );
 }

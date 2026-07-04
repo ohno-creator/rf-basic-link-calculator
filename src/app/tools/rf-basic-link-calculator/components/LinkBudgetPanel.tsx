@@ -194,7 +194,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             <select
               id="propagationModel"
               value={input.propagationModel}
-              className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+              className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
               onChange={(event) =>
                 update("propagationModel", event.target.value as LinkBudgetInput["propagationModel"])
               }
@@ -247,7 +247,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               <select
                 id="propagationArea"
                 value={input.propagationArea}
-                className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) =>
                   update("propagationArea", event.target.value as LinkBudgetInput["propagationArea"])
                 }
@@ -300,7 +300,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           <select
             id="system"
             value={input.system}
-            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
             onChange={(event) => update("system", event.target.value)}
           >
             {wirelessSystemPresets.map((system) => (
@@ -322,7 +322,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           <select
             id="frequencyPreset"
             value={input.frequencyMHz}
-            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
             onChange={(event) => update("frequencyMHz", Number(event.target.value))}
           >
             {frequencyPresets.map((preset) => (
@@ -497,7 +497,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
           <select
             id="environmentPreset"
             value={environmentSelectValue}
-            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+            className="mt-3 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
             onChange={(event) => {
               setEnvironmentPresetLabel(event.target.value);
               const preset = environmentLossPresets.find((item) => item.label === event.target.value);
@@ -549,7 +549,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
             onToggle={(event) => setNearDetailOpen((event.target as HTMLDetailsElement).open)}
             className="group rounded-lg border border-slate-200 bg-white"
           >
-            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/30">
+            <summary className="flex cursor-pointer list-none items-center justify-between gap-3 p-4 text-sm font-semibold text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-staf/40">
               <span>端末近傍損失の内訳を入力（地面近接・筐体・偏波・遮蔽・設置ばらつき）</span>
               <ChevronDown
                 aria-hidden

@@ -13,10 +13,12 @@ import {
   YAxis
 } from "recharts";
 import { Card } from "@/components/Card";
-import { NumberField } from "@/components/NumberField";
-import { Stat, type StatTone } from "@/components/Stat";
+import { Field } from "@/components/Field";
+import { MetricCard } from "@/components/MetricCard";
+import type { StatTone } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
-import { chartTheme } from "@/lib/chartTheme";
+import { chartTheme, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import type { MetricTone } from "@/lib/ui/kit";
 import {
   calculateAntennaSpacing,
   calculateApertureAntenna,
@@ -77,6 +79,18 @@ type ResultCard = {
   unit?: string;
   help: string;
   tone?: StatTone;
+};
+
+// 既存カード定義の StatTone を MetricCard の意味トーンへ写像する。
+// 判定色（emerald/amber/rose/sky）は意味を保って対応させ、判定でない既定（staf）は
+// UI Kit v2 の規律「判定を持つ値のみ neutral/primary 以外」に合わせて neutral に落とす。
+const statToneToMetricTone: Record<StatTone, MetricTone> = {
+  staf: "neutral",
+  sky: "info",
+  emerald: "success",
+  rose: "danger",
+  amber: "caution",
+  neutral: "neutral"
 };
 
 type ChartPoint = {
@@ -1426,10 +1440,10 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
                 bottom: chart.xLabel ? 16 : 8
               }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.grid.primary} />
+              <CartesianGrid {...rfGridProps()} />
               <XAxis
                 dataKey="label"
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: chartTheme.axis.label.fill }}
+                tick={rfTickProps()}
                 label={
                   chart.xLabel
                     ? {
@@ -1444,7 +1458,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
               />
               <YAxis
                 yAxisId="left"
-                tick={{ fontSize: chartTheme.axis.label.fontSize, fill: leftAxisColor }}
+                tick={{ ...rfTickProps(), fill: leftAxisColor }}
                 stroke={leftAxisStroke}
                 domain={["auto", "auto"]}
                 label={
@@ -1462,7 +1476,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
                 <YAxis
                   yAxisId="right"
                   orientation="right"
-                  tick={{ fontSize: chartTheme.axis.label.fontSize, fill: rightAxisColor }}
+                  tick={{ ...rfTickProps(), fill: rightAxisColor }}
                   stroke={rightAxisColor}
                   domain={["auto", "auto"]}
                   label={
@@ -1477,7 +1491,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
                   }
                 />
               ) : null}
-              <RechartsTooltip formatter={(value, name) => [`${value}`, name]} />
+              <RechartsTooltip {...rfTooltipProps()} formatter={(value, name) => [`${value}`, name]} />
               <Legend verticalAlign="top" align="right" height={22} wrapperStyle={{ fontSize: 12 }} />
               {typeof chart.reference === "number" ? (
                 <ReferenceLine
@@ -1809,7 +1823,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
 
         <div className="mt-5 grid gap-4 md:grid-cols-2">
           {config.fields.map((field) => (
-            <NumberField
+            <Field
               key={field.key}
               id={`${toolId}-${field.key}`}
               label={field.label}
@@ -1834,7 +1848,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
               <select
                 id="short-antenna-kind"
                 value={shortKind}
-                className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="mt-2 h-11 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => setShortKind(event.target.value as ShortAntennaKind)}
               >
                 <option value="monopole">短いモノポール</option>
@@ -1865,13 +1879,15 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 {computation.view.cards.map((item) => (
-                  <div key={item.label} className="rounded-lg bg-slate-50 p-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <p className="text-xs font-semibold text-slate-500">{item.label}</p>
-                      <Tooltip term="i">{item.help}</Tooltip>
-                    </div>
-                    <Stat className="mt-1" value={item.value} unit={item.unit} tone={item.tone} size="md" />
-                  </div>
+                  <MetricCard
+                    key={item.label}
+                    label={item.label}
+                    value={item.value}
+                    unit={item.unit}
+                    tone={statToneToMetricTone[item.tone ?? "staf"]}
+                    size="md"
+                    hint={item.help}
+                  />
                 ))}
               </div>
               {computation.view.warning ? (

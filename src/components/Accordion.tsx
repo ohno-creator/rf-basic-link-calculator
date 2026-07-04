@@ -13,7 +13,7 @@ export function Accordion({ title, children, defaultOpen = false }: AccordionPro
       open={defaultOpen}
       className="group rounded-lg border border-slate-200 bg-white/80 p-4 shadow-card"
     >
-      <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-staf/30">
+      <summary className="flex cursor-pointer items-center justify-between gap-3 text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-staf/40">
         {title}
         <ChevronDown
           aria-hidden="true"

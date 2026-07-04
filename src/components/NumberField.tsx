@@ -147,7 +147,7 @@ export function NumberField({
         {help ? <HelpHint text={help} /> : null}
       </span>
       {help ? <span className="mt-1 block text-xs leading-relaxed text-slate-500">{help}</span> : null}
-      <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/15">
+      <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/40">
         <NumberInput
           id={id}
           className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"

@@ -1,10 +1,11 @@
 "use client";
 
-import { type ReactNode, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { AlertTriangle, Check, Copy, Plus, Printer, Trash2 } from "lucide-react";
 import { Badge } from "@/components/Badge";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { Field } from "@/components/Field";
 import { Tooltip } from "@/components/Tooltip";
 import { getPropagationModelOption, propagationAreaOptions } from "@/data/linkBudgetOptions";
 import { type AreaType } from "@/lib/rf/propagation";
@@ -37,59 +38,9 @@ type MeasuredPoint = {
   lossDb: number | null;
 };
 
-type FieldProps = {
-  id: string;
-  label: string;
-  unit: string;
-  value: number;
-  min: number;
-  max: number;
-  step: number;
-  onChange: (value: number) => void;
-  hint?: string;
-  tooltip?: ReactNode;
-  children?: ReactNode;
-};
-
-function Field({ id, label, unit, value, min, max, step, onChange, hint, tooltip, children }: FieldProps) {
-  const sliderValue = Number.isFinite(value) ? Math.min(max, Math.max(min, value)) : min;
-
-  return (
-    <Card padding="sm" shadow={false}>
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <label htmlFor={id} className="text-sm font-semibold text-slate-950">
-          {label}
-        </label>
-        <div className="flex items-center gap-2">
-          {tooltip ? <Tooltip term={label}>{tooltip}</Tooltip> : null}
-          <span className="text-xs font-medium text-slate-400">{unit}</span>
-        </div>
-      </div>
-      <input
-        id={id}
-        type="number"
-        min={min}
-        max={max}
-        step={step}
-        value={Number.isFinite(value) ? value : ""}
-        className="mt-2 h-10 w-full rounded-md border border-slate-300 px-3 text-base font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
-        onChange={(event) => onChange(event.target.value === "" ? Number.NaN : Number(event.target.value))}
-      />
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={sliderValue}
-        className="mt-2 w-full"
-        aria-label={`${label}のスライダー`}
-        onChange={(event) => onChange(Number(event.target.value))}
-      />
-      {children}
-      {hint ? <p className="mt-1 text-xs leading-relaxed text-slate-500">{hint}</p> : null}
-    </Card>
-  );
-}
+// 数値入力は共有 Field（showSlider付き）へ移行済み（UX-2）。
+// 実測ポイントの行内2連input（距離/損失）は、ラベル無し・行レイアウト前提のため
+// Field の対象外として意図的に生inputのまま残す。
 
 export function PropagationExplorer() {
   const [frequencyMHz, setFrequencyMHz] = useState(920);
@@ -304,18 +255,20 @@ export function PropagationExplorer() {
       <div>
         <p className="text-sm font-semibold text-slate-950">共通条件</p>
         <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <Field
-            id="propFrequency"
-            label="周波数"
-            unit="MHz"
-            value={frequencyMHz}
-            min={50}
-            max={6000}
-            step={10}
-            onChange={setFrequencyMHz}
-            hint="低い周波数ほど損失は小さく届きやすい。Hataは150〜1500MHz、COST231-Hataは1500〜2000MHzが目安。"
-            tooltip="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。奥村・秦は150〜1500MHz、COST231-Hataは1500〜2000MHzが目安で、外れると結果は参考値になります。"
-          >
+          <div>
+            <Field
+              id="propFrequency"
+              label="周波数"
+              unit="MHz"
+              value={frequencyMHz}
+              min={50}
+              max={6000}
+              step={10}
+              showSlider
+              emptyBehavior="invalid"
+              onChange={setFrequencyMHz}
+              help="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。奥村・秦は150〜1500MHz、COST231-Hataは1500〜2000MHzが目安で、外れると結果は参考値になります。"
+            />
             <div className="mt-2 flex flex-wrap gap-1.5">
               {frequencyChips.map((mhz) => (
                 <button
@@ -332,7 +285,7 @@ export function PropagationExplorer() {
                 </button>
               ))}
             </div>
-          </Field>
+          </div>
           <Field
             id="propDistance"
             label="距離"
@@ -341,9 +294,10 @@ export function PropagationExplorer() {
             min={0.01}
             max={20}
             step={0.01}
+            showSlider
+            emptyBehavior="invalid"
             onChange={setDistanceKm}
-            hint="10m〜20km。Hata系の適用目安は1〜20kmです。"
-            tooltip="送受信点間の距離です。距離が2倍になると自由空間損失は約6dB増えます。Hata系は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。"
+            help="送受信点間の距離です。距離が2倍になると自由空間損失は約6dB増えます。表示範囲は10m〜20km、Hata系の適用目安は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。"
           />
           <Field
             id="propTxHeight"
@@ -353,9 +307,10 @@ export function PropagationExplorer() {
             min={1}
             max={200}
             step={1}
+            showSlider
+            emptyBehavior="invalid"
             onChange={setTxHeightM}
-            hint="基地局・ゲートウェイ側。Hataの目安は30〜200m。"
-            tooltip="送信側（基地局・ゲートウェイ）のアンテナ地上高です。高いほど見通しが良く損失は小さめになります。Hata系の目安は30〜200m。"
+            help="送信側（基地局・ゲートウェイ）のアンテナ地上高です。高いほど見通しが良く損失は小さめになります。Hata系の目安は30〜200m。"
           />
           <Field
             id="propRxHeight"
@@ -365,9 +320,10 @@ export function PropagationExplorer() {
             min={0.5}
             max={20}
             step={0.5}
+            showSlider
+            emptyBehavior="invalid"
             onChange={setRxHeightM}
-            hint="端末・移動局側。Hataの目安は1〜10m。"
-            tooltip="受信側（端末・移動局）のアンテナ地上高です。低いほど地面反射やクラッタの影響を受けます。Hata系の目安は1〜10m。"
+            help="受信側（端末・移動局）のアンテナ地上高です。低いほど地面反射やクラッタの影響を受けます。Hata系の目安は1〜10m。"
           />
           {logDistanceActive ? (
             <Field
@@ -378,9 +334,10 @@ export function PropagationExplorer() {
               min={1}
               max={6}
               step={0.1}
+              showSlider
+              emptyBehavior="invalid"
               onChange={setPathLossExponent}
-              hint="n=1（緩やか）〜6（急峻）。自由空間=2、市街地NLOS=3〜4が目安。"
-              tooltip="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
+              help="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安（n=1緩やか〜6急峻）。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
             />
           ) : null}
           {hataActive ? (
@@ -396,7 +353,7 @@ export function PropagationExplorer() {
               <select
                 id="propArea"
                 value={area}
-                className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => setArea(event.target.value as AreaType)}
               >
                 {propagationAreaOptions.map((option) => (
@@ -517,7 +474,7 @@ export function PropagationExplorer() {
                 placeholder="距離 km"
                 aria-label={`実測${index + 1} 距離（km）`}
                 value={point.distanceKm ?? ""}
-                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => updateMeasured(point.id, "distanceKm", event.target.value)}
               />
               <input
@@ -528,7 +485,7 @@ export function PropagationExplorer() {
                 placeholder="損失 dB"
                 aria-label={`実測${index + 1} 経路損失（dB）`}
                 value={point.lossDb ?? ""}
-                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"
+                className="h-10 w-full rounded-md border border-slate-300 px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
                 onChange={(event) => updateMeasured(point.id, "lossDb", event.target.value)}
               />
               <button
