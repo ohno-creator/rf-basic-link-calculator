@@ -40,6 +40,7 @@ import {
 } from "@/lib/rf/ncuBelowGround";
 import type { ChoiceChipSeverity } from "@/lib/ui/kit";
 import { NcuCrossSectionDiagram } from "./NcuCrossSectionDiagram";
+import { NcuIsometricScene } from "./NcuIsometricScene";
 import { LossBreakdown, RangeTriplet, ResultPanel } from "./NcuResultPanel";
 import { ResearchColumn } from "./NcuResearchColumn";
 import { FieldAnalysisPanel, PurposeSwitch, WorkflowGuide } from "./NcuFieldAnalysisPanel";
@@ -817,6 +818,8 @@ export function NcuBelowGroundClient() {
       <NcuBudgetWaterfall input={input} result={result} />
 
       <NcuCrossSectionDiagram input={input} result={result} />
+
+      <NcuIsometricScene input={input} result={result} />
 
       <div className="grid gap-5 lg:grid-cols-[1fr_0.9fr]">
         <LossBreakdown result={result} />
