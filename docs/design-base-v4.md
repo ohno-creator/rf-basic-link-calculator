@@ -32,7 +32,7 @@
 | **R3 ツールページ主役化** | essenceLead「わかること」行／ResultBar主役化／Stat=Metric仕様／Card 2.5D（v4-4）／同カテゴリ回遊 | ✅ 統合済（警告集約・パンくずはR5へ） |
 | **R4 図版レポート品質** | **エクスポート忠実度バグ根治**（属性化＋computed style焼き込み）／旗艦・NCU滝のマージン寸法ブラケット（v4-6）／保存ボタンをNCU滝・断面へ横展開 | ✅ 統合済（ChartFrame/凡例定型はR5へ） |
 | **R5 磨き（低優先）** | ChartFrame＋凡例/軸タイトル定型／ブランドロックアップ／sticky filter／ToolTwoPane部品化／負号U+2212／警告のResultBar集約／パンくず | 任意 |
-| **R5b 図版hex掃除** | 残SVG図版のdiagramPalette同値置換 | 🔄 Antigravityが track/r5-diagram-hex（agy worktree）で実施中 |
+| **R5b 図版hex掃除** | 残SVG図版のdiagramPalette置換＋Fresnel/VSWRへ保存ボタン展開（Antigravity実装・Claude統合） | ✅ 統合済（2026-07-05） |
 
 **運用**: 各Waveは trackブランチ→全ゲート→CI視覚ループ（push→スナップショット自動更新→revert→統合）。**直列に統合**（R1統合後にR2着手…）でスナップショット競合を避ける。
 
