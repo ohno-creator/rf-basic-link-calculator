@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/Card";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 import {
@@ -198,6 +199,7 @@ export function NcuCrossSectionDiagram({
       </div>
 
       <p className="mt-4 text-[11px] font-medium text-slate-400 sm:hidden">← 横スクロールで全体を表示できます →</p>
+      <DiagramExportButton filenameBase="ncu-cross-section">
       <div className="mt-1.5 overflow-x-auto rounded-lg border border-slate-200 bg-slate-50 sm:mt-4">
         <svg
           role="img"
@@ -375,6 +377,7 @@ export function NcuCrossSectionDiagram({
           ) : null}
         </svg>
       </div>
+      </DiagramExportButton>
 
       {/* 結果ストリップ */}
       <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-1 text-sm">
