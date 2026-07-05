@@ -34,7 +34,14 @@ export function Breadcrumbs() {
             <li aria-hidden="true">
               <ChevronRight className="h-3 w-3" />
             </li>
-            <li className="text-slate-500">{category.label}</li>
+            <li>
+              <Link
+                href={`/?category=${category.id}#tools`}
+                className="rounded hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+              >
+                {category.label}
+              </Link>
+            </li>
           </>
         ) : null}
         <li aria-hidden="true">

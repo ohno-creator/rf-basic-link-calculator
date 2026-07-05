@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Activity,
   AppWindow,
@@ -96,6 +96,15 @@ export function ToolDirectoryBrowser() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
+  // パンくず等から `/?category=<id>#tools` で来たとき、そのカテゴリを初期選択する（回遊）。
+  // 静的export互換のためクライアントマウント後にURLを読む（useSearchParamsのSuspense不要）。
+  useEffect(() => {
+    const requested = new URLSearchParams(window.location.search).get("category");
+    if (requested && toolCategories.some((category) => category.id === requested)) {
+      setActiveCategory(requested);
+    }
+  }, []);
+
   const normalizedQuery = query.trim().toLowerCase();
 
   const filtered = useMemo(
@@ -125,7 +134,9 @@ export function ToolDirectoryBrowser() {
 
   return (
     <div id="tools" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-6">
+      {/* 検索＋カテゴリ絞り込みバー: スクロール中も操作できるよう sticky（ヘッダー直下に吸着） */}
+      <div className="sticky top-[57px] z-30 border-y border-slate-200/70 bg-slate-50/85 backdrop-blur supports-[backdrop-filter]:bg-slate-50/70">
+      <div className="mx-auto max-w-6xl px-6 py-3">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">
             <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
@@ -154,7 +165,7 @@ export function ToolDirectoryBrowser() {
               type="button"
               aria-pressed={activeCategory === "all"}
               onClick={() => setActiveCategory("all")}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+              className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
                 activeCategory === "all"
                   ? "border-staf bg-staf text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
@@ -172,7 +183,7 @@ export function ToolDirectoryBrowser() {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setActiveCategory(active ? "all" : category.id)}
-                  className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
+                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
                     active
                       ? "border-staf bg-staf text-white"
                       : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
@@ -185,6 +196,7 @@ export function ToolDirectoryBrowser() {
             })}
           </div>
         </div>
+      </div>
       </div>
 
       {filtered.length === 0 ? (
