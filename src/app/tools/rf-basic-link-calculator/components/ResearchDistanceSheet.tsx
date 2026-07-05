@@ -15,6 +15,7 @@ import {
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { NumberInput } from "@/components/NumberField";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import {
   calculateNearTerminalLossDb,
@@ -285,6 +286,7 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
         </span>
       </div>
 
+      <DiagramExportButton filenameBase="research-distance-margin">
       <div className="mt-5 h-72 w-full" aria-label="距離別リンク余裕のグラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
@@ -323,6 +325,7 @@ function DistanceCurve({ input, result }: { input: ResearchDistanceInput; result
           </div>
         )}
       </div>
+      </DiagramExportButton>
     </Card>
   );
 }

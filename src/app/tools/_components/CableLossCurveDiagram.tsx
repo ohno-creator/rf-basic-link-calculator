@@ -13,6 +13,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { ChartFrame } from "@/components/ChartFrame";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import type { ReferenceCable } from "@/data/coaxCables";
 import type { LossPoint } from "@/lib/rf/coax";
@@ -62,12 +63,14 @@ export function CableLossCurveDiagram({
   });
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <figcaption className="text-sm font-semibold text-slate-950">
-        ロス比較（{partNumber} 実測 ＋ 一般的なケーブル参考）
-        <span className="ml-1 font-normal text-slate-500">／カーブ・黒点は1本あたり</span>
-      </figcaption>
-      <div className="mt-2 h-72 w-full" aria-label="周波数に対するケーブル損失の比較グラフ">
+    <ChartFrame
+      title={`ロス比較（${partNumber} 実測 ＋ 一般的なケーブル参考）`}
+      description="カーブ・黒点は1本あたりの損失です。"
+      variant="slate"
+      padding="md"
+      exportName="coax-loss-curve"
+    >
+      <div className="h-72 w-full" aria-label="周波数に対するケーブル損失の比較グラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 4, right: 16, top: 12, bottom: 4 }}>
@@ -155,6 +158,6 @@ export function CableLossCurveDiagram({
         {showTotalLine ? "本数が2本以上のときは、点線で合計損失カーブも重ねて表示します。" : null}
         点線（グレー／橙）は一般的なケーブルの参考カーブ（1m相当の目安）で、低損失な品番ほど参考線より下に位置します。指定周波数が軸範囲（{X_DOMAIN_MIN}〜{X_DOMAIN_MAX}MHz）の外側のときは、黒点を端にクランプして「範囲外（外挿）」と表示します。1本あたりの値はリンクバジェットの「ケーブル・コネクタ損失」に入れられます。
       </p>
-    </figure>
+    </ChartFrame>
   );
 }
