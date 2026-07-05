@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - feature/initial-rf-basic-link-calculator
+      - track/r5-diagram-hex
   workflow_dispatch:
 
 permissions:
@@ -51,20 +52,20 @@ jobs:
         run: npm run test:e2e
 
       - name: Run Visual Tests and Update Snapshots
-        if: github.ref == 'refs/heads/feature/initial-rf-basic-link-calculator'
+        if: github.ref == 'refs/heads/track/r5-diagram-hex'
         run: |
           npx playwright test --update-snapshots
         env:
           TEST_VISUAL: "true"
 
       - name: Auto Commit and Push Snapshots
-        if: github.ref == 'refs/heads/feature/initial-rf-basic-link-calculator'
+        if: github.ref == 'refs/heads/track/r5-diagram-hex'
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add e2e/visual.spec.ts-snapshots/*-chromium-linux.png
           git commit -m "chore(visual): auto-update visual baseline snapshots on CI [W-C]" || true
-          git push origin HEAD:feature/initial-rf-basic-link-calculator
+          git push origin HEAD:track/r5-diagram-hex
 
       - name: Build static app
         run: npm run build
