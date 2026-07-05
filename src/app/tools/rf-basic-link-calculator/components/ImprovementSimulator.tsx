@@ -1,9 +1,8 @@
-import { ArrowRight, MessageSquareText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Card } from "@/components/Card";
 import { simulateImprovements } from "@/lib/rf/chartData";
 import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
-import { CONTACT_URL } from "@/lib/rf/presets";
 
 type ImprovementSimulatorProps = {
   input: LinkBudgetInput;
@@ -50,19 +49,9 @@ export function ImprovementSimulator({ input, result }: ImprovementSimulatorProp
         ))}
       </div>
 
-      <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
-        <p className="text-sm leading-relaxed text-slate-600">
-          アンテナ改善、配置改善、筐体影響の低減が通信余裕に効くことを確認できます。
-          実機条件に合わせた改善案は、スタッフ株式会社へご相談ください。
-        </p>
-        <a
-          className="mt-3 inline-flex items-center gap-2 rounded-md bg-staf px-4 py-2 text-sm font-semibold text-white transition hover:bg-staf-dark"
-          href={CONTACT_URL}
-        >
-          <MessageSquareText aria-hidden="true" className="h-4 w-4" />
-          改善案を相談する
-        </a>
-      </div>
+      <p className="mt-5 text-sm leading-relaxed text-slate-600">
+        アンテナ改善、配置改善、筐体影響の低減が通信余裕に効くことを確認できます。
+      </p>
     </Card>
   );
 }
