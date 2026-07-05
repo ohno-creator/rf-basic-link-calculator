@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
   Antenna,
   ArrowRight,
@@ -1222,11 +1222,21 @@ function LessonBattle({
   const correct = selectedChoice === lesson.correctIndex;
   const chapter = Math.ceil(lesson.stage / 10);
   const isBossStage = lesson.stage % 10 === 0;
-  // 選択肢の並びは lesson.id を種にした決定論シャッフルで表示する。
-  // 理由: 出題データは正解を先頭に置いたものが多く（偏り）、元の並びのままだと「正解が常に先頭」に
-  // 見えてしまう。lesson.id 由来のシードなら SSR とクライアントで同じ並びになり（ハイドレーション無ズレ・
-  // 初期表示から位置が分散）、かつ同じ問題は常に同じ並び＝再挑戦で答えの位置がぶれず学習しやすい。
-  const displayedChoices = useMemo<DisplayChoice[]>(() => shuffleChoices(lesson, lesson.id), [lesson]);
+  // 選択肢の並び:
+  // - 初期値は lesson.id を種にした決定論シャッフル（SSRとクライアントで一致＝ハイドレーション無ズレ。
+  //   出題データは正解が先頭に偏っているため、初期表示の時点で位置を分散させる）。
+  // - マウント後は「問題を開くたび／再挑戦のたび」に暗号乱数で再シャッフル（毎回ランダム）。
+  //   回答直後は並びを固定し、選んだ選択肢がずれないようにする。
+  const [displayedChoices, setDisplayedChoices] = useState<DisplayChoice[]>(() =>
+    shuffleChoices(lesson, lesson.id)
+  );
+  const shuffledLessonId = useRef<string | null>(null);
+  useEffect(() => {
+    if (shuffledLessonId.current !== lesson.id || selectedChoice === undefined) {
+      setDisplayedChoices(shuffleChoices(lesson));
+      shuffledLessonId.current = lesson.id;
+    }
+  }, [lesson, selectedChoice]);
   const actionLinks = seoLinksForLesson(lesson);
   const lessonLens = lessonReviewLensFor(lesson);
   const LessonLensIcon = lessonLens.icon;
