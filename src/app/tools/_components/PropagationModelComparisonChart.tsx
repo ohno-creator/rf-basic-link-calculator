@@ -14,6 +14,7 @@ import {
   YAxis
 } from "recharts";
 import { Callout } from "@/components/Callout";
+import { ChartFrame } from "@/components/ChartFrame";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
 import {
@@ -161,9 +162,13 @@ export function PropagationModelComparisonChart({
       : null;
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
-      <figcaption className="text-sm font-semibold text-slate-950">距離で見るモデル別 伝搬損失</figcaption>
-      <div className="mt-2 h-72 w-full" aria-label="距離に対する伝搬損失をモデル別に比較したグラフ">
+    <ChartFrame
+      title="距離で見るモデル別 伝搬損失"
+      variant="slate"
+      padding="md"
+      exportName="propagation-model-comparison"
+    >
+      <div className="h-72 w-full" aria-label="距離に対する伝搬損失をモデル別に比較したグラフ">
         {isMounted && models.length > 0 ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <ComposedChart data={data} margin={{ left: 6, right: 16, top: 12, bottom: 4 }}>
@@ -250,6 +255,6 @@ export function PropagationModelComparisonChart({
           </p>
         </Callout>
       ) : null}
-    </figure>
+    </ChartFrame>
   );
 }

@@ -12,6 +12,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { calculateFsplDb } from "@/lib/rf/fspl";
 import {
@@ -167,6 +168,7 @@ export function TwoRayInterferenceLab({
         <LabSlider id="lab-hr" label="受信高 hr" unit="m" min={0.5} max={20} step={0.5} value={rxHeightM} onChange={setRxHeightM} />
       </div>
 
+      <DiagramExportButton filenameBase="two-ray-interference">
       <div className="mt-3 h-72 w-full" aria-label="2波モデルの干渉による伝搬損失グラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
@@ -210,6 +212,7 @@ export function TwoRayInterferenceLab({
           </div>
         )}
       </div>
+      </DiagramExportButton>
 
       <p className="mt-2 text-xs leading-relaxed text-slate-600">
         縦軸は上ほど損失が小さい（届きやすい）向きです。<span className="font-semibold text-orange-700">オレンジの完全版</span>は山谷を持ち、

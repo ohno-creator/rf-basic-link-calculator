@@ -11,7 +11,7 @@ import {
   XAxis,
   YAxis
 } from "recharts";
-import { Card } from "@/components/Card";
+import { ChartFrame } from "@/components/ChartFrame";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { generateDistancePowerData } from "@/lib/rf/chartData";
 import type { LinkBudgetInput } from "@/lib/rf/linkBudget";
@@ -30,24 +30,19 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
   }, []);
 
   return (
-    <Card as="section" padding="lg">
-      <div className="flex flex-wrap items-start justify-between gap-3">
-        <div>
-          <h3 className="text-base font-semibold text-slate-950">
-            通信距離と受信電力のグラフ
-          </h3>
-          <p className="mt-1 text-sm leading-relaxed text-slate-600">
-            距離が伸びるほど、受信機に届く電波は弱くなります。受信電力が受信感度のラインを下回ると、通信が不安定になる可能性があります。
-          </p>
-        </div>
-        {current ? (
+    <ChartFrame
+      title="通信距離と受信電力のグラフ"
+      description="距離が伸びるほど、受信機に届く電波は弱くなります。受信電力が受信感度のラインを下回ると、通信が不安定になる可能性があります。"
+      aside={
+        current ? (
           <span className="rounded-full bg-staf-light px-3 py-1 text-xs font-semibold text-staf-dark">
             現在: {current.distanceLabel}
           </span>
-        ) : null}
-      </div>
-
-      <div className="mt-5 h-72 w-full" aria-label="距離と受信電力のグラフ">
+        ) : null
+      }
+      exportName="distance-power"
+    >
+      <div className="h-72 w-full" aria-label="距離と受信電力のグラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
@@ -99,6 +94,6 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
           </div>
         )}
       </div>
-    </Card>
+    </ChartFrame>
   );
 }
