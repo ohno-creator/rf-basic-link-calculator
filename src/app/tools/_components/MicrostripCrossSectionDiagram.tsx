@@ -2,7 +2,7 @@
 // 線路幅W、基板厚h、誘電率εrで特性インピーダンスが決まる。W/hとεrに連動する断面の動的SVG。
 
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+import { diagramPalette, DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 
 type MicrostripCrossSectionDiagramProps = {
   widthMm: number;
@@ -52,7 +52,7 @@ export function MicrostripCrossSectionDiagram({
       <svg viewBox="0 0 360 196" role="img" aria-label="マイクロストリップ線路の断面図。基板の上の導体とグラウンド面、誘電体を示す。" className="mt-2 w-full">
         <DiagramDefs />
         {/* 誘電体（基板）: 樹脂グラデ＋εr連動の青みオーバーレイ */}
-        <rect x={SUB_LEFT} y={subTop} width={SUB_W} height={round(GROUND_Y - subTop)} fill={diagramRef(DIAGRAM_DEF_IDS.gradientResin)} stroke="#cbd5e1" strokeWidth={diagramStroke.support} />
+        <rect x={SUB_LEFT} y={subTop} width={SUB_W} height={round(GROUND_Y - subTop)} fill={diagramRef(DIAGRAM_DEF_IDS.gradientResin)} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} />
         <rect x={SUB_LEFT} y={subTop} width={SUB_W} height={round(GROUND_Y - subTop)} fill={`rgba(0,113,189,${dielectricAlpha})`} />
         {/* グラウンド面 */}
         <rect x={SUB_LEFT} y={GROUND_Y} width={SUB_W} height="8" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} />
@@ -61,7 +61,7 @@ export function MicrostripCrossSectionDiagram({
           const leftPath = `M${traceLeft},${traceTop + TRACE_H} Q${round(traceLeft - spread * wPx - 6)},${round((traceTop + GROUND_Y) / 2)} ${round(traceLeft - 4)},${GROUND_Y}`;
           const rightPath = `M${traceRight},${traceTop + TRACE_H} Q${round(traceRight + spread * wPx + 6)},${round((traceTop + GROUND_Y) / 2)} ${round(traceRight + 4)},${GROUND_Y}`;
           return (
-            <g key={index} stroke="#0071BD" strokeWidth="1" fill="none" opacity="0.5" strokeDasharray="3 3">
+            <g key={index} stroke={diagramPalette.staf} strokeWidth="1" fill="none" opacity="0.5" strokeDasharray="3 3">
               <path d={leftPath} />
               <path d={rightPath} />
             </g>
@@ -71,27 +71,27 @@ export function MicrostripCrossSectionDiagram({
         <rect x={traceLeft} y={traceTop} width={round(wPx)} height={TRACE_H} rx="1.5" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)} />
 
         {/* ラベル */}
-        <text x={CENTER_X} y={round(traceTop - 6)} textAnchor="middle" fontSize="11" fontWeight="700" fill="#475569">
+        <text x={CENTER_X} y={round(traceTop - 6)} textAnchor="middle" fontSize="11" fontWeight="700" fill={diagramPalette.inkMuted}>
           導体 W
         </text>
-        <text x={CENTER_X} y={round((subTop + GROUND_Y) / 2 + 4)} textAnchor="middle" fontSize="11" fill="#0071BD">
+        <text x={CENTER_X} y={round((subTop + GROUND_Y) / 2 + 4)} textAnchor="middle" fontSize="11" fill={diagramPalette.staf}>
           基板 εr {dielectricConstant}
         </text>
-        <text x={CENTER_X} y={GROUND_Y + 20} textAnchor="middle" fontSize="11" fill="#475569">
+        <text x={CENTER_X} y={GROUND_Y + 20} textAnchor="middle" fontSize="11" fill={diagramPalette.inkMuted}>
           グラウンド面（GND）
         </text>
-        <text x={SUB_LEFT - 6} y={round((subTop + GROUND_Y) / 2)} textAnchor="end" fontSize="11" fontWeight="700" fill="#475569">
+        <text x={SUB_LEFT - 6} y={round((subTop + GROUND_Y) / 2)} textAnchor="end" fontSize="11" fontWeight="700" fill={diagramPalette.inkMuted}>
           h
         </text>
 
         {/* 右側の数値 */}
         <g transform="translate(266, 36)">
           <text x="0" y="0" {...diagramText.label}>特性インピーダンス</text>
-          <text x="0" y="20" fontSize="18" fontWeight="700" fill="#0071BD" style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{impedanceOhms.toFixed(1)} Ω</text>
+          <text x="0" y="20" fontSize="18" fontWeight="700" fill={diagramPalette.staf} style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{impedanceOhms.toFixed(1)} Ω</text>
           <text x="0" y="52" {...diagramText.label}>実効比誘電率 εeff</text>
-          <text x="0" y="72" fontSize="18" fontWeight="700" fill="#0f172a" style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{effectiveDielectric.toFixed(2)}</text>
+          <text x="0" y="72" fontSize="18" fontWeight="700" fill={diagramPalette.ink} style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{effectiveDielectric.toFixed(2)}</text>
           <text x="0" y="104" {...diagramText.label}>速度係数 VF</text>
-          <text x="0" y="124" fontSize="18" fontWeight="700" fill="#0071BD" style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{velocityFactor.toFixed(3)}</text>
+          <text x="0" y="124" fontSize="18" fontWeight="700" fill={diagramPalette.staf} style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}>{velocityFactor.toFixed(3)}</text>
         </g>
       </svg>
 

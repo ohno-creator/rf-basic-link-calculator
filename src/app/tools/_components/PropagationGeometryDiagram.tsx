@@ -1,5 +1,5 @@
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
+import { diagramPalette, DIAGRAM_DEF_IDS, diagramRef, diagramStroke } from "@/lib/ui/diagramTheme";
 
 type PropagationGeometryDiagramProps = {
   frequencyMHz: number;
@@ -78,7 +78,7 @@ export function PropagationGeometryDiagram({
                 rx={4}
                 fill={diagramRef(DIAGRAM_DEF_IDS.gradientConcrete)}
                 opacity={0.7}
-                stroke="#94A3B8"
+                stroke={diagramPalette.faint}
               />
             ))
           : null}
@@ -92,7 +92,7 @@ export function PropagationGeometryDiagram({
           fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)}
           opacity="0.25"
         />
-        <line x1="60" x2="900" y1={view.groundY} y2={view.groundY} stroke="#64748B" strokeWidth={diagramStroke.emphasis} />
+        <line x1="60" x2="900" y1={view.groundY} y2={view.groundY} stroke={diagramPalette.muted} strokeWidth={diagramStroke.emphasis} />
 
         {/* 見通し・フレネルゾーン */}
         <ellipse
@@ -100,15 +100,15 @@ export function PropagationGeometryDiagram({
           cy={fresnelCy}
           rx={Math.max(150, (view.rxX - view.txX) / 2 - 60)}
           ry={fresnelRy}
-          fill="#BAE6FD"
+          fill={diagramPalette.skyFill}
           opacity="0.2"
-          stroke="#38BDF8"
+          stroke={diagramPalette.skyStroke}
           strokeWidth={diagramStroke.main}
           strokeDasharray="7 6"
         />
 
         {/* 見通し線（直接波）と距離ラベル */}
-        <line x1={view.txX} x2={view.rxX} y1={txAntennaY} y2={rxAntennaY} stroke="#0F172A" strokeWidth="4" />
+        <line x1={view.txX} x2={view.rxX} y1={txAntennaY} y2={rxAntennaY} stroke={diagramPalette.ink} strokeWidth="4" />
         <text
           x={midX}
           y={(txAntennaY + rxAntennaY) / 2 - 16}
@@ -124,7 +124,7 @@ export function PropagationGeometryDiagram({
             <path
               d={`M ${view.txX} ${txAntennaY} Q ${midX} ${reflectionY} ${view.rxX} ${rxAntennaY}`}
               fill="none"
-              stroke="#F97316"
+              stroke={diagramPalette.warn}
               strokeWidth="4"
               opacity="0.9"
             />
@@ -135,32 +135,32 @@ export function PropagationGeometryDiagram({
         ) : null}
 
         {/* 送信側マスト */}
-        <line x1={view.txX} x2={view.txX} y1={view.groundY} y2={txAntennaY} stroke="#0071BD" strokeWidth="10" strokeLinecap="round" />
-        <circle cx={view.txX} cy={txAntennaY} r="14" fill="#0071BD" stroke="#FFFFFF" strokeWidth="4" />
+        <line x1={view.txX} x2={view.txX} y1={view.groundY} y2={txAntennaY} stroke={diagramPalette.staf} strokeWidth="10" strokeLinecap="round" />
+        <circle cx={view.txX} cy={txAntennaY} r="14" fill={diagramPalette.staf} stroke={diagramPalette.white} strokeWidth="4" />
         <text x={view.txX + 22} y={(view.groundY + txAntennaY) / 2} className="fill-staf text-[17px] font-bold">
           hb {Number.isFinite(txHeightM) ? txHeightM.toFixed(1) : "—"}m
         </text>
 
         {/* 受信側マスト */}
-        <line x1={view.rxX} x2={view.rxX} y1={view.groundY} y2={rxAntennaY} stroke="#10B981" strokeWidth="10" strokeLinecap="round" />
-        <circle cx={view.rxX} cy={rxAntennaY} r="14" fill="#10B981" stroke="#FFFFFF" strokeWidth="4" />
+        <line x1={view.rxX} x2={view.rxX} y1={view.groundY} y2={rxAntennaY} stroke={diagramPalette.success} strokeWidth="10" strokeLinecap="round" />
+        <circle cx={view.rxX} cy={rxAntennaY} r="14" fill={diagramPalette.success} stroke={diagramPalette.white} strokeWidth="4" />
         <text x={view.rxX - 22} y={(view.groundY + rxAntennaY) / 2} textAnchor="end" className="fill-emerald-700 text-[17px] font-bold">
           hm {Number.isFinite(rxHeightM) ? rxHeightM.toFixed(1) : "—"}m
         </text>
 
         {/* 送受信ラベル */}
-        <rect x={view.txX - 66} y={view.groundY + 14} width="132" height="38" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+        <rect x={view.txX - 66} y={view.groundY + 14} width="132" height="38" rx="8" fill={diagramPalette.white} stroke={diagramPalette.line} />
         <text x={view.txX} y={view.groundY + 39} textAnchor="middle" className="fill-slate-800 text-[16px] font-bold">
           送信側 hb
         </text>
-        <rect x={view.rxX - 66} y={view.groundY + 14} width="132" height="38" rx="8" fill="#FFFFFF" stroke="#CBD5E1" />
+        <rect x={view.rxX - 66} y={view.groundY + 14} width="132" height="38" rx="8" fill={diagramPalette.white} stroke={diagramPalette.line} />
         <text x={view.rxX} y={view.groundY + 39} textAnchor="middle" className="fill-slate-800 text-[16px] font-bold">
           受信側 hm
         </text>
 
         {/* 上部バッジ：周波数・エリア */}
         <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
-          <rect x="332" y="16" width="296" height="64" rx="12" fill="#FFFFFF" stroke="#CBD5E1" />
+          <rect x="332" y="16" width="296" height="64" rx="12" fill={diagramPalette.white} stroke={diagramPalette.line} />
           <text x="480" y="44" textAnchor="middle" className="fill-slate-950 text-[18px] font-bold">
             {Number.isFinite(frequencyMHz) ? frequencyMHz.toFixed(0) : "—"} MHz
           </text>

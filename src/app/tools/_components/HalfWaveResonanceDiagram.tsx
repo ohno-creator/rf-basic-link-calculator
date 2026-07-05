@@ -3,7 +3,7 @@
 // 電流分布は I(z) = I0·cos(π·z / L)（中央で最大＝腹、両端でゼロ＝節）。
 
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+import { diagramPalette, DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 
 const X0 = 70;
 const X1 = 490;
@@ -43,8 +43,8 @@ export function HalfWaveResonanceDiagram() {
         <DiagramDefs />
 
         {/* 振れ幅（定在波の包絡線） */}
-        <path d={posPath} fill="none" stroke="#93c5fd" strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
-        <path d={negPath} fill="none" stroke="#93c5fd" strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
+        <path d={posPath} fill="none" stroke={diagramPalette.skySoft} strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
+        <path d={negPath} fill="none" stroke={diagramPalette.skySoft} strokeWidth={diagramStroke.main} strokeDasharray="4 4" />
 
         {/* 導体（ダイポールの2本のアーム）：金属素材のグラデーション */}
         <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
@@ -55,7 +55,7 @@ export function HalfWaveResonanceDiagram() {
             height="5"
             rx="2.5"
             fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)}
-            stroke="#64748b"
+            stroke={diagramPalette.muted}
             strokeWidth={diagramStroke.support}
           />
           <rect
@@ -65,17 +65,17 @@ export function HalfWaveResonanceDiagram() {
             height="5"
             rx="2.5"
             fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)}
-            stroke="#64748b"
+            stroke={diagramPalette.muted}
             strokeWidth={diagramStroke.support}
           />
         </g>
 
         {/* 端（電流ゼロ＝節） */}
-        <circle cx={X0} cy={AXIS_Y} r="5" fill="#94a3b8" />
-        <circle cx={X1} cy={AXIS_Y} r="5" fill="#94a3b8" />
+        <circle cx={X0} cy={AXIS_Y} r="5" fill={diagramPalette.faint} />
+        <circle cx={X1} cy={AXIS_Y} r="5" fill={diagramPalette.faint} />
 
         {/* 電流の定在波（時間とともに腹が上下する） */}
-        <path d={posPath} fill="none" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} strokeLinejoin="round">
+        <path d={posPath} fill="none" stroke={diagramPalette.staf} strokeWidth={diagramStroke.emphasis} strokeLinejoin="round">
           <animate
             attributeName="d"
             dur="2.6s"
@@ -85,10 +85,10 @@ export function HalfWaveResonanceDiagram() {
         </path>
 
         {/* 給電点 */}
-        <circle cx={XC} cy={AXIS_Y} r="7" fill="#ffffff" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} />
+        <circle cx={XC} cy={AXIS_Y} r="7" fill={diagramPalette.white} stroke={diagramPalette.staf} strokeWidth={diagramStroke.emphasis} />
 
         {/* ラベル */}
-        <text x={XC} y={AXIS_Y - AMP - 12} textAnchor="middle" fontSize="13" fontWeight="700" fill="#0071BD">
+        <text x={XC} y={AXIS_Y - AMP - 12} textAnchor="middle" fontSize="13" fontWeight="700" fill={diagramPalette.staf}>
           電流 最大（腹）
         </text>
         <text x={X0} y={AXIS_Y - 14} textAnchor="middle" {...diagramText.label}>
@@ -107,7 +107,7 @@ export function HalfWaveResonanceDiagram() {
           y1={AXIS_Y + 54}
           x2={X1}
           y2={AXIS_Y + 54}
-          stroke="#94a3b8"
+          stroke={diagramPalette.faint}
           strokeWidth={diagramStroke.support}
           markerStart={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
           markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}

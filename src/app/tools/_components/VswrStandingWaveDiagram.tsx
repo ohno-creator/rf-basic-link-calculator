@@ -3,7 +3,8 @@
 
 import { Tooltip } from "@/components/Tooltip";
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+import { DiagramExportButton } from "@/components/DiagramExportButton";
+import { DIAGRAM_DEF_IDS, diagramPalette, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 
 type VswrStandingWaveDiagramProps = {
   reflection: number;
@@ -66,48 +67,50 @@ export function VswrStandingWaveDiagram({
           定在波で見るVSWR（電圧の大きさ）
         </figcaption>
         <Tooltip term="定在波図">
-          伝送線路上の電圧の山（Vmax=1+Γ）と谷（Vmin=1−Γ）の包絡線です。整合が悪いほど波打ちが深くなります。VSWR=Vmax/Vmin。
+          伝送線路上の電圧的山（Vmax=1+Γ）と谷（Vmin=1−Γ）の包絡線です。整合が悪いほど波打ちが深くなります。VSWR=Vmax/Vmin。
         </Tooltip>
       </div>
-      <svg viewBox="0 0 560 200" role="img" aria-label="伝送線路上の電圧定在波。反射が大きいほど山と谷の差が広がる図。" className="mt-2 w-full">
-        <DiagramDefs />
+      <DiagramExportButton filenameBase="vswr-standing-wave">
+        <svg viewBox="0 0 560 200" role="img" aria-label="伝送線路上の電圧定在波。反射が大きいほど山と谷の差が広がる図。" className="mt-2 w-full">
+          <DiagramDefs />
 
-        {/* 波形下の淡い塗り（基準線・包絡線より背面） */}
-        <path d={envelopeFillPath} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} fillOpacity="0.5" stroke="none" />
+          {/* 波形下の淡い塗り（基準線・包絡線より背面） */}
+          <path d={envelopeFillPath} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} fillOpacity="0.5" stroke="none" />
 
-        {/* Vmax / Vmin の基準線 */}
-        <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
-        <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke="#93c5fd" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
-        <text x={X1} y={vMaxLabelY} textAnchor="end" {...diagramText.label} fill="#dc2626">
-          Vmax = 1 + Γ
-        </text>
-        <text x={X1} y={vMinLabelY} textAnchor="end" {...diagramText.label} fill="#2563eb">
-          Vmin = 1 − Γ
-        </text>
+          {/* Vmax / Vmin の基準線 */}
+          <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
+          <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke={diagramPalette.skySoft} strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
+          <text x={X1} y={vMaxLabelY} textAnchor="end" {...diagramText.label} fill="#dc2626">
+            Vmax = 1 + Γ
+          </text>
+          <text x={X1} y={vMinLabelY} textAnchor="end" {...diagramText.label} fill="#2563eb">
+            Vmin = 1 − Γ
+          </text>
 
-        {/* 定在波の包絡線 */}
-        <path d={envelope} fill="none" stroke="#0071BD" strokeWidth={diagramStroke.emphasis} strokeLinejoin="round" />
+          {/* 定在波の包絡線 */}
+          <path d={envelope} fill="none" stroke={diagramPalette.staf} strokeWidth={diagramStroke.emphasis} strokeLinejoin="round" />
 
-        {/* 伝送線路と負荷 */}
-        <line x1={X0} y1={BASE} x2={X1 - 36} y2={BASE} stroke="#334155" strokeWidth={diagramStroke.emphasis} />
-        <rect
-          x={X1 - 36}
-          y={BASE - 16}
-          width="36"
-          height="32"
-          rx="4"
-          fill={diagramRef(DIAGRAM_DEF_IDS.gradientConcrete)}
-          stroke="#334155"
-          strokeWidth={diagramStroke.main}
-          filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}
-        />
-        <text x={X1 - 18} y={BASE + 4} textAnchor="middle" fontSize="9" fill="#334155">
-          負荷
-        </text>
-        <text x={X0} y={BASE + 18} {...diagramText.label}>
-          送信機側 →
-        </text>
-      </svg>
+          {/* 伝送線路と負荷 */}
+          <line x1={X0} y1={BASE} x2={X1 - 36} y2={BASE} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.emphasis} />
+          <rect
+            x={X1 - 36}
+            y={BASE - 16}
+            width="36"
+            height="32"
+            rx="4"
+            fill={diagramRef(DIAGRAM_DEF_IDS.gradientConcrete)}
+            stroke={diagramPalette.inkSoft}
+            strokeWidth={diagramStroke.main}
+            filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}
+          />
+          <text x={X1 - 18} y={BASE + 4} textAnchor="middle" fontSize="9" fill={diagramPalette.inkSoft}>
+            負荷
+          </text>
+          <text x={X0} y={BASE + 18} {...diagramText.label}>
+            送信機側 →
+          </text>
+        </svg>
+      </DiagramExportButton>
 
       <div className="mt-2 grid gap-2 sm:grid-cols-2">
         <div className="rounded-md bg-white p-2 text-center">
