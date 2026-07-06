@@ -1230,12 +1230,18 @@ function LessonBattle({
   const [displayedChoices, setDisplayedChoices] = useState<DisplayChoice[]>(() =>
     shuffleChoices(lesson, lesson.id)
   );
-  const shuffledLessonId = useRef<string | null>(null);
+  const previousLessonId = useRef(lesson.id);
+  const previousSelectedChoice = useRef(selectedChoice);
   useEffect(() => {
-    if (shuffledLessonId.current !== lesson.id || selectedChoice === undefined) {
+    const lessonChanged = previousLessonId.current !== lesson.id;
+    const answerCleared = previousSelectedChoice.current !== undefined && selectedChoice === undefined;
+
+    if (lessonChanged || answerCleared) {
       setDisplayedChoices(shuffleChoices(lesson));
-      shuffledLessonId.current = lesson.id;
     }
+
+    previousLessonId.current = lesson.id;
+    previousSelectedChoice.current = selectedChoice;
   }, [lesson, selectedChoice]);
   const actionLinks = seoLinksForLesson(lesson);
   const lessonLens = lessonReviewLensFor(lesson);

@@ -1,13 +1,13 @@
 # アクセシビリティ基準線 (UX-0 Axe Baseline)
 
-**作成日時**: 2026-07-03T14:23:55.884Z
+**作成日時**: 2026-07-06T08:36:14.509Z
 
 重大(serious/critical)なアクセシビリティ違反の一覧です。現状の違反を記録し、今後の改善の基準線とします。
 
 ### 統計情報
 - 調査ページ数: 25
 - 違反ありページ数: 25
-- 重大違反(種類数)の総和: 27
+- 重大違反(種類数)の総和: 26
 
 ## 違反詳細
 
@@ -25,15 +25,15 @@
   Element has insufficient color contrast of 3.86 (foreground color: #cce3f2, background color: #0071bd, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".mt-10"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
 ---
 
-### [rf-basic-link-calculator](file:///tools/rf-basic-link-calculator/) (3件の重大違反)
+### [rf-basic-link-calculator](file:///tools/rf-basic-link-calculator/) (2件の重大違反)
 
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
@@ -47,9 +47,9 @@
   Element has insufficient color contrast of 4.15 (foreground color: #d9eaf5, background color: #0071bd, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".border-slate-100 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -64,22 +64,6 @@
   - 修正要約: Fix any of the following:
   Element has focusable descendants
 
-#### 🔴 [CRITICAL] select-name: Select element must have an accessible name
-- **説明**: Ensure select element has an accessible name
-- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/select-name?application=playwright](https://dequeuniversity.com/rules/axe/4.12/select-name?application=playwright)
-- **対象要素**:
-  ```html
-  <select class="h-11 rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/20"><option value="m">m</option><option value="km" selected="">km</option></select>
-  ```
-  - セレクタ: `[".sm\\:grid-cols-\\[1fr_120px\\].grid.gap-3 > select"]`
-  - 修正要約: Fix any of the following:
-  Element does not have an implicit (wrapped) <label>
-  Element does not have an explicit <label>
-  aria-label attribute does not exist or is empty
-  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
-  Element has no title attribute
-  Element's default semantics were not overridden with role="none" or role="presentation"
-
 ---
 
 ### [simple-link-budget](file:///tools/simple-link-budget/) (1件の重大違反)
@@ -89,23 +73,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <p class="text-xs font-semibold text-slate-500">リンク余裕</p>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".bg-staf-light.p-4.rounded-lg > .text-left > .text-slate-500:nth-child(1)"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <p class="mt-1 text-xs leading-relaxed text-slate-500">0dBを上回るほど余裕あり</p>
-  ```
-  - セレクタ: `[".bg-staf-light.p-4.rounded-lg > .text-left > .mt-1.text-slate-500.leading-relaxed"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -118,9 +88,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -133,16 +103,23 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+  ```
+  - セレクタ: `[".mr-auto"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="mt-1 text-[11px] leading-relaxed text-slate-400">※横方向（距離）と縦方向（高さ）の縮尺は異なります（路線断面図と同様）。回折損失はナイフエッジ近似による目安で、樹木・建物の透過・反射や地形の細部は含みません。</p>
   ```
-  - セレクタ: `[".text-\\[11px\\].text-slate-400.mt-1"]`
+  - セレクタ: `[".text-slate-400.text-\\[11px\\].mt-1"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -162,34 +139,6 @@
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="text-xs font-medium text-slate-400">MHz</span>
-  ```
-  - セレクタ: `[".p-3.rounded-lg.border-slate-200:nth-child(1) > .flex-wrap.justify-between.gap-2 > .gap-2.flex.items-center > .font-medium.text-slate-400.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="text-xs font-medium text-slate-400">km</span>
-  ```
-  - セレクタ: `[".p-3.rounded-lg.border-slate-200:nth-child(2) > .flex-wrap.justify-between.gap-2 > .gap-2.flex.items-center > .font-medium.text-slate-400.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="ml-2 text-xs font-medium text-slate-400">+<!-- -->30.0</span>
-  ```
-  - セレクタ: `[".p-3.rounded-lg.border-slate-200:nth-child(3) > .gap-3.justify-between.flex > .text-right.shrink-0 > .ml-2.font-medium.text-slate-400"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="ml-2 text-xs font-medium text-slate-400">+<!-- -->34.9</span>
-  ```
-  - セレクタ: `[".p-3.rounded-lg.border-slate-200:nth-child(4) > .gap-3.justify-between.flex > .text-right.shrink-0 > .ml-2.font-medium.text-slate-400"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
   <span class="w-6 shrink-0 text-xs font-semibold text-slate-400">#<!-- -->1</span>
   ```
   - セレクタ: `[".w-6"]`
@@ -197,16 +146,30 @@
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
+  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+  ```
+  - セレクタ: `[".mt-4 > div > .justify-end.mb-2.gap-2 > .mr-auto.text-slate-400.gap-1"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <span class="ml-0.5 text-xs font-medium text-slate-400">MHz</span>
   ```
-  - セレクタ: `[".p-3.rounded-md.border-slate-200:nth-child(1) > .justify-between.gap-2.flex > .text-staf-dark.font-bold.text-sm > .ml-0\\.5.font-medium.text-slate-400"]`
+  - セレクタ: `[".rounded-md.p-4.bg-white:nth-child(1) > .justify-between.gap-2.flex > .text-staf-dark.font-bold.text-sm > .ml-0\\.5.font-medium.text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `["div:nth-child(5) > .justify-end.mb-2.gap-2 > .mr-auto.text-slate-400.gap-1"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -226,9 +189,9 @@
   Element has insufficient color contrast of 4.15 (foreground color: #d9eaf5, background color: #0071bd, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".pt-6"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -255,16 +218,9 @@
   Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 10.5pt (14px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="text-slate-400">セルにカーソル／タップで、その位置のOFF・ON・改善量を表示します。</span>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".min-h-\\[1\\.5rem\\] > .text-slate-400"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mt-10 > p:nth-child(3)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -412,7 +368,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(1) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(1) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -489,7 +445,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(2) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(2) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -566,7 +522,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(3) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(3) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -643,7 +599,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(4) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(4) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -720,7 +676,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(5) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(5) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -797,7 +753,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(6) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(6) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -874,7 +830,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(7) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(7) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -951,7 +907,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(8) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(8) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1028,7 +984,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(9) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(9) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1105,7 +1061,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(10) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(10) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1182,7 +1138,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(11) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(11) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1259,7 +1215,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(12) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(12) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1336,7 +1292,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(13) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(13) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1413,7 +1369,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(14) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(14) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1490,7 +1446,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(15) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(15) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1567,7 +1523,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(16) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(16) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1644,7 +1600,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(17) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(17) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1721,7 +1677,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(18) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(18) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1798,7 +1754,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(19) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(19) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1875,7 +1831,7 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/<!-- -->10</p>
   ```
-  - セレクタ: `[".p-3.border-slate-100:nth-child(20) > .justify-between.gap-2.flex > p:nth-child(2)"]`
+  - セレクタ: `[".border-slate-100.p-4:nth-child(20) > .justify-between.gap-2.flex > p:nth-child(2)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
@@ -1952,37 +1908,30 @@
   ```html
   <p class="text-[11px] font-bold text-slate-400">学ぶ領域</p>
   ```
-  - セレクタ: `[".mt-4.grid.gap-2 > .p-3:nth-child(1) > p:nth-child(1)"]`
+  - セレクタ: `[".mt-4.grid.gap-2 > .p-4:nth-child(1) > p:nth-child(1)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-[11px] font-bold text-slate-400">メーカー視点</p>
   ```
-  - セレクタ: `[".mt-4.grid.gap-2 > .p-3:nth-child(2) > p:nth-child(1)"]`
+  - セレクタ: `[".mt-4.grid.gap-2 > .p-4:nth-child(2) > p:nth-child(1)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-[11px] font-bold text-slate-400">確認資料</p>
   ```
-  - セレクタ: `[".mt-4.grid.gap-2 > .p-3:nth-child(3) > p:nth-child(1)"]`
+  - セレクタ: `[".mt-4.grid.gap-2 > .p-4:nth-child(3) > p:nth-child(1)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-[11px] font-bold text-slate-400">到達点</p>
   ```
-  - セレクタ: `[".p-3:nth-child(4) > p:nth-child(1)"]`
+  - セレクタ: `[".p-4:nth-child(4) > p:nth-child(1)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="text-xs font-semibold text-slate-400">20<!-- -->章×10問</span>
-  ```
-  - セレクタ: `[".font-semibold.text-slate-400"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-[11px] font-bold text-slate-400">0<!-- -->/10</p>
@@ -2125,16 +2074,9 @@
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
-  <p class="text-xs font-bold text-slate-400">第<!-- -->1<!-- -->章 <!-- -->電波と単位の基礎<!-- --> / STAGE <!-- -->1<!-- --> <!-- -->・通常戦</p>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".items-start.gap-3.flex-wrap > div:nth-child(1) > p:nth-child(1)"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".mt-10"]`
+  - セレクタ: `[".mt-10 > p:nth-child(3)"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2147,51 +2089,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="block text-xs text-slate-400">基準（短縮なし）</span>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".align-top:nth-child(1) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="block text-xs text-slate-400">低損失・ケーブル誘電体</span>
-  ```
-  - セレクタ: `[".align-top:nth-child(2) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="block text-xs text-slate-400">一般的なプリント基板</span>
-  ```
-  - セレクタ: `[".align-top:nth-child(3) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="block text-xs text-slate-400">セラミック基板</span>
-  ```
-  - セレクタ: `[".align-top:nth-child(4) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="block text-xs text-slate-400">チップアンテナ材</span>
-  ```
-  - セレクタ: `[".align-top:nth-child(5) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <span class="block text-xs text-slate-400">小型チップアンテナ材</span>
-  ```
-  - セレクタ: `[".align-top:nth-child(6) > .pr-3 > .text-slate-400.block.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".pt-6"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2204,16 +2104,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <p class="mt-2 text-xs text-slate-500">次は +10dB = 10倍</p>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-staf > .mt-2.text-slate-500.text-xs"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.14 (foreground color: #64748b, background color: #e6f1f8, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2226,16 +2119,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <p class="mt-1 text-xs leading-relaxed text-slate-500">+10dBで10倍、+3dBで約2倍</p>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".bg-staf-light.p-4.rounded-lg > .mt-1.text-left > .mt-1.text-slate-500.leading-relaxed"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-  ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
-  ```
-  - セレクタ: `[".pt-6"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2248,9 +2134,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mr-auto"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2263,9 +2156,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".mr-auto"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2278,9 +2178,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2293,9 +2193,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2308,9 +2208,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2323,9 +2223,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2338,9 +2238,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2353,9 +2253,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2368,9 +2268,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2383,9 +2283,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2398,9 +2298,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2413,9 +2313,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2428,9 +2328,9 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <div class="mt-10 border-t border-slate-100 pt-6 text-xs text-slate-400">© スタッフ株式会社　アンテナ・無線 基礎計算ツール集</div>
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100"]`
+  - セレクタ: `[".text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
