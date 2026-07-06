@@ -182,19 +182,22 @@ export function ResultPanel({ input, result }: { input: NcuBelowGroundInput; res
 
   return (
     <aside className="space-y-4 lg:sticky lg:top-20">
-      <section className={`rounded-lg border p-5 shadow-card ${judgementTone[result.judgement.level]}`}>
+      <section
+        data-testid="primary-result"
+        className={`rounded-lg border p-4 shadow-card ${judgementTone[result.judgement.level]}`}
+      >
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-bold opacity-80">標準条件の判定</p>
-            <h2 className="mt-1 text-3xl font-bold tracking-tight">{result.judgement.label}</h2>
+            <p className="text-xs font-bold opacity-80">標準条件の判定</p>
+            <h2 className="mt-1 text-2xl font-bold tracking-tight">{result.judgement.label}</h2>
           </div>
           {result.judgement.level === "poor" ? (
-            <AlertTriangle aria-hidden="true" className="h-8 w-8" />
+            <AlertTriangle aria-hidden="true" className="h-7 w-7 shrink-0" />
           ) : (
-            <CheckCircle2 aria-hidden="true" className="h-8 w-8" />
+            <CheckCircle2 aria-hidden="true" className="h-7 w-7 shrink-0" />
           )}
         </div>
-        <p className="mt-3 text-sm leading-relaxed">{result.judgement.summary}</p>
+        <p className="mt-2 text-xs leading-relaxed">{result.judgement.summary}</p>
       </section>
 
       <Callout tone="danger" size="md">
@@ -270,4 +273,3 @@ function Row({ label, value, strong = false }: { label: string; value: string; s
     </div>
   );
 }
-

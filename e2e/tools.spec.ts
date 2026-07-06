@@ -41,7 +41,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
   }
 });
 
-test("basic tool shell keeps the calculator near the first viewport", async ({ page }) => {
+test("basic tools keep the calculator and primary result near the first viewport", async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -49,8 +49,26 @@ test("basic tool shell keeps the calculator near the first viewport", async ({ p
     await page.goto(`/tools/${tool.slug}/`);
     const calculator = page.getByTestId("tool-calculator");
     await expect(calculator).toBeVisible();
-    const box = await calculator.boundingBox();
-    expect(box?.y, tool.slug).toBeLessThanOrEqual(400);
+
+    // ハイドレーションやレイアウト確定を待つため、期待する位置に収まるまで自動リトライ（poll）する
+    await expect.poll(async () => {
+      const box = await calculator.boundingBox();
+      return box?.y ?? 999;
+    }, {
+      message: `${tool.slug}: calculator Y coordinate should be within 400px`,
+      timeout: 5000
+    }).toBeLessThanOrEqual(400);
+
+    const primaryResult = page.getByTestId("primary-result").first();
+    await expect(primaryResult, tool.slug).toBeVisible();
+
+    await expect.poll(async () => {
+      const resultBox = await primaryResult.boundingBox();
+      return (resultBox?.y ?? 901) + (resultBox?.height ?? 0);
+    }, {
+      message: `${tool.slug}: primary result bottom coordinate should be within 900px`,
+      timeout: 5000
+    }).toBeLessThanOrEqual(900);
   }
 });
 
