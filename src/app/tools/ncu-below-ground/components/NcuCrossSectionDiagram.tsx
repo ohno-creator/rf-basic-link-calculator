@@ -3,7 +3,7 @@
 import { Card } from "@/components/Card";
 import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+import { diagramPalette, DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 import {
   ncuAntennaPositionOptions,
   ncuBoxMaterialOptions,
@@ -20,15 +20,15 @@ import { findOptionLabel, formatDistance, formatSigned } from "./ncuShared";
 // 損失[dB]の大きさ→色（緑=小〜赤=支配的）。断面図の損失スタックと凡例で共通言語にする。
 function sevHex(typical: number): { fill: string; stroke: string } {
   if (typical >= 18) {
-    return { fill: "#e11d48", stroke: "#9f1239" };
+    return { fill: diagramPalette.danger, stroke: diagramPalette.dangerDark };
   }
   if (typical >= 10) {
-    return { fill: "#f97316", stroke: "#c2410c" };
+    return { fill: diagramPalette.warn, stroke: diagramPalette.warnDeep };
   }
   if (typical >= 4) {
-    return { fill: "#f59e0b", stroke: "#b45309" };
+    return { fill: diagramPalette.amber, stroke: diagramPalette.amberDeep };
   }
-  return { fill: "#10b981", stroke: "#047857" };
+  return { fill: diagramPalette.success, stroke: diagramPalette.successDeep };
 }
 
 export function NcuCrossSectionDiagram({
@@ -63,7 +63,7 @@ export function NcuCrossSectionDiagram({
     : input.coverMaterial === "resin"
       ? diagramRef(DIAGRAM_DEF_IDS.gradientResin)
       : diagramRef(DIAGRAM_DEF_IDS.gradientConcrete);
-  const boxStroke = isMetalBox ? "#334155" : input.boxMaterial === "resin" ? "#0ea5e9" : "#94a3b8";
+  const boxStroke = isMetalBox ? diagramPalette.inkSoft : input.boxMaterial === "resin" ? diagramPalette.skyStroke : diagramPalette.faint;
   const boxFill = isMetalBox
     ? diagramRef(DIAGRAM_DEF_IDS.gradientMetal)
     : input.boxMaterial === "resin"
@@ -211,7 +211,7 @@ export function NcuCrossSectionDiagram({
           <DiagramDefs />
           <defs>
             <marker id="ncuArrowSignal" markerHeight="8" markerWidth="8" orient="auto" refX="6" refY="4">
-              <path d="M0 0 L8 4 L0 8 Z" fill="#0284c7" />
+              <path d="M0 0 L8 4 L0 8 Z" fill={diagramPalette.path} />
             </marker>
           </defs>
 
@@ -219,18 +219,18 @@ export function NcuCrossSectionDiagram({
           <rect x="0" y="0" width="690" height={GL_Y} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} />
           <rect x="0" y={GL_Y} width="690" height={520 - GL_Y} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSoil)} />
           <rect x="0" y={GL_Y} width="690" height={520 - GL_Y} fill={diagramRef(DIAGRAM_DEF_IDS.hatchGround)} opacity="0.25" />
-          <line x1="0" x2="690" y1={GL_Y} y2={GL_Y} stroke="#64748b" strokeWidth={diagramStroke.emphasis} />
-          <text x="14" y={GL_Y - 8} fill="#475569" fontSize="13" fontWeight="700">
+          <line x1="0" x2="690" y1={GL_Y} y2={GL_Y} stroke={diagramPalette.muted} strokeWidth={diagramStroke.emphasis} />
+          <text x="14" y={GL_Y - 8} fill={diagramPalette.inkMuted} fontSize="13" fontWeight="700">
             地表面 GL
           </text>
 
           {/* GW / 基地局 */}
           <g transform="translate(36 44)">
-            <path d="M36 108 V30" stroke="#005A95" strokeWidth="4" />
-            <circle cx="36" cy="22" r="6" fill="#0071BD" />
-            <path d="M22 30 Q36 8 50 30" fill="none" stroke="#0071BD" strokeWidth="2.5" opacity="0.55" />
-            <path d="M14 38 Q36 4 58 38" fill="none" stroke="#0071BD" strokeWidth="2" opacity="0.35" />
-            <text x="36" y="124" textAnchor="middle" fill="#005A95" fontSize="11" fontWeight="700">
+            <path d="M36 108 V30" stroke={diagramPalette.stafDark} strokeWidth="4" />
+            <circle cx="36" cy="22" r="6" fill={diagramPalette.staf} />
+            <path d="M22 30 Q36 8 50 30" fill="none" stroke={diagramPalette.staf} strokeWidth="2.5" opacity="0.55" />
+            <path d="M14 38 Q36 4 58 38" fill="none" stroke={diagramPalette.staf} strokeWidth="2" opacity="0.35" />
+            <text x="36" y="124" textAnchor="middle" fill={diagramPalette.stafDark} fontSize="11" fontWeight="700">
               GW/基地局
             </text>
             <text x="36" y="139" textAnchor="middle" {...diagramText.label}>
@@ -242,21 +242,21 @@ export function NcuCrossSectionDiagram({
           <path
             d={`M78 70 C240 48 410 70 ${BOX_CX} ${GL_Y - 10}`}
             fill="none"
-            stroke="#0284c7"
+            stroke={diagramPalette.path}
             strokeWidth="3.5"
             strokeDasharray="9 8"
           />
           <path
             d={`M${BOX_CX} ${GL_Y - 2} L${BOX_CX} ${antennaY - 16}`}
             fill="none"
-            stroke="#0284c7"
+            stroke={diagramPalette.path}
             strokeWidth="3"
             markerEnd="url(#ncuArrowSignal)"
             opacity={pathOpacity}
           />
           <g>
-            <rect x="232" y="44" width="190" height="24" rx="8" fill="#ffffff" stroke="#bae6fd" />
-            <text x="240" y="60" fill="#0369a1" fontSize="12" fontWeight="700">
+            <rect x="232" y="44" width="190" height="24" rx="8" fill={diagramPalette.white} stroke={diagramPalette.skyFill} />
+            <text x="240" y="60" fill={diagramPalette.stafDeep} fontSize="12" fontWeight="700">
               地上伝搬 {result.outdoorPathLossDb.toFixed(0)}dB・{modelLabel}
             </text>
           </g>
@@ -264,20 +264,20 @@ export function NcuCrossSectionDiagram({
           {/* 地表上の遮蔽（車両・人） */}
           {hasVehicle ? (
             <g transform={`translate(${BOX_CX - 66} ${GL_Y - 42})`}>
-              <rect x="0" y="18" width="120" height="26" rx="9" fill="#334155" />
-              <path d="M20 18 L38 2 H84 L102 18 Z" fill="#475569" />
-              <circle cx="28" cy="46" r="8" fill="#0f172a" />
-              <circle cx="92" cy="46" r="8" fill="#0f172a" />
-              <text x="60" y="12" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
+              <rect x="0" y="18" width="120" height="26" rx="9" fill={diagramPalette.inkSoft} />
+              <path d="M20 18 L38 2 H84 L102 18 Z" fill={diagramPalette.inkMuted} />
+              <circle cx="28" cy="46" r="8" fill={diagramPalette.ink} />
+              <circle cx="92" cy="46" r="8" fill={diagramPalette.ink} />
+              <text x="60" y="12" textAnchor="middle" fill={diagramPalette.inkSoft} fontSize="11" fontWeight="700">
                 {surfaceLabel}
               </text>
             </g>
           ) : null}
           {hasPedestrian ? (
             <g transform={`translate(${BOX_CX - 8} ${GL_Y - 52})`}>
-              <circle cx="6" cy="6" r="7" fill="#64748b" />
-              <path d="M6 14 V40 M-7 24 H19 M6 40 L-5 56 M6 40 L17 56" stroke="#64748b" strokeWidth="5" strokeLinecap="round" />
-              <text x="6" y="-6" textAnchor="middle" fill="#334155" fontSize="11" fontWeight="700">
+              <circle cx="6" cy="6" r="7" fill={diagramPalette.muted} />
+              <path d="M6 14 V40 M-7 24 H19 M6 40 L-5 56 M6 40 L17 56" stroke={diagramPalette.muted} strokeWidth="5" strokeLinecap="round" />
+              <text x="6" y="-6" textAnchor="middle" fill={diagramPalette.inkSoft} fontSize="11" fontWeight="700">
                 {surfaceLabel}
               </text>
             </g>
@@ -287,7 +287,7 @@ export function NcuCrossSectionDiagram({
           <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
             <rect x={BOX_X} y={GL_Y} width={BOX_W} height={boxBottom - GL_Y} rx="12" fill={boxFill} stroke={boxStroke} strokeWidth={isMetalBox ? 5 : 3} />
             {/* 内部空洞 */}
-            <rect x={BOX_X + 12} y={innerTop} width={BOX_W - 24} height={innerBottom - innerTop} rx="8" fill="#ffffff" stroke="#e2e8f0" strokeWidth={diagramStroke.main} />
+            <rect x={BOX_X + 12} y={innerTop} width={BOX_W - 24} height={innerBottom - innerTop} rx="8" fill={diagramPalette.white} stroke={diagramPalette.grid} strokeWidth={diagramStroke.main} />
             {/* 水たまり */}
             {waterH > 1 ? (
               <rect x={BOX_X + 13} y={innerBottom - waterH} width={BOX_W - 26} height={waterH} rx="4" fill={diagramRef(DIAGRAM_DEF_IDS.gradientWater)} opacity={hasWaterPool ? 0.85 : 0.55} />
@@ -297,27 +297,27 @@ export function NcuCrossSectionDiagram({
               <rect x={BOX_X + 13} y={antennaY - 26} width="9" height="52" rx="3" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} opacity="0.85" />
             ) : null}
             {/* NCUアンテナ */}
-            <circle cx={BOX_CX} cy={antennaY} r="13" fill="#10b981" />
-            <path d={`M${BOX_CX} ${antennaY} v-34`} stroke="#10b981" strokeWidth="5" strokeLinecap="round" />
-            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX - 12} ${antennaY - 48} ${BOX_CX - 24} ${antennaY - 34}`} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
-            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX + 12} ${antennaY - 48} ${BOX_CX + 24} ${antennaY - 34}`} fill="none" stroke="#10b981" strokeWidth="2.5" strokeLinecap="round" />
+            <circle cx={BOX_CX} cy={antennaY} r="13" fill={diagramPalette.success} />
+            <path d={`M${BOX_CX} ${antennaY} v-34`} stroke={diagramPalette.success} strokeWidth="5" strokeLinecap="round" />
+            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX - 12} ${antennaY - 48} ${BOX_CX - 24} ${antennaY - 34}`} fill="none" stroke={diagramPalette.success} strokeWidth="2.5" strokeLinecap="round" />
+            <path d={`M${BOX_CX} ${antennaY - 34} Q${BOX_CX + 12} ${antennaY - 48} ${BOX_CX + 24} ${antennaY - 34}`} fill="none" stroke={diagramPalette.success} strokeWidth="2.5" strokeLinecap="round" />
             {/* 蓋（材質で色・縁、金属は太枠）。開口は中央の隙間。密閉は×印 */}
-            <rect x={BOX_X - 28} y={GL_Y - 11} width={BOX_W + 56} height="22" rx="6" fill={lidColor} stroke={isMetalCover ? "#0f172a" : "#94a3b8"} strokeWidth={isMetalCover ? 3 : 2} />
+            <rect x={BOX_X - 28} y={GL_Y - 11} width={BOX_W + 56} height="22" rx="6" fill={lidColor} stroke={isMetalCover ? diagramPalette.ink : diagramPalette.faint} strokeWidth={isMetalCover ? 3 : 2} />
             {openW > 0 ? (
-              <rect x={openX} y={GL_Y - 11} width={openW} height="22" rx="4" fill="#eff6ff" stroke="#38bdf8" strokeWidth="2" />
+              <rect x={openX} y={GL_Y - 11} width={openW} height="22" rx="4" fill={diagramPalette.skyPale} stroke={diagramPalette.skyStroke} strokeWidth="2" />
             ) : (
-              <path d={`M${BOX_CX - 9} ${GL_Y - 6} L${BOX_CX + 9} ${GL_Y + 6} M${BOX_CX + 9} ${GL_Y - 6} L${BOX_CX - 9} ${GL_Y + 6}`} stroke="#9f1239" strokeWidth="2.5" />
+              <path d={`M${BOX_CX - 9} ${GL_Y - 6} L${BOX_CX + 9} ${GL_Y + 6} M${BOX_CX + 9} ${GL_Y - 6} L${BOX_CX - 9} ${GL_Y + 6}`} stroke={diagramPalette.dangerDark} strokeWidth="2.5" />
             )}
             {input.openingCondition === "metal_frame" ? (
-              <rect x={openX - 6} y={GL_Y - 15} width={openW + 12} height="30" rx="6" fill="none" stroke="#334155" strokeWidth="3.5" />
+              <rect x={openX - 6} y={GL_Y - 15} width={openW + 12} height="30" rx="6" fill="none" stroke={diagramPalette.inkSoft} strokeWidth="3.5" />
             ) : null}
           </g>
 
           {/* 深さ寸法（赤破線、GL→アンテナ）。極端値でも線が短くなりすぎない */}
-          <line x1={rulerX} x2={rulerX} y1={GL_Y} y2={antennaY} stroke="#ef4444" strokeWidth={diagramStroke.emphasis} strokeDasharray="6 5" />
-          <line x1={rulerX - 7} x2={rulerX + 7} y1={GL_Y} y2={GL_Y} stroke="#ef4444" strokeWidth={diagramStroke.emphasis} />
-          <line x1={rulerX - 7} x2={rulerX + 7} y1={antennaY} y2={antennaY} stroke="#ef4444" strokeWidth={diagramStroke.emphasis} />
-          <text x={rulerX - 12} y={(GL_Y + antennaY) / 2 - 4} textAnchor="end" fill="#b91c1c" fontSize="12.5" fontWeight="700">
+          <line x1={rulerX} x2={rulerX} y1={GL_Y} y2={antennaY} stroke={diagramPalette.danger} strokeWidth={diagramStroke.emphasis} strokeDasharray="6 5" />
+          <line x1={rulerX - 7} x2={rulerX + 7} y1={GL_Y} y2={GL_Y} stroke={diagramPalette.danger} strokeWidth={diagramStroke.emphasis} />
+          <line x1={rulerX - 7} x2={rulerX + 7} y1={antennaY} y2={antennaY} stroke={diagramPalette.danger} strokeWidth={diagramStroke.emphasis} />
+          <text x={rulerX - 12} y={(GL_Y + antennaY) / 2 - 4} textAnchor="end" fill={diagramPalette.dangerDeep} fontSize="12.5" fontWeight="700">
             {depthLabel}
           </text>
           <text x={rulerX - 12} y={(GL_Y + antennaY) / 2 + 13} textAnchor="end" {...diagramText.label}>
@@ -325,19 +325,19 @@ export function NcuCrossSectionDiagram({
           </text>
 
           {/* NCUアンテナ利得の小ラベル */}
-          <text x={BOX_CX} y={Math.min(boxBottom + 20, 512)} textAnchor="middle" fill="#064e3b" fontSize="11.5" fontWeight="700">
+          <text x={BOX_CX} y={Math.min(boxBottom + 20, 512)} textAnchor="middle" fill={diagramPalette.successDark} fontSize="11.5" fontWeight="700">
             NCU {input.ncuAntennaGainDbi.toFixed(0)}dBi・{antennaLabel}
           </text>
 
           {/* ===== 右レール：地下追加損失スタック ===== */}
-          <line x1="694" x2="694" y1="20" y2="500" stroke="#e2e8f0" strokeWidth={diagramStroke.main} />
-          <text x={STK_X} y="46" fill="#0f172a" fontSize="13" fontWeight="700">
+          <line x1="694" x2="694" y1="20" y2="500" stroke={diagramPalette.grid} strokeWidth={diagramStroke.main} />
+          <text x={STK_X} y="46" fill={diagramPalette.ink} fontSize="13" fontWeight="700">
             地下の追加損失
           </text>
-          <text x={STK_X} y="66" fill="#be123c" fontSize="14" fontWeight="700">
+          <text x={STK_X} y="66" fill={diagramPalette.dangerDeep} fontSize="14" fontWeight="700">
             合計 {result.belowGroundLossRangeDb.typical.toFixed(1)}dB
           </text>
-          <rect x={STK_X - 4} y={STK_TOP - 4} width={STK_W + 8} height={STK_H + 8} rx="6" fill="#ffffff" stroke="#e2e8f0" />
+          <rect x={STK_X - 4} y={STK_TOP - 4} width={STK_W + 8} height={STK_H + 8} rx="6" fill={diagramPalette.white} stroke={diagramPalette.grid} />
           {stackSegs.map((seg) => (
             <g key={seg.id}>
               <rect
@@ -349,11 +349,11 @@ export function NcuCrossSectionDiagram({
                 stroke={seg.tone.stroke}
                 strokeWidth={seg.isDominant ? 2.5 : 1}
               />
-              <line x1={STK_X + STK_W} x2={STK_X + STK_W + 10} y1={seg.midY} y2={seg.labelY} stroke="#cbd5e1" strokeWidth={diagramStroke.support} />
+              <line x1={STK_X + STK_W} x2={STK_X + STK_W + 10} y1={seg.midY} y2={seg.labelY} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} />
               {seg.isDominant ? (
                 <g>
-                  <rect x={STK_X + STK_W + 12} y={seg.labelY - 11} width="30" height="14" rx="7" fill="#e11d48" />
-                  <text x={STK_X + STK_W + 27} y={seg.labelY} textAnchor="middle" fill="#ffffff" fontSize="9" fontWeight="700">
+                  <rect x={STK_X + STK_W + 12} y={seg.labelY - 11} width="30" height="14" rx="7" fill={diagramPalette.danger} />
+                  <text x={STK_X + STK_W + 27} y={seg.labelY} textAnchor="middle" fill={diagramPalette.white} fontSize="9" fontWeight="700">
                     主因
                   </text>
                 </g>
