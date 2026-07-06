@@ -131,6 +131,25 @@ export const tools: ToolEntry[] = [
     }
   },
   {
+    "slug": "noise-floor",
+    "name": "雑音床・受信感度",
+    "tagline": "帯域幅とNFから感度を導出",
+    "icon": "activity",
+    "category": "link",
+    "basic": {
+      "title": "雑音床・受信感度の導出",
+      "metaTitle": "雑音床・受信感度 計算ツール｜帯域幅・NF・所要SNRから導出",
+      "description": "帯域幅・雑音指数（NF）・所要SNRから、熱雑音の床（ノイズフロア）と受信感度を計算します。LoRaのSF別感度も確認できます。",
+      "formula": "感度[dBm] = -174 + 10log10(BW[Hz]) + NF[dB] + 所要SNR[dB]",
+      "essenceLead": "受信感度は、-174dBm/Hzの熱雑音に帯域幅・NF・所要SNRを足しただけの物理量です。",
+      "beginnerGuide": {
+        "purpose": "データシートの受信感度が物理的に妥当か、自分の方式ならどこまで感度を狙えるかを確かめます。",
+        "inputs": "帯域幅、受信機の雑音指数（NF）、復調に必要なSNRを入れます。LoRaはSF別プリセットで選べます。",
+        "result": "雑音床と受信感度が出ます。リンクバジェット計算の「受信感度」入力の妥当性チェックに使えます。"
+      }
+    }
+  },
+  {
     "slug": "fresnel-zone",
     "name": "フレネルゾーン半径",
     "tagline": "見通しと必要クリアランス",
