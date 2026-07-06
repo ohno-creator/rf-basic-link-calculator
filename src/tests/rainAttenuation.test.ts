@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  P676_OXYGEN_LINES,
+  P676_WATER_VAPOUR_LINES
+} from "@/data/gaseousAttenuationSpectroscopy";
+import {
+  gaseousSpecificAttenuationDbPerKm,
+  P676_GAS_MAX_FREQ_GHZ,
+  P676_GAS_MIN_FREQ_GHZ,
   P838_RAIN_MAX_FREQ_GHZ,
   P838_RAIN_MIN_FREQ_GHZ,
   rainBaseCoefficients,
@@ -8,6 +15,39 @@ import {
   rainSpecificAttenuationDbPerKm
 } from "@/lib/rf/rainAttenuation";
 import { RfError } from "@/lib/rf/errors";
+
+describe("gaseousSpecificAttenuationDbPerKm（P.676-13 Annex 1）", () => {
+  it("一次転記した酸素44線・水蒸気35線を保持する", () => {
+    expect(P676_OXYGEN_LINES).toHaveLength(44);
+    expect(P676_WATER_VAPOUR_LINES).toHaveLength(35);
+    expect(P676_OXYGEN_LINES[0][0]).toBe(50.474214);
+    expect(P676_WATER_VAPOUR_LINES.at(-1)?.[0]).toBe(1780);
+  });
+
+  it("標準大気の2.4GHzでは大気ガス減衰が0.01dB/km未満", () => {
+    expect(gaseousSpecificAttenuationDbPerKm(2.4)).toBeCloseTo(0.007066309, 9);
+  });
+
+  it("22.235GHz水蒸気線では乾燥大気より標準大気の減衰が0.1dB/km以上大きい", () => {
+    const standard = gaseousSpecificAttenuationDbPerKm(22.23508);
+    const dry = gaseousSpecificAttenuationDbPerKm(22.23508, 0);
+    expect(standard).toBeCloseTo(0.193462247, 9);
+    expect(dry).toBeCloseTo(0.013157785, 9);
+    expect(standard - dry).toBeGreaterThan(0.1);
+  });
+
+  it("60GHz酸素帯は標準大気で14〜16dB/km", () => {
+    expect(gaseousSpecificAttenuationDbPerKm(60)).toBeCloseTo(14.655556404, 9);
+  });
+
+  it("適用域と水蒸気密度を検証する", () => {
+    expect(() => gaseousSpecificAttenuationDbPerKm(0.5)).toThrowError(RfError);
+    expect(() => gaseousSpecificAttenuationDbPerKm(1001)).toThrowError(RfError);
+    expect(() => gaseousSpecificAttenuationDbPerKm(22, -1)).toThrowError(RfError);
+    expect(P676_GAS_MIN_FREQ_GHZ).toBe(1);
+    expect(P676_GAS_MAX_FREQ_GHZ).toBe(1000);
+  });
+});
 
 describe("rainBaseCoefficients（Table 5 補間）", () => {
   it("表に存在する周波数は厳密一致（28GHz）", () => {
