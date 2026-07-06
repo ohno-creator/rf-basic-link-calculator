@@ -538,3 +538,77 @@ test("noise floor tool derives LoRa SF12 sensitivity and links to the link budge
   // リンクバジェット診断への突き合わせ導線
   await expect(page.getByRole("link", { name: /リンクバジェット診断の受信感度/ })).toBeVisible();
 });
+
+test("eirp compliance tool judges 920MHz limits and reacts to gain and class changes", async ({ page }) => {
+  await page.goto("/tools/eirp-compliance/");
+  // 既定値 = 13dBm + 3dBi − 0.5dB → EIRP 15.5dBm（20mW型のEIRP上限16dBmに対し余裕+0.5dBで適合）
+  // 期待値はlib（calculateEirpDbm）とdata層（aribT108PowerClasses.eirpLimitDbm=16）から検算した確定値
+  await expect(page.getByTestId("primary-result")).toContainText("15.5");
+  await expect(page.getByTestId("primary-result")).toContainText("dBm");
+  await expect(page.getByText("適合（上限以下）")).toBeVisible();
+
+  // アンテナ利得を10dBiへ → EIRP 22.5dBm > 上限16dBm で超過（利得交換で法規を破る実務の落とし穴）
+  await page.locator("#eirpAntennaGain").fill("10");
+  await expect(page.getByTestId("primary-result")).toContainText("22.5");
+  await expect(page.getByTestId("tool-calculator").getByText("上限超過", { exact: true })).toBeVisible();
+
+  // 登録局（250mW型・EIRP上限27dBm）へ切り替えると同じ構成でも適合に戻る
+  await page.getByRole("button", { name: "登録局（250mW型）" }).click();
+  await expect(page.getByText("適合（上限以下）")).toBeVisible();
+});
+
+test("shadowing margin derives the required margin from sigma and reliability", async ({ page }) => {
+  await page.goto("/tools/shadowing-margin/");
+  // 既定値 σ=8dB・信頼率90% → 8×Φ⁻¹(0.9)=8×1.281552 ≈ 10.3dB
+  await expect(page.getByTestId("primary-result")).toContainText("10.3");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 信頼率99%チップ → 8×2.326348 ≈ 18.6dB
+  await page.getByRole("button", { name: "99%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("18.6");
+
+  // 郊外プリセット（σ=6dB）× 99% → 6×2.326348 ≈ 14.0dB
+  await page.getByRole("button", { name: "郊外 6dB", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("14.0");
+
+  // リンクバジェット診断への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /リンクバジェット診断/ })).toBeVisible();
+});
+
+test("polarization loss tool computes linear 45deg default and switches polarization modes", async ({ page }) => {
+  await page.goto("/tools/polarization-loss/");
+  // 既定値 = 直線-直線 θ=45° → -20log10(cos45°) = 3.0103 ≈ 3.0dB
+  await expect(page.getByTestId("primary-result")).toContainText("3.0");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // θ=60° チップ → -20log10(cos60°) = 6.0206 ≈ 6.0dB
+  await page.getByRole("button", { name: "60°", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("6.0");
+
+  // 円↔円（既定は同旋）→ 0.0dB
+  await page.getByRole("button", { name: "円 ↔ 円", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("0.0");
+
+  // 逆旋 → 理論∞（表示は lib の POLARIZATION_LOSS_DISPLAY_CAP_DB=40dB でクランプし「≥40」）
+  await page.getByRole("button", { name: /逆旋/ }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("≥40");
+
+  // リンクバジェット診断（追加損失）への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の追加損失/ })).toBeVisible();
+});
+
+test("rain attenuation tool combines P.838 rain and P.676 gaseous loss", async ({ page }) => {
+  await page.goto("/tools/rain-attenuation/");
+  // 既定値 28GHz・強雨25mm/h・水平偏波・1km → 降雨4.62dB＋大気ガス0.10dB = 4.72dB
+  // （P.838-3 Table 5: 28GHzは kH=0.2051, αH=0.9679 → γ=0.2051×25^0.9679=4.6241dB/km。
+  //   P.676-13 標準大気: γgas(28GHz)=0.1008dB/km。合計4.7249dB）
+  await expect(page.getByTestId("primary-result")).toContainText("4.72");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 垂直偏波では扁平な雨滴の断面が小さく見えて減衰が減る（kV=0.1964, αV=0.9277 → 合計3.9913dB）
+  await page.getByRole("button", { name: "垂直偏波", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("3.99");
+
+  // 雨マージン設計へつなぐ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の追加損失/ })).toBeVisible();
+});
