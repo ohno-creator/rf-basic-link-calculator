@@ -81,6 +81,7 @@ export const diagramPalette = {
   warn: "#F97316",
   warnDeep: "#C2410C",
   amber: "#F59E0B",
+  amberSoft: "#FBBF24", // 明るい黄橙（軽度警告の塗り。amber-400）
   amberDeep: "#B45309"
 } as const;
 

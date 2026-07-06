@@ -2,6 +2,7 @@ import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { formatDb, formatDbm, formatSigned } from "@/lib/rf/format";
 import type { NcuBelowGroundInput, NcuBelowGroundResult } from "@/lib/rf/ncuBelowGround";
 
@@ -38,15 +39,15 @@ const chart = {
 // 「どこで予算を食っているか」を一目で読めるようにする。
 function belowGroundTone(abs: number): { fill: string; stroke: string } {
   if (abs >= 18) {
-    return { fill: "#e11d48", stroke: "#9f1239" };
+    return { fill: diagramPalette.danger, stroke: diagramPalette.dangerDark };
   }
   if (abs >= 10) {
-    return { fill: "#f97316", stroke: "#c2410c" };
+    return { fill: diagramPalette.warn, stroke: diagramPalette.warnDeep };
   }
   if (abs >= 4) {
-    return { fill: "#f59e0b", stroke: "#b45309" };
+    return { fill: diagramPalette.amber, stroke: diagramPalette.amberDeep };
   }
-  return { fill: "#fbbf24", stroke: "#b45309" };
+  return { fill: diagramPalette.amberSoft, stroke: diagramPalette.amberDeep };
 }
 
 function stepTone(step: WaterfallStep): { fill: string; stroke: string } {
@@ -54,18 +55,18 @@ function stepTone(step: WaterfallStep): { fill: string; stroke: string } {
   // ground（スレート）と below（重症度ヒート）はNCU固有のドメイン表現として個別に保つ。
   switch (step.group) {
     case "source":
-      return { fill: chartTheme.series.source, stroke: "#005A95" };
+      return { fill: chartTheme.series.source, stroke: diagramPalette.stafDark };
     case "gain":
     case "correction":
       return step.delta >= 0
-        ? { fill: chartTheme.series.gain, stroke: "#047857" }
-        : { fill: chartTheme.series.loss, stroke: "#be123c" };
+        ? { fill: chartTheme.series.gain, stroke: diagramPalette.successDeep }
+        : { fill: chartTheme.series.loss, stroke: diagramPalette.dangerDeep };
     case "ground":
-      return { fill: "#94a3b8", stroke: "#64748b" };
+      return { fill: diagramPalette.faint, stroke: diagramPalette.muted };
     case "below":
       return belowGroundTone(Math.abs(step.delta));
     case "total":
-      return { fill: chartTheme.series.total, stroke: "#0f172a" };
+      return { fill: chartTheme.series.total, stroke: diagramPalette.ink };
   }
 }
 
@@ -214,12 +215,12 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
           style={{ minWidth: Math.min(width, 760) }}
           className="h-auto w-full"
         >
-          <rect width={width} height={chart.height} fill="#F8FAFC" />
+          <rect width={width} height={chart.height} fill={diagramPalette.canvas} />
 
           {ticks.map((tick) => (
             <g key={tick}>
-              <line x1={chart.left} x2={width - chart.right} y1={y(tick)} y2={y(tick)} stroke="#E2E8F0" />
-              <text x={chart.left - 10} y={y(tick) + 4} textAnchor="end" fill="#94a3b8" fontSize="11">
+              <line x1={chart.left} x2={width - chart.right} y1={y(tick)} y2={y(tick)} stroke={diagramPalette.grid} />
+              <text x={chart.left - 10} y={y(tick) + 4} textAnchor="end" fill={diagramPalette.faint} fontSize="11">
                 {tick}
               </text>
             </g>
@@ -227,7 +228,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
 
           {/* 0 dBm 基準線 */}
           {zeroY > chart.top && zeroY < chart.height - chart.bottom ? (
-            <line x1={chart.left} x2={width - chart.right} y1={zeroY} y2={zeroY} stroke="#cbd5e1" strokeDasharray="4 4" />
+            <line x1={chart.left} x2={width - chart.right} y1={zeroY} y2={zeroY} stroke={diagramPalette.line} strokeDasharray="4 4" />
           ) : null}
 
           {/* 受信感度ライン */}
@@ -236,14 +237,14 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
             x2={width - chart.right}
             y1={sensitivityY}
             y2={sensitivityY}
-            stroke="#E11D48"
+            stroke={diagramPalette.danger}
             strokeDasharray="7 5"
             strokeWidth={2}
           />
-          <text x={width - chart.right + 8} y={sensitivityY - 6} fill="#be123c" fontSize="12" fontWeight="700">
+          <text x={width - chart.right + 8} y={sensitivityY - 6} fill={diagramPalette.dangerDeep} fontSize="12" fontWeight="700">
             受信感度
           </text>
-          <text x={width - chart.right + 8} y={sensitivityY + 12} fill="#be123c" fontSize="12" fontWeight="700">
+          <text x={width - chart.right + 8} y={sensitivityY + 12} fill={diagramPalette.dangerDeep} fontSize="12" fontWeight="700">
             {formatDbm(sensitivity)}
           </text>
 
@@ -271,7 +272,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
                     x2={x(index)}
                     y1={y(steps[index - 1].end)}
                     y2={y(steps[index - 1].end)}
-                    stroke="#cbd5e1"
+                    stroke={diagramPalette.line}
                     strokeDasharray="3 3"
                   />
                 ) : null}
@@ -287,8 +288,8 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
                 />
                 {step.isDominant ? (
                   <g>
-                    <rect x={centerX - 22} y={top - 34} width={44} height={17} rx={8} fill="#e11d48" />
-                    <text x={centerX} y={top - 22} textAnchor="middle" fill="#ffffff" fontSize="10" fontWeight="700">
+                    <rect x={centerX - 22} y={top - 34} width={44} height={17} rx={8} fill={diagramPalette.danger} />
+                    <text x={centerX} y={top - 22} textAnchor="middle" fill={diagramPalette.white} fontSize="10" fontWeight="700">
                       主因
                     </text>
                   </g>
@@ -297,13 +298,13 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
                   x={centerX}
                   y={labelAbove ? top - 8 : top + height + 15}
                   textAnchor="middle"
-                  fill="#0f172a"
+                  fill={diagramPalette.ink}
                   fontSize="11.5"
                   fontWeight="700"
                 >
                   {valueLabel}
                 </text>
-                <text x={centerX} y={chart.height - 56} textAnchor="middle" fill="#334155" fontSize="12" fontWeight="700">
+                <text x={centerX} y={chart.height - 56} textAnchor="middle" fill={diagramPalette.inkSoft} fontSize="12" fontWeight="700">
                   {step.short}
                 </text>
               </g>
@@ -317,11 +318,11 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
               x2={totalCenterX}
               y1={y(result.receivedPowerRangeDbm.max)}
               y2={y(result.receivedPowerRangeDbm.min)}
-              stroke="#0f172a"
+              stroke={diagramPalette.ink}
               strokeWidth={2}
             />
-            <line x1={totalCenterX - 9} x2={totalCenterX + 9} y1={y(result.receivedPowerRangeDbm.max)} y2={y(result.receivedPowerRangeDbm.max)} stroke="#0f172a" strokeWidth={2} />
-            <line x1={totalCenterX - 9} x2={totalCenterX + 9} y1={y(result.receivedPowerRangeDbm.min)} y2={y(result.receivedPowerRangeDbm.min)} stroke="#0f172a" strokeWidth={2} />
+            <line x1={totalCenterX - 9} x2={totalCenterX + 9} y1={y(result.receivedPowerRangeDbm.max)} y2={y(result.receivedPowerRangeDbm.max)} stroke={diagramPalette.ink} strokeWidth={2} />
+            <line x1={totalCenterX - 9} x2={totalCenterX + 9} y1={y(result.receivedPowerRangeDbm.min)} y2={y(result.receivedPowerRangeDbm.min)} stroke={diagramPalette.ink} strokeWidth={2} />
           </g>
 
           {/* マージン寸法ブラケット（v4-6: 受信電力(標準)↔受信感度を図中で直接ラベリング） */}
@@ -344,7 +345,7 @@ export function NcuBudgetWaterfall({ input, result }: NcuBudgetWaterfallProps) {
             </text>
           </g>
 
-          <text x={chart.left} y={chart.top - 18} fill="#94a3b8" fontSize="12" fontWeight="700">
+          <text x={chart.left} y={chart.top - 18} fill={diagramPalette.faint} fontSize="12" fontWeight="700">
             dBm
           </text>
         </svg>
