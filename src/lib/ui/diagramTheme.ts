@@ -66,6 +66,7 @@ export const diagramPalette = {
   // ブランド・電波経路
   staf: "#0071BD", // ブランド青（アンテナ・主要経路）
   stafDark: "#005A95", // 濃ブランド青（テキスト級の強調）
+  stafDeep: "#0369A1", // 最濃青（ゲートウェイ筐体・枠。sky-700）
   path: "#0284C7", // 電波経路・リンク線（sky-600）
   // 空・環境
   skyFill: "#BAE6FD",
@@ -75,6 +76,7 @@ export const diagramPalette = {
   // 状態（chartTheme の series/seriesText/reference と同系）
   success: "#10B981",
   successDeep: "#047857",
+  successDark: "#064E3B", // 最濃緑（軸・基準線。emerald-900）
   danger: "#E11D48",
   dangerDeep: "#BE123C",
   dangerDark: "#9F1239",
