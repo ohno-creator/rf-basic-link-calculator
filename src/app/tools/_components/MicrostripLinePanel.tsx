@@ -21,6 +21,7 @@ import {
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { MicrostripBendDiagram } from "./MicrostripBendDiagram";
 import { MicrostripCrossSectionDiagram } from "./MicrostripCrossSectionDiagram";
+import { MicrostripLineColumn } from "./MicrostripLineColumn";
 
 const substratePresets = [
   {
@@ -451,6 +452,10 @@ export function MicrostripLinePanel() {
             </p>
           </FormulaExplanationCard>
         </div>
+      </div>
+
+      <div className="mt-6">
+        <MicrostripLineColumn />
       </div>
     </Card>
   );

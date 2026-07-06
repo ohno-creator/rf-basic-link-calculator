@@ -5,9 +5,12 @@ import { ArrowRight, RotateCcw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
+import { ChartFrame } from "@/components/ChartFrame";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { Tooltip } from "@/components/Tooltip";
+import { chartTheme } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { formatDb, formatDbm, formatNumber, formatSigned } from "@/lib/rf/format";
 import type { MetricTone } from "@/lib/ui/kit";
 import {
@@ -17,6 +20,7 @@ import {
   type SimpleLinkBudgetResult
 } from "@/lib/rf/simpleLinkBudget";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { SimpleLinkBudgetColumn } from "./SimpleLinkBudgetColumn";
 
 const presets: Array<{ label: string; input: SimpleLinkBudgetInput }> = [
   {
@@ -105,6 +109,267 @@ function MathRow({
   );
 }
 
+// ---- リンクバジェット滝グラフ（入力連動の動的SVG） --------------------------------------
+// 送信電力から出発し、＋利得／−自由空間損失／−追加損失と積み上げ引きして受信電力に到達。
+// 受信感度の水平基準線との差＝リンク余裕（マージン）を右端の縦ブラケットで直接ラベリングする。
+// テキストは属性直指定（書き出したSVG単体でも画面と同じ見た目: v4 R4方式）。色は必ずトークン参照。
+
+type WaterfallStep = {
+  label: string;
+  sub: string;
+  from: number;
+  to: number;
+  kind: "start" | "gain" | "loss" | "total";
+};
+
+function LinkBudgetWaterfall({
+  txPowerDbm,
+  antennaGainTotalDbi,
+  fsplDb,
+  extraLossDb,
+  receivedPowerDbm,
+  sensitivityDbm,
+  linkMarginDb
+}: {
+  txPowerDbm: number;
+  antennaGainTotalDbi: number;
+  fsplDb: number;
+  extraLossDb: number;
+  receivedPowerDbm: number;
+  sensitivityDbm: number;
+  linkMarginDb: number;
+}) {
+  const chart = { width: 680, height: 340, top: 34, right: 24, bottom: 56, left: 56, barWidth: 76 };
+
+  const afterGain = txPowerDbm + antennaGainTotalDbi;
+  const afterFspl = afterGain - fsplDb;
+
+  const steps: WaterfallStep[] = [
+    {
+      label: "送信電力",
+      sub: `${formatNumber(txPowerDbm, 1)}dBm`,
+      from: txPowerDbm,
+      to: txPowerDbm,
+      kind: "start"
+    },
+    {
+      label: "＋利得",
+      sub: `${antennaGainTotalDbi >= 0 ? "+" : ""}${formatNumber(antennaGainTotalDbi, 1)}dBi`,
+      from: txPowerDbm,
+      to: afterGain,
+      kind: antennaGainTotalDbi >= 0 ? "gain" : "loss"
+    },
+    {
+      label: "−FSPL",
+      sub: `-${formatNumber(fsplDb, 1)}dB`,
+      from: afterGain,
+      to: afterFspl,
+      kind: "loss"
+    },
+    {
+      label: "−追加損失",
+      sub: `-${formatNumber(extraLossDb, 1)}dB`,
+      from: afterFspl,
+      to: receivedPowerDbm,
+      kind: "loss"
+    },
+    {
+      label: "受信電力",
+      sub: `${formatNumber(receivedPowerDbm, 1)}dBm`,
+      from: receivedPowerDbm,
+      to: receivedPowerDbm,
+      kind: "total"
+    }
+  ];
+
+  const values = [...steps.flatMap((s) => [s.from, s.to]), sensitivityDbm];
+  const maxValue = Math.ceil((Math.max(...values) + 6) / 10) * 10;
+  const minValue = Math.floor((Math.min(...values) - 6) / 10) * 10;
+  const span = Math.max(1, maxValue - minValue);
+  const plotHeight = chart.height - chart.top - chart.bottom;
+  const slots = steps.length + 1; // 最終スロットはマージン表示用に確保
+  const stepGap = (chart.width - chart.left - chart.right) / slots;
+  const y = (v: number) => chart.top + ((maxValue - v) / span) * plotHeight;
+  const x = (i: number) => chart.left + i * stepGap + (stepGap - chart.barWidth) / 2;
+
+  const tickStep = Math.max(10, Math.ceil(span / 7 / 10) * 10);
+  const ticks = Array.from(
+    { length: Math.floor(span / tickStep) + 1 },
+    (_, i) => maxValue - i * tickStep
+  ).filter((t) => t >= minValue);
+
+  const styleFor = (kind: WaterfallStep["kind"]) => {
+    if (kind === "gain") return { fill: chartTheme.series.gain, stroke: chartTheme.seriesText.gain };
+    if (kind === "loss") return { fill: chartTheme.series.loss, stroke: chartTheme.seriesText.loss };
+    if (kind === "total") return { fill: chartTheme.series.total, stroke: chartTheme.seriesText.total };
+    return { fill: chartTheme.series.source, stroke: chartTheme.seriesText.source };
+  };
+
+  const sensY = y(sensitivityDbm);
+  const rxY = y(receivedPowerDbm);
+  const marginCenterX = chart.left + steps.length * stepGap + stepGap / 2;
+  const marginPositive = linkMarginDb >= 0;
+  const marginStyle = marginPositive
+    ? { fill: chartTheme.series.gain, stroke: chartTheme.seriesText.gain }
+    : { fill: chartTheme.series.loss, stroke: chartTheme.seriesText.loss };
+  const marginTop = Math.min(rxY, sensY);
+  const marginHeight = Math.max(4, Math.abs(rxY - sensY));
+
+  return (
+    <svg
+      role="img"
+      aria-label={`送信電力${formatNumber(txPowerDbm, 1)}dBmから受信電力${formatNumber(receivedPowerDbm, 1)}dBmへの積み上げ。受信感度${formatNumber(sensitivityDbm, 1)}dBmに対しリンク余裕${formatSigned(linkMarginDb, "dB", 1)}`}
+      viewBox={`0 0 ${chart.width} ${chart.height}`}
+      className="h-auto w-full"
+    >
+      <rect width={chart.width} height={chart.height} fill={chartTheme.surface.canvas} />
+      {ticks.map((tick) => (
+        <g key={tick}>
+          <line
+            x1={chart.left}
+            x2={chart.width - chart.right}
+            y1={y(tick)}
+            y2={y(tick)}
+            stroke={chartTheme.grid.primary}
+          />
+          <text
+            x={chart.left - 8}
+            y={y(tick) + 4}
+            textAnchor="end"
+            fill={diagramPalette.muted}
+            fontSize={11}
+            style={{ fontVariantNumeric: "tabular-nums" }}
+          >
+            {tick}
+          </text>
+        </g>
+      ))}
+      <text x={chart.left} y={chart.top - 14} fill={diagramPalette.muted} fontSize={12} fontWeight={600}>
+        dBm
+      </text>
+
+      {/* 受信感度の水平基準線: この線を受信電力が上回っている高さが「リンク余裕」 */}
+      <line
+        x1={chart.left}
+        x2={chart.width - chart.right}
+        y1={sensY}
+        y2={sensY}
+        stroke={chartTheme.reference.sensitivity}
+        strokeDasharray={chartTheme.reference.sensitivityDash}
+      />
+      <text
+        x={chart.left + 4}
+        y={sensY - 6}
+        fill={chartTheme.reference.sensitivity}
+        fontSize={11}
+        fontWeight={700}
+        style={{ fontVariantNumeric: "tabular-nums" }}
+      >
+        受信感度 {formatNumber(sensitivityDbm, 1)}dBm
+      </text>
+
+      {steps.map((step, index) => {
+        const style = styleFor(step.kind);
+        const top = Math.min(y(step.from), y(step.to));
+        const height = Math.max(4, Math.abs(y(step.to) - y(step.from)));
+        const centerX = x(index) + chart.barWidth / 2;
+        const labelAboveY = top - 8;
+        return (
+          <g key={step.label}>
+            {index > 0 ? (
+              <line
+                x1={x(index - 1) + chart.barWidth}
+                x2={x(index)}
+                y1={y(steps[index - 1].to)}
+                y2={y(steps[index - 1].to)}
+                stroke={diagramPalette.faint}
+                strokeDasharray="4 4"
+              />
+            ) : null}
+            <rect
+              x={x(index)}
+              y={top}
+              width={chart.barWidth}
+              height={height}
+              rx={6}
+              fill={style.fill}
+              stroke={style.stroke}
+              strokeWidth={1.5}
+              opacity={step.kind === "start" || step.kind === "total" ? 1 : 0.9}
+            />
+            <text
+              x={centerX}
+              y={labelAboveY}
+              textAnchor="middle"
+              fill={style.stroke}
+              fontSize={11}
+              fontWeight={700}
+              style={{ fontVariantNumeric: "tabular-nums" }}
+            >
+              {step.sub}
+            </text>
+            <text
+              x={centerX}
+              y={chart.height - 32}
+              textAnchor="middle"
+              fill={diagramPalette.inkSoft}
+              fontSize={12}
+              fontWeight={600}
+            >
+              {step.label}
+            </text>
+          </g>
+        );
+      })}
+
+      {/* 受信電力の高さをマージンスロットへ導く水平ガイド */}
+      <line
+        x1={x(steps.length - 1) + chart.barWidth}
+        x2={marginCenterX}
+        y1={rxY}
+        y2={rxY}
+        stroke={diagramPalette.faint}
+        strokeDasharray="4 4"
+      />
+
+      {/* リンク余裕（受信電力と受信感度の差）を縦バーで明示 */}
+      <rect
+        x={marginCenterX - 20}
+        y={marginTop}
+        width={40}
+        height={marginHeight}
+        rx={5}
+        fill={marginStyle.fill}
+        stroke={marginStyle.stroke}
+        strokeWidth={1.5}
+        opacity={0.85}
+      />
+      <text
+        x={marginCenterX}
+        y={marginTop - 8}
+        textAnchor="middle"
+        fill={marginStyle.stroke}
+        fontSize={11}
+        fontWeight={700}
+        style={{ fontVariantNumeric: "tabular-nums" }}
+      >
+        {marginPositive ? "余裕 " : "不足 "}
+        {formatSigned(linkMarginDb, "dB", 1)}
+      </text>
+      <text
+        x={marginCenterX}
+        y={chart.height - 32}
+        textAnchor="middle"
+        fill={diagramPalette.inkSoft}
+        fontSize={12}
+        fontWeight={600}
+      >
+        リンク余裕
+      </text>
+    </svg>
+  );
+}
+
 export function SimpleLinkBudgetPanel() {
   const [input, setInput] = useState<SimpleLinkBudgetInput>(presets[0].input);
 
@@ -143,7 +408,8 @@ export function SimpleLinkBudgetPanel() {
   const thresholdPercent = 50;
 
   return (
-    <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
+    <>
+      <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
       <Card as="section" padding="lg">
         <h2 className="text-xl font-bold text-slate-950">かんたんリンク計算</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -368,6 +634,43 @@ export function SimpleLinkBudgetPanel() {
           </p>
         )}
       </Card>
-    </section>
+      </section>
+
+      <div className="mt-6">
+        <ChartFrame
+          eyebrow="滝グラフ"
+          title="送信電力から受信電力への積み上げ引き"
+          description="送信電力から出発し、＋アンテナ利得／−自由空間損失／−追加損失と足し引きして受信電力に到達します。受信感度の基準線との差が「リンク余裕」です。入力に連動して動きます。"
+          exportName="simple-link-budget-waterfall"
+          caption={
+            result
+              ? `条件: 送信 ${formatDbm(input.txPowerDbm)} / 利得 ${formatNumber(input.antennaGainTotalDbi, 1)}dBi / FSPL ${formatNumber(result.fsplDb, 1)}dB / 追加損失 ${formatDb(input.extraLossDb)} ─ 受信電力 ${formatDbm(result.receivedPowerDbm)}・感度 ${formatDbm(input.receiverSensitivityDbm)}・リンク余裕 ${formatSigned(result.linkMarginDb, "dB", 1)}`
+              : "入力値を確認してください。"
+          }
+        >
+          {result ? (
+            <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+              <LinkBudgetWaterfall
+                txPowerDbm={input.txPowerDbm}
+                antennaGainTotalDbi={input.antennaGainTotalDbi}
+                fsplDb={result.fsplDb}
+                extraLossDb={input.extraLossDb}
+                receivedPowerDbm={result.receivedPowerDbm}
+                sensitivityDbm={input.receiverSensitivityDbm}
+                linkMarginDb={result.linkMarginDb}
+              />
+            </div>
+          ) : (
+            <p className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
+              入力値を確認すると積み上げグラフが表示されます。
+            </p>
+          )}
+        </ChartFrame>
+      </div>
+
+      <div className="mt-6">
+        <SimpleLinkBudgetColumn />
+      </div>
+    </>
   );
 }

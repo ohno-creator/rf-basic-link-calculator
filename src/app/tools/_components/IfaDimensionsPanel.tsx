@@ -10,6 +10,7 @@ import { ResultBar } from "@/components/ResultBar";
 import { calculateIfaDimensions } from "@/lib/rf/ifaDimensions";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { IfaDimensionsColumn } from "./IfaDimensionsColumn";
 
 const presets = [
   { label: "LTE-M 800", frequencyMHz: 800 },
@@ -153,6 +154,9 @@ export function IfaDimensionsPanel() {
             線幅を使わない簡易εeffモデルです。基板厚は記録しますが、この式の短縮率には含めません。
           </p>
         </FormulaExplanationCard>
+      </div>
+      <div className="mt-6">
+        <IfaDimensionsColumn />
       </div>
       <MobileResultBar primary={primary} targetId="ifa-primary-result" />
     </>
