@@ -676,3 +676,123 @@ test("rain attenuation tool combines P.838 rain and P.676 gaseous loss", async (
   // 雨マージン設計へつなぐ導線
   await expect(page.getByRole("link", { name: /リンクバジェット診断の追加損失/ })).toBeVisible();
 });
+
+// e2e/tools.spec.ts の pages 配列へ追加する1行:
+
+// 主結果の確定値テスト（別 test として追加）。既定 VSWR=2 →
+// mismatchRangeImpact(2): ML=0.5115…dB, distanceImpactPercent=-5.719…%, reflectedPowerPercent=11.11%
+// ResultBar は formatNumber(distanceImpactPercent, 1) = "-5.7"。内訳は ML=formatNumber(_,2)="0.51"、反射電力=formatNumber(_,1)="11.1"。
+test("mismatch-range-impact primary result", async ({ page }) => {
+  await page.goto("/tools/mismatch-range-impact/");
+  const primary = page.getByTestId("primary-result");
+  await expect(primary).toContainText("-5.7"); // 距離への影響[%]（自由空間・既定VSWR=2）
+  await expect(page.getByText("0.51 dB").first()).toBeVisible(); // ミスマッチ損失 ML
+  await expect(page.getByText("11.1 %").first()).toBeVisible();   // 反射電力
+});
+
+test("desense reacts to interference level (power addition)", async ({ page }) => {
+  await page.goto("/tools/desense/");
+  const primary = page.getByTestId("primary-result");
+  // 既定 N=-120dBm・I=-120dBm（同レベル）→ Δ=10log10(2)=+3.01dB
+  await expect(primary).toContainText("3.0");
+  await expect(primary).toContainText("dB");
+  // 干渉をフロアより10dB下（-130dBm）にすると Δ=10log10(1.1)=+0.41dB（非線形）
+  await page.locator("#desenseInterference").fill("-130");
+  await expect(primary).toContainText("0.4");
+});
+
+test("measurement sampling tool derives required sample count and reacts to confidence", async ({ page }) => {
+  await page.goto("/tools/measurement-sampling/");
+  // 既定 = 信頼水準95%・σ8dB・E1dB → n=(1.96×8/1)²≈245.85 → ceil=246点
+  // 期待値はlib（requiredSampleCount）から検算した確定値
+  await expect(page.getByTestId("primary-result")).toContainText("246");
+  await expect(page.getByTestId("primary-result")).toContainText("点");
+
+  // 90%へ下げると許容が緩みnが減る: z=1.6449 → (1.6449×8)²≈173.16 → 174点
+  await page.getByRole("button", { name: "90%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("174");
+
+  // 99%へ上げるとnが増える: z=2.5758 → (2.5758×8)²≈424.63 → 425点
+  await page.getByRole("button", { name: "99%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("425");
+});
+
+test("electrical length converts mm to phase and reacts to frequency", async ({ page }) => {
+  await page.goto("/tools/electrical-length/");
+  const primary = page.getByTestId("primary-result");
+  // default: 920MHz, VF=0.695, L=100mm -> phase 360*100/(0.695*(c/920e6)*1000) = 158.96° -> "159.0"
+  await expect(primary).toContainText("159.0");
+  await expect(primary).toContainText("°");
+  // double the frequency -> lambda_g halves -> phase doubles to 317.9°
+  await page.locator("#elFrequency").fill("1840");
+  await expect(primary).toContainText("317.9");
+});
+
+test("LTE signal metrics converts RSSI to RSRP and reacts to bandwidth and direction", async ({ page }) => {
+  await page.goto("/tools/lte-signal-metrics/");
+  const primary = page.getByTestId("primary-result");
+  // 既定 RSSI=-70dBm・10MHz(50RB) → RSRP = -70 − 10log10(12×50) = -70 − 27.78 ≈ -97.8dBm
+  // 期待値はlib（rsrpFromRssi/fullLoadCorrectionDb）から検算した確定値
+  await expect(primary).toContainText("-97.8");
+  await expect(primary).toContainText("dBm");
+
+  // 20MHz(100RB)へ切替 → 補正 30.79dB、RSRP = -70 − 30.79 ≈ -100.8dBm
+  await page.getByRole("button", { name: /20MHz/ }).click();
+  await expect(primary).toContainText("-100.8");
+
+  // 換算方向を反転（RSRP→RSSI）: 入力-70をRSRPとみなし 20MHz → RSSI = -70 + 30.79 ≈ -39.2dBm
+  await page.getByRole("button", { name: "RSRP → RSSI" }).click();
+  await expect(primary).toContainText("-39.2");
+
+  // ノイズフロア・受信感度への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /ノイズフロア・受信感度/ })).toBeVisible();
+});
+
+test("VSWR bandwidth-Q converts between Q and fractional bandwidth", async ({ page }) => {
+  await page.goto("/tools/vswr-bandwidth-q/");
+  // 既定 = Q→帯域幅・Q=50・VSWR≤2 → FBW=(2−1)/(50·√2)=1.4142% → 表示1.4%
+  // 期待値はlib（fractionalBandwidthPercentFromQ(50,2)）から検算した確定値
+  const primary = page.getByTestId("primary-result");
+  await expect(primary).toContainText("1.4");
+  await expect(primary).toContainText("%");
+
+  // VSWR≤3 チップ → (3−1)/(50·√3)=2.3094% → 表示2.3%（同じQでも緩い上限ほど帯域は広い）
+  await page.getByRole("button", { name: "VSWR≤3.0", exact: true }).click();
+  await expect(primary).toContainText("2.3");
+
+  // Chu限界（小型アンテナ限界）への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /小型アンテナ限界/ })).toBeVisible();
+});
+
+test("pointing margin derives gain loss and inverts to allowable offset", async ({ page }) => {
+  await page.goto("/tools/pointing-margin/");
+  // 既定 HPBW=65°・θ=10° → L=12·(10/65)²≈0.28dB（pointingLossDbで検算した確定値）
+  await expect(page.getByTestId("primary-result")).toContainText("0.28");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 損失→許容角モード + 許容損失3dB → 65·√(3/12)=32.5°（allowableOffsetDegで検算した確定値）
+  await page.getByRole("button", { name: "損失 → 許容角" }).click();
+  await page.getByRole("button", { name: "3dB", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("32.5");
+
+  // 開口利得・ビーム幅（HPBW≈70λ/D）への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /開口利得・ビーム幅/ })).toBeVisible();
+});
+
+test("metal plane effect derives +6dB at quarter-wave and collapses at contact", async ({ page }) => {
+  await page.goto("/tools/metal-plane-effect/");
+  // 既定 920MHz・d=λ/4相当(81.5mm) → ΔG=20log10(2)=6.0206 ≈ +6.0dB（libで検算した確定値）
+  await expect(page.getByTestId("primary-result")).toContainText("+6.0");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 金属板に密着（d=0）→ 逆相の鏡像で相殺し理論∞、表示は床(-40)で ≤-40dB
+  await page.locator("#metalDistance").fill("0");
+  await expect(page.getByTestId("primary-result")).toContainText("-40");
+
+  // 2.4GHzプリセットは最適離隔 λ/4(31.2mm) にも自動セットするので +6.0 に戻る
+  await page.getByRole("button", { name: "2.4GHz", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("+6.0");
+
+  // リンクバジェット診断（アンテナ利得）への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断のアンテナ利得/ })).toBeVisible();
+});
