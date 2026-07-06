@@ -15,15 +15,20 @@ import {
   calculatePropagationLossResult,
   geometricPropagationModels
 } from "@/lib/rf/propagationLossModels";
+import { chartTheme } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { PropagationGeometryDiagram } from "./PropagationGeometryDiagram";
 import { PropagationModelComparisonChart } from "./PropagationModelComparisonChart";
 
-const MODEL_COLORS: Record<GeometricPropagationModel, string> = {
-  free_space: "#64748b",
-  two_ray: "#6366f1",
-  log_distance: "#0071BD",
-  okumura_hata: "#ea580c",
-  cost231_hata: "#be123c"
+// モデル系列色は色覚多様性対応の Okabe-Ito（chartTheme.categorical）を単一ソースにする。
+// 意味を保つ割当: 自由空間=中立灰（基準の床）／log_distance=青（汎用の主役）／
+// Hata系=暖色（損失が大きい市街地モデル）／2波=紫（干渉の独立系列）。
+export const MODEL_COLORS: Record<GeometricPropagationModel, string> = {
+  free_space: diagramPalette.muted, // #64748B 基準の床＝中立灰（従来同値）
+  two_ray: chartTheme.categorical[4], // 紫（干渉）
+  log_distance: chartTheme.categorical[0], // 青（汎用・主役／ブランド青に近い）
+  okumura_hata: chartTheme.categorical[1], // 橙（市街地・損失大）
+  cost231_hata: chartTheme.categorical[3] // 朱（市街地NLOS・損失大）
 };
 
 const HATA_MODELS: GeometricPropagationModel[] = ["okumura_hata", "cost231_hata"];
@@ -242,7 +247,7 @@ export function PropagationExplorer() {
                 <span
                   aria-hidden
                   className="h-2.5 w-2.5 rounded-full"
-                  style={{ backgroundColor: isOn ? MODEL_COLORS[model] : "#cbd5e1" }}
+                  style={{ backgroundColor: isOn ? MODEL_COLORS[model] : diagramPalette.line }}
                 />
                 {option.label}
               </button>
