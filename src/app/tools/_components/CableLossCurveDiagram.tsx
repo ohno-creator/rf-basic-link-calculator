@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { ChartFrame } from "@/components/ChartFrame";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import type { ReferenceCable } from "@/data/coaxCables";
 import type { LossPoint } from "@/lib/rf/coax";
 
@@ -131,8 +132,8 @@ export function CableLossCurveDiagram({
                   x={dotX}
                   y={currentLossDb}
                   r={6}
-                  fill="#0f172a"
-                  stroke="#ffffff"
+                  fill={diagramPalette.ink}
+                  stroke={diagramPalette.white}
                   strokeWidth={2}
                 >
                   {dotIsClamped ? (
@@ -140,7 +141,7 @@ export function CableLossCurveDiagram({
                       value="範囲外（外挿）"
                       position={frequencyMHz < X_DOMAIN_MIN ? "right" : "left"}
                       fontSize={11}
-                      fill="#b45309"
+                      fill={diagramPalette.amberDeep}
                     />
                   ) : null}
                 </ReferenceDot>
