@@ -28,7 +28,12 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
-    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" }
+    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" },
+    { slug: "ifa-initial-dimensions", h1: "逆F・IFAアンテナ初期寸法", fig: "IFA上面図の読み方" },
+    { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
+    { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
+    { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
+    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" }
   ];
 
   for (const { slug, h1, fig } of pages) {
@@ -39,6 +44,47 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
       await expect(page.getByRole("heading", { name: "ほかのツール" })).toBeVisible();
     });
   }
+});
+
+test.describe("G Tier2 tools", () => {
+  test("IFA dimensions react to frequency", async ({ page }) => {
+    await page.goto("/tools/ifa-initial-dimensions/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("49.6");
+    await page.locator("#ifaFrequency").fill("1840");
+    await expect(primary).toContainText("24.8");
+  });
+
+  test("L-match shows both closed-form solutions", async ({ page }) => {
+    await page.goto("/tools/l-match/");
+    await expect(page.getByTestId("primary-result")).toContainText("5.97 nH");
+    await expect(page.getByText("11.93 pF").first()).toBeVisible();
+    await expect(page.getByText("7.06 nH").first()).toBeVisible();
+  });
+
+  test("antenna isolation reacts to spacing", async ({ page }) => {
+    await page.goto("/tools/antenna-isolation/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("-11.7");
+    await page.locator("#isolationSpacing").fill("325.8");
+    await expect(primary).toContainText("-17.7");
+  });
+
+  test("battery life reacts to derating", async ({ page }) => {
+    await page.goto("/tools/battery-life/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("34.1");
+    await page.locator("#batteryDerate").fill("100");
+    await expect(primary).toContainText("48.7");
+  });
+
+  test("GNSS compares passive and active C/N0", async ({ page }) => {
+    await page.goto("/tools/gnss-cn0/");
+    await expect(page.getByTestId("primary-result")).toContainText("45.4");
+    await expect(page.getByText("40.0").first()).toBeVisible();
+    await page.locator("#gnssCableLoss").fill("6");
+    await expect(page.getByText("37.0").first()).toBeVisible();
+  });
 });
 
 test("basic tools keep the calculator and primary result near the first viewport", async ({ page }) => {
