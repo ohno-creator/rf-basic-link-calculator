@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { chartTheme } from "@/lib/chartTheme";
 import {
   DIAGRAM_DEF_IDS,
+  diagramMaterial,
   diagramPalette,
   diagramRef,
   diagramStroke,
@@ -58,5 +59,23 @@ describe("diagramPalette（Track I 便4b）", () => {
     expect(diagramPalette.danger).toBe(chartTheme.reference.sensitivity);
     expect(diagramPalette.dangerDeep).toBe(chartTheme.seriesText.loss);
     expect(diagramPalette.faint).toBe(chartTheme.reference.baseline);
+  });
+});
+
+describe("diagramMaterial（Track H6改）", () => {
+  it("全素材色が #RRGGBB 形式・重複なし", () => {
+    const values = Object.values(diagramMaterial);
+    for (const v of values) {
+      expect(v).toMatch(/^#[0-9A-F]{6}$/);
+    }
+    expect(new Set(values).size).toBe(values.length);
+  });
+
+  it("土は深部が浅部より暗い（等角の陰影整合）", () => {
+    const lum = (hex: string) => {
+      const n = Number.parseInt(hex.slice(1), 16);
+      return ((n >> 16) & 0xff) * 0.299 + ((n >> 8) & 0xff) * 0.587 + (n & 0xff) * 0.114;
+    };
+    expect(lum(diagramMaterial.soilDeep)).toBeLessThan(lum(diagramMaterial.soil));
   });
 });

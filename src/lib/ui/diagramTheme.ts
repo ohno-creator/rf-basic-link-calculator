@@ -85,3 +85,20 @@ export const diagramPalette = {
 } as const;
 
 export type DiagramPaletteColor = keyof typeof diagramPalette;
+
+/**
+ * 断面・2.5D図の素材ベース色（Track H6改）。等角面の陰影（iso.ts の shadeColor）にかけられる単色で、
+ * 実在素材に寄せた代表色。値の根拠: 量水器/ハンドホール蓋は FCD450 ダクタイル鋳鉄（黒〜濃灰）、
+ * 樹脂ボックスは淡い青灰、コンクリートは温かみのある石灰色、土は褐色、湿潤は空色系。
+ */
+export const diagramMaterial = {
+  soil: "#A98467", // 土（褐色）
+  soilDeep: "#7C5A43", // 土（深部・陰）
+  concrete: "#B4AEA6", // コンクリート（石灰色）
+  resin: "#9AA7B4", // 樹脂（青灰）
+  metal: "#6B7480", // 金属（鋳鉄/鋼・濃灰）
+  water: "#38BDF8", // 水・湿潤（空色）
+  device: "#334155" // 機器筐体（NCU本体・濃スレート）
+} as const;
+
+export type DiagramMaterial = keyof typeof diagramMaterial;
