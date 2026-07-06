@@ -4,9 +4,6 @@ import * as fs from "fs";
 import * as path from "path";
 
 test("measure all tools and home page", async ({ page }) => {
-  // Allow plenty of time for 25 pages * 2 viewports = 50 measurements
-  test.setTimeout(180000);
-
   const results: Record<
     string,
     Record<
@@ -24,6 +21,9 @@ test("measure all tools and home page", async ({ page }) => {
     { name: "desktop", width: 1440, height: 900 },
     { name: "mobile", width: 375, height: 812 }
   ];
+
+  // ツール数×ビューポート数で増える測定回数に合わせてタイムアウトを動的算出（1測定6秒を確保）
+  test.setTimeout(Math.max(180000, pages.length * viewports.length * 6000));
 
   for (const p of pages) {
     results[p.name] = {};
