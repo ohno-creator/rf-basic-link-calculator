@@ -54,7 +54,7 @@ jobs:
       - name: Run Visual Tests and Update Snapshots
         if: github.ref == 'refs/heads/track/final-rebaseline2'
         run: |
-          npx playwright test --update-snapshots
+          npx playwright test e2e/visual.spec.ts --update-snapshots
         env:
           TEST_VISUAL: "true"
 
