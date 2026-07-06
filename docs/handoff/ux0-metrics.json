@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-07-06T08:36:32.986Z",
+  "timestamp": "2026-07-06T13:46:18.588Z",
   "results": {
     "home": {
       "desktop": {
         "firstInputY": 1038,
-        "totalHeight": 4220,
+        "totalHeight": 4275,
         "headings": [
           "無線設計の計算を、ひとつずつ。",
           "ツール名ではなく、知りたいことから選べます",
-          "リンク設計7件",
+          "リンク設計8件",
           "アンテナ設計4件",
           "単位・基礎3件",
           "線路・整合3件",
@@ -19,11 +19,11 @@
       },
       "mobile": {
         "firstInputY": 1798,
-        "totalHeight": 8134,
+        "totalHeight": 8303,
         "headings": [
           "無線設計の計算を、ひとつずつ。",
           "ツール名ではなく、知りたいことから選べます",
-          "リンク設計7件",
+          "リンク設計8件",
           "アンテナ設計4件",
           "単位・基礎3件",
           "線路・整合3件",
@@ -36,7 +36,7 @@
     "rf-basic-link-calculator": {
       "desktop": {
         "firstInputY": 446,
-        "totalHeight": 12610,
+        "totalHeight": 12642,
         "headings": [
           "通信距離・リンクバジェット簡易診断",
           "足し算と引き算で見る通信余裕",
@@ -52,7 +52,7 @@
       },
       "mobile": {
         "firstInputY": 470,
-        "totalHeight": 22697,
+        "totalHeight": 22729,
         "headings": [
           "通信距離・リンクバジェット簡易診断",
           "足し算と引き算で見る通信余裕",
@@ -70,7 +70,7 @@
     "simple-link-budget": {
       "desktop": {
         "firstInputY": 130,
-        "totalHeight": 2714,
+        "totalHeight": 2746,
         "headings": [
           "かんたんリンク計算",
           "かんたんリンク計算",
@@ -79,7 +79,7 @@
       },
       "mobile": {
         "firstInputY": 134,
-        "totalHeight": 5299,
+        "totalHeight": 5331,
         "headings": [
           "かんたんリンク計算",
           "かんたんリンク計算",
@@ -90,7 +90,7 @@
     "free-space-loss": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 2119,
+        "totalHeight": 2151,
         "headings": [
           "自由空間損失（FSPL）",
           "入力条件",
@@ -100,7 +100,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 3869,
+        "totalHeight": 3901,
         "headings": [
           "自由空間損失（FSPL）",
           "入力条件",
@@ -109,10 +109,34 @@
         ]
       }
     },
+    "noise-floor": {
+      "desktop": {
+        "firstInputY": 286,
+        "totalHeight": 3685,
+        "headings": [
+          "ノイズフロアと受信感度",
+          "入力条件",
+          "LoRa SF別の感度（BW125kHz・現在のNF）",
+          "コラム：雑音を消そうとした人たちが、宇宙を発見した",
+          "ほかのツール"
+        ]
+      },
+      "mobile": {
+        "firstInputY": 313,
+        "totalHeight": 6331,
+        "headings": [
+          "ノイズフロアと受信感度",
+          "入力条件",
+          "LoRa SF別の感度（BW125kHz・現在のNF）",
+          "コラム：雑音を消そうとした人たちが、宇宙を発見した",
+          "ほかのツール"
+        ]
+      }
+    },
     "fresnel-zone": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3992,
+        "totalHeight": 4024,
         "headings": [
           "フレネルゾーン半径",
           "IoTの現場でフレネルゾーンをどう活かすか",
@@ -121,7 +145,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 6640,
+        "totalHeight": 6672,
         "headings": [
           "フレネルゾーン半径",
           "IoTの現場でフレネルゾーンをどう活かすか",
@@ -132,7 +156,7 @@
     "propagation-loss": {
       "desktop": {
         "firstInputY": 286,
-        "totalHeight": 6671,
+        "totalHeight": 6352,
         "headings": [
           "伝搬損失モデル比較",
           "コラム：実測で深掘りする — Google Earth × モデル比較",
@@ -142,7 +166,7 @@
       },
       "mobile": {
         "firstInputY": 336,
-        "totalHeight": 12137,
+        "totalHeight": 12161,
         "headings": [
           "伝搬損失モデル比較",
           "コラム：実測で深掘りする — Google Earth × モデル比較",
@@ -154,17 +178,17 @@
     "ncu-below-ground": {
       "desktop": {
         "firstInputY": 286,
-        "totalHeight": 11531,
+        "totalHeight": 11563,
         "headings": [
           "GL以下NCU・水道BOX診断",
           "事前見積もりと現場原因解析をつなげて評価します",
-          "迷わない入力順",
           "現場条件プリセット",
           "地上側の無線リンク",
           "GL以下・BOXまわりの条件",
           "通信困難",
           "計算の流れ",
           "注意と次の確認",
+          "迷わない入力順",
           "リンクバジェット滝グラフ（GL以下NCU）",
           "NCUが地面より下にある場合の断面図",
           "BOX・地下まわりの追加損失を分解",
@@ -178,17 +202,17 @@
       },
       "mobile": {
         "firstInputY": 349,
-        "totalHeight": 18865,
+        "totalHeight": 18844,
         "headings": [
           "GL以下NCU・水道BOX診断",
           "事前見積もりと現場原因解析をつなげて評価します",
-          "迷わない入力順",
           "現場条件プリセット",
           "地上側の無線リンク",
           "GL以下・BOXまわりの条件",
           "通信困難",
           "計算の流れ",
           "注意と次の確認",
+          "迷わない入力順",
           "リンクバジェット滝グラフ（GL以下NCU）",
           "NCUが地面より下にある場合の断面図",
           "BOX・地下まわりの追加損失を分解",
@@ -204,7 +228,7 @@
     "nami-gate-window": {
       "desktop": {
         "firstInputY": 130,
-        "totalHeight": 4086,
+        "totalHeight": 4118,
         "headings": [
           "ナミゲート 室内受信電力シミュレーター",
           "入力条件",
@@ -216,7 +240,7 @@
       },
       "mobile": {
         "firstInputY": 228,
-        "totalHeight": 6215,
+        "totalHeight": 6247,
         "headings": [
           "ナミゲート 室内受信電力シミュレーター",
           "入力条件",
@@ -230,7 +254,7 @@
     "rf-learning-quest": {
       "desktop": {
         "firstInputY": 348,
-        "totalHeight": 5325,
+        "totalHeight": 5357,
         "headings": [
           "クエストで、アンテナ設計の判断を一つずつ固める",
           "用語から実測レビューまで、同じ順番で考える",
@@ -244,7 +268,7 @@
       },
       "mobile": {
         "firstInputY": 809,
-        "totalHeight": 10577,
+        "totalHeight": 10609,
         "headings": [
           "クエストで、アンテナ設計の判断を一つずつ固める",
           "用語から実測レビューまで、同じ順番で考える",
@@ -260,7 +284,7 @@
     "frequency-wavelength": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3496,
+        "totalHeight": 3528,
         "headings": [
           "周波数・波長",
           "入力条件",
@@ -269,7 +293,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 5559,
+        "totalHeight": 5591,
         "headings": [
           "周波数・波長",
           "入力条件",
@@ -280,7 +304,7 @@
     "dbm-converter": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 2565,
+        "totalHeight": 2597,
         "headings": [
           "dBm 変換",
           "入力条件",
@@ -289,7 +313,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 4723,
+        "totalHeight": 4755,
         "headings": [
           "dBm 変換",
           "入力条件",
@@ -300,7 +324,7 @@
     "db-feel": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 2918,
+        "totalHeight": 2950,
         "headings": [
           "dBを体感する",
           "入力条件",
@@ -309,7 +333,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 4899,
+        "totalHeight": 4931,
         "headings": [
           "dBを体感する",
           "入力条件",
@@ -320,7 +344,7 @@
     "vswr-return-loss": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 2675,
+        "totalHeight": 2707,
         "headings": [
           "VSWR・リターンロス変換",
           "入力条件",
@@ -329,7 +353,7 @@
       },
       "mobile": {
         "firstInputY": 326,
-        "totalHeight": 4746,
+        "totalHeight": 4778,
         "headings": [
           "VSWR・リターンロス変換",
           "入力条件",
@@ -340,7 +364,7 @@
     "coaxial-cable-loss": {
       "desktop": {
         "firstInputY": 286,
-        "totalHeight": 2781,
+        "totalHeight": 2813,
         "headings": [
           "同軸ケーブル損失",
           "入力条件",
@@ -349,7 +373,7 @@
       },
       "mobile": {
         "firstInputY": 313,
-        "totalHeight": 5629,
+        "totalHeight": 5661,
         "headings": [
           "同軸ケーブル損失",
           "入力条件",
@@ -360,7 +384,7 @@
     "microstrip-line": {
       "desktop": {
         "firstInputY": 286,
-        "totalHeight": 4635,
+        "totalHeight": 4667,
         "headings": [
           "マイクロストリップ線路",
           "マイクロストリップ線路シミュレーション",
@@ -369,7 +393,7 @@
       },
       "mobile": {
         "firstInputY": 313,
-        "totalHeight": 7048,
+        "totalHeight": 7080,
         "headings": [
           "マイクロストリップ線路",
           "マイクロストリップ線路シミュレーション",
@@ -380,7 +404,7 @@
     "effective-aperture": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3679,
+        "totalHeight": 3711,
         "headings": [
           "有効開口面積・受信面積",
           "有効開口面積・受信面積",
@@ -389,7 +413,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 6999,
+        "totalHeight": 7031,
         "headings": [
           "有効開口面積・受信面積",
           "有効開口面積・受信面積",
@@ -400,7 +424,7 @@
     "aperture-gain-beamwidth": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3756,
+        "totalHeight": 3698,
         "headings": [
           "開口アンテナ利得・ビーム幅",
           "開口アンテナ利得・ビーム幅",
@@ -409,7 +433,7 @@
       },
       "mobile": {
         "firstInputY": 326,
-        "totalHeight": 7155,
+        "totalHeight": 7187,
         "headings": [
           "開口アンテナ利得・ビーム幅",
           "開口アンテナ利得・ビーム幅",
@@ -420,7 +444,7 @@
     "antenna-spacing": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3611,
+        "totalHeight": 3643,
         "headings": [
           "アンテナ間隔 λ換算",
           "アンテナ間隔 λ換算",
@@ -429,7 +453,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 7010,
+        "totalHeight": 7042,
         "headings": [
           "アンテナ間隔 λ換算",
           "アンテナ間隔 λ換算",
@@ -440,7 +464,7 @@
     "array-grating-lobe": {
       "desktop": {
         "firstInputY": 130,
-        "totalHeight": 3855,
+        "totalHeight": 3797,
         "headings": [
           "不要ビーム判定（アレイ間隔）",
           "狙っていない方向にも強い電波が出るか",
@@ -449,7 +473,7 @@
       },
       "mobile": {
         "firstInputY": 206,
-        "totalHeight": 7296,
+        "totalHeight": 7328,
         "headings": [
           "不要ビーム判定（アレイ間隔）",
           "狙っていない方向にも強い電波が出るか",
@@ -460,7 +484,7 @@
     "patch-antenna-dimensions": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3746,
+        "totalHeight": 3688,
         "headings": [
           "矩形パッチアンテナ寸法",
           "矩形パッチアンテナ寸法",
@@ -469,7 +493,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 7006,
+        "totalHeight": 7038,
         "headings": [
           "矩形パッチアンテナ寸法",
           "矩形パッチアンテナ寸法",
@@ -480,7 +504,7 @@
     "small-loop-resonance": {
       "desktop": {
         "firstInputY": 286,
-        "totalHeight": 3746,
+        "totalHeight": 3688,
         "headings": [
           "小型ループアンテナ共振",
           "小型ループアンテナ共振",
@@ -489,7 +513,7 @@
       },
       "mobile": {
         "firstInputY": 313,
-        "totalHeight": 7142,
+        "totalHeight": 7174,
         "headings": [
           "小型ループアンテナ共振",
           "小型ループアンテナ共振",
@@ -500,7 +524,7 @@
     "radiation-resistance": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3710,
+        "totalHeight": 3652,
         "headings": [
           "短縮アンテナ放射抵抗・効率",
           "短縮アンテナ放射抵抗・効率",
@@ -509,7 +533,7 @@
       },
       "mobile": {
         "firstInputY": 326,
-        "totalHeight": 7155,
+        "totalHeight": 7187,
         "headings": [
           "短縮アンテナ放射抵抗・効率",
           "短縮アンテナ放射抵抗・効率",
@@ -520,7 +544,7 @@
     "small-antenna-limit": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3801,
+        "totalHeight": 3743,
         "headings": [
           "小型アンテナ限界（ka・Q・帯域）",
           "小型アンテナ限界（ka・Q・帯域）",
@@ -529,7 +553,7 @@
       },
       "mobile": {
         "firstInputY": 326,
-        "totalHeight": 7068,
+        "totalHeight": 7100,
         "headings": [
           "小型アンテナ限界（ka・Q・帯域）",
           "小型アンテナ限界（ka・Q・帯域）",
@@ -540,7 +564,7 @@
     "large-array-near-field": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3810,
+        "totalHeight": 3752,
         "headings": [
           "大型アレイ近傍界・遠方界判定",
           "大型アレイ近傍界・遠方界判定",
@@ -549,7 +573,7 @@
       },
       "mobile": {
         "firstInputY": 326,
-        "totalHeight": 7229,
+        "totalHeight": 7261,
         "headings": [
           "大型アレイ近傍界・遠方界判定",
           "大型アレイ近傍界・遠方界判定",
@@ -560,7 +584,7 @@
     "reflector-ris-size-effect": {
       "desktop": {
         "firstInputY": 263,
-        "totalHeight": 3877,
+        "totalHeight": 3819,
         "headings": [
           "反射板・RISサイズ効果",
           "反射板・RISサイズ効果",
@@ -569,7 +593,7 @@
       },
       "mobile": {
         "firstInputY": 290,
-        "totalHeight": 7393,
+        "totalHeight": 7425,
         "headings": [
           "反射板・RISサイズ効果",
           "反射板・RISサイズ効果",

@@ -1,13 +1,13 @@
 # アクセシビリティ基準線 (UX-0 Axe Baseline)
 
-**作成日時**: 2026-07-06T08:36:14.509Z
+**作成日時**: 2026-07-06T13:45:08.688Z
 
 重大(serious/critical)なアクセシビリティ違反の一覧です。現状の違反を記録し、今後の改善の基準線とします。
 
 ### 統計情報
-- 調査ページ数: 25
-- 違反ありページ数: 25
-- 重大違反(種類数)の総和: 26
+- 調査ページ数: 26
+- 違反ありページ数: 26
+- 重大違反(種類数)の総和: 27
 
 ## 違反詳細
 
@@ -18,7 +18,7 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="text-white/80">24</span>
+  <span class="text-white/80">25</span>
   ```
   - セレクタ: `[".text-white\\/80"]`
   - 修正要約: Fix any of the following:
@@ -87,6 +87,28 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [noise-floor](file:///tools/noise-floor/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <span class="text-xs tabular-nums text-slate-500">SNR <!-- -->-20.0<!-- -->dB</span>
+  ```
+  - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
