@@ -41,7 +41,7 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
   }
 });
 
-test("basic tool shell keeps the calculator near the first viewport", async ({ page }) => {
+test("basic tools keep the calculator and primary result near the first viewport", async ({ page }) => {
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1440, height: 900 });
 
@@ -49,8 +49,26 @@ test("basic tool shell keeps the calculator near the first viewport", async ({ p
     await page.goto(`/tools/${tool.slug}/`);
     const calculator = page.getByTestId("tool-calculator");
     await expect(calculator).toBeVisible();
-    const box = await calculator.boundingBox();
-    expect(box?.y, tool.slug).toBeLessThanOrEqual(400);
+
+    // ハイドレーションやレイアウト確定を待つため、期待する位置に収まるまで自動リトライ（poll）する
+    await expect.poll(async () => {
+      const box = await calculator.boundingBox();
+      return box?.y ?? 999;
+    }, {
+      message: `${tool.slug}: calculator Y coordinate should be within 400px`,
+      timeout: 5000
+    }).toBeLessThanOrEqual(400);
+
+    const primaryResult = page.getByTestId("primary-result").first();
+    await expect(primaryResult, tool.slug).toBeVisible();
+
+    await expect.poll(async () => {
+      const resultBox = await primaryResult.boundingBox();
+      return (resultBox?.y ?? 901) + (resultBox?.height ?? 0);
+    }, {
+      message: `${tool.slug}: primary result bottom coordinate should be within 900px`,
+      timeout: 5000
+    }).toBeLessThanOrEqual(900);
   }
 });
 
@@ -429,6 +447,22 @@ test("RF learning quest clears a wrong answer when the stage is clicked again", 
   await expect(page.getByText("1/1000").first()).toBeVisible();
 });
 
+test("RF learning quest keeps seeded choices stable until an answer is shown", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+  const choices = page.locator("button.min-h-16");
+  const firstOrder = await choices.allInnerTexts();
+
+  await page.reload();
+  await expect(choices).toHaveCount(4);
+  expect(await choices.allInnerTexts()).toEqual(firstOrder);
+
+  await choices.first().click();
+  await expect(
+    page.getByText("正解", { exact: true }).or(page.getByText("惜しい", { exact: true }))
+  ).toBeVisible();
+  expect(await choices.allInnerTexts()).toEqual(firstOrder);
+});
+
 test("RF learning quest has researcher mode with recent-study sources", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
   await page.getByRole("button", { name: /研究者モード 100問/ }).click();
@@ -507,4 +541,18 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
   await expect(page.getByText("レベルアップ")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
   await expect(page.getByText("5/1000").first()).toBeVisible();
+});
+
+test("noise floor tool derives LoRa SF12 sensitivity and links to the link budget", async ({ page }) => {
+  await page.goto("/tools/noise-floor/");
+  // 既定値 = LoRa SF12（BW125kHz・NF6dB・SNR-20dB）→ 感度 ≈ -137.0dBm
+  await expect(page.getByTestId("primary-result")).toContainText("-137");
+  await expect(page.getByTestId("primary-result")).toContainText("dBm");
+
+  // SF7 プリセットで感度が浅くなる（-124.5dBm 付近）
+  await page.getByRole("button", { name: "SF7", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("-124.5");
+
+  // リンクバジェット診断への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の受信感度/ })).toBeVisible();
 });

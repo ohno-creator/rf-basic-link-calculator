@@ -1822,7 +1822,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
           ))}
         </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {config.fields.map((field) => (
             <Field
               key={field.key}
@@ -1868,8 +1868,6 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
 
       {computation.view ? (
         <>
-          <ResearchBridgeSection toolId={toolId} />
-
           <div className="grid gap-5 lg:grid-cols-[0.95fr_1.05fr]">
             <Card as="section" padding="lg">
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -1878,7 +1876,7 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
                   主役の値は大きく表示し、その値で何を判断するかは各カードの補足と下の解説にまとめています。dB、長さ、割合など単位も必ず確認してください。
                 </Tooltip>
               </div>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              <div data-testid="primary-result" className="mt-4 grid gap-3 sm:grid-cols-3">
                 {computation.view.cards.map((item) => (
                   <MetricCard
                     key={item.label}
@@ -1904,6 +1902,8 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
             </Card>
             <AntennaDiagram diagram={computation.view.diagram} />
           </div>
+
+          <ResearchBridgeSection toolId={toolId} />
 
           <MiniChart chart={computation.view.chart} />
 

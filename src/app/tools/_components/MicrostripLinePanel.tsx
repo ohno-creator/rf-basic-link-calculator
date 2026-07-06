@@ -247,7 +247,7 @@ export function MicrostripLinePanel() {
 
       {result ? (
         <>
-          <div className="mt-4 grid gap-3 sm:grid-cols-3">
+          <div data-testid="primary-result" className="mt-4 grid gap-3 sm:grid-cols-3">
             <MetricCard
               label="特性インピーダンス"
               value={formatNumber(result.impedanceOhms, 1)}

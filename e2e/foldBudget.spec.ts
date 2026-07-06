@@ -1,10 +1,10 @@
-import { test } from "@playwright/test";
-import { tools } from "../src/data/tools";
+import { expect, test } from "@playwright/test";
+import { basicTools } from "../src/data/basicTools";
 import * as fs from "fs";
 import * as path from "path";
 
-test("fold budget KPI metrics and status map generation", async ({ page }) => {
-  // 24ツールの順次実行に十分なタイムアウトを設定
+test("fold budget KPI metrics and status map generation", async ({ page }, testInfo) => {
+  // 22基本ツールの順次実行に十分なタイムアウトを設定
   test.setTimeout(90000);
 
   const budgetReports: Array<{
@@ -19,7 +19,7 @@ test("fold budget KPI metrics and status map generation", async ({ page }) => {
   // デスクトップビューポート (1440x900)
   await page.setViewportSize({ width: 1440, height: 900 });
 
-  for (const t of tools) {
+  for (const t of basicTools) {
     await page.goto(`/tools/${t.slug}/`);
     
     // レイアウト・Hydrationの安定待ち
@@ -63,12 +63,6 @@ test("fold budget KPI metrics and status map generation", async ({ page }) => {
     });
   }
 
-  // ディレクトリ確認とMarkdown出力
-  const dir = path.join(__dirname, "../docs/handoff");
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-
   let markdown = `# フォールド予算KPI達成状況マップ (Fold Budget Status Map)\n\n`;
   markdown += `**計測日時**: ${new Date().toISOString()}\n`;
   markdown += `**測定ビューポート**: デスクトップ (1440x900)\n\n`;
@@ -100,10 +94,23 @@ test("fold budget KPI metrics and status map generation", async ({ page }) => {
     markdown += `| \`${r.slug}\` | ${inputVal} | ${inputPass} | ${resultVal} | ${resultPass} | ${r.hasTestId ? "○" : "×"} | ${totalEval} |\n`;
   }
 
-  fs.writeFileSync(path.join(dir, "fold-budget-status.md"), markdown, "utf-8");
+  await testInfo.attach("fold-budget-status", {
+    body: markdown,
+    contentType: "text/markdown"
+  });
 
-  // 未達の項目が1つでもある場合、ビルドを壊さないようテスト自体を FIXME 扱いで正常終了させる
-  if (overallFailureCount > 0) {
-    test.fixme();
+  // 既存の引き継ぎレポートを更新するときだけ、明示的に書き込みを許可する。
+  if (process.env.UPDATE_FOLD_REPORT === "true") {
+    const dir = path.join(__dirname, "../docs/handoff");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "fold-budget-status.md"), markdown, "utf-8");
   }
+
+  const failedSlugs = sortedReports
+    .filter((report) => !report.firstInputPass || !report.primaryResultPass)
+    .map((report) => report.slug);
+  expect(
+    overallFailureCount,
+    `フォールド予算KPI未達: ${failedSlugs.join(", ")}`
+  ).toBe(0);
 });

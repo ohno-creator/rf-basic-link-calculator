@@ -550,7 +550,6 @@ export function NcuBelowGroundClient() {
       </Card>
 
       <PurposeSwitch activeMode={activeMode} onChange={setActiveMode} />
-      <WorkflowGuide mode={activeMode} />
 
       {activeMode === "field" ? (
         <FieldAnalysisPanel
@@ -814,6 +813,8 @@ export function NcuBelowGroundClient() {
 
         <ResultPanel input={input} result={result} />
       </div>
+
+      <WorkflowGuide mode={activeMode} />
 
       <NcuBudgetWaterfall input={input} result={result} />
 

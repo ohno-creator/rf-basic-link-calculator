@@ -263,7 +263,7 @@ export function SimpleLinkBudgetPanel() {
 
         {result ? (
           <>
-            <div className="mt-5 grid gap-3 sm:grid-cols-3">
+            <div data-testid="primary-result" className="mt-5 grid gap-3 sm:grid-cols-3">
               <MetricCard
                 label="リンク余裕"
                 value={formatSigned(result.linkMarginDb, "dB", 1)}

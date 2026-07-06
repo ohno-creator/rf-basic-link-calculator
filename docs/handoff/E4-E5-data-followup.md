@@ -1,8 +1,7 @@
-# Handoff: E4/E5 の規格data 一次確認（未完部分の申し送り）
+# E4/E5 規格data・大気ガス減衰 完了記録
 
-Track E の lib（計算エンジン）は Claude 枠で完了・マージ済み。**計算式は確定（一次照合／node実測済）**だが、
-**規格由来の数値テーブル2件**は一次規格の直接確認が未了のため、意図的に未実装として残す。
-誤った法規値・係数を「確定」としてコミットしない方針（AGENTS.md の確度規律・事業直結の安全）。
+Track E の計算エンジンと規格由来データは一次資料照合を完了し、E4/E5とも実装・テスト済み。
+本書は未完部分の申し送りから完了証跡へ更新した。
 
 ---
 
@@ -18,38 +17,19 @@ Track E の lib（計算エンジン）は Claude 枠で完了・マージ済み
 
 ---
 
-## 未完①: E4 の ARIB STD-T108 規格値テーブル（→ Antigravity 調査 → Codex data化）
+## 完了①: E4 の ARIB STD-T108 規格値テーブル
 
-- **現状**: `eirpCompliance.ts` は `eirpLimitDbm` を引数で受ける純エンジン。規格の上限区分は持たない。
-- **必要**: `src/data/aribT108PowerClasses.ts` を新設し、920MHz帯の空中線電力区分を出典付き・確度フラグ付きで保持する。
-  ```ts
-  export type AribT108PowerClass = {
-    id: string; label: string;
-    maxAntennaPowerMw: number; maxAntennaPowerDbm: number;
-    referenceAntennaGainDbi: number; eirpLimitDbm: number;
-    carrierSenseThresholdDbm: number | null;
-    maxTxDurationSec: number | null; dutyNote: string;
-    appliesTo: string; source: string;
-    confidence: "confirmed" | "needs_check";
-  };
-  ```
-- **一次確認が必要な数値（推測値を confirmed にしない）**:
-  - 250mWクラスの EIRP上限（=27dBm 相当。250mW≈23.98dBm＋基準利得3dBi。二次資料では整合するが**一次表の明示値**を確認）。
-  - 20mW/1mW クラスの EIRP上限（16dBm/3dBm相当が**規格の明文か運用換算か**）。
-  - キャリアセンス閾値・送信継続時間・休止/デューティ（チャネル/モードで分岐）。
-  - 1mW区分の適用チャネル範囲（916.0–916.8MHz中心）。
-- **一次出典**: ARIB STD-T108 公式（https://www.arib.or.jp/english/std_tr/telecommunications/desc/std-t108.html ）。
-  二次: ST AN4953 / TI SWRA445 / Renesas 応用ノート。
-- **完了条件**: 各値に source＋confidence。未確証は `confidence:"needs_check"` のまま保持し、UIで「要確認」を明示。確認後 confirmed へ昇格。
+- `src/data/aribT108PowerClasses.ts` に一次確認済みの20mW/250mW区分を実装済み。
+- 出典・確度は `docs/handoff/E4-aribT108-values.md` に記録し、全値を `confirmed` とした。
+- `src/tests/aribT108PowerClasses.test.ts` で区分、EIRP換算、出典・確度を検証済み。
 
-## 未完②: E5 の大気ガス減衰（P.676簡易 gaseous）（→ 一次抽出後に Claude/Codex）
+## 完了②: E5 の大気ガス減衰（P.676-13）
 
-- **現状**: `rainAttenuation.ts` は rain（P.838-3）のみ。gaseous は未実装。
-- **必要**: `gaseousSpecificAttenuationDbPerKm(frequencyGHz, waterVapourDensityGPerM3?)` を追加。
-  標準条件（海面・15℃・ρ=7.5 g/m³）の酸素 γ_o・水蒸気 γ_w の概算特性減衰。
-- **一次確認が必要**: ITU-R P.676 Annex 2 の標準条件 γ_o, γ_w テーブル（または line-by-line 概算）を一次抽出して固定。
-  適用は主に 5GHz以上。<3GHz は無視可（数値で提示）。
-- **完了条件**: 一次抽出値でテスト（node実測固定）。抽出できるまで実装しない。
+- `src/data/gaseousAttenuationSpectroscopy.ts` に Annex 1 Table 1/2 の酸素44線・水蒸気35線を一次転記。
+- `src/lib/rf/rainAttenuation.ts` に `gaseousSpecificAttenuationDbPerKm` を実装。標準条件は全気圧1013.25hPa、15℃、水蒸気密度7.5g/m³。
+- 使用式は P.676-13 Annex 1 式(1)〜(9)。周波数域は1〜1000GHz。結果は特性減衰[dB/km]で、斜め経路の高度積分は対象外。
+- node実測固定値: 2.4GHz=0.007066309dB/km、22.23508GHz=0.193462247dB/km、60GHz=14.655556404dB/km。
+- `src/tests/rainAttenuation.test.ts` で上記3点、乾燥大気、水蒸気密度・適用域ガードを検証済み。
 
 ---
 

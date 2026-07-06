@@ -256,121 +256,193 @@ export function PropagationExplorer() {
         </div>
       </Card>
 
-      {/* 共通条件の入力 */}
-      <div>
-        <p className="text-sm font-semibold text-slate-950">共通条件</p>
-        <div className="mt-2 grid gap-3 sm:grid-cols-2">
-          <div>
-            <Field
-              id="propFrequency"
-              label="周波数"
-              unit="MHz"
-              value={frequencyMHz}
-              min={50}
-              max={6000}
-              step={10}
-              showSlider
-              emptyBehavior="invalid"
-              onChange={setFrequencyMHz}
-              help="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。奥村・秦は150〜1500MHz、COST231-Hataは1500〜2000MHzが目安で、外れると結果は参考値になります。"
-            />
-            <div className="mt-2 flex flex-wrap gap-1.5">
-              {frequencyChips.map((mhz) => (
-                <button
-                  key={mhz}
-                  type="button"
-                  onClick={() => setFrequencyMHz(mhz)}
-                  className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition ${
-                    frequencyMHz === mhz
-                      ? "border-staf bg-staf-light text-staf-dark"
-                      : "border-slate-200 text-slate-500 hover:border-slate-300"
-                  }`}
-                >
-                  {mhz >= 1000 ? `${mhz / 1000}G` : `${mhz}M`}
-                </button>
-              ))}
-            </div>
-          </div>
-          <Field
-            id="propDistance"
-            label="距離"
-            unit="km"
-            value={distanceKm}
-            min={0.01}
-            max={20}
-            step={0.01}
-            showSlider
-            emptyBehavior="invalid"
-            onChange={setDistanceKm}
-            help="送受信点間の距離です。距離が2倍になると自由空間損失は約6dB増えます。表示範囲は10m〜20km、Hata系の適用目安は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。"
-          />
-          <Field
-            id="propTxHeight"
-            label="送信側アンテナ高 hb"
-            unit="m"
-            value={txHeightM}
-            min={1}
-            max={200}
-            step={1}
-            showSlider
-            emptyBehavior="invalid"
-            onChange={setTxHeightM}
-            help="送信側（基地局・ゲートウェイ）のアンテナ地上高です。高いほど見通しが良く損失は小さめになります。Hata系の目安は30〜200m。"
-          />
-          <Field
-            id="propRxHeight"
-            label="受信側アンテナ高 hm"
-            unit="m"
-            value={rxHeightM}
-            min={0.5}
-            max={20}
-            step={0.5}
-            showSlider
-            emptyBehavior="invalid"
-            onChange={setRxHeightM}
-            help="受信側（端末・移動局）のアンテナ地上高です。低いほど地面反射やクラッタの影響を受けます。Hata系の目安は1〜10m。"
-          />
-          {logDistanceActive ? (
-            <Field
-              id="propExponent"
-              label="距離損失指数 n（Log-distance）"
-              unit="n"
-              value={pathLossExponent}
-              min={1}
-              max={6}
-              step={0.1}
-              showSlider
-              emptyBehavior="invalid"
-              onChange={setPathLossExponent}
-              help="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安（n=1緩やか〜6急峻）。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
-            />
-          ) : null}
-          {hataActive ? (
-            <Card padding="sm" shadow={false}>
-              <div className="flex flex-wrap items-center justify-between gap-2">
-                <label htmlFor="propArea" className="text-sm font-semibold text-slate-950">
-                  エリア種別（Hata系）
-                </label>
-                <Tooltip term="エリア種別">
-                  Hata系で使う環境区分です。市街地（大都市）→市街地（中小都市）→郊外→開放地の順に伝搬損失が小さくなります。自由空間／2波／Log-distanceには影響しません。
-                </Tooltip>
-              </div>
-              <select
-                id="propArea"
-                value={area}
-                className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
-                onChange={(event) => setArea(event.target.value as AreaType)}
-              >
-                {propagationAreaOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
+      {/* 入力条件と比較結果の横並びレイアウト（v3/v4デザイン規約、Fold予算達成のため） */}
+      <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr]">
+        {/* 左カラム: 入力条件 */}
+        <div className="space-y-4">
+          <p className="text-sm font-semibold text-slate-950">共通条件</p>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div>
+              <Field
+                id="propFrequency"
+                label="周波数"
+                unit="MHz"
+                value={frequencyMHz}
+                min={50}
+                max={6000}
+                step={10}
+                showSlider
+                emptyBehavior="invalid"
+                onChange={setFrequencyMHz}
+                help="送信に使う中心周波数です。高いほど自由空間損失が増え、届きにくくなります。奥村・秦は150〜1500MHz、COST231-Hataは1500〜2000MHzが目安で、外れると結果は参考値になります。"
+              />
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {frequencyChips.map((mhz) => (
+                  <button
+                    key={mhz}
+                    type="button"
+                    onClick={() => setFrequencyMHz(mhz)}
+                    className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold transition ${
+                      frequencyMHz === mhz
+                        ? "border-staf bg-staf-light text-staf-dark"
+                        : "border-slate-200 text-slate-500 hover:border-slate-300"
+                    }`}
+                  >
+                    {mhz >= 1000 ? `${mhz / 1000}G` : `${mhz}M`}
+                  </button>
                 ))}
-              </select>
-              <p className="mt-1 text-xs leading-relaxed text-slate-500">
-                市街地ほど損失が大きく、開放地ほど小さく推定します。
+              </div>
+            </div>
+            <Field
+              id="propDistance"
+              label="距離"
+              unit="km"
+              value={distanceKm}
+              min={0.01}
+              max={20}
+              step={0.01}
+              showSlider
+              emptyBehavior="invalid"
+              onChange={setDistanceKm}
+              help="送受信点間の距離です。距離が2倍になると自由空間損失は約6dB増えます。表示範囲は10m〜20km、Hata系の適用目安は1〜20km、2波モデルはブレークポイント以遠が本来の適用範囲です。"
+            />
+            <Field
+              id="propTxHeight"
+              label="送信側アンテナ高 hb"
+              unit="m"
+              value={txHeightM}
+              min={1}
+              max={200}
+              step={1}
+              showSlider
+              emptyBehavior="invalid"
+              onChange={setTxHeightM}
+              help="送信側（基地局・ゲートウェイ）のアンテナ地上高です。高いほど見通しが良く損失は小さめになります。Hata系の目安は30〜200m。"
+            />
+            <Field
+              id="propRxHeight"
+              label="受信側アンテナ高 hm"
+              unit="m"
+              value={rxHeightM}
+              min={0.5}
+              max={20}
+              step={0.5}
+              showSlider
+              emptyBehavior="invalid"
+              onChange={setRxHeightM}
+              help="受信側（端末・移動局）のアンテナ地上高です。低いほど地面反射やクラッタの影響を受けます。Hata系の目安は1〜10m。"
+            />
+            {logDistanceActive ? (
+              <Field
+                id="propExponent"
+                label="距離損失指数 n（Log-distance）"
+                unit="n"
+                value={pathLossExponent}
+                min={1}
+                max={6}
+                step={0.1}
+                showSlider
+                emptyBehavior="invalid"
+                onChange={setPathLossExponent}
+                help="Log-distanceモデルの距離減衰の急峻さです。自由空間=2、市街地などの見通し外=3〜4が目安（n=1緩やか〜6急峻）。大きいほど距離が伸びると急に弱くなります。現地のRSSI/RSRP実測に合わせて調整します。"
+              />
+            ) : null}
+            {hataActive ? (
+              <Card padding="sm" shadow={false}>
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <label htmlFor="propArea" className="text-sm font-semibold text-slate-950">
+                    エリア種別（Hata系）
+                  </label>
+                  <Tooltip term="エリア種別">
+                    Hata系で使う環境区分です。市街地（大都市）→市街地（中小都市）→郊外→開放地の順に伝搬損失が小さくなります。自由空間／2波／Log-distanceには影響しません。
+                  </Tooltip>
+                </div>
+                <select
+                  id="propArea"
+                  value={area}
+                  className="mt-2 h-10 w-full rounded-md border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-950 focus:border-staf focus:outline-none focus:ring-2 focus:ring-staf/40"
+                  onChange={(event) => setArea(event.target.value as AreaType)}
+                >
+                  {propagationAreaOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <p className="mt-1 text-xs leading-relaxed text-slate-500">
+                  市街地ほど損失が大きく、開放地ほど小さく推定します。
+                </p>
+              </Card>
+            ) : null}
+          </div>
+        </div>
+
+        {/* 右カラム: 比較結果（現在距離） */}
+        <div className="space-y-3">
+          <p className="text-sm font-semibold text-slate-950">
+            現在距離 {distanceKm >= 1 ? `${distanceKm}km` : `${Math.round(distanceKm * 1000)}m`} での伝搬損失（届きやすい順）
+          </p>
+          {results.length === 0 ? (
+            <p className="rounded-md bg-rose-50 p-4 text-sm font-medium text-rose-700">
+              比較するモデルを選び、各入力に0より大きい値を入れてください。
+            </p>
+          ) : (
+            <ul className="grid gap-2">
+              {results.map((result, index) => {
+                const option = getPropagationModelOption(result.model);
+                const deltaDb = minLoss !== null ? result.pathLossDb - minLoss : 0;
+                return (
+                  <Card
+                    as="li"
+                    key={result.model}
+                    padding="sm"
+                    shadow={false}
+                    data-testid={index === 0 ? "primary-result" : undefined}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <span
+                          aria-hidden
+                          className="h-3 w-3 shrink-0 rounded-full"
+                          style={{ backgroundColor: MODEL_COLORS[result.model] }}
+                        />
+                        <span className="truncate text-sm font-bold text-slate-950">{option.label}</span>
+                        {index === 0 ? (
+                          <Badge tone="success" size="xs" className="shrink-0">
+                            最小
+                          </Badge>
+                        ) : null}
+                        {result.outOfRange ? (
+                          <Badge tone="caution" size="xs" className="shrink-0">
+                            適用範囲外
+                          </Badge>
+                        ) : null}
+                      </div>
+                      <div className="shrink-0 text-right">
+                        <span className="text-lg font-bold text-slate-950">{result.pathLossDb.toFixed(1)}</span>
+                        <span className="ml-1 text-xs font-semibold text-slate-500">dB</span>
+                        {deltaDb > 0.05 ? (
+                          <span className="ml-2 text-xs font-medium text-slate-400">+{deltaDb.toFixed(1)}</span>
+                        ) : null}
+                      </div>
+                    </div>
+                    <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+                      <span className="font-semibold text-slate-700">向いている：</span>
+                      {option.bestFor}
+                      <span className="ml-2 font-semibold text-amber-700">注意：</span>
+                      <span className="text-amber-700">{option.caution}</span>
+                    </p>
+                  </Card>
+                );
+              })}
+            </ul>
+          )}
+          {flooredByFspl ? (
+            <Callout tone="caution" size="sm" className="mt-2">
+              <p className="text-xs leading-relaxed">
+                経験式が自由空間損失を下回ったため下限値を表示
               </p>
-            </Card>
+            </Callout>
           ) : null}
         </div>
       </div>
@@ -390,69 +462,6 @@ export function PropagationExplorer() {
           showReflection={twoRayActive}
           showBuildings={hataActive}
         />
-      </div>
-
-      {/* 比較結果（現在距離） */}
-      <div>
-        <p className="text-sm font-semibold text-slate-950">
-          現在距離 {distanceKm >= 1 ? `${distanceKm}km` : `${Math.round(distanceKm * 1000)}m`} での伝搬損失（届きやすい順）
-        </p>
-        {results.length === 0 ? (
-          <p className="mt-2 rounded-md bg-rose-50 p-4 text-sm font-medium text-rose-700">
-            比較するモデルを選び、各入力に0より大きい値を入れてください。
-          </p>
-        ) : (
-          <ul className="mt-2 grid gap-2">
-            {results.map((result, index) => {
-              const option = getPropagationModelOption(result.model);
-              const deltaDb = minLoss !== null ? result.pathLossDb - minLoss : 0;
-              return (
-                <Card as="li" key={result.model} padding="sm" shadow={false}>
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <span
-                        aria-hidden
-                        className="h-3 w-3 shrink-0 rounded-full"
-                        style={{ backgroundColor: MODEL_COLORS[result.model] }}
-                      />
-                      <span className="truncate text-sm font-bold text-slate-950">{option.label}</span>
-                      {index === 0 ? (
-                        <Badge tone="success" size="xs" className="shrink-0">
-                          最小
-                        </Badge>
-                      ) : null}
-                      {result.outOfRange ? (
-                        <Badge tone="caution" size="xs" className="shrink-0">
-                          適用範囲外
-                        </Badge>
-                      ) : null}
-                    </div>
-                    <div className="shrink-0 text-right">
-                      <span className="text-lg font-bold text-slate-950">{result.pathLossDb.toFixed(1)}</span>
-                      <span className="ml-1 text-xs font-semibold text-slate-500">dB</span>
-                      {deltaDb > 0.05 ? (
-                        <span className="ml-2 text-xs font-medium text-slate-400">+{deltaDb.toFixed(1)}</span>
-                      ) : null}
-                    </div>
-                  </div>
-                  <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
-                    <span className="font-semibold text-slate-700">向いている：</span>
-                    {option.bestFor}
-                    <span className="ml-2 font-semibold text-amber-700">注意：</span>
-                    <span className="text-amber-700">{option.caution}</span>
-                  </p>
-                </Card>
-              );
-            })}
-          </ul>
-        )}
-        {flooredByFspl ? (
-          <Callout tone="caution" size="sm" className="mt-2">
-            <p className="text-xs leading-relaxed">
-              経験式が自由空間損失を下回ったため下限値を表示
-            </p>
-          </Callout>
-        ) : null}
       </div>
 
       {/* 実測値の入力 */}
