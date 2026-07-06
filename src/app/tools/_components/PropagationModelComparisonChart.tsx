@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { Callout } from "@/components/Callout";
 import { ChartFrame } from "@/components/ChartFrame";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
 import { SPEED_OF_LIGHT_M_PER_S } from "@/lib/rf/frequency";
 import {
@@ -208,8 +209,8 @@ export function PropagationModelComparisonChart({
                   data={measuredData}
                   dataKey="loss"
                   name="実測値"
-                  fill="#0f172a"
-                  stroke="#ffffff"
+                  fill={diagramPalette.ink}
+                  stroke={diagramPalette.white}
                   strokeWidth={1.5}
                   isAnimationActive={false}
                 />
@@ -217,9 +218,9 @@ export function PropagationModelComparisonChart({
               {Number.isFinite(currentDistanceKm) && currentDistanceKm > 0 ? (
                 <ReferenceLine
                   x={currentDistanceKm}
-                  stroke="#0f172a"
+                  stroke={diagramPalette.ink}
                   strokeDasharray="5 4"
-                  label={{ value: "現在距離", position: "top", fontSize: 11, fill: "#0f172a" }}
+                  label={{ value: "現在距離", position: "top", fontSize: 11, fill: diagramPalette.ink }}
                 />
               ) : null}
               {twoRayBreakpointKm !== null &&
@@ -227,9 +228,9 @@ export function PropagationModelComparisonChart({
               twoRayBreakpointKm <= MAX_DISTANCE_KM ? (
                 <ReferenceLine
                   x={twoRayBreakpointKm}
-                  stroke="#6366f1"
+                  stroke={chartTheme.categorical[4]}
                   strokeDasharray="2 4"
-                  label={{ value: "2波bp", position: "insideTopRight", fontSize: 11, fill: "#4f46e5" }}
+                  label={{ value: "2波bp", position: "insideTopRight", fontSize: 11, fill: diagramPalette.inkSoft }}
                 />
               ) : null}
             </ComposedChart>
