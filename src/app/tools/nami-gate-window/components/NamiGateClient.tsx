@@ -216,7 +216,7 @@ export function NamiGateClient() {
           </h2>
 
           {/* 判定 */}
-          <StateCard tone={evaluation.tone} padding="md" className="space-y-2">
+          <StateCard data-testid="primary-result" tone={evaluation.tone} padding="md" className="space-y-2">
             <div className="flex items-center gap-2">
               <Badge tone={evaluation.tone} size="sm">
                 判定：{evaluation.label}

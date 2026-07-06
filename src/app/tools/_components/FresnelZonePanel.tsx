@@ -184,6 +184,28 @@ export function FresnelZonePanel() {
         />
       </div>
 
+      {/* 主要な数値 */}
+      {result ? (
+        <div data-testid="primary-result" className="mt-4 grid gap-3 sm:grid-cols-3">
+          <MetricCard
+            label="この位置の第1フレネル半径"
+            value={formatMeters(result.firstZoneRadiusM)}
+            hint="障害物位置での第1フレネルゾーンの半径です。この60%以上を障害物から空けるのが目安です。"
+          />
+          <MetricCard
+            label="60%クリアランス目安"
+            value={formatMeters(result.clearance60M)}
+            hint="第1フレネル半径の60%。見通し通信でこの高さ以上を空けると回り込み損失をほぼ無視できる、という実務則です。"
+          />
+          <MetricCard
+            label="波長 λ"
+            value={formatNumber(result.wavelengthM, 3)}
+            unit="m"
+            hint="周波数に対応する波長(λ=c/f)です。フレネル半径はλの平方根に比例します。"
+          />
+        </div>
+      ) : null}
+
       {/* 障害物 */}
       <div className="mt-5">
         <div className="flex items-center gap-2">
@@ -279,28 +301,6 @@ export function FresnelZonePanel() {
           周波数・距離は0より大きい値、アンテナ高・障害物高は0以上を入力してください。
         </p>
       )}
-
-      {/* 主要な数値 */}
-      {result ? (
-        <div className="mt-4 grid gap-3 sm:grid-cols-3">
-          <MetricCard
-            label="この位置の第1フレネル半径"
-            value={formatMeters(result.firstZoneRadiusM)}
-            hint="障害物位置での第1フレネルゾーンの半径です。この60%以上を障害物から空けるのが目安です。"
-          />
-          <MetricCard
-            label="60%クリアランス目安"
-            value={formatMeters(result.clearance60M)}
-            hint="第1フレネル半径の60%。見通し通信でこの高さ以上を空けると回り込み損失をほぼ無視できる、という実務則です。"
-          />
-          <MetricCard
-            label="波長 λ"
-            value={formatNumber(result.wavelengthM, 3)}
-            unit="m"
-            hint="周波数に対応する波長(λ=c/f)です。フレネル半径はλの平方根に比例します。"
-          />
-        </div>
-      ) : null}
 
       {/* 断面図 */}
       <div className="mt-5">
