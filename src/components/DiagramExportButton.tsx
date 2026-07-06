@@ -35,10 +35,11 @@ function triggerDownload(href: string, filename: string): void {
  */
 export function DiagramExportButton({ filenameBase, children, scale = 2 }: DiagramExportButtonProps) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const childrenRef = useRef<HTMLDivElement>(null);
   const [busy, setBusy] = useState(false);
 
   const readSvgMarkup = (): string | null => {
-    const svg = wrapRef.current?.querySelector("svg");
+    const svg = childrenRef.current?.querySelector("svg");
     if (!svg) {
       return null;
     }
@@ -72,7 +73,7 @@ export function DiagramExportButton({ filenameBase, children, scale = 2 }: Diagr
   };
 
   const exportPng = () => {
-    const svg = wrapRef.current?.querySelector("svg");
+    const svg = childrenRef.current?.querySelector("svg");
     const markup = readSvgMarkup();
     if (!svg || !markup) return;
     setBusy(true);
@@ -123,7 +124,7 @@ export function DiagramExportButton({ filenameBase, children, scale = 2 }: Diagr
           {busy ? "…" : "PNG"}
         </button>
       </div>
-      {children}
+      <div ref={childrenRef}>{children}</div>
     </div>
   );
 }
