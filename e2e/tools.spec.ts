@@ -542,3 +542,17 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
   await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
   await expect(page.getByText("5/1000").first()).toBeVisible();
 });
+
+test("noise floor tool derives LoRa SF12 sensitivity and links to the link budget", async ({ page }) => {
+  await page.goto("/tools/noise-floor/");
+  // 既定値 = LoRa SF12（BW125kHz・NF6dB・SNR-20dB）→ 感度 ≈ -137.0dBm
+  await expect(page.getByTestId("primary-result")).toContainText("-137");
+  await expect(page.getByTestId("primary-result")).toContainText("dBm");
+
+  // SF7 プリセットで感度が浅くなる（-124.5dBm 付近）
+  await page.getByRole("button", { name: "SF7", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("-124.5");
+
+  // リンクバジェット診断への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の受信感度/ })).toBeVisible();
+});
