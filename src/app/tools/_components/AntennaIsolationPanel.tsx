@@ -10,6 +10,7 @@ import { ResultBar } from "@/components/ResultBar";
 import { calculateAntennaIsolation } from "@/lib/rf/antennaIsolation";
 import { formatNumber } from "@/lib/rf/format";
 import type { LinkJudgementLevel } from "@/lib/rf/judgement";
+import { AntennaIsolationColumn } from "./AntennaIsolationColumn";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
 const qualityMeta: Record<
@@ -118,6 +119,9 @@ export function AntennaIsolationPanel() {
         <FormulaExplanationCard title="Friis遠方界近似" formula={"S21[dB] ≈ 20log10(λ/(4πd)) + G1 + G2\ndtarget = λ/(4π·10^((S21target−G1−G2)/20))"} showColumnLink={false}>
           <p className="text-sm leading-relaxed text-slate-600">d≳λ/2、自由空間、偏波平行、整合済みアンテナの条件で使います。</p>
         </FormulaExplanationCard>
+      </div>
+      <div className="mt-6">
+        <AntennaIsolationColumn />
       </div>
       <MobileResultBar primary={primary} judgement={judgement} targetId="isolation-primary-result" />
     </>

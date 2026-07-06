@@ -10,6 +10,7 @@ import { ResultBar } from "@/components/ResultBar";
 import { calculateLMatch, type LMatchSolution } from "@/lib/rf/lMatch";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { LMatchColumn } from "./LMatchColumn";
 
 const presets = [
   { label: "20−j10Ω", resistance: 20, reactance: -10 },
@@ -139,6 +140,11 @@ export function LMatchPanel() {
           <p className="text-sm leading-relaxed text-slate-600">R&lt;Z0では直列リアクタンスから、R&gt;Z0ではアドミタンス側から2枝を解きます。</p>
         </FormulaExplanationCard>
       </div>
+
+      <div className="mt-6">
+        <LMatchColumn />
+      </div>
+
       <MobileResultBar primary={primary} targetId="lmatch-primary-result" />
     </>
   );

@@ -13,6 +13,7 @@ import { calculateEirp } from "@/lib/rf/antenna";
 import { cableAssemblyLoss, interpolateCableLoss } from "@/lib/rf/coax";
 import { formatNumber } from "@/lib/rf/format";
 import { CableLossCurveDiagram } from "./CableLossCurveDiagram";
+import { CoaxCableLossColumn } from "./CoaxCableLossColumn";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
 export function CoaxCableLossPanel() {
@@ -242,6 +243,9 @@ export function CoaxCableLossPanel() {
           />
         ) : null}
       </div>
+      </div>
+      <div className="mt-6">
+        <CoaxCableLossColumn />
       </div>
       <MobileResultBar primary={primary} targetId="coax-primary-result" />
     </div>
