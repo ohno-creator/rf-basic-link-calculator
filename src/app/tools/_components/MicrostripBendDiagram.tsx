@@ -2,7 +2,7 @@
 // すると反射が減る。曲げ角度とマイター率に連動する上面図の動的SVG。
 
 import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
-import { DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
+import { diagramPalette, DIAGRAM_DEF_IDS, diagramRef, diagramStroke, diagramText } from "@/lib/ui/diagramTheme";
 import type { BendSignificance } from "@/lib/rf/microstrip";
 
 type MicrostripBendDiagramProps = {
@@ -23,9 +23,9 @@ const significanceStyle: Record<
   BendSignificance,
   { stroke: string; label: string }
 > = {
-  negligible: { stroke: "#059669", label: "影響：ほぼ無視できる" },
-  minor: { stroke: "#b45309", label: "影響：小さめ（対策推奨）" },
-  significant: { stroke: "#e11d48", label: "影響：大きい（要対策）" }
+  negligible: { stroke: diagramPalette.successDeep, label: "影響：ほぼ無視できる" },
+  minor: { stroke: diagramPalette.amberDeep, label: "影響：小さめ（対策推奨）" },
+  significant: { stroke: diagramPalette.danger, label: "影響：大きい（要対策）" }
 };
 
 function round(value: number): number {
@@ -82,17 +82,17 @@ export function MicrostripBendDiagram({
         <polygon points={outgoing} fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} stroke={style.stroke} strokeWidth={diagramStroke.main} />
 
         {/* マイターで切り取る三角（背景色で消す） */}
-        <polygon points={`${pt(pcX, pcY)} ${pt(e1X, e1Y)} ${pt(e2X, e2Y)}`} fill="#f8fafc" />
+        <polygon points={`${pt(pcX, pcY)} ${pt(e1X, e1Y)} ${pt(e2X, e2Y)}`} fill={diagramPalette.canvas} />
         {/* 元の鋭角コーナー（点線） */}
-        <line x1={round(e1X)} y1={round(e1Y)} x2={round(pcX)} y2={round(pcY)} stroke="#cbd5e1" strokeWidth={diagramStroke.support} strokeDasharray="3 3" />
-        <line x1={round(e2X)} y1={round(e2Y)} x2={round(pcX)} y2={round(pcY)} stroke="#cbd5e1" strokeWidth={diagramStroke.support} strokeDasharray="3 3" />
+        <line x1={round(e1X)} y1={round(e1Y)} x2={round(pcX)} y2={round(pcY)} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} strokeDasharray="3 3" />
+        <line x1={round(e2X)} y1={round(e2Y)} x2={round(pcX)} y2={round(pcY)} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} strokeDasharray="3 3" />
         {/* マイター面（カット線） */}
-        <line x1={round(e1X)} y1={round(e1Y)} x2={round(e2X)} y2={round(e2Y)} stroke="#0071BD" strokeWidth={diagramStroke.emphasis} />
+        <line x1={round(e1X)} y1={round(e1Y)} x2={round(e2X)} y2={round(e2Y)} stroke={diagramPalette.staf} strokeWidth={diagramStroke.emphasis} />
 
         {/* 中心線と曲げ角 */}
-        <line x1={IN_LEFT} y1={OY} x2={OX} y2={OY} stroke="#475569" strokeWidth={diagramStroke.support} strokeDasharray="5 4" />
-        <line x1={OX} y1={OY} x2={round(OX + OUT_LEN * dx)} y2={round(OY + OUT_LEN * dy)} stroke="#475569" strokeWidth={diagramStroke.support} strokeDasharray="5 4" />
-        <text x={round(OX - 40)} y={round(OY - 52)} fontSize="12" fontWeight="700" fill="#0071BD">
+        <line x1={IN_LEFT} y1={OY} x2={OX} y2={OY} stroke={diagramPalette.inkMuted} strokeWidth={diagramStroke.support} strokeDasharray="5 4" />
+        <line x1={OX} y1={OY} x2={round(OX + OUT_LEN * dx)} y2={round(OY + OUT_LEN * dy)} stroke={diagramPalette.inkMuted} strokeWidth={diagramStroke.support} strokeDasharray="5 4" />
+        <text x={round(OX - 40)} y={round(OY - 52)} fontSize="12" fontWeight="700" fill={diagramPalette.staf}>
           マイター {miterPercent.toFixed(0)}%
         </text>
         <text x={IN_LEFT} y={OY + w + 20} {...diagramText.label}>

@@ -78,12 +78,12 @@ export function VswrStandingWaveDiagram({
           <path d={envelopeFillPath} fill={diagramRef(DIAGRAM_DEF_IDS.gradientSky)} fillOpacity="0.5" stroke="none" />
 
           {/* Vmax / Vmin の基準線 */}
-          <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke="#fca5a5" strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
+          <line x1={X0} y1={vMaxY} x2={X1} y2={vMaxY} stroke={diagramPalette.loss} strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
           <line x1={X0} y1={vMinY} x2={X1} y2={vMinY} stroke={diagramPalette.skySoft} strokeWidth={diagramStroke.support} strokeDasharray="4 4" />
-          <text x={X1} y={vMaxLabelY} textAnchor="end" {...diagramText.label} fill="#dc2626">
+          <text x={X1} y={vMaxLabelY} textAnchor="end" {...diagramText.label} fill={diagramPalette.danger}>
             Vmax = 1 + Γ
           </text>
-          <text x={X1} y={vMinLabelY} textAnchor="end" {...diagramText.label} fill="#2563eb">
+          <text x={X1} y={vMinLabelY} textAnchor="end" {...diagramText.label} fill={diagramPalette.staf}>
             Vmin = 1 − Γ
           </text>
 

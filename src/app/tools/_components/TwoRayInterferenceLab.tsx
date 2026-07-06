@@ -14,6 +14,7 @@ import {
 } from "recharts";
 import { DiagramExportButton } from "@/components/DiagramExportButton";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { calculateFsplDb } from "@/lib/rf/fspl";
 import {
   calculatePropagationLossResult,
@@ -193,15 +194,15 @@ export function TwoRayInterferenceLab({
                 labelFormatter={(label) => `距離 ${formatDistance(Number(label))}`}
               />
               <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Line type="linear" dataKey="full" name="2波（干渉・完全版）" stroke="#ea580c" strokeWidth={2} dot={false} activeDot={rfActiveDot("#ea580c")} isAnimationActive={false} />
+              <Line type="linear" dataKey="full" name="2波（干渉・完全版）" stroke={diagramPalette.warn} strokeWidth={2} dot={false} activeDot={rfActiveDot(diagramPalette.warn)} isAnimationActive={false} />
               <Line type="linear" dataKey="envelope" name="2波（平滑化・包絡線）" stroke={chartTheme.series.source} strokeWidth={2} strokeDasharray="5 4" dot={false} isAnimationActive={false} />
-              <Line type="linear" dataKey="fspl" name="自由空間損失" stroke="#94a3b8" strokeWidth={1.5} strokeDasharray="2 4" dot={false} isAnimationActive={false} />
+              <Line type="linear" dataKey="fspl" name="自由空間損失" stroke={diagramPalette.faint} strokeWidth={1.5} strokeDasharray="2 4" dot={false} isAnimationActive={false} />
               {breakpointM >= MIN_DISTANCE_M && breakpointM <= maxDistanceM ? (
                 <ReferenceLine
                   x={breakpointM}
-                  stroke="#0f172a"
+                  stroke={diagramPalette.ink}
                   strokeDasharray="4 4"
-                  label={{ value: `ブレークポイント ${formatDistance(breakpointM)}`, position: "top", fontSize: 11, fill: "#0f172a" }}
+                  label={{ value: `ブレークポイント ${formatDistance(breakpointM)}`, position: "top", fontSize: 11, fill: diagramPalette.ink }}
                 />
               ) : null}
             </LineChart>

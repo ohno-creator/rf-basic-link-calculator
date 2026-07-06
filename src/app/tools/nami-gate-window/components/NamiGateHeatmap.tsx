@@ -11,13 +11,14 @@ import {
   type NamiGateInput,
   type NamiGateSimulation
 } from "@/lib/rf/namiGate";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { colormapLegendStops, colormapTextColor, normalizeToUnit, viridisColor } from "@/lib/ui/colormap";
 
 // H5: セル配色は知覚均等の viridis 連続スケール（lib の離散 cellColor から移行）。
 // スケールは入力に依らず固定にして、条件を変えても色の意味が変わらないようにする。
 const POWER_SCALE = { min: -100, max: -50 } as const; // 受信電力 dBm
 const DIFF_SCALE = { min: 0, max: 8 } as const; // 改善量 dB（0未満=改善なし・グレー）
-const DIFF_NEUTRAL = { fill: "#CBD5E1", text: "#1F2933" } as const;
+const DIFF_NEUTRAL = { fill: diagramPalette.line, text: diagramPalette.ink } as const;
 
 function heatCellColor(value: number, mode: CellMode): { fill: string; text: string } {
   if (mode === "diff") {
@@ -167,13 +168,13 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
           }
         >
           {/* 窓面ストリップ（上辺） */}
-          <rect x={0} y={0} width={GRID_COLS} height={1.2} fill="#475569" />
-          <text x={1} y={0.82} fontSize={0.66} fill="#ffffff" fontWeight={700}>
+          <rect x={0} y={0} width={GRID_COLS} height={1.2} fill={diagramPalette.inkMuted} />
+          <text x={1} y={0.82} fontSize={0.66} fill={diagramPalette.white} fontWeight={700}>
             窓面
           </text>
           {/* ナミゲート位置（中央の30cm角） */}
-          <rect x={winX - 2} y={0} width={4} height={1.2} fill="#0071bd" />
-          <text x={winX} y={0.84} fontSize={0.62} fill="#ffffff" fontWeight={700} textAnchor="middle">
+          <rect x={winX - 2} y={0} width={4} height={1.2} fill={diagramPalette.staf} />
+          <text x={winX} y={0.84} fontSize={0.62} fill={diagramPalette.white} fontWeight={700} textAnchor="middle">
             NG
           </text>
 
@@ -227,12 +228,12 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
               y1={0}
               x2={rayX}
               y2={rayY}
-              stroke="#22d3ee"
+              stroke={diagramPalette.skyStroke}
               strokeWidth={0.18}
               strokeDasharray="0.6 0.4"
               pointerEvents="none"
             />
-            <circle cx={winX} cy={0} r={0.35} fill="#0071bd" pointerEvents="none" />
+            <circle cx={winX} cy={0} r={0.35} fill={diagramPalette.staf} pointerEvents="none" />
 
             {/* ホバー枠 */}
             {hover ? (
@@ -242,7 +243,7 @@ function NamiGateHeatmapImpl({ sim, mode, input }: NamiGateHeatmapProps) {
                 width={1}
                 height={1}
                 fill="none"
-                stroke="#0f172a"
+                stroke={diagramPalette.ink}
                 strokeWidth={0.16}
                 pointerEvents="none"
               />
