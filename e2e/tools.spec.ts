@@ -429,6 +429,22 @@ test("RF learning quest clears a wrong answer when the stage is clicked again", 
   await expect(page.getByText("1/1000").first()).toBeVisible();
 });
 
+test("RF learning quest keeps seeded choices stable until an answer is shown", async ({ page }) => {
+  await page.goto("/tools/rf-learning-quest/");
+  const choices = page.locator("button.min-h-16");
+  const firstOrder = await choices.allInnerTexts();
+
+  await page.reload();
+  await expect(choices).toHaveCount(4);
+  expect(await choices.allInnerTexts()).toEqual(firstOrder);
+
+  await choices.first().click();
+  await expect(
+    page.getByText("正解", { exact: true }).or(page.getByText("惜しい", { exact: true }))
+  ).toBeVisible();
+  expect(await choices.allInnerTexts()).toEqual(firstOrder);
+});
+
 test("RF learning quest has researcher mode with recent-study sources", async ({ page }) => {
   await page.goto("/tools/rf-learning-quest/");
   await page.getByRole("button", { name: /研究者モード 100問/ }).click();
