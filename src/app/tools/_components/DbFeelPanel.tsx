@@ -9,6 +9,7 @@ import { ResultBar } from "@/components/ResultBar";
 import { Tooltip } from "@/components/Tooltip";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DbFeelDiagram } from "./DbFeelDiagram";
+import { DbFeelColumn } from "./DbFeelColumn";
 
 export function formatRatio(ratio: number): string {
   if (ratio >= 100) return `×${Math.round(ratio).toLocaleString()}`;
@@ -193,6 +194,7 @@ export function DbFeelPanel() {
         <DbFeelDiagram db={db} stackTotalDb={stackTotalDb} />
       </div>
       </div>
+      <DbFeelColumn />
       <MobileResultBar primary={primary} targetId="db-feel-primary-result" />
     </div>
   );

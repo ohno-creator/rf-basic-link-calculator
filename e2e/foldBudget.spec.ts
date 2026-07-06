@@ -3,8 +3,16 @@ import { basicTools } from "../src/data/basicTools";
 import * as fs from "fs";
 import * as path from "path";
 
+const HEIGHT_BUDGET_SLUGS = new Set([
+  "ifa-initial-dimensions",
+  "l-match",
+  "antenna-isolation",
+  "battery-life",
+  "gnss-cn0"
+]);
+
 test("fold budget KPI metrics and status map generation", async ({ page }, testInfo) => {
-  // 22基本ツールの順次実行に十分なタイムアウトを設定
+  // 全基本ツールの順次実行に十分なタイムアウトを設定
   test.setTimeout(90000);
 
   const budgetReports: Array<{
@@ -14,6 +22,9 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
     primaryResultY: number | null;
     primaryResultPass: boolean;
     hasTestId: boolean;
+    pageHeight: number;
+    pageHeightPass: boolean;
+    pageHeightRequired: boolean;
   }> = [];
 
   // デスクトップビューポート (1440x900)
@@ -53,21 +64,28 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
       }
     }
 
+    const pageHeight = await page.evaluate(() => document.body.scrollHeight);
+    const pageHeightPass = pageHeight <= 2500;
+    const pageHeightRequired = HEIGHT_BUDGET_SLUGS.has(t.slug);
+
     budgetReports.push({
       slug: t.slug,
       firstInputY,
       firstInputPass,
       primaryResultY,
       primaryResultPass,
-      hasTestId
+      hasTestId,
+      pageHeight,
+      pageHeightPass,
+      pageHeightRequired
     });
   }
 
   let markdown = `# フォールド予算KPI達成状況マップ (Fold Budget Status Map)\n\n`;
   markdown += `**計測日時**: ${new Date().toISOString()}\n`;
   markdown += `**測定ビューポート**: デスクトップ (1440x900)\n\n`;
-  markdown += `| ツール (slug) | 最初の入力Y (目標≦400px) | 最初の入力判定 | 主結果要素Y (目標≦900px) | 主結果判定 | data-testid有無 | 総合評価 |\n`;
-  markdown += `|---|---|---|---|---|---|---|\n`;
+  markdown += `| ツール (slug) | 最初の入力Y (目標≦400px) | 最初の入力判定 | 主結果要素Y (目標≦900px) | 主結果判定 | ページ総高 (目標≦2500px) | 総高判定 | data-testid有無 | 総合評価 |\n`;
+  markdown += `|---|---|---|---|---|---|---|---|---|\n`;
 
   const sortedReports = [...budgetReports].sort((a, b) => a.slug.localeCompare(b.slug));
   let overallFailureCount = 0;
@@ -85,13 +103,21 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
       resultPass = "⚠️ testid未付与";
     }
 
-    const isTotalPass = r.firstInputPass && r.primaryResultPass;
+    const isTotalPass =
+      r.firstInputPass &&
+      r.primaryResultPass &&
+      (!r.pageHeightRequired || r.pageHeightPass);
     if (!isTotalPass) {
       overallFailureCount++;
     }
 
     const totalEval = isTotalPass ? "🟢 達成" : "🔴 未達";
-    markdown += `| \`${r.slug}\` | ${inputVal} | ${inputPass} | ${resultVal} | ${resultPass} | ${r.hasTestId ? "○" : "×"} | ${totalEval} |\n`;
+    const heightStatus = r.pageHeightRequired
+      ? r.pageHeightPass
+        ? "🟢 PASS"
+        : "❌ FAIL"
+      : "参考";
+    markdown += `| \`${r.slug}\` | ${inputVal} | ${inputPass} | ${resultVal} | ${resultPass} | ${r.pageHeight}px | ${heightStatus} | ${r.hasTestId ? "○" : "×"} | ${totalEval} |\n`;
   }
 
   await testInfo.attach("fold-budget-status", {
@@ -107,7 +133,12 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
   }
 
   const failedSlugs = sortedReports
-    .filter((report) => !report.firstInputPass || !report.primaryResultPass)
+    .filter(
+      (report) =>
+        !report.firstInputPass ||
+        !report.primaryResultPass ||
+        (report.pageHeightRequired && !report.pageHeightPass)
+    )
     .map((report) => report.slug);
   expect(
     overallFailureCount,
