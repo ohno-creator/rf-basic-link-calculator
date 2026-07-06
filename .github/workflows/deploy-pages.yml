@@ -5,13 +5,14 @@ on:
     branches:
       - main
       - feature/initial-rf-basic-link-calculator
+      - track/e2-e5-tools
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -49,6 +50,22 @@ jobs:
 
       - name: E2E test
         run: npm run test:e2e
+
+      - name: Run Visual Tests and Update Snapshots
+        if: github.ref == 'refs/heads/track/e2-e5-tools'
+        run: |
+          npx playwright test --update-snapshots
+        env:
+          TEST_VISUAL: "true"
+
+      - name: Auto Commit and Push Snapshots
+        if: github.ref == 'refs/heads/track/e2-e5-tools'
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add e2e/visual.spec.ts-snapshots/*-chromium-linux.png
+          git commit -m "chore(visual): auto-update visual baseline snapshots on CI [Track E2-E5]" || true
+          git push origin HEAD:track/e2-e5-tools
 
       - name: Build static app
         run: npm run build
