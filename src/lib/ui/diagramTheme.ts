@@ -78,6 +78,7 @@ export const diagramPalette = {
   successDeep: "#047857",
   successDark: "#064E3B", // 最濃緑（軸・基準線。emerald-900）
   danger: "#E11D48",
+  loss: "#FB7185", // 損失系（chartTheme.series.loss と同値・rose-400）
   dangerDeep: "#BE123C",
   dangerDark: "#9F1239",
   warn: "#F97316",

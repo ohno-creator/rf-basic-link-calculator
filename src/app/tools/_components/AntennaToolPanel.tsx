@@ -18,6 +18,7 @@ import { MetricCard } from "@/components/MetricCard";
 import type { StatTone } from "@/components/Stat";
 import { Tooltip } from "@/components/Tooltip";
 import { chartTheme, rfActiveDot, rfGridProps, rfTickProps, rfTooltipProps } from "@/lib/chartTheme";
+import { diagramPalette } from "@/lib/ui/diagramTheme";
 import type { MetricTone } from "@/lib/ui/kit";
 import {
   calculateAntennaSpacing,
@@ -1516,7 +1517,7 @@ function MiniChart({ chart }: { chart: ToolView["chart"] }) {
                   name={series.name}
                   stroke={series.color}
                   strokeWidth={chartTheme.stroke.emphasis}
-                  dot={{ r: 3, strokeWidth: 1.5, fill: "#FFFFFF" }}
+                  dot={{ r: 3, strokeWidth: 1.5, fill: diagramPalette.white }}
                   activeDot={rfActiveDot(series.color)}
                 />
               ))}
@@ -1552,28 +1553,28 @@ function AntennaDiagram({ diagram }: { diagram: ToolView["diagram"] }) {
       >
         <defs>
           <linearGradient id={`beam-${variant}`} x1="0%" x2="100%" y1="0%" y2="0%">
-            <stop offset="0%" stopColor="#0071BD" stopOpacity="0.35" />
-            <stop offset="100%" stopColor="#10B981" stopOpacity="0.08" />
+            <stop offset="0%" stopColor={diagramPalette.staf} stopOpacity="0.35" />
+            <stop offset="100%" stopColor={diagramPalette.success} stopOpacity="0.08" />
           </linearGradient>
         </defs>
-        <rect x="0" y="0" width="560" height="260" rx="12" fill="#F8FAFC" />
-        <line x1="38" y1="214" x2="522" y2="214" stroke="#CBD5E1" strokeWidth="2" />
+        <rect x="0" y="0" width="560" height="260" rx="12" fill={diagramPalette.canvas} />
+        <line x1="38" y1="214" x2="522" y2="214" stroke={diagramPalette.line} strokeWidth="2" />
 
         {variant === "effective-aperture" ? (
           <>
-            <circle cx="120" cy="128" r="34" fill="#0071BD" opacity="0.16" />
-            <path d="M88 128h64M120 96v64" stroke="#0071BD" strokeWidth="4" strokeLinecap="round" />
-            <rect x="276" y="62" width="140" height="140" rx="10" fill="#10B981" opacity="0.18" stroke="#10B981" strokeWidth="3" />
-            <path d="M165 128 C210 86 234 86 276 104" fill="none" stroke="#0071BD" strokeWidth="3" strokeDasharray="8 6" />
-            <path d="M165 128 C210 170 234 170 276 156" fill="none" stroke="#0071BD" strokeWidth="3" strokeDasharray="8 6" />
+            <circle cx="120" cy="128" r="34" fill={diagramPalette.staf} opacity="0.16" />
+            <path d="M88 128h64M120 96v64" stroke={diagramPalette.staf} strokeWidth="4" strokeLinecap="round" />
+            <rect x="276" y="62" width="140" height="140" rx="10" fill={diagramPalette.success} opacity="0.18" stroke={diagramPalette.success} strokeWidth="3" />
+            <path d="M165 128 C210 86 234 86 276 104" fill="none" stroke={diagramPalette.staf} strokeWidth="3" strokeDasharray="8 6" />
+            <path d="M165 128 C210 170 234 170 276 156" fill="none" stroke={diagramPalette.staf} strokeWidth="3" strokeDasharray="8 6" />
           </>
         ) : null}
 
         {variant === "aperture-gain-beamwidth" ? (
           <>
-            <path d="M116 62 Q72 130 116 198" fill="none" stroke="#0071BD" strokeWidth="8" strokeLinecap="round" />
-            <path d="M122 86 L492 124 L122 174 Z" fill={`url(#beam-${variant})`} stroke="#0071BD" strokeWidth="2" />
-            <line x1="122" y1="130" x2="492" y2="130" stroke="#0071BD" strokeWidth="2" strokeDasharray="7 6" />
+            <path d="M116 62 Q72 130 116 198" fill="none" stroke={diagramPalette.staf} strokeWidth="8" strokeLinecap="round" />
+            <path d="M122 86 L492 124 L122 174 Z" fill={`url(#beam-${variant})`} stroke={diagramPalette.staf} strokeWidth="2" />
+            <line x1="122" y1="130" x2="492" y2="130" stroke={diagramPalette.staf} strokeWidth="2" strokeDasharray="7 6" />
           </>
         ) : null}
 
@@ -1581,92 +1582,92 @@ function AntennaDiagram({ diagram }: { diagram: ToolView["diagram"] }) {
           <>
             {[190, 350].map((x) => (
               <g key={x}>
-                <line x1={x} y1="90" x2={x} y2="214" stroke="#0071BD" strokeWidth="6" strokeLinecap="round" />
-                <circle cx={x} cy="84" r="10" fill="#0071BD" />
-                <path d={`M${x - 38} 118 Q${x} 84 ${x + 38} 118`} fill="none" stroke="#10B981" strokeWidth="2" />
+                <line x1={x} y1="90" x2={x} y2="214" stroke={diagramPalette.staf} strokeWidth="6" strokeLinecap="round" />
+                <circle cx={x} cy="84" r="10" fill={diagramPalette.staf} />
+                <path d={`M${x - 38} 118 Q${x} 84 ${x + 38} 118`} fill="none" stroke={diagramPalette.success} strokeWidth="2" />
               </g>
             ))}
-            <line x1="190" y1="184" x2="350" y2="184" stroke="#0F172A" strokeWidth="2" markerEnd="url(#arrow)" />
-            <line x1="350" y1="184" x2="190" y2="184" stroke="#0F172A" strokeWidth="2" />
+            <line x1="190" y1="184" x2="350" y2="184" stroke={diagramPalette.ink} strokeWidth="2" markerEnd="url(#arrow)" />
+            <line x1="350" y1="184" x2="190" y2="184" stroke={diagramPalette.ink} strokeWidth="2" />
           </>
         ) : null}
 
         {variant === "array-grating-lobe" ? (
           <>
             {[150, 200, 250, 300, 350, 400].map((x) => (
-              <circle key={x} cx={x} cy="194" r="9" fill="#0071BD" />
+              <circle key={x} cx={x} cy="194" r="9" fill={diagramPalette.staf} />
             ))}
-            <path d="M278 190 L396 52" stroke="#0071BD" strokeWidth="5" strokeLinecap="round" />
-            <path d="M282 190 L152 72" stroke="#FB7185" strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" />
-            <path d="M250 194h150" stroke="#0F172A" strokeWidth="2" />
+            <path d="M278 190 L396 52" stroke={diagramPalette.staf} strokeWidth="5" strokeLinecap="round" />
+            <path d="M282 190 L152 72" stroke={diagramPalette.loss} strokeWidth="4" strokeLinecap="round" strokeDasharray="8 8" />
+            <path d="M250 194h150" stroke={diagramPalette.ink} strokeWidth="2" />
           </>
         ) : null}
 
         {variant === "patch-antenna-dimensions" ? (
           <>
-            <rect x="178" y="70" width="210" height="128" rx="8" fill="#0071BD" opacity="0.16" stroke="#0071BD" strokeWidth="4" />
-            <rect x="145" y="214" width="276" height="14" rx="3" fill="#475569" />
-            <line x1="178" y1="50" x2="388" y2="50" stroke="#0F172A" strokeWidth="2" />
-            <line x1="408" y1="70" x2="408" y2="198" stroke="#0F172A" strokeWidth="2" />
-            <path d="M258 198 v30" stroke="#10B981" strokeWidth="6" />
+            <rect x="178" y="70" width="210" height="128" rx="8" fill={diagramPalette.staf} opacity="0.16" stroke={diagramPalette.staf} strokeWidth="4" />
+            <rect x="145" y="214" width="276" height="14" rx="3" fill={diagramPalette.inkMuted} />
+            <line x1="178" y1="50" x2="388" y2="50" stroke={diagramPalette.ink} strokeWidth="2" />
+            <line x1="408" y1="70" x2="408" y2="198" stroke={diagramPalette.ink} strokeWidth="2" />
+            <path d="M258 198 v30" stroke={diagramPalette.success} strokeWidth="6" />
           </>
         ) : null}
 
         {variant === "small-loop-resonance" ? (
           <>
-            <circle cx="246" cy="132" r="72" fill="none" stroke="#0071BD" strokeWidth="8" />
-            <rect x="330" y="112" width="48" height="40" rx="5" fill="#FFFFFF" stroke="#0F172A" strokeWidth="3" />
-            <line x1="342" y1="112" x2="342" y2="152" stroke="#0F172A" strokeWidth="3" />
-            <line x1="366" y1="112" x2="366" y2="152" stroke="#0F172A" strokeWidth="3" />
-            <path d="M318 132h12M378 132h24" stroke="#0071BD" strokeWidth="5" strokeLinecap="round" />
+            <circle cx="246" cy="132" r="72" fill="none" stroke={diagramPalette.staf} strokeWidth="8" />
+            <rect x="330" y="112" width="48" height="40" rx="5" fill={diagramPalette.white} stroke={diagramPalette.ink} strokeWidth="3" />
+            <line x1="342" y1="112" x2="342" y2="152" stroke={diagramPalette.ink} strokeWidth="3" />
+            <line x1="366" y1="112" x2="366" y2="152" stroke={diagramPalette.ink} strokeWidth="3" />
+            <path d="M318 132h12M378 132h24" stroke={diagramPalette.staf} strokeWidth="5" strokeLinecap="round" />
           </>
         ) : null}
 
         {variant === "radiation-resistance" ? (
           <>
-            <line x1="272" y1="88" x2="272" y2="214" stroke="#0071BD" strokeWidth="8" strokeLinecap="round" />
-            <path d="M210 214h124" stroke="#475569" strokeWidth="5" />
-            <path d="M294 98 C386 98 430 132 464 178" fill="none" stroke="#10B981" strokeWidth="4" />
-            <path d="M250 98 C158 98 114 132 80 178" fill="none" stroke="#10B981" strokeWidth="4" />
-            <rect x="318" y="157" width="58" height="34" rx="6" fill="#FFFFFF" stroke="#FB7185" strokeWidth="3" />
+            <line x1="272" y1="88" x2="272" y2="214" stroke={diagramPalette.staf} strokeWidth="8" strokeLinecap="round" />
+            <path d="M210 214h124" stroke={diagramPalette.inkMuted} strokeWidth="5" />
+            <path d="M294 98 C386 98 430 132 464 178" fill="none" stroke={diagramPalette.success} strokeWidth="4" />
+            <path d="M250 98 C158 98 114 132 80 178" fill="none" stroke={diagramPalette.success} strokeWidth="4" />
+            <rect x="318" y="157" width="58" height="34" rx="6" fill={diagramPalette.white} stroke={diagramPalette.loss} strokeWidth="3" />
           </>
         ) : null}
 
         {variant === "small-antenna-limit" ? (
           <>
-            <circle cx="278" cy="132" r="82" fill="#0071BD" opacity="0.08" stroke="#0071BD" strokeWidth="3" strokeDasharray="9 7" />
-            <path d="M254 164 C268 112 288 112 302 164" fill="none" stroke="#0071BD" strokeWidth="7" strokeLinecap="round" />
-            <line x1="278" y1="132" x2="360" y2="132" stroke="#0F172A" strokeWidth="2" />
-            <circle cx="278" cy="132" r="4" fill="#0F172A" />
+            <circle cx="278" cy="132" r="82" fill={diagramPalette.staf} opacity="0.08" stroke={diagramPalette.staf} strokeWidth="3" strokeDasharray="9 7" />
+            <path d="M254 164 C268 112 288 112 302 164" fill="none" stroke={diagramPalette.staf} strokeWidth="7" strokeLinecap="round" />
+            <line x1="278" y1="132" x2="360" y2="132" stroke={diagramPalette.ink} strokeWidth="2" />
+            <circle cx="278" cy="132" r="4" fill={diagramPalette.ink} />
           </>
         ) : null}
 
         {variant === "large-array-near-field" ? (
           <>
-            <rect x="84" y="58" width="28" height="150" rx="6" fill="#0071BD" />
-            <path d="M112 58 C220 68 282 98 360 130 C282 162 220 192 112 208 Z" fill={`url(#beam-${variant})`} stroke="#0071BD" strokeWidth="2" />
-            <line x1="112" y1="130" x2="482" y2="130" stroke="#0F172A" strokeWidth="2" strokeDasharray="7 6" />
-            <circle cx="438" cy="130" r="12" fill="#10B981" />
-            <path d="M260 56v150" stroke="#FB7185" strokeWidth="2" strokeDasharray="7 6" />
+            <rect x="84" y="58" width="28" height="150" rx="6" fill={diagramPalette.staf} />
+            <path d="M112 58 C220 68 282 98 360 130 C282 162 220 192 112 208 Z" fill={`url(#beam-${variant})`} stroke={diagramPalette.staf} strokeWidth="2" />
+            <line x1="112" y1="130" x2="482" y2="130" stroke={diagramPalette.ink} strokeWidth="2" strokeDasharray="7 6" />
+            <circle cx="438" cy="130" r="12" fill={diagramPalette.success} />
+            <path d="M260 56v150" stroke={diagramPalette.loss} strokeWidth="2" strokeDasharray="7 6" />
           </>
         ) : null}
 
         {variant === "reflector-ris-size-effect" ? (
           <>
-            <circle cx="82" cy="170" r="12" fill="#0071BD" />
-            <rect x="252" y="56" width="34" height="150" rx="5" fill="#10B981" opacity="0.32" stroke="#10B981" strokeWidth="4" />
-            <circle cx="478" cy="104" r="12" fill="#FB7185" />
-            <path d="M94 166 L252 106" stroke="#0071BD" strokeWidth="4" />
-            <path d="M286 106 L466 106" stroke="#FB7185" strokeWidth="4" />
-            <path d="M94 177 C210 228 342 220 466 116" fill="none" stroke="#94A3B8" strokeWidth="2" strokeDasharray="7 6" />
+            <circle cx="82" cy="170" r="12" fill={diagramPalette.staf} />
+            <rect x="252" y="56" width="34" height="150" rx="5" fill={diagramPalette.success} opacity="0.32" stroke={diagramPalette.success} strokeWidth="4" />
+            <circle cx="478" cy="104" r="12" fill={diagramPalette.loss} />
+            <path d="M94 166 L252 106" stroke={diagramPalette.staf} strokeWidth="4" />
+            <path d="M286 106 L466 106" stroke={diagramPalette.loss} strokeWidth="4" />
+            <path d="M94 177 C210 228 342 220 466 116" fill="none" stroke={diagramPalette.faint} strokeWidth="2" strokeDasharray="7 6" />
           </>
         ) : null}
 
         <g>
-          <rect x="34" y="18" width="492" height="32" rx="16" fill="#FFFFFF" opacity="0.92" />
-          <text x="54" y="39" fill="#0F172A" fontSize="13" fontWeight="700">{a}</text>
-          <text x="240" y="39" fill="#0071BD" fontSize="13" fontWeight="700">{b}</text>
-          <text x="396" y="39" fill="#047857" fontSize="13" fontWeight="700">{c}</text>
+          <rect x="34" y="18" width="492" height="32" rx="16" fill={diagramPalette.white} opacity="0.92" />
+          <text x="54" y="39" fill={diagramPalette.ink} fontSize="13" fontWeight="700">{a}</text>
+          <text x="240" y="39" fill={diagramPalette.staf} fontSize="13" fontWeight="700">{b}</text>
+          <text x="396" y="39" fill={diagramPalette.successDeep} fontSize="13" fontWeight="700">{c}</text>
         </g>
       </svg>
     </Card>
