@@ -3,7 +3,15 @@
 
 const SITE_TOOLS = "https://www.staf.co.jp/tools";
 
-export type ToolCategoryId = "link" | "antenna" | "basics" | "line" | "learning" | "research";
+export type ToolCategoryId =
+  | "link"
+  | "antenna"
+  | "basics"
+  | "line"
+  | "implementation"
+  | "system"
+  | "learning"
+  | "research";
 
 export type ToolCategory = {
   id: ToolCategoryId;
@@ -32,6 +40,16 @@ export const toolCategories: ToolCategory[] = [
     "id": "line",
     "label": "線路・整合",
     "description": "ケーブル・基板配線・整合の損失と反射を扱う、ハードウェア寄りのツール。"
+  },
+  {
+    "id": "implementation",
+    "label": "実装・筐体",
+    "description": "基板、GND、筐体へアンテナを組み込むときの初期寸法と配置条件を確認します。"
+  },
+  {
+    "id": "system",
+    "label": "方式・運用設計",
+    "description": "消費電力や受信品質を、通信方式と運用周期を含めてシステム視点で見積もります。"
   },
   {
     "id": "learning",
@@ -535,6 +553,106 @@ export const tools: ToolEntry[] = [
         "purpose": "反射板やRISを置いて、効きそうな面積と距離条件かを概算します。",
         "inputs": "周波数、反射面の幅と高さ、送信側・受信側までの距離、見込む効率を入れます。",
         "result": "反射経路が厳しい場合は、面積を増やす、距離を短くする、設置角度や方式を見直します。"
+      }
+    }
+  },
+  {
+    "slug": "ifa-initial-dimensions",
+    "name": "逆F・IFA初期寸法",
+    "tagline": "周波数と基板εrからパターン長を概算",
+    "icon": "circuit",
+    "category": "implementation",
+    "basic": {
+      "title": "逆F・IFAアンテナ初期寸法",
+      "metaTitle": "逆F・IFAアンテナ初期寸法計算｜周波数と基板εrから概算",
+      "description": "周波数と基板の比誘電率から、逆Fアンテナ（IFA）の全長と短絡点から給電点までの間隔を簡易計算します。筐体込み調整前の初期寸法に使います。",
+      "scopeNote": "εeff=(εr+1)/2の簡易モデルです。基板厚・線幅・GND・筐体・部品配置による共振ずれは含まないため、実測またはEM解析での追い込みが必要です。",
+      "formula": "L ≈ λ0 / (4√εeff)　εeff=(εr+1)/2",
+      "essenceLead": "基板上では波長が短縮されるため、IFAの初期全長は自由空間λ/4より短くなります。",
+      "beginnerGuide": {
+        "purpose": "内蔵IFAを描き始める前に、必要なパターン長のサイズ感を確認します。",
+        "inputs": "使用周波数、基板の比誘電率、基板厚を入れます。基板厚は適用条件の記録に使い、本簡易式の長さ補正には使いません。",
+        "result": "全長と給電間隔を初期値にし、筐体へ組み込んだ状態で共振を実測調整します。"
+      }
+    }
+  },
+  {
+    "slug": "l-match",
+    "name": "L型整合回路",
+    "tagline": "複素負荷を50Ωへ合わせる2解",
+    "icon": "circuit",
+    "category": "line",
+    "basic": {
+      "title": "L型整合回路計算",
+      "metaTitle": "L型整合回路計算｜複素インピーダンスを50Ωへ整合",
+      "description": "負荷の抵抗・リアクタンスと周波数から、基準インピーダンスへ整合するL型回路の2解をnH・pFで計算します。",
+      "scopeNote": "理想集中定数による単一周波数の初期値です。部品Q、寄生成分、配線、実装後のアンテナインピーダンスをVNAで確認してください。",
+      "formula": "Q=√(max(R,Z0)/min(R,Z0)−1)　XL=ωL　BC=ωC",
+      "essenceLead": "同じ複素負荷でもL型整合には2つの回路解があり、実装しやすい方を選べます。",
+      "beginnerGuide": {
+        "purpose": "VNAで測ったアンテナや負荷を、50Ωへ合わせる部品の初期値を出します。",
+        "inputs": "負荷のR+jX、動作周波数、合わせたい基準抵抗を入れます。",
+        "result": "2解のL/C値を比較し、部品の実現性と帯域を見て選び、実機で再調整します。"
+      }
+    }
+  },
+  {
+    "slug": "antenna-isolation",
+    "name": "2アンテナ間アイソレーション",
+    "tagline": "間隔から自由空間S21を概算",
+    "icon": "antenna",
+    "category": "antenna",
+    "basic": {
+      "title": "2アンテナ間アイソレーション",
+      "metaTitle": "2アンテナ間アイソレーション計算｜周波数・間隔からS21概算",
+      "description": "周波数、アンテナ間隔、各アンテナ利得から、自由空間遠方界での結合量S21と目標結合量を満たす距離を概算します。",
+      "scopeNote": "自由空間・偏波平行・整合済みアンテナの遠方界近似です。共有GNDや筐体上では結合が悪化し得るため、最終判断は実測Sパラメータで行います。",
+      "formula": "S21≈20log10(λ/(4πd))+G1+G2",
+      "essenceLead": "アンテナ間隔を2倍にすると、自由空間の結合量は約6dB小さくなります。",
+      "beginnerGuide": {
+        "purpose": "MIMOやダイバーシティで、2本のアンテナをどれくらい離すべきかを概算します。",
+        "inputs": "周波数、アンテナ間隔、2本それぞれの利得を入れます。",
+        "result": "−15dB以下を一つの目安にし、λ/2未満では近傍界の参考値として扱います。"
+      }
+    }
+  },
+  {
+    "slug": "battery-life",
+    "name": "無線端末の電池寿命",
+    "tagline": "送信周期と電流から稼働年数を概算",
+    "icon": "activity",
+    "category": "system",
+    "basic": {
+      "title": "無線端末の電池寿命",
+      "metaTitle": "無線端末の電池寿命計算｜送信時間・周期・スリープ電流",
+      "description": "電池容量、送受信電流、動作時間、送信周期、スリープ電流から平均電流と理論電池寿命を計算します。",
+      "scopeNote": "一定電流の時間平均による一次見積りです。自己放電、温度、パルス負荷の電圧降下、電池劣化はderateへ集約し、10年超は電池特性が支配的と考えます。",
+      "formula": "Iavg=(Itx·ttx+Irx·trx)/T+Isleep　寿命=容量·derate/Iavg",
+      "essenceLead": "短い送信でも回数が増えると平均電流が増え、スリープ電流との合計で寿命が決まります。",
+      "beginnerGuide": {
+        "purpose": "LPWAやセルラー端末が、想定周期で何年動けそうかを比較します。",
+        "inputs": "電池容量、送受信時の電流と時間、動作間隔、スリープ電流、劣化係数を入れます。",
+        "result": "平均電流の内訳を見て、送信時間・回数・スリープ電流のどこを改善すべきか判断します。"
+      }
+    }
+  },
+  {
+    "slug": "gnss-cn0",
+    "name": "GNSS C/N0バジェット",
+    "tagline": "パッシブとアクティブアンテナを比較",
+    "icon": "satellite",
+    "category": "system",
+    "basic": {
+      "title": "GNSS受信 C/N0バジェット",
+      "metaTitle": "GNSS C/N0バジェット計算｜パッシブ・アクティブアンテナ比較",
+      "description": "GNSS信号レベル、アンテナ利得、ケーブル損失、LNA利得・NF、受信機NFから、パッシブとアクティブ構成のC/N0を比較します。",
+      "scopeNote": "290Kの熱雑音密度−174dBm/Hzと線形受信系を前提とした入力換算値です。実際の空、遮蔽、マルチパス、帯域外妨害、フィルタ損失は別途確認してください。",
+      "formula": "C/N0=Pr+Gant−Lpre−(−174+NFsys)",
+      "essenceLead": "LNAをアンテナ直後に置くと、後段ケーブルと受信機NFの影響を利得で小さくできます。",
+      "beginnerGuide": {
+        "purpose": "GNSSでパッシブアンテナが足りるか、アクティブアンテナが必要かを比較します。",
+        "inputs": "信号レベル、アンテナ利得、ケーブル損失、LNA利得・NF、受信機NFを入れます。",
+        "result": "40dB-Hz超を良好、35〜40dB-Hzを使用可、35dB-Hz未満を厳しい目安として読みます。"
       }
     }
   }
