@@ -28,7 +28,12 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "frequency-wavelength", h1: "周波数・波長", fig: "半波長アンテナ長の目安" },
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
-    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" }
+    { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" },
+    { slug: "ifa-initial-dimensions", h1: "逆F・IFAアンテナ初期寸法", fig: "IFA上面図の読み方" },
+    { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
+    { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
+    { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
+    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" }
   ];
 
   for (const { slug, h1, fig } of pages) {
@@ -39,6 +44,47 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
       await expect(page.getByRole("heading", { name: "ほかのツール" })).toBeVisible();
     });
   }
+});
+
+test.describe("G Tier2 tools", () => {
+  test("IFA dimensions react to frequency", async ({ page }) => {
+    await page.goto("/tools/ifa-initial-dimensions/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("49.6");
+    await page.locator("#ifaFrequency").fill("1840");
+    await expect(primary).toContainText("24.8");
+  });
+
+  test("L-match shows both closed-form solutions", async ({ page }) => {
+    await page.goto("/tools/l-match/");
+    await expect(page.getByTestId("primary-result")).toContainText("5.97 nH");
+    await expect(page.getByText("11.93 pF").first()).toBeVisible();
+    await expect(page.getByText("7.06 nH").first()).toBeVisible();
+  });
+
+  test("antenna isolation reacts to spacing", async ({ page }) => {
+    await page.goto("/tools/antenna-isolation/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("-11.7");
+    await page.locator("#isolationSpacing").fill("325.8");
+    await expect(primary).toContainText("-17.7");
+  });
+
+  test("battery life reacts to derating", async ({ page }) => {
+    await page.goto("/tools/battery-life/");
+    const primary = page.getByTestId("primary-result");
+    await expect(primary).toContainText("34.1");
+    await page.locator("#batteryDerate").fill("100");
+    await expect(primary).toContainText("48.7");
+  });
+
+  test("GNSS compares passive and active C/N0", async ({ page }) => {
+    await page.goto("/tools/gnss-cn0/");
+    await expect(page.getByTestId("primary-result")).toContainText("45.4");
+    await expect(page.getByText("40.0").first()).toBeVisible();
+    await page.locator("#gnssCableLoss").fill("6");
+    await expect(page.getByText("37.0").first()).toBeVisible();
+  });
 });
 
 test("basic tools keep the calculator and primary result near the first viewport", async ({ page }) => {
@@ -555,4 +601,198 @@ test("noise floor tool derives LoRa SF12 sensitivity and links to the link budge
 
   // リンクバジェット診断への突き合わせ導線
   await expect(page.getByRole("link", { name: /リンクバジェット診断の受信感度/ })).toBeVisible();
+});
+
+test("eirp compliance tool judges 920MHz limits and reacts to gain and class changes", async ({ page }) => {
+  await page.goto("/tools/eirp-compliance/");
+  // 既定値 = 13dBm + 3dBi − 0.5dB → EIRP 15.5dBm（20mW型のEIRP上限16dBmに対し余裕+0.5dBで適合）
+  // 期待値はlib（calculateEirpDbm）とdata層（aribT108PowerClasses.eirpLimitDbm=16）から検算した確定値
+  await expect(page.getByTestId("primary-result")).toContainText("15.5");
+  await expect(page.getByTestId("primary-result")).toContainText("dBm");
+  await expect(page.getByText("適合（上限以下）")).toBeVisible();
+
+  // アンテナ利得を10dBiへ → EIRP 22.5dBm > 上限16dBm で超過（利得交換で法規を破る実務の落とし穴）
+  await page.locator("#eirpAntennaGain").fill("10");
+  await expect(page.getByTestId("primary-result")).toContainText("22.5");
+  await expect(page.getByTestId("tool-calculator").getByText("上限超過", { exact: true })).toBeVisible();
+
+  // 登録局（250mW型・EIRP上限27dBm）へ切り替えると同じ構成でも適合に戻る
+  await page.getByRole("button", { name: "登録局（250mW型）" }).click();
+  await expect(page.getByText("適合（上限以下）")).toBeVisible();
+});
+
+test("shadowing margin derives the required margin from sigma and reliability", async ({ page }) => {
+  await page.goto("/tools/shadowing-margin/");
+  // 既定値 σ=8dB・信頼率90% → 8×Φ⁻¹(0.9)=8×1.281552 ≈ 10.3dB
+  await expect(page.getByTestId("primary-result")).toContainText("10.3");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 信頼率99%チップ → 8×2.326348 ≈ 18.6dB
+  await page.getByRole("button", { name: "99%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("18.6");
+
+  // 郊外プリセット（σ=6dB）× 99% → 6×2.326348 ≈ 14.0dB
+  await page.getByRole("button", { name: "郊外 6dB", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("14.0");
+
+  // リンクバジェット診断への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /リンクバジェット診断/ })).toBeVisible();
+});
+
+test("polarization loss tool computes linear 45deg default and switches polarization modes", async ({ page }) => {
+  await page.goto("/tools/polarization-loss/");
+  // 既定値 = 直線-直線 θ=45° → -20log10(cos45°) = 3.0103 ≈ 3.0dB
+  await expect(page.getByTestId("primary-result")).toContainText("3.0");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // θ=60° チップ → -20log10(cos60°) = 6.0206 ≈ 6.0dB
+  await page.getByRole("button", { name: "60°", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("6.0");
+
+  // 円↔円（既定は同旋）→ 0.0dB
+  await page.getByRole("button", { name: "円 ↔ 円", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("0.0");
+
+  // 逆旋 → 理論∞（表示は lib の POLARIZATION_LOSS_DISPLAY_CAP_DB=40dB でクランプし「≥40」）
+  await page.getByRole("button", { name: /逆旋/ }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("≥40");
+
+  // リンクバジェット診断（追加損失）への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の追加損失/ })).toBeVisible();
+});
+
+test("rain attenuation tool combines P.838 rain and P.676 gaseous loss", async ({ page }) => {
+  await page.goto("/tools/rain-attenuation/");
+  // 既定値 28GHz・強雨25mm/h・水平偏波・1km → 降雨4.62dB＋大気ガス0.10dB = 4.72dB
+  // （P.838-3 Table 5: 28GHzは kH=0.2051, αH=0.9679 → γ=0.2051×25^0.9679=4.6241dB/km。
+  //   P.676-13 標準大気: γgas(28GHz)=0.1008dB/km。合計4.7249dB）
+  await expect(page.getByTestId("primary-result")).toContainText("4.72");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 垂直偏波では扁平な雨滴の断面が小さく見えて減衰が減る（kV=0.1964, αV=0.9277 → 合計3.9913dB）
+  await page.getByRole("button", { name: "垂直偏波", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("3.99");
+
+  // 雨マージン設計へつなぐ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断の追加損失/ })).toBeVisible();
+});
+
+// e2e/tools.spec.ts の pages 配列へ追加する1行:
+
+// 主結果の確定値テスト（別 test として追加）。既定 VSWR=2 →
+// mismatchRangeImpact(2): ML=0.5115…dB, distanceImpactPercent=-5.719…%, reflectedPowerPercent=11.11%
+// ResultBar は formatNumber(distanceImpactPercent, 1) = "-5.7"。内訳は ML=formatNumber(_,2)="0.51"、反射電力=formatNumber(_,1)="11.1"。
+test("mismatch-range-impact primary result", async ({ page }) => {
+  await page.goto("/tools/mismatch-range-impact/");
+  const primary = page.getByTestId("primary-result");
+  await expect(primary).toContainText("-5.7"); // 距離への影響[%]（自由空間・既定VSWR=2）
+  await expect(page.getByText("0.51 dB").first()).toBeVisible(); // ミスマッチ損失 ML
+  await expect(page.getByText("11.1 %").first()).toBeVisible();   // 反射電力
+});
+
+test("desense reacts to interference level (power addition)", async ({ page }) => {
+  await page.goto("/tools/desense/");
+  const primary = page.getByTestId("primary-result");
+  // 既定 N=-120dBm・I=-120dBm（同レベル）→ Δ=10log10(2)=+3.01dB
+  await expect(primary).toContainText("3.0");
+  await expect(primary).toContainText("dB");
+  // 干渉をフロアより10dB下（-130dBm）にすると Δ=10log10(1.1)=+0.41dB（非線形）
+  await page.locator("#desenseInterference").fill("-130");
+  await expect(primary).toContainText("0.4");
+});
+
+test("measurement sampling tool derives required sample count and reacts to confidence", async ({ page }) => {
+  await page.goto("/tools/measurement-sampling/");
+  // 既定 = 信頼水準95%・σ8dB・E1dB → n=(1.96×8/1)²≈245.85 → ceil=246点
+  // 期待値はlib（requiredSampleCount）から検算した確定値
+  await expect(page.getByTestId("primary-result")).toContainText("246");
+  await expect(page.getByTestId("primary-result")).toContainText("点");
+
+  // 90%へ下げると許容が緩みnが減る: z=1.6449 → (1.6449×8)²≈173.16 → 174点
+  await page.getByRole("button", { name: "90%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("174");
+
+  // 99%へ上げるとnが増える: z=2.5758 → (2.5758×8)²≈424.63 → 425点
+  await page.getByRole("button", { name: "99%", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("425");
+});
+
+test("electrical length converts mm to phase and reacts to frequency", async ({ page }) => {
+  await page.goto("/tools/electrical-length/");
+  const primary = page.getByTestId("primary-result");
+  // default: 920MHz, VF=0.695, L=100mm -> phase 360*100/(0.695*(c/920e6)*1000) = 158.96° -> "159.0"
+  await expect(primary).toContainText("159.0");
+  await expect(primary).toContainText("°");
+  // double the frequency -> lambda_g halves -> phase doubles to 317.9°
+  await page.locator("#elFrequency").fill("1840");
+  await expect(primary).toContainText("317.9");
+});
+
+test("LTE signal metrics converts RSSI to RSRP and reacts to bandwidth and direction", async ({ page }) => {
+  await page.goto("/tools/lte-signal-metrics/");
+  const primary = page.getByTestId("primary-result");
+  // 既定 RSSI=-70dBm・10MHz(50RB) → RSRP = -70 − 10log10(12×50) = -70 − 27.78 ≈ -97.8dBm
+  // 期待値はlib（rsrpFromRssi/fullLoadCorrectionDb）から検算した確定値
+  await expect(primary).toContainText("-97.8");
+  await expect(primary).toContainText("dBm");
+
+  // 20MHz(100RB)へ切替 → 補正 30.79dB、RSRP = -70 − 30.79 ≈ -100.8dBm
+  await page.getByRole("button", { name: /20MHz/ }).click();
+  await expect(primary).toContainText("-100.8");
+
+  // 換算方向を反転（RSRP→RSSI）: 入力-70をRSRPとみなし 20MHz → RSSI = -70 + 30.79 ≈ -39.2dBm
+  await page.getByRole("button", { name: "RSRP → RSSI" }).click();
+  await expect(primary).toContainText("-39.2");
+
+  // ノイズフロア・受信感度への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /ノイズフロア・受信感度/ })).toBeVisible();
+});
+
+test("VSWR bandwidth-Q converts between Q and fractional bandwidth", async ({ page }) => {
+  await page.goto("/tools/vswr-bandwidth-q/");
+  // 既定 = Q→帯域幅・Q=50・VSWR≤2 → FBW=(2−1)/(50·√2)=1.4142% → 表示1.4%
+  // 期待値はlib（fractionalBandwidthPercentFromQ(50,2)）から検算した確定値
+  const primary = page.getByTestId("primary-result");
+  await expect(primary).toContainText("1.4");
+  await expect(primary).toContainText("%");
+
+  // VSWR≤3 チップ → (3−1)/(50·√3)=2.3094% → 表示2.3%（同じQでも緩い上限ほど帯域は広い）
+  await page.getByRole("button", { name: "VSWR≤3.0", exact: true }).click();
+  await expect(primary).toContainText("2.3");
+
+  // Chu限界（小型アンテナ限界）への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /小型アンテナ限界/ })).toBeVisible();
+});
+
+test("pointing margin derives gain loss and inverts to allowable offset", async ({ page }) => {
+  await page.goto("/tools/pointing-margin/");
+  // 既定 HPBW=65°・θ=10° → L=12·(10/65)²≈0.28dB（pointingLossDbで検算した確定値）
+  await expect(page.getByTestId("primary-result")).toContainText("0.28");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 損失→許容角モード + 許容損失3dB → 65·√(3/12)=32.5°（allowableOffsetDegで検算した確定値）
+  await page.getByRole("button", { name: "損失 → 許容角" }).click();
+  await page.getByRole("button", { name: "3dB", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("32.5");
+
+  // 開口利得・ビーム幅（HPBW≈70λ/D）への突き合わせ導線
+  await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /開口利得・ビーム幅/ })).toBeVisible();
+});
+
+test("metal plane effect derives +6dB at quarter-wave and collapses at contact", async ({ page }) => {
+  await page.goto("/tools/metal-plane-effect/");
+  // 既定 920MHz・d=λ/4相当(81.5mm) → ΔG=20log10(2)=6.0206 ≈ +6.0dB（libで検算した確定値）
+  await expect(page.getByTestId("primary-result")).toContainText("+6.0");
+  await expect(page.getByTestId("primary-result")).toContainText("dB");
+
+  // 金属板に密着（d=0）→ 逆相の鏡像で相殺し理論∞、表示は床(-40)で ≤-40dB
+  await page.locator("#metalDistance").fill("0");
+  await expect(page.getByTestId("primary-result")).toContainText("-40");
+
+  // 2.4GHzプリセットは最適離隔 λ/4(31.2mm) にも自動セットするので +6.0 に戻る
+  await page.getByRole("button", { name: "2.4GHz", exact: true }).click();
+  await expect(page.getByTestId("primary-result")).toContainText("+6.0");
+
+  // リンクバジェット診断（アンテナ利得）への突き合わせ導線
+  await expect(page.getByRole("link", { name: /リンクバジェット診断のアンテナ利得/ })).toBeVisible();
 });

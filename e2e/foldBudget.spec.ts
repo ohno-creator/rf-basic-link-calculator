@@ -4,8 +4,8 @@ import * as fs from "fs";
 import * as path from "path";
 
 test("fold budget KPI metrics and status map generation", async ({ page }, testInfo) => {
-  // 22基本ツールの順次実行に十分なタイムアウトを設定
-  test.setTimeout(90000);
+  // 基本ツール数に比例して増える走査回数に合わせてタイムアウトを動的算出（1ツール6秒を確保）
+  test.setTimeout(Math.max(90000, basicTools.length * 6000));
 
   const budgetReports: Array<{
     slug: string;
@@ -14,6 +14,8 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
     primaryResultY: number | null;
     primaryResultPass: boolean;
     hasTestId: boolean;
+    pageHeight: number;
+    pageHeightPass: boolean;
   }> = [];
 
   // デスクトップビューポート (1440x900)
@@ -53,21 +55,29 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
       }
     }
 
+    // ui-redesign-plan.md の目安(基本ツール≤2,500px)は参考値として記録する。
+    // 全ツールへの用語解説コラム＋動的SVG追加（U-upgrade）で大半のツールがこの目安を超えたため、
+    // 特定ツールだけ超過を理由にテストを失敗させることはしない（enforceせず可視化のみ）。
+    const pageHeight = await page.evaluate(() => document.body.scrollHeight);
+    const pageHeightPass = pageHeight <= 2500;
+
     budgetReports.push({
       slug: t.slug,
       firstInputY,
       firstInputPass,
       primaryResultY,
       primaryResultPass,
-      hasTestId
+      hasTestId,
+      pageHeight,
+      pageHeightPass
     });
   }
 
   let markdown = `# フォールド予算KPI達成状況マップ (Fold Budget Status Map)\n\n`;
   markdown += `**計測日時**: ${new Date().toISOString()}\n`;
   markdown += `**測定ビューポート**: デスクトップ (1440x900)\n\n`;
-  markdown += `| ツール (slug) | 最初の入力Y (目標≦400px) | 最初の入力判定 | 主結果要素Y (目標≦900px) | 主結果判定 | data-testid有無 | 総合評価 |\n`;
-  markdown += `|---|---|---|---|---|---|---|\n`;
+  markdown += `| ツール (slug) | 最初の入力Y (目標≦400px) | 最初の入力判定 | 主結果要素Y (目標≦900px) | 主結果判定 | ページ総高 (目標≦2500px) | 総高判定 | data-testid有無 | 総合評価 |\n`;
+  markdown += `|---|---|---|---|---|---|---|---|---|\n`;
 
   const sortedReports = [...budgetReports].sort((a, b) => a.slug.localeCompare(b.slug));
   let overallFailureCount = 0;
@@ -91,7 +101,8 @@ test("fold budget KPI metrics and status map generation", async ({ page }, testI
     }
 
     const totalEval = isTotalPass ? "🟢 達成" : "🔴 未達";
-    markdown += `| \`${r.slug}\` | ${inputVal} | ${inputPass} | ${resultVal} | ${resultPass} | ${r.hasTestId ? "○" : "×"} | ${totalEval} |\n`;
+    const heightStatus = r.pageHeightPass ? "🟢 参考(達成)" : "🟡 参考(超過)";
+    markdown += `| \`${r.slug}\` | ${inputVal} | ${inputPass} | ${resultVal} | ${resultPass} | ${r.pageHeight}px | ${heightStatus} | ${r.hasTestId ? "○" : "×"} | ${totalEval} |\n`;
   }
 
   await testInfo.attach("fold-budget-status", {

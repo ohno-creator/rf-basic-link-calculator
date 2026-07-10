@@ -14,6 +14,7 @@ import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
 import { rfErrorMessage } from "@/lib/rfErrorMessages";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { VswrStandingWaveDiagram } from "./VswrStandingWaveDiagram";
+import { VswrColumn } from "./VswrColumn";
 
 const modes: Array<{ id: VswrSourceKind; label: string; unit: string; placeholder: number }> = [
   { id: "vswr", label: "VSWR", unit: "", placeholder: 1.5 },
@@ -249,6 +250,8 @@ export function VswrConverterPanel() {
           -10log10(1-Γ²)で求め、リンクバジェットへ損失として加えます。
         </p>
       </FormulaExplanationCard>
+
+      <VswrColumn />
     </div>
   );
 }

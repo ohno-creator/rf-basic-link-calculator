@@ -5,13 +5,13 @@ import * as fs from "fs";
 import * as path from "path";
 
 test("axe accessibility scan", async ({ page }) => {
-  // Allow ample time for 25 pages
-  test.setTimeout(180000);
-
   const pages = [
     { name: "home", path: "/" },
     ...tools.map(t => ({ name: t.slug, path: `/tools/${t.slug}/` }))
   ];
+
+  // ツール数に比例して増える走査ページ数に合わせてタイムアウトを動的算出（CIの同時実行負荷込みで1ページ12秒を確保）
+  test.setTimeout(Math.max(180000, pages.length * 12000));
 
   interface NodeSummary {
     target: unknown;

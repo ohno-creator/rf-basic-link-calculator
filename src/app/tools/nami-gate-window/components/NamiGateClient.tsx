@@ -23,6 +23,7 @@ import {
   type NamiGateInput
 } from "@/lib/rf/namiGate";
 import { NamiGateHeatmap } from "./NamiGateHeatmap";
+import { NamiIncidenceDiagram } from "./NamiIncidenceDiagram";
 
 const selectClass =
   "mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-base font-semibold text-slate-950 outline-none transition focus:border-staf/70 focus:ring-2 focus:ring-staf/40";
@@ -119,6 +120,14 @@ export function NamiGateClient() {
             showSlider
             onChange={(value) => update("incidentAngleDeg", value)}
           />
+
+          {/* 入射角の幾何を可視化（スライダー連動）。指定した方向へ室内ビームが steer される様子を示す。 */}
+          <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+            <NamiIncidenceDiagram incidentAngleDeg={safeInput.incidentAngleDeg} />
+          </div>
+          <p className="text-xs leading-relaxed text-slate-500">
+            入射角を変えると、下のヒートマップでも受信が強い領域が入射方向へ寄ります（ナミゲートが入射方向へ再放射するため）。
+          </p>
 
           <label className="block" htmlFor="nami-glass">
             <span className="flex items-center gap-2 text-sm font-bold text-slate-900">

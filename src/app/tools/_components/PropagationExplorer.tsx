@@ -17,6 +17,7 @@ import {
 } from "@/lib/rf/propagationLossModels";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
+import { PropagationColumn } from "./PropagationColumn";
 import { PropagationGeometryDiagram } from "./PropagationGeometryDiagram";
 import { PropagationModelComparisonChart } from "./PropagationModelComparisonChart";
 
@@ -581,6 +582,8 @@ export function PropagationExplorer() {
           通信可否の判断には、リンクバジェット計算機で環境損失・端末近傍損失・実測補正を併用してください。
         </p>
       </Callout>
+
+      <PropagationColumn />
     </Card>
   );
 }

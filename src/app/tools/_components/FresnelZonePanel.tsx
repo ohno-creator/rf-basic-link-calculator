@@ -14,6 +14,7 @@ import {
 import { analyzeObstacle, calculateFresnel, type ObstacleVerdict } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
+import { FresnelZoneColumn } from "./FresnelZoneColumn";
 import { FresnelZoneDiagram } from "./FresnelZoneDiagram";
 
 const VERDICT_META: Record<ObstacleVerdict, { tone: CalloutTone; label: string; lead: string }> = {
@@ -329,6 +330,10 @@ export function FresnelZonePanel() {
             v=0（障害物がLOSと同じ高さ）で約6dB、さらに上回ると急増します。
           </p>
         </FormulaExplanationCard>
+      </div>
+
+      <div className="mt-5">
+        <FresnelZoneColumn />
       </div>
     </Card>
   );
