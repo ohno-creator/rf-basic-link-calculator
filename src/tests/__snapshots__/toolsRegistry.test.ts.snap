@@ -882,7 +882,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/rf-learning-quest",
     "icon": "book",
     "name": "RF学習クエスト",
-    "tagline": "1000問のアンテナ設計RPG",
+    "tagline": "1060問のアンテナ設計RPG",
   },
   {
     "category": "learning",
