@@ -158,7 +158,27 @@ test.describe("antenna research columns", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     for (const slug of ["patch-antenna-dimensions", "radiation-resistance", "small-antenna-limit"]) {
       await page.goto(`/tools/${slug}/`);
-      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      try {
+        await expect
+          .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+          .toBe(true);
+      } catch (error) {
+        // 失敗時にはみ出し要素を特定できるようCIログへ出力する（フォント差でLinuxのみ再現するため）
+        const culprits = await page.evaluate(() => {
+          const limit = document.documentElement.clientWidth + 0.5;
+          const rows: string[] = [];
+          for (const el of Array.from(document.querySelectorAll("*"))) {
+            const r = el.getBoundingClientRect();
+            if (r.right > limit && rows.length < 12) {
+              const cls = typeof el.className === "string" ? el.className.slice(0, 70) : "";
+              rows.push(`${el.tagName}.${cls} right=${Math.round(r.right)} text=${(el.textContent || "").slice(0, 30)}`);
+            }
+          }
+          return rows;
+        });
+        console.log(`[overflow:${slug}] scroll>${await page.evaluate(() => document.documentElement.clientWidth)}px\n${culprits.join("\n")}`);
+        throw error;
+      }
       const column = page.getByTestId(`${slug.replace("-dimensions", "")}-column`);
       await column.locator("summary").click();
       await expect(column.locator("a").first()).toBeVisible();
@@ -499,6 +519,31 @@ test("fresnel page includes the IoT deep-dive", async ({ page }) => {
     page.getByRole("heading", { name: "IoTの現場でフレネルゾーンをどう活かすか" })
   ).toBeVisible();
   await expect(page.getByText("だからこそ、マージンが重要")).toBeVisible();
+});
+
+test("fresnel long-distance mode subtracts earth curvature and shows the radio horizon", async ({ page }) => {
+  await page.goto("/tools/fresnel-zone/");
+  // 10km・中央・送受高50m・障害物5m: k=4/3の曲率降下は約1.47m（libの期待値テストと同一条件）
+  await page.locator("#fresnelDist").fill("10");
+  await page.locator("#fresnelTxH").fill("50");
+  await page.locator("#fresnelRxH").fill("50");
+  await page.locator("#fresnelObsH").fill("5");
+
+  // 既定はOFF: 曲率控除の注記も見通し距離も出ない（従来動作）
+  await expect(page.getByTestId("fresnel-curvature-drop")).toHaveCount(0);
+  await expect(page.getByTestId("fresnel-horizon")).toHaveCount(0);
+
+  await page.getByTestId("fresnel-long-distance-toggle").click();
+  await expect(page.getByTestId("fresnel-curvature-drop")).toContainText("1.47m");
+  // 見通し距離 4.12·(√50+√50) ≈ 58.3 km
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("58.3 km");
+
+  // 低アンテナ高(3m/2m)・20kmでは見通し距離 ≈ 13.0 km を超えるため警告が出る
+  await page.locator("#fresnelTxH").fill("3");
+  await page.locator("#fresnelRxH").fill("2");
+  await page.locator("#fresnelDist").fill("20");
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("13.0 km");
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("通信距離が見通し距離を超えています");
 });
 
 test("propagation page includes the Okumura-Hata column", async ({ page }) => {
