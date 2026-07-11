@@ -1,8 +1,9 @@
 "use client";
 
-import { useDeferredValue, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useMemo, useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Card, StateCard } from "@/components/Card";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { Badge } from "@/components/Badge";
 import { HelpHint as FieldHint } from "@/components/HelpHint";
 import { NumberField } from "@/components/NumberField";
@@ -52,18 +53,7 @@ export function NamiGateClient() {
   const update = <K extends keyof NamiGateInput>(key: K, value: NamiGateInput[K]) =>
     setInput((prev) => ({ ...prev, [key]: value }));
 
-  const modeRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const handleModeKey = (event: React.KeyboardEvent, index: number) => {
-    let next = -1;
-    if (event.key === "ArrowRight" || event.key === "ArrowDown") next = (index + 1) % HEATMAP_MODES.length;
-    else if (event.key === "ArrowLeft" || event.key === "ArrowUp")
-      next = (index - 1 + HEATMAP_MODES.length) % HEATMAP_MODES.length;
-    if (next >= 0) {
-      event.preventDefault();
-      setMode(HEATMAP_MODES[next].id);
-      modeRefs.current[next]?.focus();
-    }
-  };
+
 
   const handleCopy = async () => {
     try {
@@ -299,35 +289,12 @@ export function NamiGateClient() {
               窓面（上辺）から室内へ広がる受信電力の分布を、設置前後・改善量で切り替えて確認できます。
             </p>
           </div>
-          {/* セグメンテッドコントロール */}
-          <div
-            role="radiogroup"
-            aria-label="ヒートマップの表示"
-            className="flex rounded-lg bg-slate-100 p-1 text-sm font-bold"
-          >
-            {HEATMAP_MODES.map((m, index) => {
-              const active = mode === m.id;
-              return (
-                <button
-                  key={m.id}
-                  ref={(el) => {
-                    modeRefs.current[index] = el;
-                  }}
-                  type="button"
-                  role="radio"
-                  aria-checked={active}
-                  tabIndex={active ? 0 : -1}
-                  onClick={() => setMode(m.id)}
-                  onKeyDown={(event) => handleModeKey(event, index)}
-                  className={`rounded-md px-4 py-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
-                    active ? "bg-white text-staf-dark shadow-sm" : "text-slate-500 hover:text-slate-700"
-                  }`}
-                >
-                  {m.label}
-                </button>
-              );
-            })}
-          </div>
+          <SegmentedControl
+            ariaLabel="ヒートマップの表示"
+            options={HEATMAP_MODES}
+            value={mode}
+            onChange={setMode}
+          />
         </div>
 
         <NamiGateHeatmap sim={sim} mode={mode} input={safeInput} />
