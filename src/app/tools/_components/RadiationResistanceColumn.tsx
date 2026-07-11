@@ -42,7 +42,7 @@ export function RadiationResistanceColumn({
         </div>
         <details className="mt-4 rounded-lg border border-sky-200 bg-white/70 p-4">
           <summary className="cursor-pointer text-sm font-semibold text-sky-900">深掘り（式・適用条件・出典）</summary>
-          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80">
+          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80 break-words">
             <p>
               三角形電流分布を仮定する短い線状アンテナでは、ダイポール全長 l に対して
               Rr ≈ 20π²(l/λ)²、完全導体の無限地板上に立つモノポール高さ h に対して

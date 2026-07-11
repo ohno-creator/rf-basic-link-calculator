@@ -49,7 +49,7 @@ export function SmallAntennaLimitColumn({
         </div>
         <details className="mt-4 rounded-lg border border-sky-200 bg-white/70 p-4">
           <summary className="cursor-pointer text-sm font-semibold text-sky-900">深掘り（式・適用条件・出典）</summary>
-          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80">
+          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80 break-words">
             <p>
               ka = 2πa/λ。ここでaは放射体だけでなく、放射に関与するGNDを含めて包む最小球の半径。
               電気的に小さい領域では Qmin = 1/(ka)³ + 1/(ka)、粗い比帯域上限を FBW ≈ 1/Qmin とする。

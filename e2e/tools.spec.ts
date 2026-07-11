@@ -33,7 +33,12 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
     { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
     { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
-    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" }
+    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" },
+    {
+      slug: "lora-airtime",
+      h1: "LoRa Time-on-Air・920MHz送信制限",
+      fig: "同じパケットをSFだけ変えた送信時間"
+    }
   ];
 
   for (const { slug, h1, fig } of pages) {
@@ -47,6 +52,26 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
 });
 
 test.describe("G Tier2 tools", () => {
+  test("LoRa airtime reacts to SF, payload and hourly limit", async ({ page }) => {
+    await page.goto("/tools/lora-airtime/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("lora-airtime-diagram");
+    await expect(primary).toContainText("2302.0");
+    await expect(diagram).toHaveAttribute("data-selected-sf", "12");
+
+    await page.getByRole("button", { name: "SF7", exact: true }).click();
+    await expect(primary).toContainText("97.5");
+    await expect(diagram).toHaveAttribute("data-selected-sf", "7");
+
+    await page.getByRole("button", { name: "SF12", exact: true }).click();
+    await page.locator("#loraPayloadBytes").fill("100");
+    await expect(primary).toContainText("3940.4");
+    await expect(primary).toContainText("4秒上限に近い");
+
+    await page.locator("#loraTransmissionsPerHour").fill("100");
+    await expect(primary).toContainText("制限超過");
+  });
+
   test("IFA dimensions react to frequency", async ({ page }) => {
     await page.goto("/tools/ifa-initial-dimensions/");
     const primary = page.getByTestId("primary-result");

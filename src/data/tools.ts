@@ -694,6 +694,26 @@ export const tools: ToolEntry[] = [
     }
   },
   {
+    "slug": "lora-airtime",
+    "name": "LoRa送信時間・920MHz制限",
+    "tagline": "SF・ペイロードからToAと送信時間制限を確認",
+    "icon": "radio",
+    "category": "system",
+    "basic": {
+      "title": "LoRa Time-on-Air・920MHz送信制限",
+      "metaTitle": "LoRa Time-on-Air計算｜SF・ペイロードと920MHz送信制限",
+      "description": "LoRaのSF、帯域幅、符号化率、ペイロード長からTime-on-Airを計算し、ARIB STD-T108の代表的な連続送信・時間総量条件と照合します。",
+      "scopeNote": "Raw LoRa PHYの送信時間です。LoRaWAN MACヘッダ等はペイロードへ含めてください。規制判定は選択区分の設計目安であり、使用周波数・認証条件・最新版規格による最終確認が必要です。",
+      "formula": "Tsym=2^SF/BW　ToA=(Npre+4.25+Npayload)·Tsym",
+      "essenceLead": "SFを上げると受信感度を稼げる一方、送信時間・電池消費・チャネル占有が急増します。",
+      "beginnerGuide": {
+        "purpose": "LoRaパケットが電波を占有する時間と、920MHz帯の送信時間条件への余裕を確認します。",
+        "inputs": "SF、帯域幅、符号化率、実際のPHYペイロード長、ヘッダ・CRC、1時間の送信回数を入れます。",
+        "result": "Time-on-Air、SF別比較、連続送信上限と1時間累積時間を確認し、SFやペイロード、送信周期を調整します。"
+      }
+    }
+  },
+  {
     "slug": "battery-life",
     "name": "無線端末の電池寿命",
     "tagline": "送信周期と電流から稼働年数を概算",
