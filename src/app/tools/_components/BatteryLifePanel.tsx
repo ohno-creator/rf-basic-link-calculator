@@ -8,11 +8,16 @@ import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
+import { SegmentedControl } from "@/components/SegmentedControl";
+import { ChoiceChips } from "@/components/ChoiceChips";
+import { Badge } from "@/components/Badge";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { calculateBatteryLife } from "@/lib/rf/batteryLife";
+import { estimateExpertBatteryLife } from "@/lib/rf/batteryLifeExpert";
 import { formatNumber } from "@/lib/rf/format";
 import { BatteryLifeColumn } from "./BatteryLifeColumn";
+import { BatteryLifeExpertColumn } from "./BatteryLifeExpertColumn";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
 type IntervalUnit = "seconds" | "minutes" | "hours" | "days";
@@ -264,7 +269,81 @@ function BatteryLifeDutyCurve({
   );
 }
 
+function ExpertConsumptionBar({
+  txUa,
+  rxUa,
+  sleepUa,
+  selfDischargeUa
+}: {
+  txUa: number;
+  rxUa: number;
+  sleepUa: number;
+  selfDischargeUa: number;
+}) {
+  const total = txUa + rxUa + sleepUa + selfDischargeUa;
+  const txPct = total > 0 ? (txUa / total) * 100 : 0;
+  const rxPct = total > 0 ? (rxUa / total) * 100 : 0;
+  const sleepPct = total > 0 ? (sleepUa / total) * 100 : 0;
+  const selfDischargePct = total > 0 ? (selfDischargeUa / total) * 100 : 0;
+
+  const w = 500;
+  const txW = (w * txPct) / 100;
+  const rxW = (w * rxPct) / 100;
+  const sleepW = (w * sleepPct) / 100;
+  const selfW = (w * selfDischargePct) / 100;
+
+  const txX = 0;
+  const rxX = txW;
+  const sleepX = txW + rxW;
+  const selfX = txW + rxW + sleepW;
+
+  return (
+    <div className="mt-4">
+      <svg
+        viewBox={`0 0 ${w} 40`}
+        width="100%"
+        height="40"
+        className="overflow-hidden rounded-lg border border-slate-200"
+        preserveAspectRatio="none"
+      >
+        <rect width={w} height={40} fill={chartTheme.surface.canvas} />
+        {txW > 0 && <rect x={txX} y="0" width={txW} height="40" fill={chartTheme.series.source} />}
+        {rxW > 0 && <rect x={rxX} y="0" width={rxW} height="40" fill={chartTheme.categorical[5]} />}
+        {sleepW > 0 && <rect x={sleepX} y="0" width={sleepW} height="40" fill={chartTheme.grid.secondary} />}
+        {selfW > 0 && <rect x={selfX} y="0" width={selfW} height="40" fill={chartTheme.categorical[1]} />}
+      </svg>
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-xs font-semibold text-slate-700">
+        {txPct > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded" style={{ backgroundColor: chartTheme.series.source }} />
+            TX: {formatNumber(txPct, 1)}% ({formatNumber(txUa, 2)} µA)
+          </span>
+        )}
+        {rxPct > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded" style={{ backgroundColor: chartTheme.categorical[5] }} />
+            RX: {formatNumber(rxPct, 1)}% ({formatNumber(rxUa, 2)} µA)
+          </span>
+        )}
+        {sleepPct > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded" style={{ backgroundColor: chartTheme.grid.secondary }} />
+            Sleep: {formatNumber(sleepPct, 1)}% ({formatNumber(sleepUa, 2)} µA)
+          </span>
+        )}
+        {selfDischargePct > 0 && (
+          <span className="flex items-center gap-1.5">
+            <span className="h-3 w-3 rounded" style={{ backgroundColor: chartTheme.categorical[1] }} />
+            自己放電: {formatNumber(selfDischargePct, 1)}% ({formatNumber(selfDischargeUa, 2)} µA)
+          </span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export function BatteryLifePanel() {
+  const [mode, setMode] = useState<"standard" | "expert">("standard");
   const [capacityMah, setCapacityMah] = useState(2400);
   const [txCurrentMa, setTxCurrentMa] = useState(45);
   const [txDurationMs, setTxDurationMs] = useState(50);
@@ -275,7 +354,14 @@ export function BatteryLifePanel() {
   const [sleepCurrentUa, setSleepCurrentUa] = useState(5);
   const [deratingPercent, setDeratingPercent] = useState(70);
 
+  // エキスパートモード用ステート
+  const [chemistry, setChemistry] = useState<string>("lisocl2_bobbin");
+  const [temperatureC, setTemperatureC] = useState<number>(25);
+  const [agingYears, setAgingYears] = useState<number>(0);
+
   const intervalSeconds = intervalValue * intervalFactors[intervalUnit];
+
+  // 標準モード計算
   const result = useMemo(() => {
     try {
       return calculateBatteryLife({
@@ -293,10 +379,35 @@ export function BatteryLifePanel() {
     }
   }, [capacityMah, txCurrentMa, txDurationMs, rxCurrentMa, rxDurationMs, intervalSeconds, sleepCurrentUa, deratingPercent]);
 
+  // エキスパートモード計算
+  const expertResult = useMemo(() => {
+    if (mode !== "expert") return null;
+    try {
+      return estimateExpertBatteryLife({
+        chemistry,
+        capacityMah,
+        temperatureC,
+        sleepCurrentUa,
+        txCurrentMa,
+        txDurationMs,
+        txIntervalS: intervalSeconds,
+        rxCurrentMa,
+        rxDurationMs,
+        agingYears
+      });
+    } catch {
+      return null;
+    }
+  }, [mode, chemistry, capacityMah, temperatureC, sleepCurrentUa, txCurrentMa, txDurationMs, intervalSeconds, rxCurrentMa, rxDurationMs, agingYears]);
+
+  const activeResult = mode === "expert" ? expertResult : result;
+
   const primary = {
-    label: "理論電池寿命",
-    value: result ? formatNumber(result.lifetimeYears, 1) : "—",
-    unit: "年"
+    label: mode === "expert" ? "実効電池寿命 (エキスパート)" : "理論電池寿命",
+    value: mode === "expert"
+      ? (expertResult ? (expertResult.exceedsTenYears ? "10年+" : `${formatNumber(expertResult.lifeYears, 1)}`) : "—")
+      : (result ? formatNumber(result.lifetimeYears, 1) : "—"),
+    unit: mode === "expert" && expertResult?.exceedsTenYears ? "（特性限界クランプ）" : "年"
   };
 
   const applyPreset = (preset: (typeof presets)[number]) => {
@@ -309,6 +420,7 @@ export function BatteryLifePanel() {
     setIntervalUnit(preset.unit);
     setSleepCurrentUa(preset.sleepUa);
     setDeratingPercent(preset.derate);
+    setMode("standard"); // プリセット適用時は標準にリセット
   };
 
   const totalUa = result?.averageCurrentUa ?? 1;
@@ -316,21 +428,96 @@ export function BatteryLifePanel() {
   const rxPercent = result ? (result.rxAverageCurrentUa / totalUa) * 100 : 0;
   const sleepPercent = Math.max(0, 100 - txPercent - rxPercent);
 
+  // 化学特性別警告の表示条件
+  const isCR2032 = chemistry === "cr2032";
+  const isAlkaline = chemistry === "alkaline_aa";
+  const isLiSOCl2 = chemistry === "lisocl2_bobbin" || chemistry === "lisocl2_spiral";
+
+  const showCR2032Warning = mode === "expert" && isCR2032 && (txCurrentMa > 10 || rxCurrentMa > 10);
+  const showPassivationWarning = mode === "expert" && isLiSOCl2 && expertResult?.passivationWarning;
+  const showAlkalineWarning = mode === "expert" && isAlkaline && temperatureC <= 0;
+
   return (
     <>
       <section className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)] lg:items-start">
         <Card as="section" padding="lg">
-          <h2 className="text-base font-bold text-slate-950">入力条件</h2>
-          <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="運用プリセット">
-            {presets.map((preset) => (
-              <button key={preset.label} type="button" onClick={() => applyPreset(preset)} className="inline-flex min-h-11 items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark">
-                {preset.label}
-              </button>
-            ))}
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 className="text-base font-bold text-slate-950">入力条件</h2>
+            <SegmentedControl
+              options={[
+                { id: "standard", label: "標準" },
+                { id: "expert", label: "エキスパート" }
+              ]}
+              value={mode}
+              onChange={setMode}
+              ariaLabel="動作モード切替"
+            />
           </div>
+
+          {mode === "standard" && (
+            <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="運用プリセット">
+              {presets.map((preset) => (
+                <button key={preset.label} type="button" onClick={() => applyPreset(preset)} className="inline-flex min-h-11 items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark">
+                  {preset.label}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {mode === "expert" && (
+            <div className="mt-4 space-y-4">
+              <ChoiceChips
+                label="電池化学特性"
+                help="自己放電率や動作温度・パルス特性に直結する電池の化学特性プリセットを選択します。"
+                value={chemistry}
+                onChange={setChemistry}
+                options={[
+                  { value: "lisocl2_bobbin", label: "Li-SOCl2ボビン型", description: "Tadiran TL-4903 / Saft LS14500 等。自己放電が極小で超長期動作に適するが、高パルスに弱く不動態化被膜リスクあり。", severity: "ok" },
+                  { value: "lisocl2_spiral", label: "Li-SOCl2スパイラル型", description: "Saft LSHシリーズ等。高パルス対応。自己放電は年約2%とわずかに高いが、LPWAの大電流パルスに適する。", severity: "ok" },
+                  { value: "limno2", label: "Li-MnO2", description: "CR123A等。自己放電が低く、中パルス負荷にも対応。カメラやセンサーに好適。", severity: "ok" },
+                  { value: "cr2032", label: "コイン形CR2032", description: "Panasonic CR2032等。小型バックアップ用。大パルス電流で実効容量が大幅に低下する。", severity: "warn" },
+                  { value: "alkaline_aa", label: "アルカリAA", description: "Panasonic/Energizer等。安価で入手性が高いが、低温特性が非常に悪く、自己放電も高め。", severity: "severe" }
+                ]}
+              />
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field
+                  id="batteryTemperature"
+                  label="動作温度"
+                  unit="℃"
+                  value={temperatureC}
+                  min={-20}
+                  max={60}
+                  step={1}
+                  showSlider
+                  emptyBehavior="invalid"
+                  onChange={setTemperatureC}
+                  help="電池が動作する周囲環境温度です。極端な低温は実効容量を低下させます。"
+                />
+                <Field
+                  id="batteryAging"
+                  label="経年期間"
+                  unit="年"
+                  value={agingYears}
+                  min={0}
+                  max={10}
+                  step={0.5}
+                  showSlider
+                  emptyBehavior="invalid"
+                  onChange={setAgingYears}
+                  help="機器の運用開始前に電池が保管されていた、またはすでに消費された年数です。"
+                />
+              </div>
+            </div>
+          )}
+
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
             <Field id="batteryCapacity" label="電池容量" unit="mAh" value={capacityMah} min={1} step={100} emptyBehavior="invalid" onChange={setCapacityMah} help="電池データシートの公称容量です。" />
-            <Field id="batteryDerate" label="有効容量 derate" unit="%" value={deratingPercent} min={1} max={100} step={1} showSlider emptyBehavior="invalid" onChange={setDeratingPercent} help="温度、自己放電、終止電圧を見込んだ使用可能容量の割合です。" />
+            
+            {mode === "standard" && (
+              <Field id="batteryDerate" label="有効容量 derate" unit="%" value={deratingPercent} min={1} max={100} step={1} showSlider emptyBehavior="invalid" onChange={setDeratingPercent} help="温度、自己放電、終止電圧を見込んだ使用可能容量の割合です。" />
+            )}
+
             <Field id="batteryTxCurrent" label="送信電流" unit="mA" value={txCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setTxCurrentMa} help="送信中の代表電流です。" />
             <Field id="batteryTxDuration" label="1回の送信時間" unit="ms" value={txDurationMs} min={0} step={1} emptyBehavior="invalid" onChange={setTxDurationMs} help="1周期内で送信状態にいる合計時間です。" />
             <Field id="batteryRxCurrent" label="受信電流" unit="mA" value={rxCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setRxCurrentMa} help="待受ではなく、受信処理中の代表電流です。" />
@@ -362,37 +549,130 @@ export function BatteryLifePanel() {
 
         <div id="battery-primary-result" className="space-y-4 lg:sticky lg:top-20">
           <ResultBar primary={primary} />
-          {result ? (
-            <div className="grid gap-3 sm:grid-cols-2">
-              <MetricCard label="平均電流" value={formatNumber(result.averageCurrentUa, 2)} unit="µA" />
-              <MetricCard label="送信の平均寄与" value={formatNumber(result.txAverageCurrentUa, 2)} unit="µA" />
-              <MetricCard label="受信の平均寄与" value={formatNumber(result.rxAverageCurrentUa, 2)} unit="µA" />
-              <MetricCard label="有効容量" value={formatNumber(capacityMah * deratingPercent / 100, 0)} unit="mAh" />
-            </div>
-          ) : (
-            <Callout tone="danger">入力値、derate、動作時間と周期の関係を確認してください。</Callout>
+          
+          {mode === "standard" && (
+            <>
+              {result ? (
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <MetricCard label="平均電流" value={formatNumber(result.averageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="送信の平均寄与" value={formatNumber(result.txAverageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="受信の平均寄与" value={formatNumber(result.rxAverageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="有効容量" value={formatNumber(capacityMah * deratingPercent / 100, 0)} unit="mAh" />
+                </div>
+              ) : (
+                <Callout tone="danger">入力値、derate、動作時間と周期の関係を確認してください。</Callout>
+              )}
+              {result?.exceedsTenYears ? (
+                <Callout tone="caution" title="10年超は電池特性が支配的">
+                  自己放電、温度、電圧降下、保管劣化を含む実電池データで上限を確認してください。
+                </Callout>
+              ) : (
+                <Callout tone="info">理論値には電池の自己放電とパルス負荷時の電圧降下を直接含みません。</Callout>
+              )}
+            </>
           )}
-          {result?.exceedsTenYears ? (
-            <Callout tone="caution" title="10年超は電池特性が支配的">
-              自己放電、温度、電圧降下、保管劣化を含む実電池データで上限を確認してください。
-            </Callout>
-          ) : (
-            <Callout tone="info">理論値には電池の自己放電とパルス負荷時の電圧降下を直接含みません。</Callout>
+
+          {mode === "expert" && (
+            <>
+              {expertResult ? (
+                <div className="space-y-4">
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <MetricCard label="平均動作電流" value={formatNumber(expertResult.averageCurrentUa, 2)} unit="µA" />
+                    <MetricCard label="実効容量（補正後）" value={formatNumber(expertResult.effectiveCapacityMah, 0)} unit="mAh" />
+                    <MetricCard label="温度係数 (tempCoeff)" value={formatNumber(expertResult.tempCoeff, 2)} />
+                    <MetricCard label="パルス係数 (pulseCoeff)" value={formatNumber(expertResult.pulseCoeff, 2)} />
+                  </div>
+
+                  {/* 支配要因バッジと解説 */}
+                  <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-card space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-bold text-slate-800">寿命の支配要因</span>
+                      <Badge tone={
+                        expertResult.dominantFactor === "sleep" || expertResult.dominantFactor === "tx" ? "info" :
+                        expertResult.dominantFactor === "self_discharge" ? "caution" : "danger"
+                      }>
+                        {expertResult.dominantFactor === "sleep" ? "スリープ電流" :
+                         expertResult.dominantFactor === "tx" ? "送信電流" :
+                         expertResult.dominantFactor === "self_discharge" ? "自己放電" :
+                         expertResult.dominantFactor === "temperature" ? "温度ロス" : "パルスロス"}
+                      </Badge>
+                    </div>
+                    <p className="text-xs leading-relaxed text-slate-600">
+                      {expertResult.dominantFactor === "sleep" && "待機（スリープ）時間が長いため、ベースとなるスリープ電流が主な消費要素となっています。"}
+                      {expertResult.dominantFactor === "tx" && "送信頻度が高いため、送信時の消費電力が主な寿命決定要因となっています。"}
+                      {expertResult.dominantFactor === "self_discharge" && "動作電流が非常に小さいため、電池自体の化学特性である経年自己放電が最大の容量消失要因となっています。"}
+                      {expertResult.dominantFactor === "temperature" && "過酷な周囲温度環境（特に低温）による電解液活性の低下と実効容量低下が支配的です。"}
+                      {expertResult.dominantFactor === "pulse" && "送信・受信時の大電流パルスによる電圧降下と内部抵抗損失が支配的な容量低下要因です。"}
+                    </p>
+                  </div>
+
+                  {/* 並記情報 */}
+                  {result && (
+                    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
+                      <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">シンプル版理論寿命との比較</h4>
+                      <div className="mt-2 grid grid-cols-2 gap-4 text-center">
+                        <div>
+                          <p className="text-xs text-slate-500">シンプル理論寿命</p>
+                          <p className="mt-1 text-lg font-bold text-slate-700">{formatNumber(result.lifetimeYears, 1)} 年</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-slate-500">エキスパート実効寿命</p>
+                          <p className="mt-1 text-lg font-bold text-staf">{expertResult.exceedsTenYears ? "10年+" : `${formatNumber(expertResult.lifeYears, 1)} 年`}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* 化学特性別警告 */}
+                  {showCR2032Warning && (
+                    <Callout tone="danger" title="CR2032 大パルス負荷警告">
+                      CR2032は等価内部抵抗（ESR）が大きいため、LoRa/LTE-M等の10mAを超える大電流パルス負荷では急激な電圧降下が発生し、実効容量が大幅に低下（約25%）します。高パルス設計に適したスパイラル型電池の採用やコンデンサの並列接続を推奨します。
+                    </Callout>
+                  )}
+                  {showPassivationWarning && (
+                    <Callout tone="warning" title="Li-SOCl2 不動態化（Passivation）注意">
+                      スリープ電流が10µA未満または周期1時間以上の長期スリープ下では、電極表面にLiCl被膜（不動態化被膜）が成長しやすく、起動時の電圧遅延によって機器が予期せずリセットされるリスクがあります。定期的な強制パルス放電シーケンスなどの対策が必要です。
+                    </Callout>
+                  )}
+                  {showAlkalineWarning && (
+                    <Callout tone="danger" title="アルカリAA 低温特性警告">
+                      アルカリ乾電池は氷点下の環境で極端に起電力が低下し、-20℃付近では容量が30%程度まで急降下します。屋外や寒冷地での運用には、低温動作（-55℃〜）に強いLi-SOCl2電池等の採用を強く推奨します。
+                    </Callout>
+                  )}
+                </div>
+              ) : (
+                <Callout tone="danger">入力値を確認してください。動作時間と周期の関係が適正でない可能性があります。</Callout>
+              )}
+            </>
           )}
         </div>
       </section>
 
-      {result ? (
+      {/* 平均電流・消費内訳の内訳 */}
+      {mode === "standard" && result && (
         <Card as="figure" padding="lg" className="mt-6">
           <figcaption className="text-base font-bold text-slate-950">平均電流の内訳</figcaption>
           <div className="mt-4 flex h-10 overflow-hidden rounded-lg border border-slate-200" aria-label="平均電流の内訳バー">
-            <div className="flex items-center justify-center bg-staf text-xs font-bold text-white" style={{ width: `${txPercent}%` }}>{txPercent >= 5 ? "TX" : null}</div>
-            <div className="flex items-center justify-center bg-sky-400 text-xs font-bold text-white" style={{ width: `${rxPercent}%` }}>{rxPercent >= 5 ? "RX" : null}</div>
-            <div className="flex items-center justify-center bg-slate-200 text-xs font-bold text-slate-700" style={{ width: `${sleepPercent}%` }}>{sleepPercent >= 5 ? "Sleep" : null}</div>
+            {txPercent > 0 && <div className="flex items-center justify-center bg-staf text-xs font-bold text-white" style={{ width: `${txPercent}%` }}>{txPercent >= 5 ? "TX" : null}</div>}
+            {rxPercent > 0 && <div className="flex items-center justify-center bg-sky-400 text-xs font-bold text-white" style={{ width: `${rxPercent}%` }}>{rxPercent >= 5 ? "RX" : null}</div>}
+            {sleepPercent > 0 && <div className="flex items-center justify-center bg-slate-200 text-xs font-bold text-slate-700" style={{ width: `${sleepPercent}%` }}>{sleepPercent >= 5 ? "Sleep" : null}</div>}
           </div>
           <p className="mt-3 text-sm text-slate-600">TX {formatNumber(txPercent, 1)}% / RX {formatNumber(rxPercent, 1)}% / Sleep {formatNumber(sleepPercent, 1)}%</p>
         </Card>
-      ) : null}
+      )}
+
+      {mode === "expert" && expertResult && (
+        <Card as="figure" padding="lg" className="mt-6">
+          <figcaption className="text-base font-bold text-slate-950">消費電力（等価自己放電含む）の内訳積み上げ</figcaption>
+          <p className="mt-1 text-xs text-slate-500">電池の経年自己放電を等価電流（µA）として加算した、全エネルギーの消費内訳です。</p>
+          <ExpertConsumptionBar
+            txUa={expertResult.txAverageCurrentUa}
+            rxUa={expertResult.rxAverageCurrentUa}
+            sleepUa={expertResult.sleepAverageCurrentUa}
+            selfDischargeUa={expertResult.selfDischargeEquivalentUa}
+          />
+        </Card>
+      )}
 
       <div className="mt-6">
         <ChartFrame
@@ -401,38 +681,38 @@ export function BatteryLifePanel() {
           description="横軸は1時間あたりの送信回数（頻度）、縦軸は理論電池寿命です。平均電流は頻度に比例して増え、寿命はその逆数——だから頻度を上げるほど寿命は反比例で崖のように落ちます。低頻度側はスリープ電流で頭打ち（天井）になります。入力に連動して動きます。"
           exportName="battery-life-duty-curve"
           caption={
-            result
-              ? `条件: 容量=${formatNumber(capacityMah, 0)}mAh×derate ${formatNumber(deratingPercent, 0)}% / 送信 ${formatNumber(txCurrentMa, 0)}mA×${formatNumber(txDurationMs, 0)}ms / スリープ ${formatNumber(sleepCurrentUa, 1)}µA ─ 現在の運用点 ${formatNumber(result.lifetimeYears, 1)}年（${formatNumber(3600 / intervalSeconds, 2)}回/時）を丸印で表示`
+            activeResult
+              ? `条件: 容量=${formatNumber(capacityMah, 0)}mAh / 送信 ${formatNumber(txCurrentMa, 0)}mA×${formatNumber(txDurationMs, 0)}ms / スリープ ${formatNumber(sleepCurrentUa, 1)}µA ─ 現在の運用点 ${formatNumber(mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0), 1)}年（${formatNumber(3600 / intervalSeconds, 2)}回/時）を丸印で表示`
               : "入力値を確認してください。"
           }
         >
-          {result ? (
+          {activeResult ? (
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
               <div className="hidden sm:block">
                 <BatteryLifeDutyCurve
                   capacityMah={capacityMah}
-                  deratingPercent={deratingPercent}
+                  deratingPercent={mode === "expert" && expertResult ? (expertResult.tempCoeff * expertResult.pulseCoeff * 100) : deratingPercent}
                   txCurrentMa={txCurrentMa}
                   txDurationMs={txDurationMs}
                   rxCurrentMa={rxCurrentMa}
                   rxDurationMs={rxDurationMs}
                   sleepCurrentUa={sleepCurrentUa}
                   intervalSeconds={intervalSeconds}
-                  currentLifeYears={result.lifetimeYears}
+                  currentLifeYears={mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0)}
                 />
               </div>
               <div className="sm:hidden">
                 <BatteryLifeDutyCurve
                   compact
                   capacityMah={capacityMah}
-                  deratingPercent={deratingPercent}
+                  deratingPercent={mode === "expert" && expertResult ? (expertResult.tempCoeff * expertResult.pulseCoeff * 100) : deratingPercent}
                   txCurrentMa={txCurrentMa}
                   txDurationMs={txDurationMs}
                   rxCurrentMa={rxCurrentMa}
                   rxDurationMs={rxDurationMs}
                   sleepCurrentUa={sleepCurrentUa}
                   intervalSeconds={intervalSeconds}
-                  currentLifeYears={result.lifetimeYears}
+                  currentLifeYears={mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0)}
                 />
               </div>
             </div>
@@ -445,16 +725,22 @@ export function BatteryLifePanel() {
       </div>
 
       <div className="mt-6">
-        <FormulaExplanationCard title="時間平均電流と寿命" formula={"Iavg[mA]=(Itx·ttx+Irx·trx)/T+Isleep\n寿命[h]=容量[mAh]·derate/Iavg[mA]"} showColumnLink={false}>
-          <p className="text-sm leading-relaxed text-slate-600">送受信時間は周期Tと同じ単位へそろえて加重平均します。</p>
+        <FormulaExplanationCard title="時間平均電流と寿命" formula={mode === "expert" ? "Iavg_eq[mA] = (Itx·ttx + Irx·trx)/T + Isleep + (Cnominal·r)/8760\n実効寿命[年] = (Cnominal·(1-r·aging)·ktemp·kpulse) / (Iavg_eq[mA]·8760)" : "Iavg[mA] = (Itx·ttx + Irx·trx)/T + Isleep\n寿命[h] = 容量[mAh]·derate / Iavg[mA]"} showColumnLink={false}>
+          <p className="text-sm leading-relaxed text-slate-600">
+            {mode === "expert"
+              ? "エキスパートモードでは、化学特性ごとの温度係数(ktemp)、パルス係数(kpulse)、自己放電率(r)、および経年保管による減衰が考慮されます。"
+              : "送受信時間は周期Tと同じ単位へそろえて加重平均します。"}
+          </p>
         </FormulaExplanationCard>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 space-y-6">
         <BatteryLifeColumn />
+        {mode === "expert" && <BatteryLifeExpertColumn />}
       </div>
 
       <MobileResultBar primary={primary} targetId="battery-primary-result" />
     </>
   );
 }
+

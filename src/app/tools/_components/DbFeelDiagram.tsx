@@ -44,7 +44,7 @@ export function DbFeelDiagram({ db, stackTotalDb }: DbFeelDiagramProps) {
   const stackLabel = showStack ? formatRatio(dbToPowerRatio(stackTotalDb)) : "";
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <figcaption className="text-sm font-semibold text-slate-950">
         dBの「ものさし」（足し算の目盛り＝掛け算の倍率）
       </figcaption>

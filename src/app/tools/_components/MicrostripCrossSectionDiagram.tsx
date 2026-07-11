@@ -45,7 +45,7 @@ export function MicrostripCrossSectionDiagram({
   const fringe = [0.35, 0.7, 1.05];
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <figcaption className="text-sm font-semibold text-slate-950">
         断面で見るマイクロストリップ（W・h・εr）
       </figcaption>

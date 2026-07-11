@@ -199,7 +199,7 @@ export function NamiGateClient() {
           </div>
 
           {/* 固定仕様＋導出値 */}
-          <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="slate">
             <div className="mb-2 flex items-center gap-2 text-sm font-bold text-slate-900">
               <Settings2 aria-hidden="true" className="h-4 w-4 text-staf-dark" />
               ナミゲート仕様（固定）
@@ -342,7 +342,7 @@ export function NamiGateClient() {
           現在の条件では、ガラスは「{deferredGlass?.label}」、入射角{safeInput.incidentAngleDeg}°、
           ナミゲートによる平均改善量は約 {signed(sim.diffStats.avg)}dB です。
         </p>
-        <div className="rounded-lg border border-slate-200 bg-white p-4">
+        <div className="sm">
           <p className="font-bold text-slate-900">計算式</p>
           <p className="mt-1">
             各セルの受信電力 = 送信電力 − 屋外伝搬損失 − ガラス損失 − 入射角損失 − 屋内スプレッド損失（窓面基準）

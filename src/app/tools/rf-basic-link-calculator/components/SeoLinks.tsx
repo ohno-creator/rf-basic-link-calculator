@@ -29,7 +29,7 @@ export function SeoLinks() {
               href={card.href}
             >
               <Icon aria-hidden="true" className="h-6 w-6 text-staf-dark" />
-              <h3 className="mt-3 text-lg font-semibold text-slate-950">{card.title}</h3>
+              <h3 className="mt-3 text-base font-bold text-slate-950">{card.title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-slate-600">{card.description}</p>
             </a>
           );

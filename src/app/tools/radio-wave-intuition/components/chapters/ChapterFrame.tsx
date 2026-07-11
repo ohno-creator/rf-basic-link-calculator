@@ -65,7 +65,7 @@ export function ChapterFrame({
           ))}
         </ul>
 
-        <div className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="slate">
           <p className="flex items-center gap-2 text-sm font-bold text-slate-950">
             <Wrench aria-hidden="true" className="h-4 w-4 text-staf-dark" />
             実務ではこう使う

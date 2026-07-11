@@ -171,7 +171,7 @@ export function FresnelZoneDiagram({
   const color = VERDICT_COLOR[analysis.verdict];
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <figcaption className="text-sm font-semibold text-slate-950">経路の断面図（縦は実寸スケール）</figcaption>
       <DiagramExportButton filenameBase="fresnel-zone">
         <svg viewBox="0 0 580 248" role="img" aria-label="送受信アンテナの間に広がる第1フレネルゾーンと、置いた障害物が遮るかどうかを示す断面図。" className="mt-2 w-full">

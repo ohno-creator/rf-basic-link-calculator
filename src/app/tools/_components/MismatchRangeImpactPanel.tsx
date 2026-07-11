@@ -259,7 +259,7 @@ export function MismatchRangeImpactPanel() {
             />
           </div>
 
-          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm leading-relaxed text-slate-600">
+          <div className="mt-5 text-sm leading-relaxed text-slate-600">
             <p>
               <strong className="text-slate-900">読み方:</strong>{" "}
               距離への影響は<strong>自由空間（距離2倍で−6dB）を前提にした目安</strong>です。

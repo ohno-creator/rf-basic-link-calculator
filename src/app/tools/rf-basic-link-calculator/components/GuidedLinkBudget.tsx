@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { ArrowRight, Lightbulb, SlidersHorizontal, Wand2 } from "lucide-react";
 import { Card, StateCard } from "@/components/Card";
+import { MobileResultBar } from "@/components/MobileResultBar";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { quickStartPresets, type QuickStartPreset } from "@/data/quickStartPresets";
 import { formatSigned } from "@/lib/rf/format";
@@ -151,7 +152,7 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
     <section data-testid="guided-link-budget" className="mx-auto max-w-3xl space-y-4">
       {/* 常時見える結果：ゲージ＋次の一手 */}
       {result ? (
-        <div className="space-y-3">
+        <div id="guided-result-anchor" className="space-y-3">
           <LinkMarginGauge result={result} />
           <StateCard
             tone={result.linkMarginDb >= 0 ? "info" : "caution"}
@@ -176,7 +177,7 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
                     className="inline-flex items-center gap-1 rounded-full border border-staf/40 bg-white px-3 py-1.5 text-xs font-bold text-staf-dark transition hover:bg-staf-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                   >
                     <Wand2 aria-hidden="true" className="h-3.5 w-3.5" />
-                    {chip.label}
+                    クリックで適用: {chip.label}
                   </button>
                 ) : (
                   <span
@@ -357,6 +358,19 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
           />
         </div>
       </Card>
+
+      {/* モバイル: スクロール中もマージンが見える固定バー */}
+      {result ? (
+        <MobileResultBar
+          primary={{
+            label: "リンクマージン",
+            value: formatSigned(result.linkMarginDb, ""),
+            unit: "dB"
+          }}
+          judgement={{ label: result.judgement.label, level: result.judgement.level }}
+          targetId="guided-result-anchor"
+        />
+      ) : null}
 
       {/* 詳細モードへ */}
       <button

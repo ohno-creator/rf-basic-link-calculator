@@ -555,7 +555,7 @@ export function SimpleLinkBudgetPanel() {
               />
             </div>
 
-            <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div className="slate">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <p className="text-sm font-semibold text-slate-950">0dBラインとの距離</p>
                 <Tooltip term="0dBライン">

@@ -875,7 +875,7 @@ export function NcuBelowGroundClient() {
           </div>
           <Link
             href="/tools/rf-basic-link-calculator"
-            className="inline-flex items-center gap-2 rounded-lg bg-staf px-4 py-2.5 text-sm font-bold text-white transition hover:bg-staf-dark"
+            className="inline-flex items-center gap-2 rounded-lg bg-staf px-4 py-2 text-sm font-bold text-white transition hover:bg-staf-dark"
           >
             リンクバジェット診断を開く
             <ArrowRight aria-hidden="true" className="h-4 w-4" />

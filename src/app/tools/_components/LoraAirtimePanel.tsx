@@ -281,7 +281,7 @@ export function LoraAirtimePanel() {
 
       <div className="mt-6">
         <FormulaExplanationCard title="LoRa Time-on-Air式" formula={"Tsym = 2^SF / BW\nTpre = (Npre + 4.25)·Tsym\nToA = Tpre + Npayload·Tsym"} showColumnLink={false}>
-          <p className="text-sm leading-relaxed text-slate-700">
+          <p className="text-sm leading-relaxed text-slate-600">
             時間は線形値で加算します。低データレート最適化DEはシンボル長16.384ms以上で自動適用します。
             本結果に再送、受信窓、キャリアセンス待ち時間は含みません。
           </p>
