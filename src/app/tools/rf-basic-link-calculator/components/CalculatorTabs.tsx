@@ -12,6 +12,7 @@ import { resolveLinkBudgetErrors } from "@/lib/linkBudgetErrorMessages";
 import { HataColumn } from "@/app/tools/_components/HataColumn";
 import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
+import { GuidedLinkBudget } from "./GuidedLinkBudget";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
 import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
 import { ResultDetails } from "./ResultDetails";
@@ -19,12 +20,16 @@ import { ResultHero } from "./ResultHero";
 import { StickyResultSummary } from "./StickyResultSummary";
 import { CompactLinkBudgetPanel } from "./CompactLinkBudgetPanel";
 
+export type CalculatorMode = "guided" | "expert";
+
 type CalculatorTabsProps = {
   input: LinkBudgetInput;
   onInputChange: (input: LinkBudgetInput) => void;
   onReset: () => void;
   onShare: () => void;
   shareState: ShareState;
+  mode: CalculatorMode;
+  onModeChange: (mode: CalculatorMode) => void;
 };
 
 const RESULT_ANCHOR_ID = "link-budget-result";
@@ -73,7 +78,9 @@ export function CalculatorTabs({
   onInputChange,
   onReset,
   onShare,
-  shareState
+  shareState,
+  mode,
+  onModeChange
 }: CalculatorTabsProps) {
   const [activeSheet, setActiveSheet] = useState<SheetId>("link-budget");
   const [inputMode, setInputMode] = useState<"quick" | "guided">("quick");
@@ -101,6 +108,35 @@ export function CalculatorTabs({
         </h2>
       </div>
 
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div
+          role="group"
+          aria-label="入力モード"
+          className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-card"
+        >
+          {(
+            [
+              { id: "guided", label: "かんたん" },
+              { id: "expert", label: "詳細" }
+            ] as const
+          ).map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              aria-pressed={mode === option.id}
+              data-testid={`calculator-mode-${option.id}`}
+              onClick={() => onModeChange(option.id)}
+              className={`rounded-full px-4 py-1.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                mode === option.id ? "bg-staf text-white" : "text-slate-600 hover:text-staf-dark"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
+      </div>
+
       <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
         <div role="tablist" aria-label="計算シート" className="grid gap-2 sm:grid-cols-2">
           {sheets.map((sheet) => {
@@ -126,7 +162,16 @@ export function CalculatorTabs({
         </div>
       </div>
 
-      {activeSheet === "link-budget" ? (
+      {activeSheet === "link-budget" && mode === "guided" ? (
+        <GuidedLinkBudget
+          input={input}
+          result={result}
+          onChange={onInputChange}
+          onOpenExpert={() => onModeChange("expert")}
+        />
+      ) : null}
+
+      {activeSheet === "link-budget" && mode === "expert" ? (
         <>
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
             <div role="group" aria-label="入力表示" className="grid flex-1 grid-cols-2 gap-1 sm:flex-none">
@@ -182,21 +227,11 @@ export function CalculatorTabs({
             <ResultDetails input={input} result={result} />
           </div>
         </>
-      ) : (
-        <ResearchDistanceSheet baseInput={input} />
-      )}
+      ) : null}
 
-      <details className="group mt-6 rounded-lg border border-slate-200 bg-white shadow-card">
-        <summary className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-slate-700">
-          <span>共有・初期化</span>
-          <span className="text-xs font-normal text-slate-500">条件は自動保存されています</span>
-        </summary>
-        <div className="border-t border-slate-200 p-3">
-          <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
-        </div>
-      </details>
+      {activeSheet === "research-distance" ? <ResearchDistanceSheet baseInput={input} /> : null}
 
-      {result && activeSheet === "link-budget" ? (
+      {result && activeSheet === "link-budget" && mode === "expert" ? (
         <StickyResultSummary result={result} input={input} targetId={RESULT_ANCHOR_ID} />
       ) : null}
 

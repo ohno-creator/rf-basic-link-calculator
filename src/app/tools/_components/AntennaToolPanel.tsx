@@ -39,6 +39,7 @@ import { FormulaExplanationCard } from "@/app/tools/_components/FormulaExplanati
 import { PatchAntennaColumn } from "@/app/tools/_components/PatchAntennaColumn";
 import { RadiationResistanceColumn } from "@/app/tools/_components/RadiationResistanceColumn";
 import { SmallAntennaLimitColumn } from "@/app/tools/_components/SmallAntennaLimitColumn";
+import { SmallLoopColumn } from "@/app/tools/_components/SmallLoopColumn";
 
 export type AntennaToolId =
   | "effective-aperture"
@@ -1930,6 +1931,13 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
               frequencyMHz={values.frequencyMHz}
               radiusMm={values.radiusMm}
               targetBandwidthPercent={values.targetBandwidthPercent}
+            />
+          ) : toolId === "small-loop-resonance" ? (
+            <SmallLoopColumn
+              frequencyMHz={values.frequencyMHz}
+              loopDiameterMm={values.loopDiameterMm}
+              wireDiameterMm={values.wireDiameterMm}
+              turns={values.turns}
             />
           ) : (
             <Card as="section" padding="lg">

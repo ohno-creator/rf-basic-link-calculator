@@ -7,12 +7,31 @@ test.describe("tool hub", () => {
   test("home lists every tool and links to its page", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: "無線設計の計算を、ひとつずつ。" })
+      page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })
     ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "やりたいことに沿って、上から順に確認" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "すべての計算ツールから探す" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "アンテナを実装したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "通信不良を切り分けたい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "基礎から理解したい" })).toBeVisible();
 
     for (const tool of toolDirectory) {
       await expect(page.locator(`a[href*="${tool.href}"]`).first()).toBeVisible();
     }
+  });
+
+  test("home keeps its purpose-first structure readable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+
+    await expect(page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
+    await page.locator("#purpose-routes").scrollIntoViewIfNeeded();
+    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });
 
@@ -198,6 +217,17 @@ test.describe("antenna research columns", () => {
     const initial = await bandwidth.textContent();
     await page.locator("#small-antenna-limit-radiusMm").fill("30");
     await expect.poll(() => bandwidth.textContent()).not.toBe(initial);
+  });
+
+  test("small loop column follows the loop diameter", async ({ page }) => {
+    await page.goto("/tools/small-loop-resonance/");
+    await expect(page.getByRole("heading", { name: "コラム：財布の中のアンテナは、アンテナではなかった" })).toBeVisible();
+    const column = page.getByTestId("small-loop-column");
+    const initial = await column.textContent();
+    await page.locator("#small-loop-resonance-loopDiameterMm").fill("80");
+    await expect.poll(() => column.textContent()).not.toBe(initial);
+    await column.locator("summary").click();
+    await expect(column.locator("a").first()).toBeVisible();
   });
 
   test("research columns fit mobile and expose their sources", async ({ page }) => {
@@ -391,8 +421,40 @@ test("coax tool keeps total loss visible beside the inputs", async ({ page }) =>
   await expect(primaryResult).toContainText("dB");
 });
 
+test("RF calculator opens in guided mode with advice chips that apply on click", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+
+  // 既定=かんたんモード: 3ステップとゲージ・次の一手が見える
+  const guided = page.getByTestId("guided-link-budget");
+  await expect(guided).toBeVisible();
+  await expect(guided.getByText("どんな通信ですか？")).toBeVisible();
+  await expect(page.getByTestId("guided-advice")).toBeVisible();
+
+  // シナリオカードで前提を一括セット→距離スライダー表示が連動
+  await page.getByTestId("guided-preset-lpwa-920").click();
+  await expect(page.getByTestId("guided-distance-value")).toContainText("km");
+
+  // 環境チップを金属近接へ→マージン悪化→「次の一手」に距離短縮チップが出る→クリックで距離が縮む
+  await guided.getByRole("button", { name: /金属近接/ }).click();
+  const before = await page.getByTestId("guided-distance-value").textContent();
+  const distanceChip = page.getByTestId("guided-advice").getByRole("button", { name: /距離を約/ });
+  if (await distanceChip.count()) {
+    await distanceChip.click();
+    await expect.poll(() => page.getByTestId("guided-distance-value").textContent()).not.toBe(before);
+  }
+
+  // 詳細モードへ切り替えるとクイック調整/解説付きの切替が現れ、値は引き継がれる
+  await page.getByTestId("open-expert-mode").click();
+  await expect(page.getByRole("button", { name: "クイック調整" })).toBeVisible();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
+  await expect(page.getByRole("heading", { name: "リンクバジェット簡易診断", exact: true })).toBeVisible();
+});
+
 test("RF calculator switches to the research distance sheet", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
 
   await expect(
@@ -412,6 +474,9 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
 
 test("RF calculator keeps each number field's intentional empty-value behavior", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
 
   const frequency = page.locator("#frequencyMHz");
@@ -435,6 +500,9 @@ test("RF calculator keeps each number field's intentional empty-value behavior",
 
 test("research distance delays the invalid-frequency banner while typing", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
 
   const researchFrequency = page.locator("#research-frequencyGHz");
@@ -447,9 +515,13 @@ test("research distance delays the invalid-frequency banner while typing", async
 
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#propagationModel").selectOption("okumura_hata");
   await expect(page.locator("#propagationArea")).toBeVisible();
+  await page.getByTestId("calculator-mode-expert").click();
   await page.getByRole("button", { name: "解説付き入力" }).click();
 
   await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではなく、入力パラメータです")).toBeVisible();
@@ -466,6 +538,8 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
 
 test("RF calculator shows model assumptions, double-counting guidance, and research column", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await page.getByRole("button", { name: "解説付き入力" }).click();
 
   await expect(page.getByRole("img", { name: "リンク計算の2D前提図" })).toBeVisible();
@@ -484,6 +558,9 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
 
 test("RF calculator diagrams show the two-ray interference lab synced with inputs", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#frequencyMHz").fill("1500");
   await page.locator("#txAntennaHeightM").fill("20");
@@ -500,6 +577,9 @@ test("RF calculator diagrams show the two-ray interference lab synced with input
 
 test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
+  await page.getByTestId("calculator-mode-expert").click();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
   await page.locator("#propagationModel").selectOption("iot_hata_calibrated");
   await page.getByRole("button", { name: "解説付き入力" }).click();
 
@@ -549,6 +629,7 @@ test("RF calculator keeps compact controls beside the waterfall", async ({ page 
   await expect(page.locator("#environmentLossDb")).toHaveValue("8");
   await expect(chart).toBeVisible();
 
+  await page.getByTestId("calculator-mode-expert").click();
   await page.getByRole("button", { name: "解説付き入力" }).click();
   await expect(page.locator("#environmentLossDb")).toHaveValue("8");
 });
@@ -1175,4 +1256,26 @@ test("ground plane size tool shows the Lg/λ efficiency drop and reacts to lengt
   // GND最長辺を 0（GNDなし）へ → 目安表の下端 -20.0dB
   await calculator.locator("#gpGroundLength").fill("0");
   await expect(calculator.getByTestId("primary-result")).toContainText("-20.0");
+});
+
+test("db family links dBi to dBd and validates the addition checker", async ({ page }) => {
+  await page.goto("/tools/db-family/");
+  const calculator = page.getByTestId("tool-calculator");
+
+  // 既定 利得6dBi → dBd表示は 6−2.15=3.85（dbiToDbd/DIPOLE_GAIN_DBIで検算した確定値）
+  await expect(calculator.getByTestId("db-family-gain-svg")).toHaveAttribute("data-dbd", "3.85");
+  // 0dBi へ → dBdは −2.15（等方基準の0は、ダイポール基準では負になる）
+  await calculator.locator("#dbFamilyGain").fill("0");
+  await expect(calculator.getByTestId("db-family-gain-svg")).toHaveAttribute("data-dbd", "-2.15");
+
+  // チェッカー既定: 13dBm ＋ アンテナ利得3dBi ＝ 16dBm（有効・dBm+比率）
+  const checker = calculator.getByTestId("db-family-checker");
+  await expect(checker).toHaveAttribute("data-valid", "true");
+  await expect(calculator.getByTestId("primary-result")).toContainText("16.0");
+
+  // 2つ目を 20dBm へ → dBm+dBm は無効。電力和 10log10(10^1.3+10^2)≈20.8dBm を提示（combinePowersDbmで検算）
+  await calculator.locator("#dbFamilyTermB").selectOption("tx20");
+  await expect(checker).toHaveAttribute("data-valid", "false");
+  await expect(checker).toContainText("足し算できません");
+  await expect(calculator.getByTestId("primary-result")).toContainText("20.8");
 });

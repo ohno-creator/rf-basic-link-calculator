@@ -359,3 +359,25 @@ cd ../<slot>-<id> && npm ci
 
 ### W-E: 最終受入 — ✅ 完了（2026-07-06）
 - Antigravity一括視覚受入（全ページ）完了。10項目の重点確認においてすべて「受入OK」を判定済み。mainへのリリース判断完了。
+
+---
+
+## 11. 第2期実行キュー（2026-07-12 現況・3者分担）
+
+### 完了（feature統合・CI緑）
+- **Track G 全20ツール完了**: Tier1(8)+Tier2(5)+[DATA]7（G2/G3/G4/G5/G14/G15判定/G18）。文献パックはAntigravity検証＋ClaudeレビューでG18 ToA表2値を訂正確定
+- **学習アプリ「感覚でわかる電波」**（radio-wave-intuition・6章・E1コラム付き）
+- **リンクバジェットUI刷新**: 既定=かんたんモード（3ステップ＋提案エンジンlinkBudgetAdvisor）／詳細モード内にクイック調整・解説付き切替を階層統合
+- **db-family**（dB/dBm/dBi/dBdの本質理解）／**小型ループ・ライブコラム**（アンテナ系4本目）
+- **トップページ目的別導線**（Codex実装をClaude検証で確定）
+- E6フレネル長距離モードUI／E1量産期の視覚ベースラインはrebaseline4まで確定
+
+### 実行中（担当）
+- **Claude**: ③ota-implementation-loss（TRP/TIS→デセンス分離）④diffraction-shadow（回折見える化）⑤cellular-band-map（4G/5G Band地図）の生成→結線／Track I監査（I1/I2/I4・読み取り専用3レンズ）→監督付き適用／統合後の一括視覚再ベースライン（トップ・旗艦・金属板・新ツール群）→main反映
+- **Codex**: ⑦電池寿命エキスパートモード＋⑥クエスト問題60問（発注書: prompt-codex-battery-expert-and-quest.md）
+- **Antigravity**: かんたんモード官能評価・新アプリ群実機受入・文献裏取り（発注書: prompt-antigravity-acceptance-wave3.md）
+
+### 既知の運用リスク（再発防止）
+- 共有メインworktreeのブランチが並行プロセスに切り替えられる事故が複数回発生→**マージ/push/リベース前に`git status -sb`確認を必須化**。各エージェントはworktree隔離を厳守
+- `npm run build`とdev serverの同時実行（.next共有）でe2eが一斉フレークする→ビルド前にdev停止
+- 視覚変更はrebaselineループに乗せるまでfeatureの基準線が古いままになる（機能CIは緑のまま）→リリース前に必ず一括再ベースライン
