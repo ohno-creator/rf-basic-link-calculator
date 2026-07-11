@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import {
+  Bug,
   Activity,
   AppWindow,
   ArrowUpRight,
@@ -27,6 +28,7 @@ import { Tooltip } from "@/components/Tooltip";
 import { toolCategories, toolDirectory } from "@/data/toolDirectory";
 
 const iconMap: Record<string, LucideIcon> = {
+  bug: Bug,
   gauge: Gauge,
   calculator: Calculator,
   waves: Waves,

@@ -337,6 +337,13 @@ export const tools: ToolEntry[] = [
     "category": "learning"
   },
   {
+    "slug": "rf-antipatterns",
+    "name": "RFアンチパターン図鑑",
+    "tagline": "繰り返される設計ミス10選を数字で学ぶ",
+    "icon": "bug",
+    "category": "learning"
+  },
+  {
     "slug": "frequency-wavelength",
     "name": "周波数・波長",
     "tagline": "波長とアンテナのサイズ感",
