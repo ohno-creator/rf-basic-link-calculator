@@ -347,7 +347,7 @@ export function PurposeSwitch({
   onChange: (mode: WorkMode) => void;
 }) {
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-2 shadow-card">
+    <Card as="section" padding="xs">
       <div className="grid gap-2 md:grid-cols-2" role="group" aria-label="GL以下NCU診断の目的">
         {purposeCards.map((card) => {
           const selected = activeMode === card.id;
@@ -370,7 +370,7 @@ export function PurposeSwitch({
           );
         })}
       </div>
-    </section>
+    </Card>
   );
 }
 

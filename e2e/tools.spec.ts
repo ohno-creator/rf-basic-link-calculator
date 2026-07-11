@@ -1364,3 +1364,32 @@ test("diffraction shadow compares bands and reacts to inputs", async ({ page }) 
   // 断面図は選択バンドの損失をdata-loss属性に反映する（入力連動の確認）
   await expect(calculator.getByTestId("diffraction-shadow-diagram")).toHaveAttribute("data-loss", "11.37");
 });
+
+test("RF antipatterns filters by severity, expands a card and links to the verifying tool", async ({ page }) => {
+  await page.goto("/tools/rf-antipatterns/");
+  await expect(page.getByRole("heading", { level: 1, name: "RFアンチパターン図鑑" })).toBeVisible();
+
+  // 初期状態: 全10パターン表示（primary-result は表示中件数）
+  await expect(page.getByTestId("primary-result")).toContainText("10 / 10");
+  await expect(page.getByTestId("antipattern-s11-good-but-no-range")).toBeVisible();
+
+  // severityフィルタ: critical に絞ると3件になり、minor のカードが消える
+  await page.getByTestId("antipattern-filter-critical").click();
+  await expect(page.getByTestId("primary-result")).toContainText("3 / 10");
+  await expect(page.getByTestId("antipattern-flush-on-metal")).toBeVisible();
+  await expect(page.getByTestId("antipattern-dbi-dbd-mixup")).toHaveCount(0);
+
+  // 「すべて」に戻すと10件へ復帰
+  await page.getByTestId("antipattern-filter-all").click();
+  await expect(page.getByTestId("primary-result")).toContainText("10 / 10");
+
+  // アコーディオン展開: 閉状態では本文が隠れ、展開で「数字で見る誤差」→「正しいやり方」→ツールリンクが現れる
+  const card = page.getByTestId("antipattern-s11-good-but-no-range");
+  await expect(card.getByText("数字で見る誤差")).not.toBeVisible();
+  await card.locator("summary").click();
+  await expect(card.getByText("数字で見る誤差")).toBeVisible();
+  await expect(card.getByText("正しいやり方")).toBeVisible();
+  const toolLink = card.locator('a[href*="/tools/radiation-resistance"]');
+  await expect(toolLink).toBeVisible();
+  await expect(toolLink).toContainText("放射抵抗と効率で確認する");
+});

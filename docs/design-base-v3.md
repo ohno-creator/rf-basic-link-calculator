@@ -58,6 +58,7 @@
 | Flat | `border border-slate-200`（インセット・表・凡例） |
 | Raised | `shadow-card`（標準カード）／`hover:shadow-card-hover`＋`-translate-y-0.5`（リンクカードのみ） |
 `shadow-soft` はヒーロー級1画面1回まで。3層目は作らない。
+コントロールの操作子（SegmentedControlのthumb等）に限り `shadow-sm` を許可（面のエレベーションではなく操作アフォーダンス）
 
 ### 2.5 形状・フォーカス・モーション
 - 角丸: コンテナ=`rounded-lg`、ピル/チップ=`rounded-full`（§2.7確定・他は段階置換）。

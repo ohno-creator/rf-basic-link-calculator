@@ -892,6 +892,13 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "tagline": "触って体感する電波の直感6章",
   },
   {
+    "category": "learning",
+    "href": "/tools/rf-antipatterns",
+    "icon": "bug",
+    "name": "RFアンチパターン図鑑",
+    "tagline": "繰り返される設計ミス10選を数字で学ぶ",
+  },
+  {
     "category": "basics",
     "href": "/tools/frequency-wavelength",
     "icon": "radio",

@@ -262,7 +262,7 @@ function SpreadExperience() {
             </button>
             {deltaDb !== null ? (
               <span
-                className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700"
+                className="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700"
                 style={{ fontVariantNumeric: "tabular-nums" }}
               >
                 前回の位置から {deltaDb > 0 ? "+" : ""}
