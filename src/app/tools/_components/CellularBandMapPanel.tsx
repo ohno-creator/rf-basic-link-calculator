@@ -7,6 +7,7 @@ import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import {
@@ -22,9 +23,15 @@ import {
   wavelengthMm,
   type BandMatch
 } from "@/lib/rf/cellularBandLookup";
+import { carriersForRegion } from "@/lib/rf/cellularCarrierCatalog";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { CellularBandMapColumn } from "./CellularBandMapColumn";
+import {
+  BAND_MAP_MODES,
+  CellularBandModeContent,
+  type BandMapMode
+} from "./CellularBandModes";
 
 // ---- 周波数プリセット（値は src/data/cellularBands.ts のバンドレンジ内の代表点） ----
 const FREQUENCY_PRESETS = [
@@ -68,12 +75,14 @@ const AXIS_TICKS_MHZ = [700, 1000, 2000, 3000, 5000, 10000, 20000, 28000] as con
 function BandMapSvg({
   freqMHz,
   hitKeys,
+  carrierKeys,
   selectedKey,
   showPlatinum,
   onSelect
 }: {
   freqMHz: number | null;
   hitKeys: string[];
+  carrierKeys: string[];
   selectedKey: string;
   showPlatinum: boolean;
   onSelect: (key: string) => void;
@@ -109,6 +118,7 @@ function BandMapSvg({
       data-testid="cellular-band-map"
       data-selected-band={selectedKey}
       data-hit-bands={hitKeys.join(",")}
+      data-carrier-bands={carrierKeys.join(",")}
       data-cursor-mhz={freqMHz === null ? "" : String(freqMHz)}
       aria-label={`4G/5Gバンド地図。選択中: ${selectedKey}。カーソル周波数${freqMHz ?? "—"}MHzの該当バンド: ${hitKeys.join("・") || "なし"}`}
       viewBox={`0 0 ${chart.width} ${chart.height}`}
@@ -177,10 +187,11 @@ function BandMapSvg({
         const span = bandSpan(band);
         const spanCenterX = (x(span.minMHz) + x(span.maxMHz)) / 2;
         const isHit = hitKeys.includes(band.key);
+        const isCarrierBand = carrierKeys.includes(band.key);
         const isSelected = band.key === selectedKey;
         const fill = fillFor(band);
         const stroke = strokeFor(band);
-        const opacity = isHit || isSelected ? 1 : 0.55;
+        const opacity = isHit || isSelected ? 1 : carrierKeys.length === 0 ? 0.55 : isCarrierBand ? 0.82 : 0.14;
         const rects = band.tdd
           ? [{ range: band.tdd, ul: false }]
           : [
@@ -319,10 +330,34 @@ function LevelDots({ level }: { level: 1 | 2 | 3 }) {
 // ---- パネル本体 -----------------------------------------------------------------------
 
 export function CellularBandMapPanel() {
+  const [mode, setMode] = useState<BandMapMode>("intro");
+  return (
+    <>
+      <Card as="section" padding="lg" className="mb-6">
+        <p className="text-xs font-bold text-staf-dark">Band地図 v3</p>
+        <h2 className="mt-1 text-lg font-bold text-slate-950">知りたい深さで表示を切り替える</h2>
+        <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          入門の周波数地図から、国内実務、アンテナ設計、世界のキャリア、横断検索まで段階的に確認できます。
+        </p>
+        <div className="mt-4 overflow-x-auto pb-1">
+          <SegmentedControl options={BAND_MAP_MODES} value={mode} onChange={setMode} ariaLabel="Band地図の表示モード" className="min-w-max" />
+        </div>
+      </Card>
+      {mode === "intro" ? <FrequencyBandExplorer /> : <CellularBandModeContent mode={mode} />}
+    </>
+  );
+}
+
+function FrequencyBandExplorer() {
   // 既定900MHz: プラチナ帯（B8のUL帯）に載せ、「低い帯から地図を読む」導入にする。
   const [freqMHz, setFreqMHz] = useState(900);
   const [selectedKey, setSelectedKey] = useState("B8");
   const [showPlatinum, setShowPlatinum] = useState(false);
+  const [introCarrierId, setIntroCarrierId] = useState("all");
+  const japanCarriers = carriersForRegion("japan");
+  const carrierKeys = introCarrierId === "all"
+    ? []
+    : [...(japanCarriers.find((profile) => profile.id === introCarrierId)?.bands.map((band) => band.band) ?? [])];
 
   const freqValid = Number.isFinite(freqMHz) && freqMHz > 0;
 
@@ -376,6 +411,18 @@ export function CellularBandMapPanel() {
                   onClick={() => setFreqMHz(preset.valueMHz)}
                 >
                   {preset.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-xs font-semibold text-slate-500">日本キャリアの保有帯を点灯</p>
+            <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="日本キャリアのBand表示">
+              <button type="button" className={chipClass(introCarrierId === "all")} onClick={() => setIntroCarrierId("all")}>全体</button>
+              {japanCarriers.map((profile) => (
+                <button key={profile.id} type="button" className={chipClass(introCarrierId === profile.id)} onClick={() => setIntroCarrierId(profile.id)}>
+                  {profile.carrier}
                 </button>
               ))}
             </div>
@@ -565,6 +612,7 @@ export function CellularBandMapPanel() {
             <BandMapSvg
               freqMHz={freqValid ? freqMHz : null}
               hitKeys={hitKeys}
+              carrierKeys={carrierKeys}
               selectedKey={selectedKey}
               showPlatinum={showPlatinum}
               onSelect={setSelectedKey}

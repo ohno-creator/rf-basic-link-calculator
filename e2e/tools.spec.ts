@@ -1293,6 +1293,10 @@ test("cellular band map matches bands to the frequency and reacts to input", asy
   await expect(map).toHaveAttribute("data-selected-band", "B8");
   await expect(calculator.getByTestId("band-detail")).toContainText("880");
 
+  // 入門モードのキャリア点灯は検索周波数と独立し、楽天のB3/B28/n77/n257を強調する。
+  await calculator.getByRole("button", { name: "楽天モバイル", exact: true }).click();
+  await expect(map).toHaveAttribute("data-carrier-bands", "B3,B28,n77,n257");
+
   // 3500MHz に変更 → TDDが重なる B42・n77・n78 の3バンドが該当し、主結果も3に変わる
   await calculator.locator("#bandMapFrequency").fill("3500");
   await expect(map).toHaveAttribute("data-hit-bands", "B42,n77,n78");
@@ -1304,6 +1308,33 @@ test("cellular band map matches bands to the frequency and reacts to input", asy
   const detail = calculator.getByTestId("band-detail");
   await expect(detail).toHaveAttribute("data-band", "n78");
   await expect(detail).toContainText("3300");
+});
+
+test("cellular band map v3 switches five modes and drills down carrier data", async ({ page }) => {
+  await page.goto("/tools/cellular-band-map/");
+  const calculator = page.getByTestId("tool-calculator");
+
+  // 初期表示は従来互換の入門モード。
+  await expect(calculator.getByRole("radio", { name: "入門" })).toHaveAttribute("aria-checked", "true");
+  await expect(calculator.getByTestId("cellular-band-map")).toBeVisible();
+
+  // 実務: 日本4キャリアを切り替え、楽天の700MHz商用開始とIoT試験段階を確認。
+  await calculator.getByRole("radio", { name: "実務" }).click();
+  await calculator.getByRole("button", { name: "楽天モバイル" }).click();
+  const profile = calculator.getByTestId("carrier-profile");
+  await expect(profile).toHaveAttribute("data-carrier", "jp-rakuten");
+  await expect(profile).toContainText("2024年商用開始");
+  await expect(profile).toContainText("テスト利用段階");
+
+  // 世界: 韓国3社の28GHzは現役Bandではなく取消履歴として表示。
+  await calculator.getByRole("radio", { name: "世界" }).click();
+  await calculator.getByRole("button", { name: "韓国" }).click();
+  await expect(calculator.getByTestId("carrier-profile")).toContainText("免許取消");
+
+  // 検索一覧: Band/キャリア/IoT語を横断検索できる。
+  await calculator.getByRole("radio", { name: "検索一覧" }).click();
+  await calculator.getByTestId("carrier-search").fill("B14");
+  await expect(calculator.getByTestId("carrier-search-results")).toContainText("AT&T / FirstNet");
 });
 
 test.describe("OTA implementation loss / desense analysis", () => {
