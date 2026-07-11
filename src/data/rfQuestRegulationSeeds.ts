@@ -172,7 +172,7 @@ export const regulationSeeds: QuestExpansionSeed[] = [
     "db-unit-addition-rules",
     "足し算していい組み合わせ",
     "リンクバジェットで「足し算」が許される単位の組み合わせとして、物理的に正しいのはどれか。",
-    "dBm（絶対電力） ＋ dB（比率・利得損失）",
+    "dBm（1mW基準の電力） ＋ dB（比率・利得損失）",
     "dBm ＋ dBm",
     "dBi ＋ dBd",
     "dBm（mW基準の絶対値）に対して、比率（倍数）を表すdB（アンテナ利得dBiやケーブル損失dB）を足し引きするのは物理的に正しく、計算結果は「dBm」になります。しかし、絶対値同士であるdBm+dBmの足し算は物理的意味を持ちません。",
