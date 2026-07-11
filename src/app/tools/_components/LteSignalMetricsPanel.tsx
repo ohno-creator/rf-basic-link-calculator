@@ -31,6 +31,7 @@ import {
   rssiFromRsrp
 } from "@/lib/rf/signalMetrics";
 import { formatNumber } from "@/lib/rf/format";
+import { CONTACT_URL } from "@/lib/rf/presets";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { LteSignalMetricsColumn } from "./LteSignalMetricsColumn";
 
@@ -503,8 +504,14 @@ export function LteSignalMetricsPanel() {
             <div className="mt-3">
               <Callout tone="caution" size="sm" title="目安値・実測前提">
                 {CE_COVERAGE_NOTE}
-                アンテナ実装や筐体・設置環境でRSRPは実測で大きく変わるため、量産判断は筐体込みの
-                実測評価（ページ下部のご相談窓口）とあわせてご利用ください。
+                アンテナ実装や筐体・設置環境でRSRPは実測で大きく変わるため、最終判断は現場実測を前提にしてください。建物・筐体込みの実測評価は
+                <a
+                  href={CONTACT_URL}
+                  className="mx-1 font-semibold text-staf-dark underline decoration-staf/40 underline-offset-2 hover:text-staf"
+                >
+                  技術相談窓口
+                </a>
+                へどうぞ。
               </Callout>
             </div>
           </Card>
