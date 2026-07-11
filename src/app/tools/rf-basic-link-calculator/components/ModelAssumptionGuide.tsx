@@ -151,21 +151,21 @@ export function ModelAssumptionGuide({ input }: ModelAssumptionGuideProps) {
             </div>
             <dl className="mt-3 grid gap-3 text-sm sm:grid-cols-3">
               <div>
-                <dt className="flex items-center gap-1 font-semibold text-slate-700">
+                <dt className="flex items-center gap-1 font-semibold text-slate-900">
                   <Ruler aria-hidden="true" className="h-4 w-4 text-slate-500" />
                   使う入力
                 </dt>
                 <dd className="mt-1 leading-relaxed text-slate-600">{row.inputs}</dd>
               </div>
               <div>
-                <dt className="flex items-center gap-1 font-semibold text-slate-700">
+                <dt className="flex items-center gap-1 font-semibold text-slate-900">
                   <Info aria-hidden="true" className="h-4 w-4 text-slate-500" />
                   前提
                 </dt>
                 <dd className="mt-1 leading-relaxed text-slate-600">{row.assumption}</dd>
               </div>
               <div>
-                <dt className="flex items-center gap-1 font-semibold text-slate-700">
+                <dt className="flex items-center gap-1 font-semibold text-slate-900">
                   <AlertTriangle aria-hidden="true" className="h-4 w-4 text-amber-600" />
                   ずれやすい点
                 </dt>

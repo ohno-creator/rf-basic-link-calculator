@@ -79,7 +79,7 @@ export function ResultHero({ input, result, errors, onStepSelect, compact = fals
             <h2 className="mt-1 text-3xl font-bold">{result.judgement.label}</h2>
             <p className="mt-2 max-w-2xl text-sm leading-relaxed">{result.judgement.summary}</p>
           </div>
-          <div className="rounded-lg bg-white/75 px-5 py-4 shadow-card">
+          <div className="rounded-lg border border-white/60 bg-white/75 px-5 py-4">
             <Stat
               label="リンクマージン"
               value={marginValue}
