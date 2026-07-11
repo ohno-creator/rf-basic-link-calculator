@@ -1,3 +1,7 @@
+import { implementationSeeds } from "./rfQuestImplementationSeeds";
+import { fieldSeeds } from "./rfQuestFieldSeeds";
+import { regulationSeeds } from "./rfQuestRegulationSeeds";
+
 export type QuestModeId = "intro" | "beginner" | "apprentice" | "practitioner" | "expert" | "researcher" | "inquiry";
 
 export type QuestMode = {
@@ -2502,5 +2506,21 @@ export const rfQuestLessons: QuestLesson[] = [
   ...makeExpansionLessons("expert", expertCommunitySeeds, 51),
   ...makeExpansionLessons("researcher", researcherExpansionSeeds),
   ...makeExpansionLessons("researcher", researcherCommunitySeeds, 51),
-  ...makeExpansionLessons("inquiry", inquirySeeds, 1)
+  ...makeExpansionLessons("inquiry", inquirySeeds, 1),
+  // 第2期・新ツール連動パック（Codex作・Claudeレビュー結線。wrongはtupleへ正規化）
+  ...makeExpansionLessons(
+    "apprentice",
+    implementationSeeds.map((seed) => ({ ...seed, wrong: [seed.wrong[0], seed.wrong[1]] as [string, string] })),
+    101
+  ),
+  ...makeExpansionLessons(
+    "practitioner",
+    fieldSeeds.map((seed) => ({ ...seed, wrong: [seed.wrong[0], seed.wrong[1]] as [string, string] })),
+    101
+  ),
+  ...makeExpansionLessons(
+    "expert",
+    regulationSeeds.map((seed) => ({ ...seed, wrong: [seed.wrong[0], seed.wrong[1]] as [string, string] })),
+    101
+  )
 ];

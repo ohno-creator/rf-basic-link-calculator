@@ -164,7 +164,7 @@ export const quickStartPresets: QuickStartPreset[] = [
   },
   {
     id: "metal-bad-example",
-    label: "悪い例・要注意",
+    label: "悪い例・要注意（極端な減衰・近接阻害など）",
     system: "BLE / Wi-Fi",
     frequencyLabel: "2.4GHz",
     distanceLabel: "30m",

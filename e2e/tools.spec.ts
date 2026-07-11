@@ -811,7 +811,7 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(
     page.getByRole("heading", { level: 1, name: "クエストで、アンテナ設計の判断を一つずつ固める" })
   ).toBeVisible();
-  await expect(page.getByText("7モードで合計1000問")).toBeVisible();
+  await expect(page.getByText("7モードで合計1060問")).toBeVisible();
   await expect(page.getByText("ことばカード図鑑")).toBeVisible();
   await expect(page.getByRole("link", { name: /アンテナ製品を見る/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /周波数からアンテナを探す/ }).first()).toBeVisible();
@@ -827,10 +827,10 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(page.getByText("現場コラム").first()).toBeVisible();
   await expect(page.getByText("アンテナ設計の次の一手")).toBeVisible();
   await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
   await page.getByRole("button", { name: /ステージ1 RF/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
 });
@@ -847,7 +847,7 @@ test("RF learning quest clears a wrong answer when the stage is clicked again", 
 
   await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
 });
 
 test("RF learning quest keeps seeded choices stable until an answer is shown", async ({ page }) => {
@@ -943,7 +943,7 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
 
   await expect(page.getByText("レベルアップ")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
-  await expect(page.getByText("5/1000").first()).toBeVisible();
+  await expect(page.getByText("5/1060").first()).toBeVisible();
 });
 
 test("noise floor tool derives LoRa SF12 sensitivity and links to the link budget", async ({ page }) => {

@@ -177,7 +177,7 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
                     className="inline-flex items-center gap-1 rounded-full border border-staf/40 bg-white px-3 py-1.5 text-xs font-bold text-staf-dark transition hover:bg-staf-light focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                   >
                     <Wand2 aria-hidden="true" className="h-3.5 w-3.5" />
-                    {chip.label}
+                    クリックで適用: {chip.label}
                   </button>
                 ) : (
                   <span

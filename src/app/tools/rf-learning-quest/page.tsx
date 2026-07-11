@@ -5,7 +5,7 @@ import { RfLearningQuestClient } from "./components/RfLearningQuestClient";
 
 const title = "アンテナ設計RPG学習クエスト｜VSWR・放射効率・実装レビューを学ぶ｜スタッフ株式会社";
 const description =
-  "入門・初心者・見習い・実務者・玄人・研究者に、本質を掘り下げる探究を加えた7モード合計1000問。アンテナ構造、波長、VSWR、放射効率、筐体実装、無線方式（Sigfox/ELTRES/LTE-M/NB-IoT/LoRa）やLTE/5Gバンド、基本IoT実務、最新IoT伝搬研究に加え、『なぜ電波は飛ぶのか』という物理の本質まで、RPG形式で楽しみながらメーカーの設計レビュー目線で学べるページです。";
+  "入門・初心者・見習い・実務者・玄人・研究者に、本質を掘り下げる探究を加えた7モード合計1060問。アンテナ構造、波長、VSWR、放射効率、筐体実装、無線方式（Sigfox/ELTRES/LTE-M/NB-IoT/LoRa）やLTE/5Gバンド、基本IoT実務、最新IoT伝搬研究に加え、『なぜ電波は飛ぶのか』という物理の本質まで、RPG形式で楽しみながらメーカーの設計レビュー目線で学べるページです。";
 const keywords = [
   "アンテナ 設計 学習",
   "アンテナ 選定",

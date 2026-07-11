@@ -325,7 +325,7 @@ export const tools: ToolEntry[] = [
   {
     "slug": "rf-learning-quest",
     "name": "RF学習クエスト",
-    "tagline": "1000問のアンテナ設計RPG",
+    "tagline": "1060問のアンテナ設計RPG",
     "icon": "book",
     "category": "learning"
   },
