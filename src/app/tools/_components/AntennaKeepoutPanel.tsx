@@ -390,14 +390,14 @@ export function AntennaKeepoutPanel() {
               {KEEPOUT_SOURCES.map((source) => source.label.split(",")[0]).join("・")}
               ）の代表値を丸めた目安で、採用する製品のデータシート指定が優先です。
               筐体・電池・ネジなど基板外の近接物の影響は含みません。
-              筐体込みの配置評価は
+              建物・筐体込みの実測評価は
               <a
                 href={CONTACT_URL}
                 className="mx-0.5 font-semibold text-staf-dark underline decoration-staf/40 underline-offset-2 hover:text-staf"
               >
-                実機評価のご相談
+                技術相談窓口
               </a>
-              をご利用ください。
+              へどうぞ。
             </p>
           </Callout>
         </div>
