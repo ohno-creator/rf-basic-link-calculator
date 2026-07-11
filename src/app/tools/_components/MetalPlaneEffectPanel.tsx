@@ -359,71 +359,72 @@ export function MetalPlaneEffectPanel() {
 
   return (
     <>
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
-        <Card as="section" padding="lg">
-          <h2 className="text-base font-bold text-slate-950">入力条件</h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            金属面の手前に置いたアンテナは、面の奥に「逆相の鏡像アンテナ」ができたのと等価になります。
-            本物と鏡像の電波が干渉し、離隔 d によって強め合ったり打ち消し合ったりします。
-            周波数と、金属面までの距離を入れてください。
-          </p>
-
-          <div className="mt-4">
-            <p className="text-xs font-semibold text-slate-500">
-              周波数プリセット（クリックで最適離隔 λ/4 にも自動セット）
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,4.5fr)_minmax(0,5.5fr)] lg:items-start">
+        {/* 左カラム：入力条件と結果・早見表 */}
+        <div className="space-y-4">
+          <Card as="section" padding="lg">
+            <h2 className="text-base font-bold text-slate-950">入力条件</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              金属面の手前に置いたアンテナは、面の奥に「逆相の鏡像アンテナ」ができたのと等価になります。
+              本物と鏡像の電波が干渉し、離隔 d によって強め合ったり打ち消し合ったりします。
+              周波数と、金属面までの距離を入れてください。
             </p>
-            <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="周波数プリセット">
-              {FREQUENCY_PRESETS.map((preset) => (
-                <button
-                  key={preset.mhz}
-                  type="button"
-                  className={chipClass(frequencyMHz === preset.mhz)}
-                  onClick={() => applyFrequency(preset.mhz)}
-                >
-                  {preset.label}
-                </button>
-              ))}
+
+            <div className="mt-4">
+              <p className="text-xs font-semibold text-slate-500">
+                周波数プリセット（クリックで最適離隔 λ/4 にも自動セット）
+              </p>
+              <div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="周波数プリセット">
+                {FREQUENCY_PRESETS.map((preset) => (
+                  <button
+                    key={preset.mhz}
+                    type="button"
+                    className={chipClass(frequencyMHz === preset.mhz)}
+                    onClick={() => applyFrequency(preset.mhz)}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
+              </div>
             </div>
-          </div>
 
-          <div className="mt-5 space-y-4">
-            <Field
-              id="metalFrequency"
-              label="周波数"
-              unit="MHz"
-              value={frequencyMHz}
-              min={1}
-              step={10}
-              emptyBehavior="preserve"
-              onChange={setFrequencyMHz}
-              help="波長 λ を決めます。金属面の効果は距離そのものではなく、波長に対する比 d/λ で決まるため、周波数が変わると最適離隔（λ/4）も変わります。"
-              example="920"
-              error={frequencyError}
-            />
-            <Field
-              id="metalDistance"
-              label="金属面までの距離 d"
-              unit="mm"
-              value={distanceMm}
-              min={0}
-              max={sliderMaxMm}
-              step={0.5}
-              showSlider
-              emptyBehavior="preserve"
-              onChange={setDistanceMm}
-              help="アンテナの導体面から金属板までの離隔です。スライダーは1波長ぶん（d/λ=0〜1）を動きます。λ/4で+6dBのピーク、密着（0）とλ/2で深く落ち込みます。"
-              example={Number.isFinite(quarterMm) ? formatNumber(quarterMm, 1) : "81.5"}
-              error={distanceError}
-            />
-          </div>
+            <div className="mt-5 space-y-4">
+              <Field
+                id="metalFrequency"
+                label="周波数"
+                unit="MHz"
+                value={frequencyMHz}
+                min={1}
+                step={10}
+                emptyBehavior="preserve"
+                onChange={setFrequencyMHz}
+                help="波長 λ を決めます。金属面の効果は距離そのものではなく、波長に対する比 d/λ で決まるため、周波数が変わると最適離隔（λ/4）も変わります。"
+                example="920"
+                error={frequencyError}
+              />
+              <Field
+                id="metalDistance"
+                label="金属面までの距離 d"
+                unit="mm"
+                value={distanceMm}
+                min={0}
+                max={sliderMaxMm}
+                step={0.5}
+                showSlider
+                emptyBehavior="preserve"
+                onChange={setDistanceMm}
+                help="アンテナの導体面から金属板までの離隔です。スライダーは1波長ぶん（d/λ=0〜1）を動きます。λ/4で+6dBのピーク、密着（0）とλ/2で深く落ち込みます。"
+                example={Number.isFinite(quarterMm) ? formatNumber(quarterMm, 1) : "81.5"}
+                error={distanceError}
+              />
+            </div>
 
-          <p className="mt-4 text-xs leading-relaxed text-slate-500">
-            前提: 面はアンテナに平行な波長オーダー以上の完全導体平板、正面（板側ブロードサイド）方向の
-            理想値です。有限板ではエッジ回折で深いヌルは −15〜−25dB 程度に埋まり、ピークもやや下がります。
-          </p>
-        </Card>
+            <p className="mt-4 text-xs leading-relaxed text-slate-500">
+              前提: 面はアンテナに平行な波長オーダー以上の完全導体平板、正面（板側ブロードサイド）方向の
+              理想値です。有限板ではエッジ回折で深いヌルは −15〜−25dB 程度に埋まり、ピークもやや下がります。
+            </p>
+          </Card>
 
-        <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div id="metal-plane-effect-primary-result">
             <ResultBar primary={primary} />
           </div>
@@ -472,35 +473,36 @@ export function MetalPlaneEffectPanel() {
             </p>
           </Card>
         </div>
-      </section>
 
-      <div className="mt-6">
-        <ChartFrame
-          eyebrow="幾何ミニ図＋ΔGカーブ"
-          title="金属面までの距離と利得変化"
-          description="上段は「アンテナ｜←d→｜金属板｜鏡像（逆相）」の幾何、下段は横軸 d/λ の利得変化カーブです。入力に連動し、λ/4=+6dBのピークと、密着・λ/2の深いヌルを現在点マーカーで確認できます。"
-          exportName="metal-plane-effect-diagram"
-          caption={
-            result
-              ? `条件: ${formatNumber(frequencyMHz)}MHz（λ=${formatNumber(wavelengthMm, 1)}mm）／ d=${formatNumber(distanceMm, 1)}mm（d/λ=${formatNumber(result.distanceLambda, 3)}）─ 利得変化 ${formatGainValue(result.gainChangeDb)}dB。ヌル（d=0・λ/2）は理論上 −∞、表示は ≤${FLOOR}dB。実機は有限板・エッジ回折で −15〜−25dB 程度に底打ちします。`
-              : "入力値を確認してください。"
-          }
-        >
-          {result ? (
-            <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-              <MetalPlaneDiagram
-                distanceLambda={result.distanceLambda}
-                distanceMm={distanceMm}
-                gainChangeDb={result.gainChangeDb}
-              />
-            </div>
-          ) : (
-            <p className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
-              入力値を確認すると幾何図とΔGカーブが表示されます。
-            </p>
-          )}
-        </ChartFrame>
-      </div>
+        {/* 右カラム：幾何ミニ図と利得カーブ（スクロール追従） */}
+        <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
+          <ChartFrame
+            eyebrow="幾何ミニ図＋ΔGカーブ"
+            title="金属面までの距離と利得変化"
+            description="上段は「アンテナ｜←d→｜金属板｜鏡像（逆相）」の幾何、下段は横軸 d/λ の利得変化カーブです。入力に連動し、λ/4=+6dBのピークと、密着・λ/2の深いヌルを現在点マーカーで確認できます。"
+            exportName="metal-plane-effect-diagram"
+            caption={
+              result
+                ? `条件: ${formatNumber(frequencyMHz)}MHz（λ=${formatNumber(wavelengthMm, 1)}mm）／ d=${formatNumber(distanceMm, 1)}mm（d/λ=${formatNumber(result.distanceLambda, 3)}）─ 利得変化 ${formatGainValue(result.gainChangeDb)}dB。ヌル（d=0・λ/2）は理論上 −∞、表示は ≤${FLOOR}dB。実機は有限板・エッジ回折で −15〜−25dB 程度に底打ちします。`
+                : "入力値を確認してください。"
+            }
+          >
+            {result ? (
+              <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+                <MetalPlaneDiagram
+                  distanceLambda={result.distanceLambda}
+                  distanceMm={distanceMm}
+                  gainChangeDb={result.gainChangeDb}
+                />
+              </div>
+            ) : (
+              <p className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">
+                入力値を確認すると幾何図とΔGカーブが表示されます。
+              </p>
+            )}
+          </ChartFrame>
+        </div>
+      </section>
 
       <div className="mt-6">
         <FormulaExplanationCard
