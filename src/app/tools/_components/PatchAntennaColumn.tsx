@@ -42,7 +42,7 @@ export function PatchAntennaColumn({
         </div>
         <details className="mt-4 rounded-lg border border-sky-200 bg-white/70 p-4">
           <summary className="cursor-pointer text-sm font-semibold text-sky-900">深掘り（式・適用条件・出典）</summary>
-          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80">
+          <div className="mt-3 space-y-2 text-xs leading-relaxed text-sky-950/80 break-words">
             <p>
               W = c₀/(2f₀)√(2/(εr+1))、εeff = (εr+1)/2 + (εr-1)/2·(1+12h/W)<sup>-1/2</sup>。
               端部補正 ΔL = 0.412h·((εeff+0.3)(W/h+0.264))/((εeff-0.258)(W/h+0.8)) を使い、

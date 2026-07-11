@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   FULL_LOAD_RSRQ_DB,
   fullLoadCorrectionDb,
+  judgeCellularSignal,
   LTE_RESOURCE_BLOCKS,
   resourceBlocksForLteBandwidthMhz,
   rsrpFromRssi,
@@ -11,6 +12,7 @@ import {
   sinrFromRsrq,
   SUBCARRIERS_PER_RESOURCE_BLOCK
 } from "@/lib/rf/signalMetrics";
+import type { CellularMode } from "@/data/cellularSignalBands";
 import { RfError } from "@/lib/rf/errors";
 
 describe("signalMetrics（G15・RSSI/RSRP/RSRQ/SINR変換）", () => {
@@ -90,5 +92,80 @@ describe("signalMetrics（G15・RSSI/RSRP/RSRQ/SINR変換）", () => {
     expect(() => fullLoadCorrectionDb(Number.NaN)).toThrowError(RfError);
     expect(() => sinrFromRsrq(Number.NaN)).toThrowError(RfError);
     expect(() => rsrqFromSinr(Number.NaN)).toThrowError(RfError);
+  });
+});
+
+describe("judgeCellularSignal（G15判定強化・LTE-M/NB-IoT良否バンド）", () => {
+  it("LTE-M: RSRP −85dBm → good（−90〜−80 の帯）", () => {
+    const judged = judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85 });
+    expect(judged.level).toBe("good");
+    expect(judged.perMetric.rsrp).toBe("good");
+    expect(judged.perMetric.rsrq).toBeUndefined();
+    expect(judged.perMetric.sinr).toBeUndefined();
+  });
+
+  it("LTE-M: RSRP −100dBm は fair の下端（poor に入らない）", () => {
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -100 }).level).toBe("fair");
+    // 下限をわずかに割ると poor
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -100.001 }).level).toBe("poor");
+  });
+
+  it("LTE-M: 境界値は上位側の段に入る（−80→excellent／−90→good）", () => {
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -80 }).level).toBe("excellent");
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -90 }).level).toBe("good");
+  });
+
+  it("LTE-M: RSRP −85(good) + SINR −1(poor) → 総合は最悪値の poor", () => {
+    const judged = judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, sinrDb: -1 });
+    expect(judged.perMetric.rsrp).toBe("good");
+    expect(judged.perMetric.sinr).toBe("poor");
+    expect(judged.level).toBe("poor");
+  });
+
+  it("LTE-M: RSRQ 判定（−10→excellent／−12→good／−20→fair／−20.5→poor）", () => {
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, rsrqDb: -10 }).perMetric.rsrq).toBe(
+      "excellent"
+    );
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, rsrqDb: -12 }).perMetric.rsrq).toBe(
+      "good"
+    );
+    expect(judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, rsrqDb: -20 }).perMetric.rsrq).toBe(
+      "fair"
+    );
+    const judged = judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, rsrqDb: -20.5 });
+    expect(judged.perMetric.rsrq).toBe("poor");
+    expect(judged.level).toBe("poor");
+  });
+
+  it("NB-IoT: RSRP −110dBm → fair（−115〜−105 の帯）", () => {
+    const judged = judgeCellularSignal({ mode: "nb-iot", rsrpDbm: -110 });
+    expect(judged.level).toBe("fair");
+    expect(judged.perMetric.rsrp).toBe("fair");
+  });
+
+  it("NB-IoT: SINR 12dB → excellent（RSRP −90dBm も excellent で総合 excellent）", () => {
+    const judged = judgeCellularSignal({ mode: "nb-iot", rsrpDbm: -90, sinrDb: 12 });
+    expect(judged.perMetric.sinr).toBe("excellent");
+    expect(judged.perMetric.rsrp).toBe("excellent");
+    expect(judged.level).toBe("excellent");
+  });
+
+  it("NB-IoT: RSRQ は推奨帯を持たないため判定に含まれない", () => {
+    const judged = judgeCellularSignal({ mode: "nb-iot", rsrpDbm: -90, rsrqDb: -25 });
+    expect(judged.perMetric.rsrq).toBeUndefined();
+    expect(judged.level).toBe("excellent");
+  });
+
+  it("ガード: 非有限の入力・不明モードは RfError", () => {
+    expect(() => judgeCellularSignal({ mode: "lte-m", rsrpDbm: Number.NaN })).toThrowError(RfError);
+    expect(() =>
+      judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, sinrDb: Number.POSITIVE_INFINITY })
+    ).toThrowError(RfError);
+    expect(() =>
+      judgeCellularSignal({ mode: "lte-m", rsrpDbm: -85, rsrqDb: Number.NaN })
+    ).toThrowError(RfError);
+    expect(() =>
+      judgeCellularSignal({ mode: "lte-5g" as unknown as CellularMode, rsrpDbm: -85 })
+    ).toThrowError(RfError);
   });
 });
