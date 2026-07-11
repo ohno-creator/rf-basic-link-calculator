@@ -163,20 +163,50 @@ test.describe("antenna research columns", () => {
           .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
           .toBe(true);
       } catch (error) {
-        // 失敗時にはみ出し要素を特定できるようCIログへ出力する（フォント差でLinuxのみ再現するため）
-        const culprits = await page.evaluate(() => {
-          const limit = document.documentElement.clientWidth + 0.5;
-          const rows: string[] = [];
-          for (const el of Array.from(document.querySelectorAll("*"))) {
+        // 失敗時に「最も右へはみ出した最深要素」と祖先チェーンをCIログへ出力する
+        // （Linuxフォントのみで再現するため、ローカルでは特定できない）
+        const report = await page.evaluate(() => {
+          const doc = document.documentElement;
+          const limit = doc.clientWidth + 0.5;
+          let worst: { el: Element; right: number; width: number } | null = null;
+          for (const el of Array.from(document.querySelectorAll("body *"))) {
             const r = el.getBoundingClientRect();
-            if (r.right > limit && rows.length < 12) {
-              const cls = typeof el.className === "string" ? el.className.slice(0, 70) : "";
-              rows.push(`${el.tagName}.${cls} right=${Math.round(r.right)} text=${(el.textContent || "").slice(0, 30)}`);
+            if (r.right > limit && (!worst || r.right > worst.right)) {
+              worst = { el, right: r.right, width: r.width };
             }
           }
-          return rows;
+          if (!worst) {
+            return { scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth, chain: ["(no element found: margin/transform起因の可能性)"] };
+          }
+          // 最右端に達している最深の子孫まで降りる
+          let node: Element = worst.el;
+          let descended = true;
+          while (descended) {
+            descended = false;
+            for (const child of Array.from(node.children)) {
+              if (child.getBoundingClientRect().right >= worst.right - 0.5) {
+                node = child;
+                descended = true;
+                break;
+              }
+            }
+          }
+          const describe = (el: Element) => {
+            const r = el.getBoundingClientRect();
+            const cs = getComputedStyle(el);
+            const cls = typeof el.className === "string" ? el.className.slice(0, 60) : "";
+            const tid = el.getAttribute("data-testid");
+            return `${el.tagName}${tid ? `[${tid}]` : ""}.${cls} w=${Math.round(r.width)} right=${Math.round(r.right)} minW=${cs.minWidth} ws=${cs.whiteSpace}`;
+          };
+          const chain: string[] = [`deepest text="${(node.textContent || "").slice(0, 60)}"`];
+          let cur: Element | null = node;
+          while (cur && cur !== document.body) {
+            chain.push(describe(cur));
+            cur = cur.parentElement;
+          }
+          return { scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth, chain };
         });
-        console.log(`[overflow:${slug}] scroll>${await page.evaluate(() => document.documentElement.clientWidth)}px\n${culprits.join("\n")}`);
+        console.log(`[overflow:${slug}] scrollWidth=${report.scrollWidth} clientWidth=${report.clientWidth}\n${report.chain.join("\n")}`);
         throw error;
       }
       const column = page.getByTestId(`${slug.replace("-dimensions", "")}-column`);
