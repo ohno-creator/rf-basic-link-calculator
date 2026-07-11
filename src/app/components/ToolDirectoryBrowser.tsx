@@ -133,7 +133,18 @@ export function ToolDirectoryBrowser() {
   };
 
   return (
-    <div id="tools" className="scroll-mt-24">
+    <section id="tools" aria-labelledby="all-tools-title" className="scroll-mt-24">
+      <div className="mx-auto max-w-6xl px-6 pb-5">
+        <p className="text-sm font-semibold text-staf-dark">ツール一覧</p>
+        <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <h2 id="all-tools-title" className="text-2xl font-bold tracking-tight text-slate-950">
+            すべての計算ツールから探す
+          </h2>
+          <p className="max-w-xl text-sm leading-relaxed text-slate-600">
+            名前が分かる場合は検索、扱いたい分野が決まっている場合はカテゴリで絞り込めます。
+          </p>
+        </div>
+      </div>
       {/* 検索＋カテゴリ絞り込みバー: スクロール中も操作できるよう sticky（ヘッダー直下に吸着） */}
       <div className="sticky top-[57px] z-30 border-y border-slate-200/70 bg-slate-50/85 backdrop-blur supports-[backdrop-filter]:bg-slate-50/70">
       <div className="mx-auto max-w-6xl px-6 py-3">
@@ -286,6 +297,6 @@ export function ToolDirectoryBrowser() {
           })}
         </div>
       )}
-    </div>
+    </section>
   );
 }

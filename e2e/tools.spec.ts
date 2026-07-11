@@ -7,12 +7,31 @@ test.describe("tool hub", () => {
   test("home lists every tool and links to its page", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: "無線設計の計算を、ひとつずつ。" })
+      page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })
     ).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "やりたいことに沿って、上から順に確認" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "すべての計算ツールから探す" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "アンテナを実装したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "通信不良を切り分けたい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "基礎から理解したい" })).toBeVisible();
 
     for (const tool of toolDirectory) {
       await expect(page.locator(`a[href*="${tool.href}"]`).first()).toBeVisible();
     }
+  });
+
+  test("home keeps its purpose-first structure readable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/");
+
+    await expect(page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
+    await page.locator("#purpose-routes").scrollIntoViewIfNeeded();
+    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });
 
