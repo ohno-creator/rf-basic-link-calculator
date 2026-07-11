@@ -1,6 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowUpRight, Calculator, Compass, RadioTower, Waves } from "lucide-react";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  BookOpenCheck,
+  Bug,
+  CheckCircle2,
+  CircuitBoard,
+  RadioTower
+} from "lucide-react";
 import { ButtonLink, buttonClasses } from "@/components/Button";
 import { ToolLayout } from "@/components/ToolLayout";
 import { CONTACT_URL } from "@/lib/rf/presets";
@@ -15,121 +23,150 @@ export const metadata: Metadata = {
     "周波数・損失・整合・伝搬など、無線設計でよく使う基礎計算を1ツール1ページでまとめたツール集です。初心者でも目的から選べ、入力するとその場で図と意味がわかります。スタッフ株式会社。"
 };
 
-const beginnerPaths = [
+const purposeRoutes = [
   {
-    label: "まず通信が届くか知りたい",
-    title: "かんたんリンク計算から始める",
-    body: "送信電力、距離、受信感度だけで、まず通信余裕がどれくらいあるかを見ます。",
-    href: "/tools/simple-link-budget",
-    icon: Compass
+    label: "通信成立性を見積もる",
+    title: "電波が届くか確認したい",
+    body: "通信距離と余裕を計算し、壁やばらつきまで順番に追加します。",
+    icon: RadioTower,
+    steps: [
+      { label: "リンクバジェットを計算", href: "/tools/rf-basic-link-calculator" },
+      { label: "壁・建材の損失を追加", href: "/tools/wall-penetration" },
+      { label: "必要な信頼性マージンを確認", href: "/tools/shadowing-margin" }
+    ]
   },
   {
-    label: "dBやdBmが分からない",
-    title: "単位の感覚を先につかむ",
-    body: "+3dBで約2倍、dBmは電力そのもの。結果を読むためのものさしを先に作れます。",
-    href: "/tools/db-feel",
-    icon: Calculator
+    label: "基板・筐体へ組み込む",
+    title: "アンテナを実装したい",
+    body: "波長から必要寸法をつかみ、GNDとアンテナ周囲の空き地を確認します。",
+    icon: CircuitBoard,
+    steps: [
+      { label: "周波数から波長を確認", href: "/tools/frequency-wavelength" },
+      { label: "GNDプレーン寸法を確認", href: "/tools/ground-plane-size" },
+      { label: "キープアウト領域を確認", href: "/tools/antenna-keepout" }
+    ]
   },
   {
-    label: "距離や障害物が不安",
-    title: "電波が弱くなる理由を見る",
-    body: "自由空間損失、フレネルゾーン、伝搬モデルで、距離・見通し・環境の効き方を確認します。",
-    href: "/tools/free-space-loss",
-    icon: Waves
+    label: "測定値から原因を探す",
+    title: "通信不良を切り分けたい",
+    body: "受信品質、ノイズ、筐体による離調を分けて、疑う順番を整理します。",
+    icon: Bug,
+    steps: [
+      { label: "LTEの受信品質を読む", href: "/tools/lte-signal-metrics" },
+      { label: "受信感度の劣化を確認", href: "/tools/desense" },
+      { label: "筐体・近接物の離調を確認", href: "/tools/detuning-estimator" }
+    ]
   },
   {
-    label: "アンテナの大きさを決めたい",
-    title: "波長からサイズ感を見る",
-    body: "周波数から波長を出し、アンテナ長、複数アンテナ間隔、基板アンテナ寸法の入口にします。",
-    href: "/tools/frequency-wavelength",
-    icon: RadioTower
+    label: "用語と判断軸を学ぶ",
+    title: "基礎から理解したい",
+    body: "dBの感覚から始め、問題形式で無線設計の判断を身につけます。",
+    icon: BookOpenCheck,
+    steps: [
+      { label: "dBの増減を体感", href: "/tools/db-feel" },
+      { label: "dBmと電力を変換", href: "/tools/dbm-converter" },
+      { label: "RF学習クエストへ進む", href: "/tools/rf-learning-quest" }
+    ]
   }
 ];
 
 export default function HomePage() {
   return (
     <ToolLayout>
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pb-10 pt-16 sm:pb-12 sm:pt-24">
+      <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pb-10 pt-12 sm:pb-12 sm:pt-20">
         {/* 計測方眼（v4-3: 主題を語る極薄モチーフ。線は不透明度4%・印刷非表示・読み上げ対象外） */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(90%_80%_at_30%_20%,black,transparent)] print:hidden"
         />
-        <div className="relative">
-          <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
-          <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
-            無線設計の計算を、ひとつずつ。
-          </h1>
-          <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-500">
-            周波数、損失、整合、伝搬。専門用語に慣れていなくても、目的から選び、入力し、結果の意味まで追えるようにした基礎計算ツール集です。
-          </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <ButtonLink href="/tools/rf-basic-link-calculator" variant="primary">
-              リンクバジェット診断をはじめる
-              <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
-            </ButtonLink>
-            <a href="#tools" className={buttonClasses("secondary")}>
-              全{toolDirectory.length}ツールを見る
-            </a>
-          </div>
-          {/* トラストストリップ（v4-7: 運営者の実在とプルーフを1行で。fold予算を守るためtext-sm×1行） */}
-          <p className="mt-6 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-slate-500">
-            <span>
-              運営:{" "}
-              <a
-                href="https://www.staf.co.jp/"
-                className="rounded font-semibold text-slate-700 transition hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-              >
-                スタッフ株式会社
+        <div className="relative grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+          <div>
+            <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
+            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
+              無線設計を、目的から迷わず計算。
+            </h1>
+            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+              通信が届くか、アンテナをどう実装するか、なぜ通信が不安定なのか。知りたいことから計算の順番を選べます。
+            </p>
+            <div className="mt-7 flex flex-wrap items-center gap-3">
+              <a href="#purpose-routes" className={buttonClasses("primary")}>
+                目的から選ぶ
+                <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </a>
-              （アンテナ設計・実機評価の受託）
-            </span>
-            <span aria-hidden="true">・</span>
-            <span>全{toolDirectory.length}ツール無料・登録不要</span>
-            <span aria-hidden="true">・</span>
-            <span>式と適用条件を明示</span>
-          </p>
-        </div>
-      </section>
-
-      <section className="mx-auto max-w-6xl px-6 pb-12">
-        <div className="border-y border-slate-200 bg-slate-50/80 px-4 py-6 sm:px-6">
-          <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-staf-dark">無線に詳しくない方へ</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-                ツール名ではなく、知りたいことから選べます
-              </h2>
+              <a href="#tools" className={buttonClasses("secondary")}>
+                全{toolDirectory.length}ツールを検索
+              </a>
             </div>
-            <p className="max-w-2xl text-sm leading-relaxed text-slate-600">
-              迷ったら左から順番に見てください。計算値そのものより、どの入力が結果を悪くするかをつかむのが近道です。
+            <p className="mt-6 text-sm text-slate-500">
+              全{toolDirectory.length}ツール無料・登録不要 ／ 数式・単位・適用条件を明示
             </p>
           </div>
 
-          <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
-            {beginnerPaths.map((path) => {
-              const Icon = path.icon;
-              return (
-                <Link
-                  key={path.href}
-                  href={path.href}
-                  className="group flex min-h-full flex-col rounded-lg border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-staf/40 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-md bg-gradient-to-br from-staf/15 to-staf/5 text-staf-dark ring-1 ring-inset ring-staf/15 transition group-hover:from-staf group-hover:to-staf-dark group-hover:text-white">
-                      <Icon aria-hidden="true" strokeWidth={1.75} className="h-5 w-5" />
-                    </span>
-                    <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-staf-dark opacity-0 transition group-hover:opacity-100" />
-                  </div>
-                  <p className="mt-4 text-xs font-semibold text-staf-dark">{path.label}</p>
-                  <h3 className="mt-1 text-base font-bold leading-snug text-slate-950 group-hover:text-staf-dark">
-                    {path.title}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{path.body}</p>
-                </Link>
-              );
-            })}
+          <aside aria-labelledby="start-here-title" className="rounded-2xl border border-staf/20 bg-white p-5 shadow-soft sm:p-6">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-staf-dark">Start here</p>
+            <h2 id="start-here-title" className="mt-2 text-2xl font-bold text-slate-950">まずは総合診断</h2>
+            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+              周波数・距離・送信電力・アンテナ利得・損失から、受信電力とリンクマージンをまとめて確認します。
+            </p>
+            <ul className="mt-4 grid gap-2 text-sm text-slate-700">
+              {["代表条件からすぐ試せる", "滝グラフを見ながら調整できる", "条件をURLで共有できる"].map((item) => (
+                <li key={item} className="flex items-center gap-2">
+                  <CheckCircle2 aria-hidden="true" className="h-4 w-4 shrink-0 text-emerald-600" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+            <ButtonLink href="/tools/rf-basic-link-calculator" variant="primary" className="mt-5 w-full justify-center">
+              リンクバジェット診断を開く
+              <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
+            </ButtonLink>
+            <Link href="/tools/simple-link-budget" className="mt-3 block text-center text-xs font-semibold text-staf-dark hover:underline">
+              もっと簡単な5項目だけの計算はこちら
+            </Link>
+          </aside>
+        </div>
+      </section>
+
+      <section id="purpose-routes" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-14">
+        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="text-sm font-semibold text-staf-dark">目的別ガイド</p>
+            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">やりたいことに沿って、上から順に確認</h2>
           </div>
+          <p className="max-w-xl text-sm leading-relaxed text-slate-600">
+            すべて使う必要はありません。今の課題に近いルートを1つ選び、必要なところまで進めます。
+          </p>
+        </div>
+
+        <div className="mt-5 grid gap-4 md:grid-cols-2">
+          {purposeRoutes.map((route) => {
+            const Icon = route.icon;
+            return (
+              <article key={route.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-card">
+                <div className="flex items-start gap-3">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-staf-light text-staf-dark">
+                    <Icon aria-hidden="true" className="h-5 w-5" />
+                  </span>
+                  <div>
+                    <p className="text-xs font-semibold text-staf-dark">{route.label}</p>
+                    <h3 className="mt-1 text-lg font-bold text-slate-950">{route.title}</h3>
+                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{route.body}</p>
+                  </div>
+                </div>
+                <ol className="mt-4 grid gap-2">
+                  {route.steps.map((step, index) => (
+                    <li key={step.href}>
+                      <Link href={step.href} className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-staf/40 hover:bg-staf-light/60">
+                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-staf-dark ring-1 ring-slate-200">{index + 1}</span>
+                        <span className="min-w-0 flex-1 text-sm font-semibold text-slate-700 group-hover:text-staf-dark">{step.label}</span>
+                        <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-staf-dark" />
+                      </Link>
+                    </li>
+                  ))}
+                </ol>
+              </article>
+            );
+          })}
         </div>
       </section>
 
