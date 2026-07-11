@@ -185,7 +185,7 @@ export function CoaxCableLossPanel() {
             </div>
           ) : null}
 
-          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="slate">
             <h3 className="text-sm font-semibold text-slate-950">使い方チュートリアル</h3>
             <div className="mt-3 grid gap-4 md:grid-cols-2">
               <ol className="space-y-2 text-sm leading-relaxed text-slate-600">

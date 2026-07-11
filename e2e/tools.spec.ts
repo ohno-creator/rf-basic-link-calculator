@@ -811,7 +811,7 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(
     page.getByRole("heading", { level: 1, name: "クエストで、アンテナ設計の判断を一つずつ固める" })
   ).toBeVisible();
-  await expect(page.getByText("7モードで合計1000問")).toBeVisible();
+  await expect(page.getByText("7モードで合計1060問")).toBeVisible();
   await expect(page.getByText("ことばカード図鑑")).toBeVisible();
   await expect(page.getByRole("link", { name: /アンテナ製品を見る/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /周波数からアンテナを探す/ }).first()).toBeVisible();
@@ -827,10 +827,10 @@ test("RF learning quest answers immediately and saves progress", async ({ page }
   await expect(page.getByText("現場コラム").first()).toBeVisible();
   await expect(page.getByText("アンテナ設計の次の一手")).toBeVisible();
   await expect(page.getByRole("button", { name: "次の問題へ" })).toBeVisible();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
 
   await page.reload();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
   await page.getByRole("button", { name: /ステージ1 RF/ }).click();
   await expect(page.getByText("攻略済み").first()).toBeVisible();
 });
@@ -847,7 +847,7 @@ test("RF learning quest clears a wrong answer when the stage is clicked again", 
 
   await page.getByRole("button", { name: "電波・高周波を扱う技術分野" }).click();
   await expect(page.getByText("正解").first()).toBeVisible();
-  await expect(page.getByText("1/1000").first()).toBeVisible();
+  await expect(page.getByText("1/1060").first()).toBeVisible();
 });
 
 test("RF learning quest keeps seeded choices stable until an answer is shown", async ({ page }) => {
@@ -943,7 +943,7 @@ test("RF learning quest shows a level-up screen after five clears", async ({ pag
 
   await expect(page.getByText("レベルアップ")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Lv.2 初学者" })).toBeVisible();
-  await expect(page.getByText("5/1000").first()).toBeVisible();
+  await expect(page.getByText("5/1060").first()).toBeVisible();
 });
 
 test("noise floor tool derives LoRa SF12 sensitivity and links to the link budget", async ({ page }) => {
@@ -1278,4 +1278,89 @@ test("db family links dBi to dBd and validates the addition checker", async ({ p
   await expect(checker).toHaveAttribute("data-valid", "false");
   await expect(checker).toContainText("足し算できません");
   await expect(calculator.getByTestId("primary-result")).toContainText("20.8");
+});
+
+test("cellular band map matches bands to the frequency and reacts to input", async ({ page }) => {
+  await page.goto("/tools/cellular-band-map/");
+  const calculator = page.getByTestId("tool-calculator");
+  const primary = calculator.getByTestId("primary-result");
+  const map = calculator.getByTestId("cellular-band-map");
+
+  // 既定 900MHz → B8 の UL帯（880-915MHz）のみ該当（findBandsByFrequency で検算した確定値）
+  await expect(primary).toContainText("1");
+  await expect(primary).toContainText("バンド");
+  await expect(map).toHaveAttribute("data-hit-bands", "B8");
+  await expect(map).toHaveAttribute("data-selected-band", "B8");
+  await expect(calculator.getByTestId("band-detail")).toContainText("880");
+
+  // 3500MHz に変更 → TDDが重なる B42・n77・n78 の3バンドが該当し、主結果も3に変わる
+  await calculator.locator("#bandMapFrequency").fill("3500");
+  await expect(map).toHaveAttribute("data-hit-bands", "B42,n77,n78");
+  await expect(primary).toContainText("3");
+
+  // 該当バンドのチップから n78 を選択 → 地図の選択状態と詳細カードが n78（TDD 3300-3800MHz）へ切り替わる
+  await calculator.getByRole("button", { name: "n78（TDD）" }).click();
+  await expect(map).toHaveAttribute("data-selected-band", "n78");
+  const detail = calculator.getByTestId("band-detail");
+  await expect(detail).toHaveAttribute("data-band", "n78");
+  await expect(detail).toContainText("3300");
+});
+
+test.describe("OTA implementation loss / desense analysis", () => {
+  test("ota-implementation-loss separates desense and reacts to inputs", async ({ page }) => {
+    await page.goto("/tools/ota-implementation-loss/");
+    const calculator = page.getByTestId("tool-calculator");
+    const primary = calculator.getByTestId("primary-result");
+    const diagram = calculator.getByTestId("ota-desense-diagram");
+
+    // 既定（LTE-M B1の例: Pc23/Sc-108/η-3/TRP19.5/TIS-102）
+    // → trpGap=0.5, tisGap=3.0, デセンス=2.5dB（要注意）
+    await expect(primary).toContainText("2.5");
+    await expect(primary).toContainText("要注意");
+    await expect(diagram).toHaveAttribute("data-desense", "2.50");
+
+    // TISを-101へ悪化 → tisGap=4.0, デセンス=3.5dB（ノイジー）
+    await calculator.locator("#otaTis").fill("-101");
+    await expect(primary).toContainText("3.5");
+    await expect(primary).toContainText("ノイジー");
+    await expect(diagram).toHaveAttribute("data-desense", "3.50");
+
+    // TRPも悪化（19.5→19）→ trpGap=1.0, デセンス=3.0dB（境界はcaution側）
+    await calculator.locator("#otaTrp").fill("19");
+    await expect(diagram).toHaveAttribute("data-desense", "3.00");
+    await expect(primary).toContainText("要注意");
+
+    // Band切替（B8: Pc23/Sc-108/η-4/TRP18/TIS-99）→ trpGap=1.0, tisGap=5.0, デセンス=4.0dB
+    await calculator.getByRole("button", { name: "LTE-M B8（例）", exact: true }).click();
+    await expect(primary).toContainText("4.0");
+    await expect(diagram).toHaveAttribute("data-desense", "4.00");
+
+    // Band行の追加（中立サンプル: 全ギャップ0 → クリーン）
+    await calculator.getByRole("button", { name: "＋ Band行を追加" }).click();
+    await expect(primary).toContainText("0.0");
+    await expect(primary).toContainText("クリーン");
+    await expect(diagram).toHaveAttribute("data-desense", "0.00");
+
+    // Band行の削除（追加した行を消すとB1へ…ではなく先頭行が選択される）
+    await calculator.getByRole("button", { name: "追加Band 4を削除" }).click();
+    await expect(primary).toContainText("デセンス推定値（LTE-M B1（例））");
+  });
+});
+
+test("diffraction shadow compares bands and reacts to inputs", async ({ page }) => {
+  await page.goto("/tools/diffraction-shadow/");
+  const calculator = page.getByTestId("tool-calculator");
+  const primary = calculator.getByTestId("primary-result");
+  // 既定: ビル20m・d1=d2=1000m・送信10m/受信1.5m → LOS高5.75m・h=14.25m。
+  // 920MHz(λ≈0.3259m)で v≈1.579 → J≈17.2dB（libと同式から検算した確定値）
+  await expect(primary).toContainText("17.2");
+  // 障害物を5m（LOSより0.75m下・v≈-0.083）へ → J≈5.3dB に減る
+  await calculator.locator("#diffractionObstacleHeight").fill("5");
+  await expect(primary).toContainText("5.3");
+  // 20mに戻し、バンドチップを150MHzへ切替 → 同じ影でも低周波は損失が小さい（J≈11.4dB）
+  await calculator.locator("#diffractionObstacleHeight").fill("20");
+  await calculator.getByRole("button", { name: "150MHz", exact: true }).click();
+  await expect(primary).toContainText("11.4");
+  // 断面図は選択バンドの損失をdata-loss属性に反映する（入力連動の確認）
+  await expect(calculator.getByTestId("diffraction-shadow-diagram")).toHaveAttribute("data-loss", "11.37");
 });

@@ -67,7 +67,7 @@ type Slider = {
 
 function LabSlider({ id, label, unit, min, max, step, value, onChange }: Slider) {
   return (
-    <div className="rounded-md border border-slate-200 bg-white p-4">
+    <div className="md">
       <div className="flex items-center justify-between gap-2">
         <label htmlFor={id} className="text-sm font-semibold text-slate-950">
           {label}
@@ -143,7 +143,7 @@ export function TwoRayInterferenceLab({
   const formatDistance = (m: number) => (m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${Math.round(m)}m`);
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4">
+    <div className="sm">
       <p className="text-sm font-bold text-slate-950">2波モデル実験室：干渉で波打つ様子を見る</p>
       <p className="mt-1 text-xs leading-relaxed text-slate-600">
         直接波と地面反射波を位相込みで合成（コヒーレント和）した「完全版」と、リンクバジェットで使う「平滑化した包絡線」、基準の「自由空間損失」を重ねています。

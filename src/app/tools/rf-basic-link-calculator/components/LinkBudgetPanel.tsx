@@ -212,7 +212,7 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
               shadow={false}
               className="mt-2 space-y-1.5 text-xs leading-relaxed"
             >
-              <p className="text-slate-700">{selectedPropagationModel.description}</p>
+              <p className="text-slate-600">{selectedPropagationModel.description}</p>
               <p>
                 <span className="font-semibold text-slate-900">向いている：</span>
                 <span className="text-slate-600">{selectedPropagationModel.bestFor}</span>

@@ -218,9 +218,9 @@ const chapterTitles: Record<QuestModeId, string[]> = {
 };
 
 const finalAntennaAchievement = {
-  threshold: 1000,
+  threshold: 1060,
   title: "アンテナ大賢者",
-  description: "全1000問を攻略。用語・設計・最新研究に加え、電波とアンテナの物理の本質まで説明できます。"
+  description: "全1060問を攻略。用語・設計・最新研究に加え、電波とアンテナの物理の本質まで説明できます。"
 };
 
 type ManufacturerWorkflowStep = {
@@ -1750,7 +1750,7 @@ function CertificationPanel({
                 <p className="mt-2 text-sm leading-relaxed text-emerald-900">
                   修了書に記載する氏名と会社名を入力してください。ボタンを押すとブラウザの印刷画面が開くので、保存先でPDFを選べます。
                 </p>
-                <label className="mt-4 block text-sm font-bold text-slate-700">
+                <label className="mt-4 block text-sm font-semibold text-slate-900">
                   氏名
                   <input
                     value={certificateForm.recipientName}
@@ -1759,7 +1759,7 @@ function CertificationPanel({
                     placeholder="例：山田 太郎"
                   />
                 </label>
-                <label className="mt-3 block text-sm font-bold text-slate-700">
+                <label className="mt-3 block text-sm font-semibold text-slate-900">
                   会社名
                   <input
                     value={certificateForm.companyName}
@@ -1946,7 +1946,7 @@ export function RfLearningQuestClient() {
           title: rankName(afterCount),
           message:
             afterCount === rfQuestLessons.length
-              ? "全1000問を攻略しました。用語・実装・リンク設計・最新研究に加え、探究モードで『なぜそうなるのか』という物理の本質まで腑に落ちた状態です。"
+              ? "全1060問を攻略しました。用語・実装・リンク設計・最新研究に加え、探究モードで『なぜそうなるのか』という物理の本質まで腑に落ちた状態です。"
               : `${afterCount}問クリア。アンテナギルドの称号や未攻略ステージへ進めます。`
         });
       }
@@ -2146,7 +2146,7 @@ export function RfLearningQuestClient() {
               クエストで、アンテナ設計の判断を一つずつ固める
             </h1>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-slate-600">
-              入門、初心者、見習い、実務者、玄人、研究者の6モードに、本質を掘り下げる「探究モード」を加えた7モードで合計1000問。波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究に加え、
+              入門、初心者、見習い、実務者、玄人、研究者の6モードに、本質を掘り下げる「探究モード」を加えた7モードで合計1060問。波長、VSWR、放射効率、GND、筐体、ケーブル、基地局アンテナ、最新研究に加え、
               「なぜ電波は飛ぶのか」「整合と効率は別物」など物理の本質まで、問題ごとに「なぜそう見るか」「実機では何を確認するか」「相談時に何を残すか」を確認しながら進めます。
             </p>
             <div className="mt-4 flex flex-wrap gap-2">

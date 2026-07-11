@@ -19,10 +19,10 @@ const checkpoints = [
 export function NextCheckpoints() {
   return (
     <Card as="section" padding="lg">
-      <h3 className="text-base font-semibold text-slate-950">次に確認すること</h3>
+      <h3 className="text-base font-bold text-slate-950">次に確認すること</h3>
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         {checkpoints.map((checkpoint) => (
-          <div key={checkpoint} className="flex items-start gap-2 text-sm text-slate-700">
+          <div key={checkpoint} className="flex items-start gap-2 text-sm text-slate-600">
             <CheckCircle2 aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-staf-dark" />
             <span>{checkpoint}</span>
           </div>
