@@ -12,11 +12,14 @@ import { resolveLinkBudgetErrors } from "@/lib/linkBudgetErrorMessages";
 import { HataColumn } from "@/app/tools/_components/HataColumn";
 import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
+import { GuidedLinkBudget } from "./GuidedLinkBudget";
 import { LinkBudgetPanel } from "./LinkBudgetPanel";
 import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
 import { ResultDetails } from "./ResultDetails";
 import { ResultHero } from "./ResultHero";
 import { StickyResultSummary } from "./StickyResultSummary";
+
+export type CalculatorMode = "guided" | "expert";
 
 type CalculatorTabsProps = {
   input: LinkBudgetInput;
@@ -24,6 +27,8 @@ type CalculatorTabsProps = {
   onReset: () => void;
   onShare: () => void;
   shareState: ShareState;
+  mode: CalculatorMode;
+  onModeChange: (mode: CalculatorMode) => void;
 };
 
 const RESULT_ANCHOR_ID = "link-budget-result";
@@ -72,7 +77,9 @@ export function CalculatorTabs({
   onInputChange,
   onReset,
   onShare,
-  shareState
+  shareState,
+  mode,
+  onModeChange
 }: CalculatorTabsProps) {
   const [activeSheet, setActiveSheet] = useState<SheetId>("link-budget");
   const errors = useMemo(() => validateLinkBudgetInput(input), [input]);
@@ -99,7 +106,32 @@ export function CalculatorTabs({
         </h2>
       </div>
 
-      <div className="mb-5">
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <div
+          role="group"
+          aria-label="入力モード"
+          className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-card"
+        >
+          {(
+            [
+              { id: "guided", label: "かんたん" },
+              { id: "expert", label: "詳細" }
+            ] as const
+          ).map((option) => (
+            <button
+              key={option.id}
+              type="button"
+              aria-pressed={mode === option.id}
+              data-testid={`calculator-mode-${option.id}`}
+              onClick={() => onModeChange(option.id)}
+              className={`rounded-full px-4 py-1.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                mode === option.id ? "bg-staf text-white" : "text-slate-600 hover:text-staf-dark"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
         <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
       </div>
 
@@ -128,7 +160,16 @@ export function CalculatorTabs({
         </div>
       </div>
 
-      {activeSheet === "link-budget" ? (
+      {activeSheet === "link-budget" && mode === "guided" ? (
+        <GuidedLinkBudget
+          input={input}
+          result={result}
+          onChange={onInputChange}
+          onOpenExpert={() => onModeChange("expert")}
+        />
+      ) : null}
+
+      {activeSheet === "link-budget" && mode === "expert" ? (
         <>
           <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
             <LinkBudgetPanel input={input} errors={errorMessages} onChange={onInputChange} />
@@ -150,11 +191,11 @@ export function CalculatorTabs({
             <ResultDetails input={input} result={result} />
           </div>
         </>
-      ) : (
-        <ResearchDistanceSheet baseInput={input} />
-      )}
+      ) : null}
 
-      {result && activeSheet === "link-budget" ? (
+      {activeSheet === "research-distance" ? <ResearchDistanceSheet baseInput={input} /> : null}
+
+      {result && activeSheet === "link-budget" && mode === "expert" ? (
         <StickyResultSummary result={result} input={input} targetId={RESULT_ANCHOR_ID} />
       ) : null}
 

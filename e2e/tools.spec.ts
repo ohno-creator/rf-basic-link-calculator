@@ -393,6 +393,8 @@ test("coax tool keeps total loss visible beside the inputs", async ({ page }) =>
 
 test("RF calculator switches to the research distance sheet", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
 
   await expect(
@@ -412,6 +414,8 @@ test("RF calculator switches to the research distance sheet", async ({ page }) =
 
 test("RF calculator keeps each number field's intentional empty-value behavior", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
 
   const frequency = page.locator("#frequencyMHz");
@@ -435,6 +439,8 @@ test("RF calculator keeps each number field's intentional empty-value behavior",
 
 test("research distance delays the invalid-frequency banner while typing", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await page.getByRole("tab", { name: /研究ベース距離計算/ }).click();
 
   const researchFrequency = page.locator("#research-frequencyGHz");
@@ -447,6 +453,8 @@ test("research distance delays the invalid-frequency banner while typing", async
 
 test("RF calculator explains that Hata antenna heights are not fixed", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#propagationModel").selectOption("okumura_hata");
   await expect(page.locator("#propagationArea")).toBeVisible();
@@ -465,6 +473,8 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
 
 test("RF calculator shows model assumptions, double-counting guidance, and research column", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
 
   await expect(page.getByRole("img", { name: "リンク計算の2D前提図" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "計算・シミュレーション前提と指定パラメータ" })).toBeVisible();
@@ -482,6 +492,8 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
 
 test("RF calculator diagrams show the two-ray interference lab synced with inputs", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#frequencyMHz").fill("1500");
   await page.locator("#txAntennaHeightM").fill("20");
@@ -498,6 +510,8 @@ test("RF calculator diagrams show the two-ray interference lab synced with input
 
 test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  // 既定は「かんたん」モードのため、全項目を扱うテストは詳細モードへ切り替える
+  await page.getByTestId("calculator-mode-expert").click();
   await page.locator("#propagationModel").selectOption("iot_hata_calibrated");
 
   await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
