@@ -244,7 +244,7 @@ function SpreadExperience() {
           onChange={(event) => setLogDist(Number(event.target.value))}
         />
 
-        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 p-4">
           <div>
             <p className="text-xs font-semibold text-slate-600">受信電力（送信 0 dBm・920 MHz）</p>
             <p className="text-3xl font-bold text-staf-dark" style={{ fontVariantNumeric: "tabular-nums" }}>

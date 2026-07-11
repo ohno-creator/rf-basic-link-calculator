@@ -36,7 +36,7 @@ export function LoraAirtimeColumn() {
       </div>
 
       <Accordion title="SFを上げると、なぜ送信時間が急増する？">
-        <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+        <div className="space-y-3 text-sm leading-relaxed text-slate-600">
           <p>
             LoRaの1シンボル時間は <strong>2^SF / BW</strong> です。SFを1段上げるとシンボルはほぼ2倍長くなり、
             受信感度と引き換えに電池消費・チャネル占有時間・衝突確率が増えます。
@@ -49,7 +49,7 @@ export function LoraAirtimeColumn() {
       </Accordion>
 
       <Accordion title="ARIB判定を読むときの注意">
-        <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+        <div className="space-y-3 text-sm leading-relaxed text-slate-600">
           <p>
             本ツールは、選択した920MHz帯区分の連続送信時間・休止時間・1時間累積時間を照合する設計チェックです。
             周波数、チャネル幅、キャリアセンス方式、無線局種別によって適用条件が変わります。
@@ -62,7 +62,7 @@ export function LoraAirtimeColumn() {
       </Accordion>
 
       <Accordion title="一次資料">
-        <ul className="space-y-2 text-sm leading-relaxed text-slate-700">
+        <ul className="space-y-2 text-sm leading-relaxed text-slate-600">
           <li>
             <a
               href="https://www.semtech.com/products/wireless-rf/lora-connect/sx1276"

@@ -364,7 +364,7 @@ export function LteSignalMetricsPanel() {
             />
           </div>
 
-          <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+          <div className="slate">
             <p className="text-xs font-semibold text-slate-500">この帯域幅での内訳</p>
             <div className="mt-2 grid grid-cols-3 gap-3 text-sm">
               <div>
@@ -441,7 +441,7 @@ export function LteSignalMetricsPanel() {
               )}
             </div>
 
-            <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+            <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-4 text-sm">
               <summary className="cursor-pointer text-xs font-semibold text-slate-600">
                 判定しきい値表（{judgeBand.label}・出典つき）
               </summary>

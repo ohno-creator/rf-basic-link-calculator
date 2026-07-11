@@ -176,7 +176,7 @@ export function ToolDirectoryBrowser() {
               type="button"
               aria-pressed={activeCategory === "all"}
               onClick={() => setActiveCategory("all")}
-              className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+              className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
                 activeCategory === "all"
                   ? "border-staf bg-staf text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
@@ -194,7 +194,7 @@ export function ToolDirectoryBrowser() {
                   type="button"
                   aria-pressed={active}
                   onClick={() => setActiveCategory(active ? "all" : category.id)}
-                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm font-semibold transition ${
+                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
                     active
                       ? "border-staf bg-staf text-white"
                       : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"

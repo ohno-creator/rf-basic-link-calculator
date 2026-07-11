@@ -30,7 +30,7 @@ const animationValues = [posPath, zeroPath, negPath, zeroPath, posPath].join(";"
 
 export function HalfWaveResonanceDiagram() {
   return (
-    <figure className="mt-4 rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <figcaption className="text-sm font-semibold text-slate-950">
         半波長で共振するしくみ（電流の定在波）
       </figcaption>

@@ -61,7 +61,7 @@ export function VswrStandingWaveDiagram({
   const envelopeFillPath = `${envelope} L${X1},${BASE} L${X0},${BASE} Z`;
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <figcaption className="text-sm font-semibold text-slate-950">
           定在波で見るVSWR（電圧の大きさ）

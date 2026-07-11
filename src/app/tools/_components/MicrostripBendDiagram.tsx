@@ -71,7 +71,7 @@ export function MicrostripBendDiagram({
   const e2Y = pcY + cut * dy;
 
   return (
-    <figure className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <figure className="figure">
       <figcaption className="text-sm font-semibold text-slate-950">
         上から見た90°マイター曲げ（角の斜めカット）
       </figcaption>

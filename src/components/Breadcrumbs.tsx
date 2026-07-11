@@ -20,7 +20,7 @@ export function Breadcrumbs() {
 
   return (
     <nav aria-label="パンくず" className="border-b border-slate-200 bg-white/60">
-      <ol className="mx-auto flex max-w-7xl flex-wrap items-center gap-1.5 px-4 py-2.5 text-xs text-slate-500 sm:px-6 lg:px-8">
+      <ol className="mx-auto flex max-w-7xl flex-wrap items-center gap-1.5 px-4 py-2 text-xs text-slate-500 sm:px-6 lg:px-8">
         <li>
           <Link
             href="/"

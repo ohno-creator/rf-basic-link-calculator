@@ -1750,7 +1750,7 @@ function CertificationPanel({
                 <p className="mt-2 text-sm leading-relaxed text-emerald-900">
                   修了書に記載する氏名と会社名を入力してください。ボタンを押すとブラウザの印刷画面が開くので、保存先でPDFを選べます。
                 </p>
-                <label className="mt-4 block text-sm font-bold text-slate-700">
+                <label className="mt-4 block text-sm font-semibold text-slate-900">
                   氏名
                   <input
                     value={certificateForm.recipientName}
@@ -1759,7 +1759,7 @@ function CertificationPanel({
                     placeholder="例：山田 太郎"
                   />
                 </label>
-                <label className="mt-3 block text-sm font-bold text-slate-700">
+                <label className="mt-3 block text-sm font-semibold text-slate-900">
                   会社名
                   <input
                     value={certificateForm.companyName}

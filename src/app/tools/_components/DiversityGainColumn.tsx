@@ -54,14 +54,14 @@ export function DiversityGainColumn() {
       </div>
 
       <Accordion title="選択ダイバーシティとは">
-        <p className="text-sm leading-relaxed text-slate-700">
+        <p className="text-sm leading-relaxed text-slate-600">
           2本の受信レベルを比べ、その瞬間に良い方を選ぶ方式です。独立なレイリーフェージングなら、
           両方が同時に深く落ちる確率が積になるため、1%アウテージ点で約10.2dBの改善が得られます。
         </p>
       </Accordion>
 
       <Accordion title="相関が高いと効果が減る">
-        <div className="space-y-3 text-sm leading-relaxed text-slate-700">
+        <div className="space-y-3 text-sm leading-relaxed text-slate-600">
           <p>
             2本が同じ場所・同じ偏波・同じパターンを見ると同時に落ちやすくなります。本ツールのρeは
             一様到来を仮定した間隔モデルであり、実装結合や筐体は含みません。
