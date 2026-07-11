@@ -329,6 +329,13 @@ export const tools: ToolEntry[] = [
     "category": "learning"
   },
   {
+    "slug": "radio-wave-intuition",
+    "name": "感覚でわかる電波",
+    "tagline": "触って体感する電波の直感6章",
+    "icon": "radio",
+    "category": "learning"
+  },
+  {
     "slug": "frequency-wavelength",
     "name": "周波数・波長",
     "tagline": "波長とアンテナのサイズ感",

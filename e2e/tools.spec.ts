@@ -217,7 +217,8 @@ test.describe("antenna research columns", () => {
 });
 
 test("basic tools keep the calculator and primary result near the first viewport", async ({ page }) => {
-  test.setTimeout(90_000);
+  // 基本ツール数に比例して増える走査回数に合わせてタイムアウトを動的算出（CI負荷込みで1ツール3.5秒を確保）
+  test.setTimeout(Math.max(90_000, basicTools.length * 3_500));
   await page.setViewportSize({ width: 1440, height: 900 });
 
   for (const tool of basicTools) {
@@ -601,6 +602,41 @@ test("propagation page warns when Hata is floored by free-space loss", async ({ 
 
   await page.locator("#propArea").selectOption("urbanMedium");
   await expect(floorWarning).toHaveCount(0);
+});
+
+test("radio wave intuition renders chapters, animates the wave and tracks progress", async ({ page }) => {
+  await page.goto("/tools/radio-wave-intuition/");
+
+  // 第1章: 周波数スライダーで波長データ属性が変わる
+  const waveSvg = page.getByTestId("intuition-wave-svg");
+  await expect(waveSvg).toHaveAttribute("data-wavelength-mm", "326");
+  await page.locator("#intuition-wave-freq").fill("3.39");
+  await expect.poll(() => waveSvg.getAttribute("data-wavelength-mm")).not.toBe("326");
+
+  // 体感済みトグル→進捗が1/6になり、リロード後も保持される
+  await expect(page.getByTestId("intuition-progress")).toContainText("0/6");
+  await page.getByTestId("intuition-done-toggle").click();
+  await expect(page.getByTestId("intuition-progress")).toContainText("1/6");
+  await page.reload();
+  await expect(page.getByTestId("intuition-progress")).toContainText("1/6");
+
+  // 章ナビで第2章へ移動できる
+  await page.getByTestId("intuition-nav-decibel").click();
+  await expect(page.getByTestId("intuition-chapter-decibel")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "dBは『何倍』を数えるものさし" })).toBeVisible();
+});
+
+test("radio wave intuition chapters expose their columns and tool links", async ({ page }) => {
+  await page.goto("/tools/radio-wave-intuition/");
+  const chapterIds = ["wave", "decibel", "spread", "antenna", "obstacle", "noise"];
+  for (const id of chapterIds) {
+    await page.getByTestId(`intuition-nav-${id}`).click();
+    const chapter = page.getByTestId(`intuition-chapter-${id}`);
+    await expect(chapter).toBeVisible();
+    // 各章に E1様式コラム（コラム：見出し）と実務ツールへの内部リンクがある
+    await expect(chapter.getByRole("heading", { name: /^コラム：/ })).toBeVisible();
+    await expect(chapter.locator('a[href^="/tools/"]').first()).toBeVisible();
+  }
 });
 
 test("RF learning quest answers immediately and saves progress", async ({ page }) => {
