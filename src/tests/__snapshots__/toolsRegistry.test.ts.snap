@@ -825,6 +825,13 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "tagline": "1000問のアンテナ設計RPG",
   },
   {
+    "category": "learning",
+    "href": "/tools/radio-wave-intuition",
+    "icon": "radio",
+    "name": "感覚でわかる電波",
+    "tagline": "触って体感する電波の直感6章",
+  },
+  {
     "category": "basics",
     "href": "/tools/frequency-wavelength",
     "icon": "radio",
