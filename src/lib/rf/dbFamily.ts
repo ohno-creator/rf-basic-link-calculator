@@ -1,5 +1,6 @@
 import { assertFinite } from "./errors";
 import { dbmToMw, mwToDbm } from "./db";
+import { Dbm, Dbi } from "./units";
 
 /**
  * dBの仲間（dB/dBm/dBi/dBd）の相互変換。
@@ -23,15 +24,19 @@ function normalizeZero(value: number): number {
 }
 
 /** アンテナ利得 dBi（等方基準）→ dBd（半波長ダイポール基準）。dBd = dBi − 2.15。 */
+export function dbiToDbd(dbi: Dbi): number;
+export function dbiToDbd(dbi: number): number;
 export function dbiToDbd(dbi: number): number {
   assertFinite(dbi, "dbi");
   return normalizeZero(dbi - DIPOLE_GAIN_DBI);
 }
 
 /** アンテナ利得 dBd（半波長ダイポール基準）→ dBi（等方基準）。dBi = dBd + 2.15。 */
+export function dbdToDbi(dbd: number): Dbi;
+export function dbdToDbi(dbd: number): number;
 export function dbdToDbi(dbd: number): number {
   assertFinite(dbd, "dbd");
-  return normalizeZero(dbd + DIPOLE_GAIN_DBI);
+  return (normalizeZero(dbd + DIPOLE_GAIN_DBI)) as Dbi;
 }
 
 /**
@@ -39,6 +44,8 @@ export function dbdToDbi(dbd: number): number {
  * dBm + dBm の「足し算」は物理的に無意味（対数の和＝電力の積）。正しくは線形（mW）に
  * 戻して加算する: 10·log10(10^(P1/10) + 10^(P2/10))。同じ値同士なら +3.01dB になる。
  */
+export function combinePowersDbm(p1Dbm: Dbm, p2Dbm: Dbm): Dbm;
+export function combinePowersDbm(p1Dbm: number, p2Dbm: number): number;
 export function combinePowersDbm(p1Dbm: number, p2Dbm: number): number {
   return normalizeZero(mwToDbm(dbmToMw(p1Dbm) + dbmToMw(p2Dbm)));
 }
