@@ -11,6 +11,7 @@ type LinkBudgetWaterfallChartProps = {
   result: LinkBudgetResult;
   /** バーをクリックしたとき、対応する入力キーを通知する（入力へジャンプ用） */
   onStepSelect?: (key: keyof LinkBudgetInput) => void;
+  compact?: boolean;
 };
 
 type WaterfallStep = {
@@ -134,7 +135,8 @@ function roundedTick(value: number, direction: "up" | "down") {
 export function LinkBudgetWaterfallChart({
   input,
   result,
-  onStepSelect
+  onStepSelect,
+  compact = false
 }: LinkBudgetWaterfallChartProps) {
   const steps = buildSteps(input, result);
   const values = steps.flatMap((step) => [step.start, step.end]);
@@ -169,17 +171,21 @@ export function LinkBudgetWaterfallChart({
     Math.abs(bracketMidY - (sensitivityY - 8)) < 16 ? bracketTop - 10 : bracketMidY;
 
   return (
-    <Card as="section" padding="lg">
+    <Card as="section" padding={compact ? "md" : "lg"}>
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-staf-dark">滝グラフ</p>
-          <h3 className="mt-1 text-base font-bold text-slate-950">リンクバジェット滝グラフ</h3>
-          <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
-            送信電力からスタートし、アンテナ利得で増え、伝搬損失・ケーブル・環境・端末近傍損失で落ち、実測補正値を反映する流れをdBm軸で表示します。
-            {onStepSelect ? "バーをクリックすると、その入力スライダーへジャンプします。" : null}
-          </p>
+          {compact ? null : <p className="text-sm font-semibold text-staf-dark">滝グラフ</p>}
+          <h3 className={`${compact ? "text-sm" : "mt-1 text-base"} font-bold text-slate-950`}>リンクバジェット滝グラフ</h3>
+          {compact ? (
+            <p className="mt-1 text-xs text-slate-500">バーを押すと対応する入力へ移動します</p>
+          ) : (
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
+              送信電力からスタートし、アンテナ利得で増え、伝搬損失・ケーブル・環境・端末近傍損失で落ち、実測補正値を反映する流れをdBm軸で表示します。
+              {onStepSelect ? "バーをクリックすると、その入力スライダーへジャンプします。" : null}
+            </p>
+          )}
         </div>
-        <div className="grid grid-cols-2 gap-2 text-xs font-semibold sm:grid-cols-4">
+        <div className={`${compact ? "hidden sm:flex" : "grid grid-cols-2 sm:grid-cols-4"} gap-2 text-xs font-semibold`}>
           <span className="rounded-full bg-staf-light px-3 py-1 text-staf-dark">開始値</span>
           <span className="rounded-full bg-emerald-50 px-3 py-1 text-emerald-700">利得</span>
           <span className="rounded-full bg-rose-50 px-3 py-1 text-rose-700">損失</span>

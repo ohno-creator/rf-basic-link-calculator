@@ -17,6 +17,7 @@ import { ResearchDistanceSheet } from "./ResearchDistanceSheet";
 import { ResultDetails } from "./ResultDetails";
 import { ResultHero } from "./ResultHero";
 import { StickyResultSummary } from "./StickyResultSummary";
+import { CompactLinkBudgetPanel } from "./CompactLinkBudgetPanel";
 
 type CalculatorTabsProps = {
   input: LinkBudgetInput;
@@ -75,6 +76,7 @@ export function CalculatorTabs({
   shareState
 }: CalculatorTabsProps) {
   const [activeSheet, setActiveSheet] = useState<SheetId>("link-budget");
+  const [inputMode, setInputMode] = useState<"quick" | "guided">("quick");
   const errors = useMemo(() => validateLinkBudgetInput(input), [input]);
   // コード → 表示用の日本語文言はUI境界のここで解決し、以降の表示コンポーネントへは文言を渡す。
   const errorMessages = useMemo(() => resolveLinkBudgetErrors(errors), [errors]);
@@ -97,10 +99,6 @@ export function CalculatorTabs({
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
           リンクバジェットと研究ベース距離計算を切り替えて確認できます
         </h2>
-      </div>
-
-      <div className="mb-5">
-        <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
       </div>
 
       <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
@@ -130,13 +128,47 @@ export function CalculatorTabs({
 
       {activeSheet === "link-budget" ? (
         <>
-          <div className="grid gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <LinkBudgetPanel input={input} errors={errorMessages} onChange={onInputChange} />
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
+            <div role="group" aria-label="入力表示" className="grid flex-1 grid-cols-2 gap-1 sm:flex-none">
+              <button
+                type="button"
+                aria-pressed={inputMode === "quick"}
+                onClick={() => setInputMode("quick")}
+                className={`rounded-md px-4 py-2 text-sm font-bold transition ${inputMode === "quick" ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+              >
+                クイック調整
+              </button>
+              <button
+                type="button"
+                aria-pressed={inputMode === "guided"}
+                onClick={() => setInputMode("guided")}
+                className={`rounded-md px-4 py-2 text-sm font-bold transition ${inputMode === "guided" ? "bg-slate-950 text-white" : "text-slate-600 hover:bg-slate-100"}`}
+              >
+                解説付き入力
+              </button>
+            </div>
+            <p className="px-2 text-xs text-slate-500">入力値はそのまま、表示だけ切り替わります</p>
+          </div>
+
+          <div className="grid gap-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
+            <div className="order-2 lg:order-1">
+              {inputMode === "quick" ? (
+                <CompactLinkBudgetPanel input={input} errors={errorMessages} onChange={onInputChange} />
+              ) : (
+                <LinkBudgetPanel input={input} errors={errorMessages} onChange={onInputChange} />
+              )}
+            </div>
             <div
               id={RESULT_ANCHOR_ID}
-              className="scroll-mt-24 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1"
+              className="order-1 scroll-mt-24 lg:order-2 lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1"
             >
-              <ResultHero input={input} result={result} errors={errorMessages} onStepSelect={jumpToInput} />
+              <ResultHero
+                input={input}
+                result={result}
+                errors={errorMessages}
+                onStepSelect={jumpToInput}
+                compact={inputMode === "quick"}
+              />
             </div>
           </div>
 
@@ -153,6 +185,16 @@ export function CalculatorTabs({
       ) : (
         <ResearchDistanceSheet baseInput={input} />
       )}
+
+      <details className="group mt-6 rounded-lg border border-slate-200 bg-white shadow-card">
+        <summary className="flex cursor-pointer items-center justify-between gap-3 px-4 py-3 text-sm font-semibold text-slate-700">
+          <span>共有・初期化</span>
+          <span className="text-xs font-normal text-slate-500">条件は自動保存されています</span>
+        </summary>
+        <div className="border-t border-slate-200 p-3">
+          <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
+        </div>
+      </details>
 
       {result && activeSheet === "link-budget" ? (
         <StickyResultSummary result={result} input={input} targetId={RESULT_ANCHOR_ID} />

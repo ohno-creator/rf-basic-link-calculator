@@ -450,6 +450,7 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
   await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
   await page.locator("#propagationModel").selectOption("okumura_hata");
   await expect(page.locator("#propagationArea")).toBeVisible();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
 
   await expect(page.getByText("奥村・秦モデルの空中線地上高は固定ではなく、入力パラメータです")).toBeVisible();
   await expect(page.getByText(/送信側 空中線地上高 .*基地局高 hb/).first()).toBeVisible();
@@ -465,6 +466,7 @@ test("RF calculator explains that Hata antenna heights are not fixed", async ({ 
 
 test("RF calculator shows model assumptions, double-counting guidance, and research column", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
+  await page.getByRole("button", { name: "解説付き入力" }).click();
 
   await expect(page.getByRole("img", { name: "リンク計算の2D前提図" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "計算・シミュレーション前提と指定パラメータ" })).toBeVisible();
@@ -499,6 +501,7 @@ test("RF calculator diagrams show the two-ray interference lab synced with input
 test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   await page.locator("#propagationModel").selectOption("iot_hata_calibrated");
+  await page.getByRole("button", { name: "解説付き入力" }).click();
 
   await expect(page.getByText("IoT実測補正Hataモードの校正点")).toBeVisible();
   await expect(page.getByLabel("実測アンカー距離")).toBeVisible();
@@ -511,6 +514,43 @@ test("RF calculator supports IoT calibrated Hata mode", async ({ page }) => {
 
   await page.getByRole("textbox", { name: "実測補正値" }).fill("5");
   await expect(page.getByText("実測補正値との二重計上を確認してください")).toBeVisible();
+});
+
+test("RF calculator keeps compact controls beside the waterfall", async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/tools/rf-basic-link-calculator/?sys=LoRa+%2F+LoRaWAN&pm=log_distance&f=920&d=1&du=km&tx=13&el=3&rs=-120");
+  await expect(page.getByTestId("rf-calculator-shell")).toHaveAttribute("data-hydrated", "true");
+
+  const controls = page.getByRole("region", { name: "クイック調整" });
+  const liveControls = page.getByRole("region", { name: "ライブ調整" });
+  const compactResult = page.getByTestId("compact-result-summary");
+  const chart = page.getByRole("img", { name: "送信電力から受信電力までのリンクバジェット滝グラフ" });
+  await expect(controls).toBeVisible();
+  await expect(liveControls).toBeVisible();
+  await expect(compactResult).toBeVisible();
+  await expect(chart).toBeVisible();
+  await controls.evaluate((element) => {
+    document.documentElement.style.scrollBehavior = "auto";
+    element.scrollIntoView({ block: "start" });
+  });
+
+  const controlsBox = await controls.boundingBox();
+  const resultBox = await compactResult.boundingBox();
+  const chartBox = await chart.boundingBox();
+  expect(controlsBox).not.toBeNull();
+  expect(resultBox).not.toBeNull();
+  expect(chartBox).not.toBeNull();
+  expect(Math.max(controlsBox!.y, chartBox!.y)).toBeLessThan(Math.min(controlsBox!.y + controlsBox!.height, chartBox!.y + chartBox!.height));
+  expect(resultBox!.y).toBeLessThan(chartBox!.y);
+  expect(chartBox!.y + chartBox!.height).toBeLessThanOrEqual(900);
+
+  await page.locator("#live-environment-loss").fill("8");
+  await expect(page.locator("#live-environment-loss")).toHaveValue("8");
+  await expect(page.locator("#environmentLossDb")).toHaveValue("8");
+  await expect(chart).toBeVisible();
+
+  await page.getByRole("button", { name: "解説付き入力" }).click();
+  await expect(page.locator("#environmentLossDb")).toHaveValue("8");
 });
 
 test("NCU below-ground page updates warnings and diagram from BOX conditions", async ({ page }) => {
