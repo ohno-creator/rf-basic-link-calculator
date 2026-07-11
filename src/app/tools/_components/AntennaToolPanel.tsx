@@ -36,6 +36,9 @@ import {
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { rfErrorMessage } from "@/lib/rfErrorMessages";
 import { FormulaExplanationCard } from "@/app/tools/_components/FormulaExplanationCard";
+import { PatchAntennaColumn } from "@/app/tools/_components/PatchAntennaColumn";
+import { RadiationResistanceColumn } from "@/app/tools/_components/RadiationResistanceColumn";
+import { SmallAntennaLimitColumn } from "@/app/tools/_components/SmallAntennaLimitColumn";
 
 export type AntennaToolId =
   | "effective-aperture"
@@ -1909,17 +1912,38 @@ export function AntennaToolPanel({ toolId }: { toolId: AntennaToolId }) {
 
           <GuidanceSection toolId={toolId} />
 
-          <Card as="section" padding="lg">
-            <h3 className="text-base font-semibold text-slate-950">{computation.view.columnTitle}</h3>
-            <div className="mt-3 grid gap-3 md:grid-cols-3">
-              {computation.view.column.map((paragraph, index) => (
-                <div key={paragraph} className="rounded-lg bg-slate-50 p-4">
-                  <p className="text-xs font-semibold text-staf-dark">Point {index + 1}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{paragraph}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
+          {toolId === "patch-antenna-dimensions" ? (
+            <PatchAntennaColumn
+              frequencyMHz={values.frequencyMHz}
+              dielectricConstant={values.dielectricConstant}
+              substrateHeightMm={values.substrateHeightMm}
+            />
+          ) : toolId === "radiation-resistance" ? (
+            <RadiationResistanceColumn
+              frequencyMHz={values.frequencyMHz}
+              lengthMm={values.lengthMm}
+              lossResistanceOhm={values.lossResistanceOhm}
+              kind={shortKind}
+            />
+          ) : toolId === "small-antenna-limit" ? (
+            <SmallAntennaLimitColumn
+              frequencyMHz={values.frequencyMHz}
+              radiusMm={values.radiusMm}
+              targetBandwidthPercent={values.targetBandwidthPercent}
+            />
+          ) : (
+            <Card as="section" padding="lg">
+              <h3 className="text-base font-semibold text-slate-950">{computation.view.columnTitle}</h3>
+              <div className="mt-3 grid gap-3 md:grid-cols-3">
+                {computation.view.column.map((paragraph, index) => (
+                  <div key={paragraph} className="rounded-lg bg-slate-50 p-4">
+                    <p className="text-xs font-semibold text-staf-dark">Point {index + 1}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{paragraph}</p>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
         </>
       ) : null}
     </section>
