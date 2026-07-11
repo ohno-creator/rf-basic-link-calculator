@@ -200,6 +200,17 @@ test.describe("antenna research columns", () => {
     await expect.poll(() => bandwidth.textContent()).not.toBe(initial);
   });
 
+  test("small loop column follows the loop diameter", async ({ page }) => {
+    await page.goto("/tools/small-loop-resonance/");
+    await expect(page.getByRole("heading", { name: "コラム：財布の中のアンテナは、アンテナではなかった" })).toBeVisible();
+    const column = page.getByTestId("small-loop-column");
+    const initial = await column.textContent();
+    await page.locator("#small-loop-resonance-loopDiameterMm").fill("80");
+    await expect.poll(() => column.textContent()).not.toBe(initial);
+    await column.locator("summary").click();
+    await expect(column.locator("a").first()).toBeVisible();
+  });
+
   test("research columns fit mobile and expose their sources", async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 812 });
     for (const slug of ["patch-antenna-dimensions", "radiation-resistance", "small-antenna-limit"]) {
