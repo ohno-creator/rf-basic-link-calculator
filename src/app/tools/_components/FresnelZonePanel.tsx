@@ -11,7 +11,7 @@ import {
   fresnelObstaclePresets,
   type ObstacleKind
 } from "@/data/fresnelPresets";
-import { analyzeObstacle, calculateFresnel, type ObstacleVerdict } from "@/lib/rf/fresnel";
+import { analyzeObstacle, calculateFresnel, radioHorizonKm, type ObstacleVerdict } from "@/lib/rf/fresnel";
 import { formatMeters, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { FresnelZoneColumn } from "./FresnelZoneColumn";
@@ -43,6 +43,7 @@ export function FresnelZonePanel() {
   const [rxHeightM, setRxHeightM] = useState(2);
   const [obstacleId, setObstacleId] = useState("car-sedan");
   const [obstacleHeightM, setObstacleHeightM] = useState(1.5);
+  const [longDistanceMode, setLongDistanceMode] = useState(false);
 
   const selectedObstacle = fresnelObstaclePresets.find((item) => item.id === obstacleId);
   const obstacleKind: ObstacleKind = selectedObstacle?.kind ?? "car";
@@ -71,12 +72,21 @@ export function FresnelZonePanel() {
         positionPercent / 100,
         txHeightM,
         rxHeightM,
-        obstacleHeightM
+        obstacleHeightM,
+        longDistanceMode ? { earthCurvatureK: 4 / 3 } : undefined
       );
     } catch {
       return null;
     }
-  }, [frequencyMHz, distanceKm, positionPercent, txHeightM, rxHeightM, obstacleHeightM]);
+  }, [frequencyMHz, distanceKm, positionPercent, txHeightM, rxHeightM, obstacleHeightM, longDistanceMode]);
+
+  const horizonKm = useMemo(() => {
+    try {
+      return radioHorizonKm(txHeightM, rxHeightM);
+    } catch {
+      return null;
+    }
+  }, [txHeightM, rxHeightM]);
 
   const applyFrequencyPreset = (preset: (typeof fresnelFrequencyPresets)[number]) => {
     setFrequencyMHz(preset.frequencyMHz);
@@ -183,6 +193,35 @@ export function FresnelZonePanel() {
           onChange={setRxHeightM}
           emptyBehavior="invalid"
         />
+      </div>
+
+      {/* 長距離モード（地球曲率） */}
+      <div className="mt-4 flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setLongDistanceMode((prev) => !prev)}
+          aria-pressed={longDistanceMode}
+          data-testid="fresnel-long-distance-toggle"
+          className={`rounded-full border px-3 py-1 text-xs font-semibold transition ${
+            longDistanceMode
+              ? "border-staf bg-staf text-white"
+              : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
+          }`}
+        >
+          長距離モード（地球曲率 k=4/3）
+        </button>
+        <Tooltip term="長距離モード">
+          数km以上のリンクでは地球の丸みで見通し線が下がります。有効にすると標準大気の等価地球半径係数
+          k=4/3 でLOS高から曲率降下分を控除して判定します（1km未満では影響は数cm以下です）。
+        </Tooltip>
+        {longDistanceMode && horizonKm !== null ? (
+          <span data-testid="fresnel-horizon" className="text-xs font-medium text-slate-600">
+            電波見通し距離の目安 {formatNumber(horizonKm, 1)} km（4.12(√h1+√h2)）
+            {distanceKm > horizonKm ? (
+              <span className="ml-1 font-semibold text-rose-700">— 通信距離が見通し距離を超えています</span>
+            ) : null}
+          </span>
+        ) : null}
       </div>
 
       {/* 主要な数値 */}
@@ -296,6 +335,11 @@ export function FresnelZonePanel() {
             （第1フレネル半径 {formatMeters(analysis.firstZoneRadiusM)} の {formatNumber(analysis.clearanceRatio * 100, 0)}%）。
             目安は60%以上の確保です。
           </p>
+          {longDistanceMode ? (
+            <p data-testid="fresnel-curvature-drop" className="mt-1 text-xs">
+              地球曲率（k=4/3）による見通し線の降下 <span className="font-bold">{formatMeters(analysis.curvatureDropM)}</span> をLOS高から控除済みです。
+            </p>
+          ) : null}
         </Callout>
       ) : (
         <p className="mt-4 text-sm font-medium text-rose-700">
@@ -322,12 +366,14 @@ export function FresnelZonePanel() {
       <div className="mt-5">
         <FormulaExplanationCard
           title="計算式・判定のしくみを見る"
-          formula={"r1[m] = √( λ × d1 × d2 / (d1 + d2) )\nクリアランス = LOS高 − 障害物高\n回折パラメータ v = -(クリアランス / r1) × √2\n回折損失 ≈ 6.9 + 20log10( √((v-0.1)²+1) + v - 0.1 )  [v>-0.78]"}
+          formula={"r1[m] = √( λ × d1 × d2 / (d1 + d2) )\nクリアランス = LOS高 − 障害物高\n回折パラメータ v = -(クリアランス / r1) × √2\n回折損失 ≈ 6.9 + 20log10( √((v-0.1)²+1) + v - 0.1 )  [v>-0.78]\n曲率降下[m] = d1·d2 / (2·k·R地球)  [長距離モード, k=4/3]\n電波見通し距離[km] = 4.12·(√h1 + √h2)"}
         >
           <p>
             電波は直線ではなく楕円体（フレネルゾーン）を通ります。障害物がこの楕円に食い込むほど損失が増えます。
             「60%クリアランス確保」は回折パラメータ v≈-0.85（損失ほぼ0dB）に対応し、フレネルの実務則とナイフエッジ回折モデルが一致します。
             v=0（障害物がLOSと同じ高さ）で約6dB、さらに上回ると急増します。
+            長距離モードでは、標準大気の屈折を含む等価地球半径（k=4/3・約8,495km）を使って地球の丸みによる見通し線の降下を控除します。
+            例えば10km経路の中央では約1.5m下がるため、数kmを超えるリンクでは無視できません。
           </p>
         </FormulaExplanationCard>
       </div>

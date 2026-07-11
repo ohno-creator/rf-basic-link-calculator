@@ -45,8 +45,10 @@ type Cn0Step = {
   kind: "total" | "loss";
 };
 
-function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
-  const chart = { width: 640, height: 320, top: 30, right: 24, bottom: 56, left: 56, barWidth: 84 };
+function Cn0BudgetWaterfall({ openSkyCn0DbHz, compact = false }: { openSkyCn0DbHz: number; compact?: boolean }) {
+  const chart = compact
+    ? { width: 360, height: 320, top: 36, right: 12, bottom: 72, left: 42, barWidth: 52 }
+    : { width: 640, height: 320, top: 30, right: 24, bottom: 56, left: 56, barWidth: 84 };
 
   const steps: Cn0Step[] = [];
   steps.push({
@@ -85,7 +87,8 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
   const stepGap = (chart.width - chart.left - chart.right) / steps.length;
   const y = (v: number) => chart.top + ((maxValue - v) / span) * plotHeight;
   const x = (i: number) => chart.left + i * stepGap + (stepGap - chart.barWidth) / 2;
-  const ticks = Array.from({ length: Math.floor(span / 10) + 1 }, (_, i) => maxValue - i * 10);
+  const tickStep = compact ? 20 : 10;
+  const ticks = Array.from({ length: Math.floor(span / tickStep) + 1 }, (_, i) => maxValue - i * tickStep);
 
   const styleFor = (kind: Cn0Step["kind"]) =>
     kind === "loss"
@@ -97,6 +100,9 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
 
   return (
     <svg
+      data-testid={compact ? "gnss-cn0-waterfall-mobile" : "gnss-cn0-waterfall-desktop"}
+      data-open-sky-cn0={openSkyCn0DbHz.toFixed(3)}
+      data-achieved-cn0={achievedCn0DbHz.toFixed(3)}
       role="img"
       aria-label={`オープンスカイC/N0 ${formatNumber(openSkyCn0DbHz, 1)}dB-Hzから環境減衰を引き、到達C/N0は${formatNumber(achievedCn0DbHz, 1)}dB-Hz。捕捉閾値${GNSS_ACQUISITION_THRESHOLD_DBHZ}dB-Hz`}
       viewBox={`0 0 ${chart.width} ${chart.height}`}
@@ -117,14 +123,14 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
             y={y(tick) + 4}
             textAnchor="end"
             fill={diagramPalette.muted}
-            fontSize={11}
+            fontSize={compact ? 13 : 11}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {tick}
           </text>
         </g>
       ))}
-      <text x={chart.left} y={chart.top - 12} fill={diagramPalette.muted} fontSize={12} fontWeight={600}>
+      <text x={chart.left} y={chart.top - 12} fill={diagramPalette.muted} fontSize={compact ? 14 : 12} fontWeight={600}>
         dB-Hz
       </text>
 
@@ -141,11 +147,11 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
         x={chart.left + 4}
         y={thresholdY - 6}
         fill={chartTheme.seriesText.loss}
-        fontSize={11}
+        fontSize={compact ? 12 : 11}
         fontWeight={700}
         style={{ fontVariantNumeric: "tabular-nums" }}
       >
-        捕捉閾値 {GNSS_ACQUISITION_THRESHOLD_DBHZ}dB-Hz
+        {compact ? `捕捉閾値 ${GNSS_ACQUISITION_THRESHOLD_DBHZ}` : `捕捉閾値 ${GNSS_ACQUISITION_THRESHOLD_DBHZ}dB-Hz`}
       </text>
 
       {steps.map((step, index) => {
@@ -154,6 +160,12 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
         const height = Math.max(4, Math.abs(y(step.to) - y(step.from)));
         const centerX = x(index) + chart.barWidth / 2;
         const labelAboveY = top - 8;
+        const compactLabels = [
+          ["オープン", "スカイ"],
+          ["樹木", "林冠"],
+          ["屋内", "侵入"],
+          ["到達", "C/N0"]
+        ];
         return (
           <g key={step.label}>
             {index > 0 ? (
@@ -182,7 +194,7 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
               y={labelAboveY}
               textAnchor="middle"
               fill={style.stroke}
-              fontSize={11}
+              fontSize={compact ? 12 : 11}
               fontWeight={700}
               style={{ fontVariantNumeric: "tabular-nums" }}
             >
@@ -190,13 +202,18 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
             </text>
             <text
               x={centerX}
-              y={chart.height - 32}
+              y={chart.height - (compact ? 40 : 32)}
               textAnchor="middle"
               fill={diagramPalette.inkSoft}
-              fontSize={12}
+              fontSize={compact ? 11 : 12}
               fontWeight={600}
             >
-              {step.label}
+              {compact ? (
+                <>
+                  <tspan x={centerX} dy="0">{compactLabels[index][0]}</tspan>
+                  <tspan x={centerX} dy="14">{compactLabels[index][1]}</tspan>
+                </>
+              ) : step.label}
             </text>
           </g>
         );
@@ -209,10 +226,10 @@ function Cn0BudgetWaterfall({ openSkyCn0DbHz }: { openSkyCn0DbHz: number }) {
           y={thresholdY + 16}
           textAnchor="end"
           fill={chartTheme.seriesText.loss}
-          fontSize={11}
+          fontSize={compact ? 12 : 11}
           fontWeight={700}
         >
-          捕捉閾値を割る（測位不可の目安）
+          {compact ? "閾値割れ" : "捕捉閾値を割る（測位不可の目安）"}
         </text>
       ) : null}
     </svg>
@@ -316,7 +333,12 @@ export function GnssCn0Panel() {
             caption={`起点=アクティブ構成のオープンスカイ C/N0 ${formatNumber(results.active.cn0DbHz, 1)}dB-Hz ─ 樹木・屋内の減衰は代表値（例示。ITU-R P.833 植生減衰／建物侵入損は状況で10〜30dBに及ぶ）。捕捉閾値${GNSS_ACQUISITION_THRESHOLD_DBHZ}dB-Hzは分類境界の目安。`}
           >
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-              <Cn0BudgetWaterfall openSkyCn0DbHz={results.active.cn0DbHz} />
+              <div className="hidden sm:block">
+                <Cn0BudgetWaterfall openSkyCn0DbHz={results.active.cn0DbHz} />
+              </div>
+              <div className="sm:hidden">
+                <Cn0BudgetWaterfall compact openSkyCn0DbHz={results.active.cn0DbHz} />
+              </div>
             </div>
           </ChartFrame>
         </div>

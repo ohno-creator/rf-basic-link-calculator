@@ -29,11 +29,21 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" },
+    { slug: "wall-penetration", h1: "壁・建材の透過損失バジェット", fig: "建材ごとの透過損失レンジ" },
     { slug: "ifa-initial-dimensions", h1: "逆F・IFAアンテナ初期寸法", fig: "IFA上面図の読み方" },
     { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
     { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
+    { slug: "diversity-gain", h1: "ダイバーシティ利得推定", fig: "独立時と相関補正後の利得" },
+    { slug: "antenna-keepout", h1: "アンテナ・キープアウト領域チェック", fig: "必要キープアウトと確保領域" },
+    { slug: "ground-plane-size", h1: "GNDプレーン寸法と効率", fig: "GND長/λと効率変化の目安" },
+    { slug: "body-loss", h1: "人体・手のボディロス", fig: "人体近接による追加損失" },
     { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
-    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" }
+    { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" },
+    {
+      slug: "lora-airtime",
+      h1: "LoRa Time-on-Air・920MHz送信制限",
+      fig: "同じパケットをSFだけ変えた送信時間"
+    }
   ];
 
   for (const { slug, h1, fig } of pages) {
@@ -47,43 +57,268 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
 });
 
 test.describe("G Tier2 tools", () => {
+  test("body loss switches scenarios and preserves missing data", async ({ page }) => {
+    await page.goto("/tools/body-loss/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("body-loss-diagram");
+    await expect(primary).toContainText("5.0 / 10.0");
+    await page.getByRole("button", { name: "手首装着", exact: true }).click();
+    await expect(primary).toContainText("12.0 / 20.0");
+    await expect(diagram).toHaveAttribute("data-selected", "wrist");
+
+    await page.getByRole("button", { name: "1575MHz（GNSS）", exact: true }).click();
+    await expect(page.getByRole("button", { name: "頭部近接（データなし）" })).toBeDisabled();
+  });
+
+  test("ground plane efficiency reacts to GND length", async ({ page }) => {
+    await page.goto("/tools/ground-plane-size/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("ground-plane-size-diagram");
+    await expect(primary).toContainText("0.0");
+    const initialRatio = await diagram.getAttribute("data-ratio");
+
+    await page.locator("#groundPlaneLength").fill("32.6");
+    await expect(primary).toContainText("-6.0");
+    await expect.poll(() => diagram.getAttribute("data-ratio")).not.toBe(initialRatio);
+    await expect(diagram).toHaveAttribute("data-ratio", /0\.100/);
+  });
+
+  test("diversity gain reacts to antenna spacing", async ({ page }) => {
+    await page.goto("/tools/diversity-gain/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("diversity-gain-diagram");
+    await expect(primary).toContainText("9.72");
+    const initialCorrelation = await diagram.getAttribute("data-correlation");
+
+    await page.locator("#diversitySpacing").fill("0");
+    await expect(primary).toContainText("0.00");
+    await expect(diagram).toHaveAttribute("data-correlation", "1.0000");
+
+    await page.locator("#diversitySpacing").fill("162.9");
+    await expect.poll(() => diagram.getAttribute("data-correlation")).not.toBe("1.0000");
+    expect(await diagram.getAttribute("data-correlation")).toBe(initialCorrelation);
+  });
+
+  test("wall penetration adds material loss ranges in dB", async ({ page }) => {
+    await page.goto("/tools/wall-penetration/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("wall-penetration-diagram");
+    await expect(primary).toContainText("15.0–26.0");
+    await expect(diagram).toHaveAttribute("data-total-min", "15");
+
+    await page.getByRole("button", { name: "乾式石膏ボードを減らす" }).click();
+    await expect(primary).toContainText("13.5–23.0");
+
+    await page.getByRole("button", { name: "Low-E（金属複層ガラス）を増やす" }).click();
+    await expect(primary).toContainText("33.5–53.0");
+
+    await page.getByRole("button", { name: "28GHz", exact: true }).click();
+    await expect(primary).toContainText("59.0–92.0");
+  });
+
+  test("antenna keepout evaluates each dimension", async ({ page }) => {
+    await page.goto("/tools/antenna-keepout/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("antenna-keepout-diagram");
+    await expect(primary).toContainText("必要領域を確保");
+    await expect(diagram).toHaveAttribute("data-status", "success");
+
+    await page.locator("#keepoutAvailableWidth").fill("7.9");
+    await expect(primary).toContainText("領域不足");
+    await expect(diagram).toHaveAttribute("data-status", "danger");
+
+    await page.locator("#keepoutAvailableWidth").fill("35");
+    await page.locator("#keepoutAvailableHeight").fill("10");
+    await page.getByRole("button", { name: "920MHz（LPWA）", exact: true }).click();
+    await expect(primary).toContainText("必要領域を確保");
+  });
+
+  test("LoRa airtime reacts to SF, payload and hourly limit", async ({ page }) => {
+    await page.goto("/tools/lora-airtime/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("lora-airtime-diagram");
+    await expect(primary).toContainText("2302.0");
+    await expect(diagram).toHaveAttribute("data-selected-sf", "12");
+
+    await page.getByRole("button", { name: "SF7", exact: true }).click();
+    await expect(primary).toContainText("97.5");
+    await expect(diagram).toHaveAttribute("data-selected-sf", "7");
+
+    await page.getByRole("button", { name: "SF12", exact: true }).click();
+    await page.locator("#loraPayloadBytes").fill("100");
+    await expect(primary).toContainText("3940.4");
+    await expect(primary).toContainText("4秒上限に近い");
+
+    await page.locator("#loraTransmissionsPerHour").fill("100");
+    await expect(primary).toContainText("制限超過");
+  });
+
   test("IFA dimensions react to frequency", async ({ page }) => {
     await page.goto("/tools/ifa-initial-dimensions/");
     const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("ifa-dimensions-diagram");
+    const initialEndX = await diagram.getAttribute("data-radiator-end-x");
     await expect(primary).toContainText("49.6");
     await page.locator("#ifaFrequency").fill("1840");
     await expect(primary).toContainText("24.8");
+    await expect.poll(() => diagram.getAttribute("data-radiator-end-x")).not.toBe(initialEndX);
+    const feedMinX = Number(await diagram.getAttribute("data-feed-min-x"));
+    const feedMaxX = Number(await diagram.getAttribute("data-feed-max-x"));
+    expect(feedMaxX).toBeGreaterThan(feedMinX);
   });
 
   test("L-match shows both closed-form solutions", async ({ page }) => {
     await page.goto("/tools/l-match/");
+    const firstDiagram = page.getByTestId("l-match-diagram-0");
     await expect(page.getByTestId("primary-result")).toContainText("5.97 nH");
     await expect(page.getByText("11.93 pF").first()).toBeVisible();
     await expect(page.getByText("7.06 nH").first()).toBeVisible();
+    await expect(firstDiagram).toHaveAttribute("data-topology", "shunt-then-series");
+    await page.getByRole("button", { name: "100+j20Ω" }).click();
+    await expect(firstDiagram).toHaveAttribute("data-topology", "series-then-shunt");
   });
 
   test("antenna isolation reacts to spacing", async ({ page }) => {
     await page.goto("/tools/antenna-isolation/");
     const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("antenna-isolation-diagram");
+    const initialAntennaX = Number(await diagram.getAttribute("data-antenna-2-x"));
+    const initialStrokeWidth = Number(await diagram.getAttribute("data-path-stroke-width"));
     await expect(primary).toContainText("-11.7");
     await page.locator("#isolationSpacing").fill("325.8");
     await expect(primary).toContainText("-17.7");
+    await expect.poll(() => diagram.getAttribute("data-antenna-2-x")).not.toBe(initialAntennaX.toFixed(2));
+    const updatedAntennaX = Number(await diagram.getAttribute("data-antenna-2-x"));
+    const updatedStrokeWidth = Number(await diagram.getAttribute("data-path-stroke-width"));
+    expect(updatedAntennaX).toBeGreaterThan(initialAntennaX);
+    expect(updatedStrokeWidth).toBeLessThan(initialStrokeWidth);
   });
 
   test("battery life reacts to derating", async ({ page }) => {
     await page.goto("/tools/battery-life/");
     const primary = page.getByTestId("primary-result");
+    const curve = page.getByTestId("battery-life-curve-desktop");
+    const initialYears = await curve.getAttribute("data-current-years");
     await expect(primary).toContainText("34.1");
     await page.locator("#batteryDerate").fill("100");
     await expect(primary).toContainText("48.7");
+    await expect.poll(() => curve.getAttribute("data-current-years")).not.toBe(initialYears);
   });
 
   test("GNSS compares passive and active C/N0", async ({ page }) => {
     await page.goto("/tools/gnss-cn0/");
+    const waterfall = page.getByTestId("gnss-cn0-waterfall-desktop");
+    const initialOpenSky = await waterfall.getAttribute("data-open-sky-cn0");
     await expect(page.getByTestId("primary-result")).toContainText("45.4");
     await expect(page.getByText("40.0").first()).toBeVisible();
     await page.locator("#gnssCableLoss").fill("6");
     await expect(page.getByText("37.0").first()).toBeVisible();
+    await page.locator("#gnssReceivedPower").fill("-140");
+    await expect.poll(() => waterfall.getAttribute("data-open-sky-cn0")).not.toBe(initialOpenSky);
+  });
+
+  test("battery and GNSS use dedicated mobile chart layouts", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/tools/battery-life/");
+    await expect(page.getByTestId("battery-life-curve-mobile")).toBeVisible();
+    await expect(page.getByTestId("battery-life-curve-desktop")).toBeHidden();
+
+    await page.goto("/tools/gnss-cn0/");
+    await expect(page.getByTestId("gnss-cn0-waterfall-mobile")).toBeVisible();
+    await expect(page.getByTestId("gnss-cn0-waterfall-desktop")).toBeHidden();
+  });
+});
+
+test.describe("antenna research columns", () => {
+  test("patch column follows the substrate input", async ({ page }) => {
+    await page.goto("/tools/patch-antenna-dimensions/");
+    await expect(page.getByRole("heading", { name: "コラム：パッチは、見えない電界のぶんだけ短く切る" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const fringe = page.getByTestId("patch-column-fringe");
+    const initial = await fringe.textContent();
+    await page.locator("#patch-antenna-dimensions-substrateHeightMm").fill("3.2");
+    await expect.poll(() => fringe.textContent()).not.toBe(initial);
+  });
+
+  test("radiation column follows antenna kind", async ({ page }) => {
+    await page.goto("/tools/radiation-resistance/");
+    await expect(page.getByRole("heading", { name: "コラム：S11が良くても、電力は空へ出たとは限らない" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const resistance = page.getByTestId("radiation-column-resistance");
+    const initial = await resistance.textContent();
+    await page.locator("#short-antenna-kind").selectOption("dipole");
+    await expect.poll(() => resistance.textContent()).not.toBe(initial);
+  });
+
+  test("small antenna column follows radius", async ({ page }) => {
+    await page.goto("/tools/small-antenna-limit/");
+    await expect(page.getByRole("heading", { name: "コラム：小型・高効率・広帯域は、同時に取り切れない" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const bandwidth = page.getByTestId("small-antenna-column-bandwidth");
+    const initial = await bandwidth.textContent();
+    await page.locator("#small-antenna-limit-radiusMm").fill("30");
+    await expect.poll(() => bandwidth.textContent()).not.toBe(initial);
+  });
+
+  test("research columns fit mobile and expose their sources", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    for (const slug of ["patch-antenna-dimensions", "radiation-resistance", "small-antenna-limit"]) {
+      await page.goto(`/tools/${slug}/`);
+      try {
+        await expect
+          .poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth))
+          .toBe(true);
+      } catch (error) {
+        // 失敗時に「最も右へはみ出した最深要素」と祖先チェーンをCIログへ出力する
+        // （Linuxフォントのみで再現するため、ローカルでは特定できない）
+        const report = await page.evaluate(() => {
+          const doc = document.documentElement;
+          const limit = doc.clientWidth + 0.5;
+          let worst: { el: Element; right: number; width: number } | null = null;
+          for (const el of Array.from(document.querySelectorAll("body *"))) {
+            const r = el.getBoundingClientRect();
+            if (r.right > limit && (!worst || r.right > worst.right)) {
+              worst = { el, right: r.right, width: r.width };
+            }
+          }
+          if (!worst) {
+            return { scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth, chain: ["(no element found: margin/transform起因の可能性)"] };
+          }
+          // 最右端に達している最深の子孫まで降りる
+          let node: Element = worst.el;
+          let descended = true;
+          while (descended) {
+            descended = false;
+            for (const child of Array.from(node.children)) {
+              if (child.getBoundingClientRect().right >= worst.right - 0.5) {
+                node = child;
+                descended = true;
+                break;
+              }
+            }
+          }
+          const describe = (el: Element) => {
+            const r = el.getBoundingClientRect();
+            const cs = getComputedStyle(el);
+            const cls = typeof el.className === "string" ? el.className.slice(0, 60) : "";
+            const tid = el.getAttribute("data-testid");
+            return `${el.tagName}${tid ? `[${tid}]` : ""}.${cls} w=${Math.round(r.width)} right=${Math.round(r.right)} minW=${cs.minWidth} ws=${cs.whiteSpace}`;
+          };
+          const chain: string[] = [`deepest text="${(node.textContent || "").slice(0, 60)}"`];
+          let cur: Element | null = node;
+          while (cur && cur !== document.body) {
+            chain.push(describe(cur));
+            cur = cur.parentElement;
+          }
+          return { scrollWidth: doc.scrollWidth, clientWidth: doc.clientWidth, chain };
+        });
+        console.log(`[overflow:${slug}] scrollWidth=${report.scrollWidth} clientWidth=${report.clientWidth}\n${report.chain.join("\n")}`);
+        throw error;
+      }
+      const column = page.getByTestId(`${slug.replace("-dimensions", "")}-column`);
+      await column.locator("summary").click();
+      await expect(column.locator("a").first()).toBeVisible();
+    }
   });
 });
 
@@ -420,6 +655,31 @@ test("fresnel page includes the IoT deep-dive", async ({ page }) => {
     page.getByRole("heading", { name: "IoTの現場でフレネルゾーンをどう活かすか" })
   ).toBeVisible();
   await expect(page.getByText("だからこそ、マージンが重要")).toBeVisible();
+});
+
+test("fresnel long-distance mode subtracts earth curvature and shows the radio horizon", async ({ page }) => {
+  await page.goto("/tools/fresnel-zone/");
+  // 10km・中央・送受高50m・障害物5m: k=4/3の曲率降下は約1.47m（libの期待値テストと同一条件）
+  await page.locator("#fresnelDist").fill("10");
+  await page.locator("#fresnelTxH").fill("50");
+  await page.locator("#fresnelRxH").fill("50");
+  await page.locator("#fresnelObsH").fill("5");
+
+  // 既定はOFF: 曲率控除の注記も見通し距離も出ない（従来動作）
+  await expect(page.getByTestId("fresnel-curvature-drop")).toHaveCount(0);
+  await expect(page.getByTestId("fresnel-horizon")).toHaveCount(0);
+
+  await page.getByTestId("fresnel-long-distance-toggle").click();
+  await expect(page.getByTestId("fresnel-curvature-drop")).toContainText("1.47m");
+  // 見通し距離 4.12·(√50+√50) ≈ 58.3 km
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("58.3 km");
+
+  // 低アンテナ高(3m/2m)・20kmでは見通し距離 ≈ 13.0 km を超えるため警告が出る
+  await page.locator("#fresnelTxH").fill("3");
+  await page.locator("#fresnelRxH").fill("2");
+  await page.locator("#fresnelDist").fill("20");
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("13.0 km");
+  await expect(page.getByTestId("fresnel-horizon")).toContainText("通信距離が見通し距離を超えています");
 });
 
 test("propagation page includes the Okumura-Hata column", async ({ page }) => {

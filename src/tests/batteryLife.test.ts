@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { calculateBatteryLife } from "@/lib/rf/batteryLife";
 import { RfError, RfErrorCode } from "@/lib/rf/errors";
 
-describe("calculateBatteryLife", () => {
-  it("2400mAh・45mA×50ms/h・sleep5µAで平均5.625µA・48.7年になる", () => {
+describe("calculateBatteryLife（G19・電池寿命）", () => {
+  it("2400mAh・TX45mA×50ms/h・sleep5µA → 平均5.625µA・48.67年", () => {
     const result = calculateBatteryLife({
       capacityMah: 2400,
       txCurrentMa: 45,
@@ -12,15 +12,17 @@ describe("calculateBatteryLife", () => {
       sleepCurrentUa: 5,
       deratingFactor: 1
     });
-    expect(result.txAverageCurrentUa).toBeCloseTo(0.625, 10);
-    expect(result.averageCurrentUa).toBeCloseTo(5.625, 10);
+    expect(result.txAverageCurrentUa).toBeCloseTo(0.625, 12);
+    expect(result.rxAverageCurrentUa).toBe(0);
+    expect(result.sleepCurrentUa).toBe(5);
+    expect(result.averageCurrentUa).toBeCloseTo(5.625, 12);
     expect(result.lifetimeHours).toBeCloseTo(426_666.6667, 3);
-    expect(result.lifetimeYears).toBeCloseTo(48.7, 1);
+    expect(result.lifetimeYears).toBeCloseTo(48.706, 3);
     expect(result.exceedsTenYears).toBe(true);
   });
 
-  it("derate=0.7で寿命が0.7倍になる", () => {
-    const base = calculateBatteryLife({
+  it("derate=0.7で寿命だけが0.7倍になり平均電流は不変", () => {
+    const full = calculateBatteryLife({
       capacityMah: 2400,
       txCurrentMa: 45,
       txDurationMs: 50,
@@ -36,70 +38,50 @@ describe("calculateBatteryLife", () => {
       sleepCurrentUa: 5,
       deratingFactor: 0.7
     });
-    expect(derated.lifetimeHours).toBeCloseTo(base.lifetimeHours * 0.7, 10);
+    expect(derated.averageCurrentUa).toBeCloseTo(full.averageCurrentUa, 12);
+    expect(derated.lifetimeHours).toBeCloseTo(full.lifetimeHours * 0.7, 10);
   });
 
-  it("受信時間の平均電流寄与も加算する", () => {
+  it("RX電流を任意入力でき、TX/RX/sleepの平均電流和に一致する", () => {
     const result = calculateBatteryLife({
       capacityMah: 1000,
-      txCurrentMa: 20,
+      txCurrentMa: 30,
       txDurationMs: 100,
       rxCurrentMa: 10,
       rxDurationMs: 200,
       intervalSeconds: 10,
-      sleepCurrentUa: 100,
-      deratingFactor: 1
+      sleepCurrentUa: 2,
+      deratingFactor: 0.7
     });
-    expect(result.txAverageCurrentUa).toBeCloseTo(200, 10);
-    expect(result.rxAverageCurrentUa).toBeCloseTo(200, 10);
-    expect(result.averageCurrentUa).toBeCloseTo(500, 10);
+    expect(result.txAverageCurrentUa).toBeCloseTo(300, 12);
+    expect(result.rxAverageCurrentUa).toBeCloseTo(200, 12);
+    expect(result.averageCurrentUa).toBeCloseTo(502, 12);
   });
 
-  it("0の活動時間を許容し、-0を返さない", () => {
+  it("0電流の各区間は-0を返さない", () => {
     const result = calculateBatteryLife({
-      capacityMah: 100,
-      txCurrentMa: 10,
+      capacityMah: 1000,
+      txCurrentMa: 0,
       txDurationMs: 0,
       intervalSeconds: 60,
-      sleepCurrentUa: 10,
-      deratingFactor: 1
+      sleepCurrentUa: 1,
+      deratingFactor: 0.7
     });
-    expect(result.txAverageCurrentUa).toBe(0);
     expect(Object.is(result.txAverageCurrentUa, -0)).toBe(false);
+    expect(Object.is(result.rxAverageCurrentUa, -0)).toBe(false);
   });
 
-  it("無効な容量・負電流・derate・活動時間超過をRfErrorで拒否する", () => {
-    expect(() =>
-      calculateBatteryLife({ capacityMah: 0, txCurrentMa: 1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 1 })
-    ).toThrowError(RfError);
-    expect(() =>
-      calculateBatteryLife({ capacityMah: 1, txCurrentMa: -1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 1 })
-    ).toThrowError(RfError);
-    expect(() =>
-      calculateBatteryLife({ capacityMah: 1, txCurrentMa: 1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 1.1 })
-    ).toThrowError(RfError);
-    expect(() =>
-      calculateBatteryLife({
-        capacityMah: Number.MAX_VALUE,
-        txCurrentMa: 0,
-        txDurationMs: 0,
-        intervalSeconds: 1,
-        sleepCurrentUa: 1,
-        deratingFactor: 1
-      })
-    ).toThrowError(RfError);
+  it("ガード: 容量/周期>0、各電流/時間>=0、0<derate<=1、duty合計<=100%", () => {
+    expect(() => calculateBatteryLife({ capacityMah: 0, txCurrentMa: 1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 0.7 })).toThrowError(RfError);
+    expect(() => calculateBatteryLife({ capacityMah: 1, txCurrentMa: -1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 0.7 })).toThrowError(RfError);
+    expect(() => calculateBatteryLife({ capacityMah: 1, txCurrentMa: 1, txDurationMs: 1001, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 0.7 })).toThrowError(RfError);
+    expect(() => calculateBatteryLife({ capacityMah: 1, txCurrentMa: 1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 0 })).toThrowError(RfError);
+    expect(() => calculateBatteryLife({ capacityMah: 1, txCurrentMa: 1, txDurationMs: 1, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 1.1 })).toThrowError(RfError);
+    expect(() => calculateBatteryLife({ capacityMah: 1, txCurrentMa: 0, txDurationMs: 0, intervalSeconds: 1, sleepCurrentUa: 0, deratingFactor: 0.7 })).toThrowError(RfError);
+
     try {
-      calculateBatteryLife({
-        capacityMah: 1,
-        txCurrentMa: 1,
-        txDurationMs: 800,
-        rxCurrentMa: 1,
-        rxDurationMs: 300,
-        intervalSeconds: 1,
-        sleepCurrentUa: 1,
-        deratingFactor: 1
-      });
-      expect.unreachable("RfErrorが送出されるはず");
+      calculateBatteryLife({ capacityMah: 1, txCurrentMa: 1, txDurationMs: 1001, intervalSeconds: 1, sleepCurrentUa: 1, deratingFactor: 0.7 });
+      expect.unreachable("RfError が送出されるはず");
     } catch (error) {
       expect(error).toBeInstanceOf(RfError);
       expect((error as RfError).code).toBe(RfErrorCode.InvalidInput);

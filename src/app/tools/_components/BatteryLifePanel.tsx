@@ -55,7 +55,8 @@ function BatteryLifeDutyCurve({
   rxDurationMs,
   sleepCurrentUa,
   intervalSeconds,
-  currentLifeYears
+  currentLifeYears,
+  compact = false
 }: {
   capacityMah: number;
   deratingPercent: number;
@@ -66,8 +67,11 @@ function BatteryLifeDutyCurve({
   sleepCurrentUa: number;
   intervalSeconds: number;
   currentLifeYears: number;
+  compact?: boolean;
 }) {
-  const chart = { width: 640, height: 320, top: 28, right: 108, bottom: 54, left: 62 };
+  const chart = compact
+    ? { width: 360, height: 300, top: 34, right: 18, bottom: 56, left: 48 }
+    : { width: 640, height: 320, top: 28, right: 108, bottom: 54, left: 62 };
   const plotW = chart.width - chart.left - chart.right;
   const plotH = chart.height - chart.top - chart.bottom;
   const baselineY = chart.top + plotH;
@@ -108,8 +112,9 @@ function BatteryLifeDutyCurve({
   const xOf = (fhr: number) => chart.left + (Math.min(fhr, xAxisMax) / xAxisMax) * plotW;
   const yOf = (years: number) => chart.top + (1 - Math.min(years, yAxisMax) / yAxisMax) * plotH;
 
-  const xTicks = Array.from({ length: 5 }, (_, i) => (xAxisMax * i) / 4);
-  const yTicks = Array.from({ length: 5 }, (_, i) => (yAxisMax * i) / 4);
+  const tickCount = compact ? 4 : 5;
+  const xTicks = Array.from({ length: tickCount }, (_, i) => (xAxisMax * i) / (tickCount - 1));
+  const yTicks = Array.from({ length: tickCount }, (_, i) => (yAxisMax * i) / (tickCount - 1));
 
   const linePoints = finiteSamples.map((s) => `${xOf(s.fhr).toFixed(1)},${yOf(s.years).toFixed(1)}`).join(" ");
   const areaPath = finiteSamples.length
@@ -133,6 +138,9 @@ function BatteryLifeDutyCurve({
 
   return (
     <svg
+      data-testid={compact ? "battery-life-curve-mobile" : "battery-life-curve-desktop"}
+      data-current-frequency={currentFhr.toFixed(4)}
+      data-current-years={currentYears.toFixed(4)}
       role="img"
       aria-label={`送信頻度と電池寿命の関係。現在は1時間あたり${formatNumber(currentFhr, 2)}回で寿命${formatNumber(currentYears, 1)}年`}
       viewBox={`0 0 ${chart.width} ${chart.height}`}
@@ -154,14 +162,14 @@ function BatteryLifeDutyCurve({
             y={yOf(tick) + 4}
             textAnchor="end"
             fill={diagramPalette.muted}
-            fontSize={11}
+            fontSize={compact ? 13 : 11}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {formatNumber(tick, tick < 10 ? 1 : 0)}
           </text>
         </g>
       ))}
-      <text x={chart.left} y={chart.top - 12} fill={diagramPalette.muted} fontSize={12} fontWeight={600}>
+      <text x={chart.left} y={chart.top - 12} fill={diagramPalette.muted} fontSize={compact ? 14 : 12} fontWeight={600}>
         寿命[年]
       </text>
 
@@ -172,7 +180,7 @@ function BatteryLifeDutyCurve({
           y={baselineY + 20}
           textAnchor="middle"
           fill={diagramPalette.muted}
-          fontSize={11}
+          fontSize={compact ? 13 : 11}
           style={{ fontVariantNumeric: "tabular-nums" }}
         >
           {formatNumber(tick, tick < 10 ? 1 : 0)}
@@ -183,7 +191,7 @@ function BatteryLifeDutyCurve({
         y={chart.height - 8}
         textAnchor="middle"
         fill={diagramPalette.inkSoft}
-        fontSize={12}
+        fontSize={compact ? 14 : 12}
         fontWeight={600}
       >
         1時間あたりの送信回数（頻度）
@@ -216,7 +224,7 @@ function BatteryLifeDutyCurve({
             y={yOf(plateauYears) - 6}
             textAnchor="end"
             fill={diagramPalette.muted}
-            fontSize={10}
+            fontSize={compact ? 12 : 10}
             fontWeight={600}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
@@ -234,7 +242,7 @@ function BatteryLifeDutyCurve({
             y={cy - 10}
             textAnchor={labelAnchor}
             fill={chartTheme.seriesText.total}
-            fontSize={11}
+            fontSize={compact ? 13 : 11}
             fontWeight={700}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
@@ -245,7 +253,7 @@ function BatteryLifeDutyCurve({
             y={cy + 4}
             textAnchor={labelAnchor}
             fill={diagramPalette.muted}
-            fontSize={10}
+            fontSize={compact ? 12 : 10}
             style={{ fontVariantNumeric: "tabular-nums" }}
           >
             {formatNumber(currentFhr, 2)}回/時・duty {formatNumber(dutyPercent, 2)}%
@@ -400,17 +408,33 @@ export function BatteryLifePanel() {
         >
           {result ? (
             <div className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
-              <BatteryLifeDutyCurve
-                capacityMah={capacityMah}
-                deratingPercent={deratingPercent}
-                txCurrentMa={txCurrentMa}
-                txDurationMs={txDurationMs}
-                rxCurrentMa={rxCurrentMa}
-                rxDurationMs={rxDurationMs}
-                sleepCurrentUa={sleepCurrentUa}
-                intervalSeconds={intervalSeconds}
-                currentLifeYears={result.lifetimeYears}
-              />
+              <div className="hidden sm:block">
+                <BatteryLifeDutyCurve
+                  capacityMah={capacityMah}
+                  deratingPercent={deratingPercent}
+                  txCurrentMa={txCurrentMa}
+                  txDurationMs={txDurationMs}
+                  rxCurrentMa={rxCurrentMa}
+                  rxDurationMs={rxDurationMs}
+                  sleepCurrentUa={sleepCurrentUa}
+                  intervalSeconds={intervalSeconds}
+                  currentLifeYears={result.lifetimeYears}
+                />
+              </div>
+              <div className="sm:hidden">
+                <BatteryLifeDutyCurve
+                  compact
+                  capacityMah={capacityMah}
+                  deratingPercent={deratingPercent}
+                  txCurrentMa={txCurrentMa}
+                  txDurationMs={txDurationMs}
+                  rxCurrentMa={rxCurrentMa}
+                  rxDurationMs={rxDurationMs}
+                  sleepCurrentUa={sleepCurrentUa}
+                  intervalSeconds={intervalSeconds}
+                  currentLifeYears={result.lifetimeYears}
+                />
+              </div>
             </div>
           ) : (
             <p className="rounded-lg border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">

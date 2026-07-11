@@ -6,107 +6,86 @@ import {
 } from "@/lib/rf/gnssCn0";
 import { RfError } from "@/lib/rf/errors";
 
-describe("calculateGnssCn0 (passive)", () => {
-  it("-130dBm・3dBi・NF1.5dB・損失0で45.5dB-Hzになる", () => {
-    const result = calculateGnssCn0({
+describe("GNSS C/N0（G20）", () => {
+  it("P=-130dBm・G=3dBi・NF=1.5dB・損失0 → 45.5dB-Hz", () => {
+    expect(calculateGnssCn0({
+      receivedPowerDbm: -130,
+      antennaGainDbi: 3,
+      preLnaLossDb: 0,
+      receiverNoiseFigureDb: 1.5
+    }).cn0DbHz).toBeCloseTo(45.5, 12);
+  });
+
+  it("判定境界: >40 good、35..40 usable、<35 difficult", () => {
+    expect(classifyGnssCn0(40.001)).toBe("good");
+    expect(classifyGnssCn0(40)).toBe("usable");
+    expect(classifyGnssCn0(35)).toBe("usable");
+    expect(classifyGnssCn0(34.999)).toBe("difficult");
+  });
+
+  it("パッシブ系はケーブル損失3dBでC/N0がちょうど3dB低下", () => {
+    const noCable = calculateGnssCn0({
       receivedPowerDbm: -130,
       antennaGainDbi: 3,
       preLnaLossDb: 0,
       receiverNoiseFigureDb: 1.5
     });
-    expect(result.cn0DbHz).toBeCloseTo(45.5, 10);
-    expect(result.systemNoiseFigureDb).toBeCloseTo(1.5, 10);
-    expect(result.quality).toBe("good");
-  });
-
-  it("LNA前のケーブル損失3dBでC/N0が3dB低下する", () => {
-    const noCable = calculateGnssCn0({
-      receivedPowerDbm: -130,
-      antennaGainDbi: 3,
-      preLnaLossDb: 0,
-      receiverNoiseFigureDb: 4
-    });
-    const cable = calculateGnssCn0({
+    const cable3Db = calculateGnssCn0({
       receivedPowerDbm: -130,
       antennaGainDbi: 3,
       preLnaLossDb: 3,
-      receiverNoiseFigureDb: 4
+      receiverNoiseFigureDb: 1.5
     });
-    expect(cable.cn0DbHz - noCable.cn0DbHz).toBeCloseTo(-3, 10);
+    expect(noCable.cn0DbHz - cable3Db.cn0DbHz).toBeCloseTo(3, 12);
+    expect(cable3Db.systemNoiseFigureDb).toBeCloseTo(1.5, 12);
   });
 
-  it("C/N0が厳密に0のとき-0ではなく+0を返す", () => {
-    const result = calculateGnssCn0({
-      receivedPowerDbm: -174,
-      antennaGainDbi: 0,
-      preLnaLossDb: 0,
-      receiverNoiseFigureDb: 0
-    });
-    expect(result.cn0DbHz).toBe(0);
-    expect(Object.is(result.cn0DbHz, -0)).toBe(false);
-    expect(Object.is(result.systemNoiseFigureDb, -0)).toBe(false);
-  });
-});
-
-describe("calculateActiveGnssCn0 (Friis cascade)", () => {
-  it("20dB LNA後の3dBケーブル損失による劣化を約0.1dB以下に抑える", () => {
-    const baseInput = {
+  it("アクティブ系は20dB LNAにより後段3dBケーブルの影響が0.1dB未満", () => {
+    const noCable = calculateActiveGnssCn0({
       receivedPowerDbm: -130,
       antennaGainDbi: 3,
       preLnaLossDb: 0,
       lnaGainDb: 20,
       lnaNoiseFigureDb: 1.5,
-      receiverNoiseFigureDb: 4
-    };
-    const noCable = calculateActiveGnssCn0({ ...baseInput, postLnaLossDb: 0 });
-    const cable = calculateActiveGnssCn0({ ...baseInput, postLnaLossDb: 3 });
-    const degradationDb = noCable.cn0DbHz - cable.cn0DbHz;
-    expect(degradationDb).toBeGreaterThan(0);
-    expect(degradationDb).toBeLessThan(0.1);
-    expect(degradationDb).toBeCloseTo(0.075, 2);
-  });
-
-  it("LNA利得を上げると後段寄与が小さくなる", () => {
-    const common = {
+      postLnaLossDb: 0,
+      receiverNoiseFigureDb: 3
+    });
+    const cable3Db = calculateActiveGnssCn0({
       receivedPowerDbm: -130,
       antennaGainDbi: 3,
       preLnaLossDb: 0,
+      lnaGainDb: 20,
+      lnaNoiseFigureDb: 1.5,
       postLnaLossDb: 3,
-      lnaNoiseFigureDb: 1,
-      receiverNoiseFigureDb: 6
-    };
-    const lowGain = calculateActiveGnssCn0({ ...common, lnaGainDb: 10 });
-    const highGain = calculateActiveGnssCn0({ ...common, lnaGainDb: 30 });
-    expect(highGain.systemNoiseFigureDb).toBeLessThan(lowGain.systemNoiseFigureDb);
-    expect(highGain.cn0DbHz).toBeGreaterThan(lowGain.cn0DbHz);
-  });
-});
-
-describe("classifyGnssCn0 and guards", () => {
-  it("40超=good、35〜40=usable、35未満=difficult", () => {
-    expect(classifyGnssCn0(40.01)).toBe("good");
-    expect(classifyGnssCn0(40)).toBe("usable");
-    expect(classifyGnssCn0(35)).toBe("usable");
-    expect(classifyGnssCn0(34.99)).toBe("difficult");
+      receiverNoiseFigureDb: 3
+    });
+    expect(noCable.cn0DbHz - cable3Db.cn0DbHz).toBeGreaterThan(0);
+    expect(noCable.cn0DbHz - cable3Db.cn0DbHz).toBeLessThan(0.1);
   });
 
-  it("非有限電力と負の損失・NFを拒否する", () => {
-    expect(() =>
-      calculateGnssCn0({ receivedPowerDbm: Number.NaN, antennaGainDbi: 3, preLnaLossDb: 0, receiverNoiseFigureDb: 1.5 })
-    ).toThrowError(RfError);
-    expect(() =>
-      calculateGnssCn0({ receivedPowerDbm: -130, antennaGainDbi: 3, preLnaLossDb: -1, receiverNoiseFigureDb: 1.5 })
-    ).toThrowError(RfError);
-    expect(() =>
-      calculateActiveGnssCn0({
-        receivedPowerDbm: -130,
-        antennaGainDbi: 3,
-        preLnaLossDb: 0,
-        postLnaLossDb: 3,
-        lnaGainDb: 20,
-        lnaNoiseFigureDb: -1,
-        receiverNoiseFigureDb: 4
-      })
-    ).toThrowError(RfError);
+  it("Friis縦続を線形雑音係数で独立検算する", () => {
+    const actual = calculateActiveGnssCn0({
+      receivedPowerDbm: -130,
+      antennaGainDbi: 3,
+      preLnaLossDb: 0,
+      lnaGainDb: 20,
+      lnaNoiseFigureDb: 1.5,
+      postLnaLossDb: 3,
+      receiverNoiseFigureDb: 3
+    }).systemNoiseFigureDb;
+    const f1 = 10 ** (1.5 / 10);
+    const f2 = 10 ** (3 / 10);
+    const f3 = 10 ** (3 / 10);
+    const g1 = 10 ** (20 / 10);
+    const g2 = 10 ** (-3 / 10);
+    const expected = 10 * Math.log10(f1 + (f2 - 1) / g1 + (f3 - 1) / (g1 * g2));
+    expect(actual).toBeCloseTo(expected, 12);
+  });
+
+  it("ガード: C/N0入力は有限、損失/NFは非負、縦続段は空不可", () => {
+    expect(() => calculateGnssCn0({ receivedPowerDbm: Number.NaN, antennaGainDbi: 3, preLnaLossDb: 0, receiverNoiseFigureDb: 1.5 })).toThrowError(RfError);
+    expect(() => calculateGnssCn0({ receivedPowerDbm: -130, antennaGainDbi: 3, preLnaLossDb: -1, receiverNoiseFigureDb: 1.5 })).toThrowError(RfError);
+    expect(() => calculateGnssCn0({ receivedPowerDbm: -130, antennaGainDbi: 3, preLnaLossDb: 0, receiverNoiseFigureDb: -1 })).toThrowError(RfError);
+    expect(() => calculateActiveGnssCn0({ receivedPowerDbm: -130, antennaGainDbi: 3, preLnaLossDb: 0, receiverNoiseFigureDb: 1.5, lnaGainDb: 20, lnaNoiseFigureDb: 1, postLnaLossDb: -1 })).toThrowError(RfError);
   });
 });

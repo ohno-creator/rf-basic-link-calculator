@@ -264,6 +264,26 @@ export const tools: ToolEntry[] = [
     }
   },
   {
+    "slug": "wall-penetration",
+    "name": "壁・建材の透過損失",
+    "tagline": "建材と枚数から屋内経路の追加損失を合算",
+    "icon": "building",
+    "category": "link",
+    "basic": {
+      "title": "壁・建材の透過損失バジェット",
+      "metaTitle": "壁・建材の透過損失計算｜周波数別の屋内リンク損失",
+      "description": "木材、石膏ボード、コンクリート、ガラスなどの透過損失レンジを周波数帯別に合算し、屋内リンクへの追加損失を見積もります。",
+      "scopeNote": "ITU-R P.2040-2・NISTIR 6055等の代表レンジです。厚さ、含水率、鉄筋、金属膜、入射角による差が大きいため、重要回線は現地測定で補正してください。",
+      "formula": "Ltotal,min=Σn·Lmin　Ltotal,max=Σn·Lmax",
+      "essenceLead": "経路上の壁が増えるほどdB損失は加算され、コンクリートやLow-Eガラスがリンク余裕を大きく削ります。",
+      "beginnerGuide": {
+        "purpose": "屋内IoTや建物内外の通信で、壁を通ることによる追加損失の幅を確認します。",
+        "inputs": "周波数帯を選び、送受信点の間にある建材を枚数分追加します。",
+        "result": "最小〜最大の合計損失をリンクバジェットの環境損失として使い、最悪側でも余裕が残るか確認します。"
+      }
+    }
+  },
+  {
     "slug": "propagation-loss",
     "name": "伝搬損失モデル比較",
     "tagline": "自由空間〜Hata系を一括比較",
@@ -634,6 +654,66 @@ export const tools: ToolEntry[] = [
     }
   },
   {
+    "slug": "body-loss",
+    "name": "人体・手のボディロス",
+    "tagline": "装着条件ごとの追加損失をリンク予算へ反映",
+    "icon": "activity",
+    "category": "implementation",
+    "basic": {
+      "title": "人体・手のボディロス",
+      "metaTitle": "人体・手のボディロス計算｜ウェアラブル・携帯機器の追加損失",
+      "description": "周波数帯と手持ち・手首・体表密着・人体遮蔽などの条件から、人体近接によるtypical／worst追加損失を表示します。",
+      "scopeNote": "3GPP・CTIA等の代表値です。アンテナ形式、偏波、装着距離、姿勢、衣服、ユーザー差を含むため、最終判断は実装状態のOTA測定を優先してください。",
+      "formula": "電力残存率[%]=100·10^(−L[dB]/10)",
+      "essenceLead": "人体への密着や遮蔽はアンテナの離調と吸収を招き、リンク余裕を数十dB削る場合があります。",
+      "beginnerGuide": {
+        "purpose": "携帯・ウェアラブル機器で、人体近接を考慮した環境損失をリンクバジェットへ追加します。",
+        "inputs": "周波数帯と、実際の装着・遮蔽シナリオを選びます。",
+        "result": "通常時はtypical、通信保証重視ではworst損失を使い、実装OTA評価の必要性を判断します。"
+      }
+    }
+  },
+  {
+    "slug": "ground-plane-size",
+    "name": "GNDプレーン寸法と効率",
+    "tagline": "基板GND長を波長換算して効率低下を概算",
+    "icon": "circuit",
+    "category": "implementation",
+    "basic": {
+      "title": "GNDプレーン寸法と効率",
+      "metaTitle": "GNDプレーン寸法と効率計算｜基板GND長を波長換算",
+      "description": "周波数と基板GNDの最長辺からLg/λを計算し、λ/4系アンテナの効率変化を出典付き代表テーブルで概算します。",
+      "scopeNote": "λ/4系PCB・チップアンテナの初期目安です。GND幅、層構成、給電位置、筐体、整合状態は含まないため、対象アンテナの評価基板と実装測定を優先してください。",
+      "formula": "λ=c/f　ratio=Lg/λ　効率変化=出典付きテーブルの区分線形補間",
+      "essenceLead": "小型アンテナでは基板GNDも放射体の一部であり、λ/4より短くなると効率が急に悪化します。",
+      "beginnerGuide": {
+        "purpose": "予定している基板サイズで、アンテナが利用できるGND長を確保できるか確認します。",
+        "inputs": "使用周波数と、アンテナが利用できる連続した基板GNDの最長辺を入れます。",
+        "result": "Lg/λ、推奨λ/4寸法、効率変化目安を確認し、不足時は基板拡張や外付けアンテナを検討します。"
+      }
+    }
+  },
+  {
+    "slug": "antenna-keepout",
+    "name": "アンテナ・キープアウト",
+    "tagline": "アンテナ種別と帯域から必要禁止領域を確認",
+    "icon": "circuit",
+    "category": "implementation",
+    "basic": {
+      "title": "アンテナ・キープアウト領域チェック",
+      "metaTitle": "アンテナ・キープアウト領域チェック｜基板の必要GND禁止領域",
+      "description": "アンテナ種別と周波数帯ごとの代表的な必要キープアウト寸法を、基板上で確保できる幅・高さと比較します。",
+      "scopeNote": "主要メーカの推奨実装を整理した初期配置の目安です。品番ごとのGND・基板端・給電方向条件は対象製品の最新データシートを優先してください。",
+      "formula": "不足率=max(0,必要寸法−確保寸法)/必要寸法（W/Hを独立評価）",
+      "essenceLead": "空き面積が同じでも、必要な幅または高さが欠けるとアンテナ性能を確保できません。",
+      "beginnerGuide": {
+        "purpose": "検討中の基板へ、内蔵アンテナ用のGND禁止領域を確保できるか一次判定します。",
+        "inputs": "アンテナ種別、周波数帯、データシート基準図と同じ向きで確保できる幅W・高さHを入れます。",
+        "result": "必要寸法と各辺の不足量を確認し、不足時は基板拡張、配置変更、外付けアンテナを検討します。"
+      }
+    }
+  },
+  {
     "slug": "ifa-initial-dimensions",
     "name": "逆F・IFA初期寸法",
     "tagline": "周波数と基板εrからパターン長を概算",
@@ -674,6 +754,26 @@ export const tools: ToolEntry[] = [
     }
   },
   {
+    "slug": "diversity-gain",
+    "name": "ダイバーシティ利得",
+    "tagline": "アンテナ間隔と相関から2ブランチ利得を推定",
+    "icon": "antenna",
+    "category": "antenna",
+    "basic": {
+      "title": "ダイバーシティ利得推定",
+      "metaTitle": "ダイバーシティ利得計算｜アンテナ間隔・相関・アウテージ",
+      "description": "2ブランチ選択合成のアウテージ利得を計算し、アンテナ間隔から推定した相関係数で補正します。",
+      "scopeNote": "レイリーフェージング、一様な方位角到来、2ブランチ選択合成の簡易モデルです。実装結合、偏波・パターン不一致、筐体は含まないため、最終値は実測ECC・OTA評価で確認してください。",
+      "formula": "Pout=(1−e^(−x))²　ρe≈J0²(2πd/λ)　Gcorr≈Gind·√(1−ρe)",
+      "essenceLead": "アンテナ2本のフェージングが独立に近いほど、深い受信レベル低下を同時に受けにくくなります。",
+      "beginnerGuide": {
+        "purpose": "2本目のアンテナで受信断の確率をどれだけ改善できそうかを概算します。",
+        "inputs": "アウテージ率、周波数、アンテナ中心間隔を入れます。",
+        "result": "独立時利得、間隔から推定したρe、相関補正後利得を比較し、配置変更の価値を判断します。"
+      }
+    }
+  },
+  {
     "slug": "antenna-isolation",
     "name": "2アンテナ間アイソレーション",
     "tagline": "間隔から自由空間S21を概算",
@@ -690,6 +790,26 @@ export const tools: ToolEntry[] = [
         "purpose": "MIMOやダイバーシティで、2本のアンテナをどれくらい離すべきかを概算します。",
         "inputs": "周波数、アンテナ間隔、2本それぞれの利得を入れます。",
         "result": "−15dB以下を一つの目安にし、λ/2未満では近傍界の参考値として扱います。"
+      }
+    }
+  },
+  {
+    "slug": "lora-airtime",
+    "name": "LoRa送信時間・920MHz制限",
+    "tagline": "SF・ペイロードからToAと送信時間制限を確認",
+    "icon": "radio",
+    "category": "system",
+    "basic": {
+      "title": "LoRa Time-on-Air・920MHz送信制限",
+      "metaTitle": "LoRa Time-on-Air計算｜SF・ペイロードと920MHz送信制限",
+      "description": "LoRaのSF、帯域幅、符号化率、ペイロード長からTime-on-Airを計算し、ARIB STD-T108の代表的な連続送信・時間総量条件と照合します。",
+      "scopeNote": "Raw LoRa PHYの送信時間です。LoRaWAN MACヘッダ等はペイロードへ含めてください。規制判定は選択区分の設計目安であり、使用周波数・認証条件・最新版規格による最終確認が必要です。",
+      "formula": "Tsym=2^SF/BW　ToA=(Npre+4.25+Npayload)·Tsym",
+      "essenceLead": "SFを上げると受信感度を稼げる一方、送信時間・電池消費・チャネル占有が急増します。",
+      "beginnerGuide": {
+        "purpose": "LoRaパケットが電波を占有する時間と、920MHz帯の送信時間条件への余裕を確認します。",
+        "inputs": "SF、帯域幅、符号化率、実際のPHYペイロード長、ヘッダ・CRC、1時間の送信回数を入れます。",
+        "result": "Time-on-Air、SF別比較、連続送信上限と1時間累積時間を確認し、SFやペイロード、送信周期を調整します。"
       }
     }
   },
