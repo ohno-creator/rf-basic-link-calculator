@@ -29,9 +29,14 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" },
+    { slug: "wall-penetration", h1: "壁・建材の透過損失バジェット", fig: "建材ごとの透過損失レンジ" },
     { slug: "ifa-initial-dimensions", h1: "逆F・IFAアンテナ初期寸法", fig: "IFA上面図の読み方" },
     { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
     { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
+    { slug: "diversity-gain", h1: "ダイバーシティ利得推定", fig: "独立時と相関補正後の利得" },
+    { slug: "antenna-keepout", h1: "アンテナ・キープアウト領域チェック", fig: "必要キープアウトと確保領域" },
+    { slug: "ground-plane-size", h1: "GNDプレーン寸法と効率", fig: "GND長/λと効率変化の目安" },
+    { slug: "body-loss", h1: "人体・手のボディロス", fig: "人体近接による追加損失" },
     { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
     { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" },
     {
@@ -52,6 +57,82 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
 });
 
 test.describe("G Tier2 tools", () => {
+  test("body loss switches scenarios and preserves missing data", async ({ page }) => {
+    await page.goto("/tools/body-loss/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("body-loss-diagram");
+    await expect(primary).toContainText("5.0 / 10.0");
+    await page.getByRole("button", { name: "手首装着", exact: true }).click();
+    await expect(primary).toContainText("12.0 / 20.0");
+    await expect(diagram).toHaveAttribute("data-selected", "wrist");
+
+    await page.getByRole("button", { name: "1575MHz（GNSS）", exact: true }).click();
+    await expect(page.getByRole("button", { name: "頭部近接（データなし）" })).toBeDisabled();
+  });
+
+  test("ground plane efficiency reacts to GND length", async ({ page }) => {
+    await page.goto("/tools/ground-plane-size/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("ground-plane-size-diagram");
+    await expect(primary).toContainText("0.0");
+    const initialRatio = await diagram.getAttribute("data-ratio");
+
+    await page.locator("#groundPlaneLength").fill("32.6");
+    await expect(primary).toContainText("-6.0");
+    await expect.poll(() => diagram.getAttribute("data-ratio")).not.toBe(initialRatio);
+    await expect(diagram).toHaveAttribute("data-ratio", /0\.100/);
+  });
+
+  test("diversity gain reacts to antenna spacing", async ({ page }) => {
+    await page.goto("/tools/diversity-gain/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("diversity-gain-diagram");
+    await expect(primary).toContainText("9.72");
+    const initialCorrelation = await diagram.getAttribute("data-correlation");
+
+    await page.locator("#diversitySpacing").fill("0");
+    await expect(primary).toContainText("0.00");
+    await expect(diagram).toHaveAttribute("data-correlation", "1.0000");
+
+    await page.locator("#diversitySpacing").fill("162.9");
+    await expect.poll(() => diagram.getAttribute("data-correlation")).not.toBe("1.0000");
+    expect(await diagram.getAttribute("data-correlation")).toBe(initialCorrelation);
+  });
+
+  test("wall penetration adds material loss ranges in dB", async ({ page }) => {
+    await page.goto("/tools/wall-penetration/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("wall-penetration-diagram");
+    await expect(primary).toContainText("15.0–26.0");
+    await expect(diagram).toHaveAttribute("data-total-min", "15");
+
+    await page.getByRole("button", { name: "乾式石膏ボードを減らす" }).click();
+    await expect(primary).toContainText("13.5–23.0");
+
+    await page.getByRole("button", { name: "Low-E（金属複層ガラス）を増やす" }).click();
+    await expect(primary).toContainText("33.5–53.0");
+
+    await page.getByRole("button", { name: "28GHz", exact: true }).click();
+    await expect(primary).toContainText("59.0–92.0");
+  });
+
+  test("antenna keepout evaluates each dimension", async ({ page }) => {
+    await page.goto("/tools/antenna-keepout/");
+    const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("antenna-keepout-diagram");
+    await expect(primary).toContainText("必要領域を確保");
+    await expect(diagram).toHaveAttribute("data-status", "success");
+
+    await page.locator("#keepoutAvailableWidth").fill("7.9");
+    await expect(primary).toContainText("領域不足");
+    await expect(diagram).toHaveAttribute("data-status", "danger");
+
+    await page.locator("#keepoutAvailableWidth").fill("35");
+    await page.locator("#keepoutAvailableHeight").fill("10");
+    await page.getByRole("button", { name: "920MHz（LPWA）", exact: true }).click();
+    await expect(primary).toContainText("必要領域を確保");
+  });
+
   test("LoRa airtime reacts to SF, payload and hourly limit", async ({ page }) => {
     await page.goto("/tools/lora-airtime/");
     const primary = page.getByTestId("primary-result");
