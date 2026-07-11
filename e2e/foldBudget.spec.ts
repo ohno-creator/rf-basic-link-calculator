@@ -4,15 +4,9 @@ import * as fs from "fs";
 import * as path from "path";
 
 // 将来的なUI改修でフォールド予算を満たす予定の新設ツール群を一時的にテスト失敗から除外 (fixme扱い)
-const FIXME_SLUGS = new Set([
-  "antenna-keepout",
-  "body-loss",
-  "detuning-estimator",
-  "diversity-gain",
-  "ground-plane-size",
-  "lora-airtime",
-  "wall-penetration"
-]);
+// 恒久的な未達の握り潰しを防ぐため、FIXMEは「一時的な例外＋期限コメント」がある場合のみ許可する。
+// （2026-07-11: 旧サーバー404計測による誤登録7件を実測で解消し空に戻した）
+const FIXME_SLUGS = new Set<string>([]);
 
 test("fold budget KPI metrics and status map generation", async ({ page }, testInfo) => {
   // 基本ツール数に比例して増える走査回数に合わせてタイムアウトを動的算出（1ツール6秒を確保）
