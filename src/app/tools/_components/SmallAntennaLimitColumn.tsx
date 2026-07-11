@@ -60,7 +60,7 @@ export function SmallAntennaLimitColumn({
               広げられるが、放射効率を失う。能動・非フォスター整合には別の安定性と雑音の評価が必要になる。
             </p>
             <p>
-              出典: <a className="font-semibold underline" href="https://aip.scitation.org/doi/10.1063/1.1697938" target="_blank" rel="noreferrer">L. J. Chu (1948)</a>／
+              出典: <a className="font-semibold underline" href="https://doi.org/10.1063/1.1697938" target="_blank" rel="noreferrer">L. J. Chu (1948)</a>／
               <a className="font-semibold underline" href="https://ieeexplore.ieee.org/document/491132" target="_blank" rel="noreferrer">J. S. McLean (1996), Eq. 21</a>／
               <a className="font-semibold underline" href="https://ieeexplore.ieee.org/document/1697253" target="_blank" rel="noreferrer">H. A. Wheeler (1947)</a>。
             </p>
