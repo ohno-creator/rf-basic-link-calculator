@@ -362,6 +362,10 @@ export function MetalPlaneEffectPanel() {
       <section className="grid gap-6 lg:grid-cols-[minmax(0,4.5fr)_minmax(0,5.5fr)] lg:items-start">
         {/* 左カラム：入力条件と結果・早見表 */}
         <div className="space-y-4">
+          <div id="metal-plane-effect-primary-result">
+            <ResultBar primary={primary} />
+          </div>
+
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">入力条件</h2>
             <p className="mt-2 text-sm leading-relaxed text-slate-600">
@@ -424,10 +428,6 @@ export function MetalPlaneEffectPanel() {
               理想値です。有限板ではエッジ回折で深いヌルは −15〜−25dB 程度に埋まり、ピークもやや下がります。
             </p>
           </Card>
-
-          <div id="metal-plane-effect-primary-result">
-            <ResultBar primary={primary} />
-          </div>
 
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">離隔ごとの利得変化（早見表）</h2>

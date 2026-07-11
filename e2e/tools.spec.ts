@@ -402,6 +402,35 @@ test("coax tool keeps total loss visible beside the inputs", async ({ page }) =>
   await expect(primaryResult).toContainText("dB");
 });
 
+test("RF calculator opens in guided mode with advice chips that apply on click", async ({ page }) => {
+  await page.goto("/tools/rf-basic-link-calculator/");
+
+  // 既定=かんたんモード: 3ステップとゲージ・次の一手が見える
+  const guided = page.getByTestId("guided-link-budget");
+  await expect(guided).toBeVisible();
+  await expect(guided.getByText("どんな通信ですか？")).toBeVisible();
+  await expect(page.getByTestId("guided-advice")).toBeVisible();
+
+  // シナリオカードで前提を一括セット→距離スライダー表示が連動
+  await page.getByTestId("guided-preset-lpwa-920").click();
+  await expect(page.getByTestId("guided-distance-value")).toContainText("km");
+
+  // 環境チップを金属近接へ→マージン悪化→「次の一手」に距離短縮チップが出る→クリックで距離が縮む
+  await guided.getByRole("button", { name: /金属近接/ }).click();
+  const before = await page.getByTestId("guided-distance-value").textContent();
+  const distanceChip = page.getByTestId("guided-advice").getByRole("button", { name: /距離を約/ });
+  if (await distanceChip.count()) {
+    await distanceChip.click();
+    await expect.poll(() => page.getByTestId("guided-distance-value").textContent()).not.toBe(before);
+  }
+
+  // 詳細モードへ切り替えるとクイック調整/解説付きの切替が現れ、値は引き継がれる
+  await page.getByTestId("open-expert-mode").click();
+  await expect(page.getByRole("button", { name: "クイック調整" })).toBeVisible();
+  await page.getByRole("button", { name: "解説付き入力" }).click();
+  await expect(page.getByRole("heading", { name: "リンクバジェット簡易診断", exact: true })).toBeVisible();
+});
+
 test("RF calculator switches to the research distance sheet", async ({ page }) => {
   await page.goto("/tools/rf-basic-link-calculator/");
   // 既定は「かんたん」モード→詳細モードへ。さらに全項目が見える「解説付き入力」表示に切り替える
@@ -1208,4 +1237,26 @@ test("ground plane size tool shows the Lg/λ efficiency drop and reacts to lengt
   // GND最長辺を 0（GNDなし）へ → 目安表の下端 -20.0dB
   await calculator.locator("#gpGroundLength").fill("0");
   await expect(calculator.getByTestId("primary-result")).toContainText("-20.0");
+});
+
+test("db family links dBi to dBd and validates the addition checker", async ({ page }) => {
+  await page.goto("/tools/db-family/");
+  const calculator = page.getByTestId("tool-calculator");
+
+  // 既定 利得6dBi → dBd表示は 6−2.15=3.85（dbiToDbd/DIPOLE_GAIN_DBIで検算した確定値）
+  await expect(calculator.getByTestId("db-family-gain-svg")).toHaveAttribute("data-dbd", "3.85");
+  // 0dBi へ → dBdは −2.15（等方基準の0は、ダイポール基準では負になる）
+  await calculator.locator("#dbFamilyGain").fill("0");
+  await expect(calculator.getByTestId("db-family-gain-svg")).toHaveAttribute("data-dbd", "-2.15");
+
+  // チェッカー既定: 13dBm ＋ アンテナ利得3dBi ＝ 16dBm（有効・dBm+比率）
+  const checker = calculator.getByTestId("db-family-checker");
+  await expect(checker).toHaveAttribute("data-valid", "true");
+  await expect(calculator.getByTestId("primary-result")).toContainText("16.0");
+
+  // 2つ目を 20dBm へ → dBm+dBm は無効。電力和 10log10(10^1.3+10^2)≈20.8dBm を提示（combinePowersDbmで検算）
+  await calculator.locator("#dbFamilyTermB").selectOption("tx20");
+  await expect(checker).toHaveAttribute("data-valid", "false");
+  await expect(checker).toContainText("足し算できません");
+  await expect(calculator.getByTestId("primary-result")).toContainText("20.8");
 });
