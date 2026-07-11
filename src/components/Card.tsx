@@ -2,7 +2,7 @@ import type { HTMLAttributes, ReactNode } from "react";
 import { calloutToneClass, type CalloutTone } from "./Callout";
 
 type CardVariant = "white" | "slate";
-type CardPadding = "sm" | "md" | "lg";
+type CardPadding = "xs" | "sm" | "md" | "lg";
 
 const variantBg: Record<CardVariant, string> = {
   // v4-4: 白面は僅かな縦グラデで2.5D化（上端が明るい「トップハイライト」。文字コントラストには影響しない）。
@@ -11,6 +11,7 @@ const variantBg: Record<CardVariant, string> = {
 };
 
 const paddingClass: Record<CardPadding, string> = {
+  xs: "p-2",
   sm: "p-4",
   md: "p-4",
   lg: "p-5"
