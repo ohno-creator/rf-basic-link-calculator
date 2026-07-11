@@ -11,6 +11,7 @@ type ResultHeroProps = {
   result: LinkBudgetResult | null;
   errors: LinkBudgetErrorMessages;
   onStepSelect?: (key: keyof LinkBudgetInput) => void;
+  compact?: boolean;
 };
 
 // 判定レベル→帯の配色は Callout のトーン体系（LEVEL_TO_TONE）に一本化。
@@ -22,7 +23,7 @@ function levelToneClass(level: keyof typeof LEVEL_TO_TONE): string {
  * 結果の主役（判定・リンクマージン・滝グラフ）だけをまとめたヒーロー。
  * デスクトップでは sticky にして、入力を動かしている間も滝グラフが常に見えるようにする。
  */
-export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroProps) {
+export function ResultHero({ input, result, errors, onStepSelect, compact = false }: ResultHeroProps) {
   if (!result) {
     const errorMessages = Object.values(errors);
     return (
@@ -39,6 +40,35 @@ export function ResultHero({ input, result, errors, onStepSelect }: ResultHeroPr
 
   const margin = result.linkMarginDb;
   const marginValue = Number.isFinite(margin) ? `${margin > 0 ? "+" : ""}${margin.toFixed(1)}` : "-";
+
+  if (compact) {
+    return (
+      <div className="space-y-3">
+        <section
+          data-testid="compact-result-summary"
+          className={`rounded-lg border px-4 py-3 shadow-card ${levelToneClass(result.judgement.level)}`}
+        >
+          <div className="flex items-center justify-between gap-4">
+            <div className="min-w-0">
+              <p className="text-xs font-semibold">判定</p>
+              <p className="mt-0.5 truncate text-lg font-bold">{result.judgement.label}</p>
+              <p className="mt-0.5 truncate text-xs opacity-80">{result.judgement.summary}</p>
+            </div>
+            <div className="shrink-0 text-right">
+              <p className="text-[11px] font-semibold opacity-70">リンクマージン</p>
+              <p className="text-2xl font-bold tabular-nums text-staf-dark">
+                {marginValue}<span className="ml-1 text-xs font-semibold text-slate-500">dB</span>
+              </p>
+              <p className="text-[11px] text-slate-500">受信 {formatDbm(result.receivedPowerDbm)}</p>
+            </div>
+          </div>
+        </section>
+
+        <LinkBudgetWaterfallChart input={input} result={result} onStepSelect={onStepSelect} compact />
+        <PropagationWarnings warnings={result.warnings} compact />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
