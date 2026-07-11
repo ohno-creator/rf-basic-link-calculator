@@ -148,7 +148,7 @@ export default function HomePage() {
                 実機評価・アンテナ選定でお困りですか？
               </h2>
               <p className="mt-2 max-w-2xl text-sm leading-relaxed text-white/90">
-                計算は初期検討の目安です。筐体・基板GND・設置環境を含む実機評価は、スタッフ株式会社にご相談ください。
+                計算は初期検討の目安です。建物・筐体込みの実測評価は技術相談窓口へどうぞ。
               </p>
               <a
                 href={CONTACT_URL}
