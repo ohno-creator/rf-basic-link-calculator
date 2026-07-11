@@ -81,8 +81,10 @@ export function Field(props: FieldProps) {
       : min ?? 0;
 
   return (
-    <label className="block" htmlFor={id}>
-      <span className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+    // min-w-0: grid/flexアイテムとして置かれた際にmin-content幅で固まらず縮めるようにする
+    // （Linuxフォントでmin-contentが広がり、モバイル375pxで横はみ出しした実績への防御。余白十分時は無影響）
+    <label className="block min-w-0" htmlFor={id}>
+      <span className="flex min-w-0 flex-wrap items-center gap-2 text-sm font-semibold text-slate-900">
         {label}
         {help ? <HelpHint text={help} /> : null}
       </span>
