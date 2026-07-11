@@ -10,7 +10,7 @@
  * EM解析で±10〜20%程度の追い込みを行う前提の初期値としてのみ使用する。
  */
 
-import { assertAtLeast, assertPositiveFinite } from "./errors";
+import { assertAtLeast, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
 import { calculateWavelengthFromMHz } from "./frequency";
 
 export type IfaDimensionsInput = {
@@ -32,7 +32,10 @@ export type IfaDimensionsResult = {
 
 /** IFA全長と短絡点〜給電点間隔の初期値を返す。 */
 export function calculateIfaDimensions(input: IfaDimensionsInput): IfaDimensionsResult {
-  assertPositiveFinite(input.frequencyMHz, "frequency");
+  assertAtLeast(input.frequencyMHz, 100, "frequency");
+  if (input.frequencyMHz > 6000) {
+    throw new RfError(RfErrorCode.TooLarge, { field: "frequency", max: 6000 });
+  }
   assertAtLeast(input.relativePermittivity, 1, "relative_permittivity");
   assertPositiveFinite(input.substrateThicknessMm, "substrate_thickness");
 

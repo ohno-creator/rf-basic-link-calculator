@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
@@ -10,6 +11,13 @@ import { ResultBar } from "@/components/ResultBar";
 import { calculateAntennaIsolation } from "@/lib/rf/antennaIsolation";
 import { formatNumber } from "@/lib/rf/format";
 import type { LinkJudgementLevel } from "@/lib/rf/judgement";
+import {
+  DIAGRAM_DEF_IDS,
+  diagramPalette,
+  diagramRef,
+  diagramStroke,
+  diagramText
+} from "@/lib/ui/diagramTheme";
 import { AntennaIsolationColumn } from "./AntennaIsolationColumn";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 
@@ -22,9 +30,14 @@ const qualityMeta: Record<
   insufficient: { label: "結合量の目安：不足", level: "poor" }
 };
 
+function displaySpacingMm(value: number): number {
+  // λ/2などの境界プリセットが丸めで閾値未満へ落ちないよう、0.1mm単位で上側へそろえる。
+  return Math.ceil(value * 10) / 10;
+}
+
 export function AntennaIsolationPanel() {
   const [frequencyMHz, setFrequencyMHz] = useState(920);
-  const [spacingMm, setSpacingMm] = useState(299_792.458 / 920 / 2);
+  const [spacingMm, setSpacingMm] = useState(displaySpacingMm(299_792.458 / 920 / 2));
   const [antenna1GainDbi, setAntenna1GainDbi] = useState(2.15);
   const [antenna2GainDbi, setAntenna2GainDbi] = useState(2.15);
   const [targetCouplingDb, setTargetCouplingDb] = useState(-15);
@@ -49,6 +62,23 @@ export function AntennaIsolationPanel() {
     value: result ? formatNumber(result.couplingDb, 1) : "—",
     unit: "dB"
   };
+  const spacingLog = result ? Math.log2(Math.max(0.125, Math.min(4, result.spacingWavelengths))) : -1;
+  const spacingVisualRatio = (spacingLog + 3) / 5;
+  const antennaHalfGap = 105 + spacingVisualRatio * 155;
+  const antenna1X = 340 - antennaHalfGap;
+  const antenna2X = 340 + antennaHalfGap;
+  const pathStartX = antenna1X + 24;
+  const pathEndX = antenna2X - 24;
+  const pathSpan = Math.max(80, pathEndX - pathStartX);
+  const pathControlY = result?.isNearFieldEstimate ? 82 : 50;
+  const couplingStrength = result ? Math.min(1, Math.max(0, (result.couplingDb + 30) / 25)) : 0.5;
+  const pathStrokeWidth = 1.5 + couplingStrength * 5;
+  const pathOpacity = 0.35 + couplingStrength * 0.6;
+  const pathColor = result?.quality === "good"
+    ? diagramPalette.successDeep
+    : result?.quality === "insufficient"
+      ? diagramPalette.dangerDeep
+      : diagramPalette.amberDeep;
 
   return (
     <>
@@ -69,7 +99,7 @@ export function AntennaIsolationPanel() {
                 key={ratio}
                 type="button"
                 disabled={!result}
-                onClick={() => result && setSpacingMm(result.wavelengthMm * ratio)}
+                onClick={() => result && setSpacingMm(displaySpacingMm(result.wavelengthMm * ratio))}
                 className="inline-flex min-h-11 items-center rounded-full border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-600 transition hover:border-staf/40 hover:text-staf-dark disabled:opacity-50"
               >
                 {ratio}λへ設定
@@ -103,14 +133,79 @@ export function AntennaIsolationPanel() {
       {result ? (
         <Card as="figure" padding="md" className="mt-6">
           <figcaption className="text-base font-bold text-slate-950">アンテナ間隔と結合経路</figcaption>
-          <svg role="img" aria-label="2アンテナ間の結合経路" viewBox="0 0 680 220" className="mt-3 h-44 w-full">
-            <line x1="115" y1="55" x2="115" y2="165" stroke="currentColor" strokeWidth="10" strokeLinecap="round" className="text-staf" />
-            <line x1="565" y1="55" x2="565" y2="165" stroke="currentColor" strokeWidth="10" strokeLinecap="round" className="text-staf" />
-            <path d="M145 95 C250 35 430 35 535 95" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="8 6" className="text-sky-500" />
-            <path d="M145 125 C250 185 430 185 535 125" fill="none" stroke="currentColor" strokeWidth="3" strokeDasharray="8 6" className="text-sky-300" />
-            <line x1="135" y1="190" x2="545" y2="190" stroke="currentColor" strokeWidth="2" className="text-slate-400" />
-            <text x="340" y="212" textAnchor="middle" className="fill-slate-600 text-sm font-semibold">{formatNumber(spacingMm, 1)}mm（{formatNumber(result.spacingWavelengths, 2)}λ）</text>
-            <text x="340" y="115" textAnchor="middle" className="fill-slate-800 text-base font-bold">S21 {formatNumber(result.couplingDb, 1)}dB</text>
+          <svg
+            data-testid="antenna-isolation-diagram"
+            data-antenna-1-x={antenna1X.toFixed(2)}
+            data-antenna-2-x={antenna2X.toFixed(2)}
+            data-path-stroke-width={pathStrokeWidth.toFixed(2)}
+            data-near-field={result.isNearFieldEstimate ? "true" : "false"}
+            role="img"
+            aria-label={`2アンテナの間隔${formatNumber(spacingMm, 1)}mm、${formatNumber(result.spacingWavelengths, 2)}波長、結合量S21 ${formatNumber(result.couplingDb, 1)}dBの自由空間近似図`}
+            viewBox="0 0 680 250"
+            className="mt-3 h-auto w-full"
+          >
+            <DiagramDefs />
+            <rect x="12" y="12" width="656" height="226" rx="12" fill={diagramPalette.canvas} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} />
+            {result.isNearFieldEstimate ? (
+              <ellipse cx="340" cy="112" rx={Math.max(70, pathSpan / 2)} ry="75" fill={diagramPalette.skyFill} fillOpacity={0.28} stroke={diagramPalette.skyStroke} strokeWidth={diagramStroke.support} strokeDasharray="5 5" />
+            ) : null}
+            <g filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}>
+              <line x1={antenna1X} y1="58" x2={antenna1X} y2="164" stroke={diagramPalette.staf} strokeWidth="10" strokeLinecap="round" />
+              <line x1={antenna2X} y1="58" x2={antenna2X} y2="164" stroke={diagramPalette.staf} strokeWidth="10" strokeLinecap="round" />
+              <rect x={antenna1X - 18} y="164" width="36" height="8" rx="4" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} />
+              <rect x={antenna2X - 18} y="164" width="36" height="8" rx="4" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} />
+            </g>
+            <path
+              d={`M ${pathStartX} 105 C ${pathStartX + pathSpan * 0.28} ${pathControlY}, ${pathEndX - pathSpan * 0.28} ${pathControlY}, ${pathEndX} 105`}
+              fill="none"
+              stroke={pathColor}
+              strokeWidth={pathStrokeWidth}
+              strokeOpacity={pathOpacity}
+              strokeLinecap="round"
+              markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHead)}
+            />
+            <path
+              d={`M ${pathEndX} 130 C ${pathEndX - pathSpan * 0.28} ${224 - pathControlY}, ${pathStartX + pathSpan * 0.28} ${224 - pathControlY}, ${pathStartX} 130`}
+              fill="none"
+              stroke={pathColor}
+              strokeWidth={Math.max(diagramStroke.main, pathStrokeWidth - 1)}
+              strokeOpacity={Math.max(0.28, pathOpacity - 0.18)}
+              strokeLinecap="round"
+              markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+            />
+            <text
+              x="340"
+              y="121"
+              textAnchor="middle"
+              fill={pathColor}
+              fontSize={diagramText.value.fontSize}
+              fontWeight={diagramText.value.fontWeight}
+              style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+            >S21 {formatNumber(result.couplingDb, 1)}dB</text>
+            {result.isNearFieldEstimate ? (
+              <text x="340" y="145" textAnchor="middle" {...diagramText.label} fill={diagramPalette.warnDeep}>λ/2未満：近傍界の参考表示</text>
+            ) : null}
+            <line
+              x1={antenna1X}
+              x2={antenna2X}
+              y1="200"
+              y2="200"
+              stroke={diagramPalette.muted}
+              strokeWidth={diagramStroke.support}
+              markerStart={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+              markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+            />
+            <text
+              x="340"
+              y="222"
+              textAnchor="middle"
+              fill={diagramText.value.fill}
+              fontSize={diagramText.value.fontSize}
+              fontWeight={diagramText.value.fontWeight}
+              style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+            >{formatNumber(spacingMm, 1)}mm（{formatNumber(result.spacingWavelengths, 2)}λ）</text>
+            <text x={antenna1X} y="45" textAnchor="middle" {...diagramText.caption}>アンテナ1</text>
+            <text x={antenna2X} y="45" textAnchor="middle" {...diagramText.caption}>アンテナ2</text>
           </svg>
         </Card>
       ) : null}

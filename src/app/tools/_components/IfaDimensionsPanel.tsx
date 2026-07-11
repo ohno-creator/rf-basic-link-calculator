@@ -3,12 +3,20 @@
 import { useMemo, useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
 import { calculateIfaDimensions } from "@/lib/rf/ifaDimensions";
 import { formatNumber } from "@/lib/rf/format";
+import {
+  DIAGRAM_DEF_IDS,
+  diagramPalette,
+  diagramRef,
+  diagramStroke,
+  diagramText
+} from "@/lib/ui/diagramTheme";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { IfaDimensionsColumn } from "./IfaDimensionsColumn";
 
@@ -37,10 +45,28 @@ export function IfaDimensionsPanel() {
     value: result ? formatNumber(result.initialLengthMm, 1) : "—",
     unit: "mm"
   };
-  const radiatorEndX = result
-    ? Math.min(560, Math.max(240, 160 + result.initialLengthMm * 7))
-    : 520;
-  const radiatorLabelX = (105 + radiatorEndX) / 2;
+  // 100〜6000MHzでは実寸の幅が大きいため、図形長は対数スケール、寸法値は実数で示す。
+  const radiatorStartX = 112;
+  const radiatorMinEndX = 300;
+  const radiatorMaxEndX = 570;
+  const minModelLengthMm = 299_792_458 / (6000 * 1e6) * 1000 / 4 / Math.sqrt((12 + 1) / 2);
+  const maxModelLengthMm = 299_792_458 / (100 * 1e6) * 1000 / 4;
+  const lengthRatio = result
+    ? Math.min(
+        1,
+        Math.max(
+          0,
+          (Math.log(result.initialLengthMm) - Math.log(minModelLengthMm)) /
+            (Math.log(maxModelLengthMm) - Math.log(minModelLengthMm))
+        )
+      )
+    : 0.5;
+  const radiatorEndX = radiatorMinEndX + lengthRatio * (radiatorMaxEndX - radiatorMinEndX);
+  const horizontalLength = radiatorEndX - radiatorStartX;
+  const feedMinX = radiatorStartX + horizontalLength / 12;
+  const feedMaxX = radiatorStartX + horizontalLength / 8;
+  const feedX = (feedMinX + feedMaxX) / 2;
+  const radiatorLabelX = (radiatorStartX + radiatorEndX) / 2;
 
   return (
     <>
@@ -131,15 +157,83 @@ export function IfaDimensionsPanel() {
       {result ? (
         <Card as="figure" padding="md" className="mt-6">
           <figcaption className="text-base font-bold text-slate-950">IFA上面図の読み方</figcaption>
-          <svg role="img" aria-label="逆Fアンテナの全長と給電間隔" viewBox="0 0 640 230" className="mt-3 h-44 w-full">
-            <rect x="32" y="45" width="576" height="145" rx="16" className="fill-slate-50 stroke-slate-300" />
-            <path d={`M105 165 V82 H${radiatorEndX}`} fill="none" stroke="currentColor" strokeWidth="12" strokeLinecap="round" className="text-staf" />
-            <line x1="105" y1="165" x2="105" y2="190" stroke="currentColor" strokeWidth="4" className="text-slate-600" />
-            <line x1="160" y1="150" x2="160" y2="190" stroke="currentColor" strokeWidth="4" className="text-orange-500" />
-            <text x={radiatorLabelX} y="70" textAnchor="middle" className="fill-slate-700 text-sm font-semibold">全長 約 {formatNumber(result.initialLengthMm, 1)}mm</text>
-            <text x="105" y="215" textAnchor="middle" className="fill-slate-600 text-xs">短絡点</text>
-            <text x="160" y="215" textAnchor="middle" className="fill-slate-600 text-xs">給電点</text>
-            <text x="360" y="175" textAnchor="middle" className="fill-slate-500 text-xs">GNDプレーン（寸法・筐体で結果が変化）</text>
+          <svg
+            data-testid="ifa-dimensions-diagram"
+            data-radiator-end-x={radiatorEndX.toFixed(2)}
+            data-feed-min-x={feedMinX.toFixed(2)}
+            data-feed-max-x={feedMaxX.toFixed(2)}
+            role="img"
+            aria-label={`逆Fアンテナの全長約${formatNumber(result.initialLengthMm, 1)}mm、短絡点から給電点まで${formatNumber(result.feedSpacingMinMm, 1)}〜${formatNumber(result.feedSpacingMaxMm, 1)}mmの初期寸法図`}
+            viewBox="0 0 640 250"
+            className="mt-3 h-auto w-full"
+          >
+            <DiagramDefs />
+            <rect
+              x="30"
+              y="42"
+              width="580"
+              height="170"
+              rx="12"
+              fill={diagramRef(DIAGRAM_DEF_IDS.gradientResin)}
+              fillOpacity={0.28}
+              stroke={diagramPalette.line}
+              strokeWidth={diagramStroke.main}
+              filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}
+            />
+            <rect x="48" y="146" width="544" height="48" rx="5" fill={diagramPalette.canvas} stroke={diagramPalette.faint} strokeWidth={diagramStroke.support} />
+            <path
+              d={`M${radiatorStartX} 166 V88 H${radiatorEndX}`}
+              fill="none"
+              stroke={diagramPalette.staf}
+              strokeWidth="11"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              filter={diagramRef(DIAGRAM_DEF_IDS.softShadow)}
+            />
+            <line x1={feedX} y1="166" x2={feedX} y2="88" stroke={diagramPalette.warnDeep} strokeWidth="4" />
+            <circle cx={radiatorStartX} cy="174" r="6" fill={diagramRef(DIAGRAM_DEF_IDS.gradientMetal)} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+            <circle cx={feedX} cy="174" r="6" fill={diagramPalette.warn} stroke={diagramPalette.white} strokeWidth={diagramStroke.main} />
+
+            <line
+              x1={radiatorStartX}
+              x2={radiatorEndX}
+              y1="66"
+              y2="66"
+              stroke={diagramPalette.muted}
+              strokeWidth={diagramStroke.support}
+              markerStart={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+              markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+            />
+            <text
+              x={radiatorLabelX}
+              y="55"
+              textAnchor="middle"
+              fill={diagramText.value.fill}
+              fontSize={diagramText.value.fontSize}
+              fontWeight={diagramText.value.fontWeight}
+              style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+            >
+              全長 約 {formatNumber(result.initialLengthMm, 1)}mm
+            </text>
+
+            <rect x={feedMinX} y="198" width={Math.max(8, feedMaxX - feedMinX)} height="8" rx="4" fill={diagramPalette.warn} fillOpacity={0.35} />
+            <line
+              x1={radiatorStartX}
+              x2={feedMaxX}
+              y1="202"
+              y2="202"
+              stroke={diagramPalette.warnDeep}
+              strokeWidth={diagramStroke.support}
+              markerStart={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+              markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)}
+            />
+            <text x={(radiatorStartX + feedMaxX) / 2} y="225" textAnchor="middle" {...diagramText.label}>
+              給電間隔 {formatNumber(result.feedSpacingMinMm, 1)}〜{formatNumber(result.feedSpacingMaxMm, 1)}mm
+            </text>
+            <text x={radiatorStartX - 8} y="188" textAnchor="end" {...diagramText.caption}>短絡</text>
+            <text x={feedX + 8} y="188" textAnchor="start" {...diagramText.caption}>給電</text>
+            <text x="575" y="178" textAnchor="end" {...diagramText.label}>GNDプレーン</text>
+            <text x="600" y="238" textAnchor="end" {...diagramText.caption}>形状は相対表示</text>
           </svg>
         </Card>
       ) : null}

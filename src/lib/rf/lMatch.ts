@@ -132,7 +132,7 @@ export function calculateLMatch(input: LMatchInput): LMatchResult {
       (targetReactance) => {
         const seriesX = targetReactance - reactance;
         const shuntB = targetReactance / (resistance * source);
-        return buildSolution("series-then-shunt", seriesX, shuntB, omega);
+        return buildSolution("shunt-then-series", seriesX, shuntB, omega);
       }
     );
     return {
@@ -156,7 +156,7 @@ export function calculateLMatch(input: LMatchInput): LMatchResult {
     (targetSusceptance) => {
       const shuntB = targetSusceptance - loadSusceptance;
       const seriesX = (targetSusceptance * source) / loadConductance;
-      return buildSolution("shunt-then-series", seriesX, shuntB, omega);
+      return buildSolution("series-then-shunt", seriesX, shuntB, omega);
     }
   );
   return {

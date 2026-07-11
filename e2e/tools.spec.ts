@@ -50,40 +50,119 @@ test.describe("G Tier2 tools", () => {
   test("IFA dimensions react to frequency", async ({ page }) => {
     await page.goto("/tools/ifa-initial-dimensions/");
     const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("ifa-dimensions-diagram");
+    const initialEndX = await diagram.getAttribute("data-radiator-end-x");
     await expect(primary).toContainText("49.6");
     await page.locator("#ifaFrequency").fill("1840");
     await expect(primary).toContainText("24.8");
+    await expect.poll(() => diagram.getAttribute("data-radiator-end-x")).not.toBe(initialEndX);
+    const feedMinX = Number(await diagram.getAttribute("data-feed-min-x"));
+    const feedMaxX = Number(await diagram.getAttribute("data-feed-max-x"));
+    expect(feedMaxX).toBeGreaterThan(feedMinX);
   });
 
   test("L-match shows both closed-form solutions", async ({ page }) => {
     await page.goto("/tools/l-match/");
+    const firstDiagram = page.getByTestId("l-match-diagram-0");
     await expect(page.getByTestId("primary-result")).toContainText("5.97 nH");
     await expect(page.getByText("11.93 pF").first()).toBeVisible();
     await expect(page.getByText("7.06 nH").first()).toBeVisible();
+    await expect(firstDiagram).toHaveAttribute("data-topology", "shunt-then-series");
+    await page.getByRole("button", { name: "100+j20Ω" }).click();
+    await expect(firstDiagram).toHaveAttribute("data-topology", "series-then-shunt");
   });
 
   test("antenna isolation reacts to spacing", async ({ page }) => {
     await page.goto("/tools/antenna-isolation/");
     const primary = page.getByTestId("primary-result");
+    const diagram = page.getByTestId("antenna-isolation-diagram");
+    const initialAntennaX = Number(await diagram.getAttribute("data-antenna-2-x"));
+    const initialStrokeWidth = Number(await diagram.getAttribute("data-path-stroke-width"));
     await expect(primary).toContainText("-11.7");
     await page.locator("#isolationSpacing").fill("325.8");
     await expect(primary).toContainText("-17.7");
+    await expect.poll(() => diagram.getAttribute("data-antenna-2-x")).not.toBe(initialAntennaX.toFixed(2));
+    const updatedAntennaX = Number(await diagram.getAttribute("data-antenna-2-x"));
+    const updatedStrokeWidth = Number(await diagram.getAttribute("data-path-stroke-width"));
+    expect(updatedAntennaX).toBeGreaterThan(initialAntennaX);
+    expect(updatedStrokeWidth).toBeLessThan(initialStrokeWidth);
   });
 
   test("battery life reacts to derating", async ({ page }) => {
     await page.goto("/tools/battery-life/");
     const primary = page.getByTestId("primary-result");
+    const curve = page.getByTestId("battery-life-curve-desktop");
+    const initialYears = await curve.getAttribute("data-current-years");
     await expect(primary).toContainText("34.1");
     await page.locator("#batteryDerate").fill("100");
     await expect(primary).toContainText("48.7");
+    await expect.poll(() => curve.getAttribute("data-current-years")).not.toBe(initialYears);
   });
 
   test("GNSS compares passive and active C/N0", async ({ page }) => {
     await page.goto("/tools/gnss-cn0/");
+    const waterfall = page.getByTestId("gnss-cn0-waterfall-desktop");
+    const initialOpenSky = await waterfall.getAttribute("data-open-sky-cn0");
     await expect(page.getByTestId("primary-result")).toContainText("45.4");
     await expect(page.getByText("40.0").first()).toBeVisible();
     await page.locator("#gnssCableLoss").fill("6");
     await expect(page.getByText("37.0").first()).toBeVisible();
+    await page.locator("#gnssReceivedPower").fill("-140");
+    await expect.poll(() => waterfall.getAttribute("data-open-sky-cn0")).not.toBe(initialOpenSky);
+  });
+
+  test("battery and GNSS use dedicated mobile chart layouts", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    await page.goto("/tools/battery-life/");
+    await expect(page.getByTestId("battery-life-curve-mobile")).toBeVisible();
+    await expect(page.getByTestId("battery-life-curve-desktop")).toBeHidden();
+
+    await page.goto("/tools/gnss-cn0/");
+    await expect(page.getByTestId("gnss-cn0-waterfall-mobile")).toBeVisible();
+    await expect(page.getByTestId("gnss-cn0-waterfall-desktop")).toBeHidden();
+  });
+});
+
+test.describe("antenna research columns", () => {
+  test("patch column follows the substrate input", async ({ page }) => {
+    await page.goto("/tools/patch-antenna-dimensions/");
+    await expect(page.getByRole("heading", { name: "コラム：パッチは、見えない電界のぶんだけ短く切る" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const fringe = page.getByTestId("patch-column-fringe");
+    const initial = await fringe.textContent();
+    await page.locator("#patch-antenna-dimensions-substrateHeightMm").fill("3.2");
+    await expect.poll(() => fringe.textContent()).not.toBe(initial);
+  });
+
+  test("radiation column follows antenna kind", async ({ page }) => {
+    await page.goto("/tools/radiation-resistance/");
+    await expect(page.getByRole("heading", { name: "コラム：S11が良くても、電力は空へ出たとは限らない" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const resistance = page.getByTestId("radiation-column-resistance");
+    const initial = await resistance.textContent();
+    await page.locator("#short-antenna-kind").selectOption("dipole");
+    await expect.poll(() => resistance.textContent()).not.toBe(initial);
+  });
+
+  test("small antenna column follows radius", async ({ page }) => {
+    await page.goto("/tools/small-antenna-limit/");
+    await expect(page.getByRole("heading", { name: "コラム：小型・高効率・広帯域は、同時に取り切れない" })).toBeVisible();
+    await expect(page.getByText("グラフを読み込み中")).toHaveCount(0);
+    const bandwidth = page.getByTestId("small-antenna-column-bandwidth");
+    const initial = await bandwidth.textContent();
+    await page.locator("#small-antenna-limit-radiusMm").fill("30");
+    await expect.poll(() => bandwidth.textContent()).not.toBe(initial);
+  });
+
+  test("research columns fit mobile and expose their sources", async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 812 });
+    for (const slug of ["patch-antenna-dimensions", "radiation-resistance", "small-antenna-limit"]) {
+      await page.goto(`/tools/${slug}/`);
+      await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth)).toBe(true);
+      const column = page.getByTestId(`${slug.replace("-dimensions", "")}-column`);
+      await column.locator("summary").click();
+      await expect(column.locator("a").first()).toBeVisible();
+    }
   });
 });
 

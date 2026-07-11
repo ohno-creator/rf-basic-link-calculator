@@ -3,12 +3,20 @@
 import { useMemo, useState } from "react";
 import { Callout } from "@/components/Callout";
 import { Card } from "@/components/Card";
+import { DiagramDefs } from "@/components/diagrams/DiagramDefs";
 import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
-import { calculateLMatch, type LMatchSolution } from "@/lib/rf/lMatch";
+import { calculateLMatch, type LMatchComponent, type LMatchSolution } from "@/lib/rf/lMatch";
 import { formatNumber } from "@/lib/rf/format";
+import {
+  DIAGRAM_DEF_IDS,
+  diagramPalette,
+  diagramRef,
+  diagramStroke,
+  diagramText
+} from "@/lib/ui/diagramTheme";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { LMatchColumn } from "./LMatchColumn";
 
@@ -29,28 +37,116 @@ function solutionText(solution: LMatchSolution): string {
   return `${series} ＋ 並列 ${componentText(solution.shuntComponent)}`;
 }
 
+function HorizontalComponent({ component, x, y }: { component: LMatchComponent; x: number; y: number }) {
+  const color = component.kind === "inductor" ? diagramPalette.staf : diagramPalette.warnDeep;
+  if (component.kind === "none") {
+    return <line x1={x - 44} x2={x + 44} y1={y} y2={y} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />;
+  }
+  if (component.kind === "capacitor") {
+    return (
+      <g stroke={color} strokeWidth={diagramStroke.emphasis} fill="none">
+        <line x1={x - 44} x2={x - 7} y1={y} y2={y} />
+        <line x1={x - 7} x2={x - 7} y1={y - 15} y2={y + 15} />
+        <line x1={x + 7} x2={x + 7} y1={y - 15} y2={y + 15} />
+        <line x1={x + 7} x2={x + 44} y1={y} y2={y} />
+      </g>
+    );
+  }
+  return (
+    <path
+      d={`M ${x - 44} ${y} H ${x - 28} c 0 -12 12 -12 12 0 c 0 -12 12 -12 12 0 c 0 -12 12 -12 12 0 c 0 -12 12 -12 12 0 H ${x + 44}`}
+      fill="none"
+      stroke={color}
+      strokeWidth={diagramStroke.emphasis}
+      strokeLinecap="round"
+    />
+  );
+}
+
+function ShuntComponent({ component, x, topY }: { component: LMatchComponent; x: number; topY: number }) {
+  const color = component.kind === "inductor" ? diagramPalette.staf : diagramPalette.warnDeep;
+  if (component.kind === "none") return null;
+  return (
+    <g>
+      {component.kind === "capacitor" ? (
+        <g stroke={color} strokeWidth={diagramStroke.emphasis} fill="none">
+          <line x1={x} x2={x} y1={topY} y2={topY + 25} />
+          <line x1={x - 14} x2={x + 14} y1={topY + 25} y2={topY + 25} />
+          <line x1={x - 14} x2={x + 14} y1={topY + 36} y2={topY + 36} />
+          <line x1={x} x2={x} y1={topY + 36} y2={topY + 66} />
+        </g>
+      ) : (
+        <path
+          d={`M ${x} ${topY} V ${topY + 11} c 12 0 12 10 0 10 c 12 0 12 10 0 10 c 12 0 12 10 0 10 c 12 0 12 10 0 10 V ${topY + 66}`}
+          fill="none"
+          stroke={color}
+          strokeWidth={diagramStroke.emphasis}
+          strokeLinecap="round"
+        />
+      )}
+      <line x1={x} x2={x} y1={topY + 66} y2={topY + 74} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+      <line x1={x - 16} x2={x + 16} y1={topY + 74} y2={topY + 74} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+      <line x1={x - 10} x2={x + 10} y1={topY + 80} y2={topY + 80} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+      <line x1={x - 4} x2={x + 4} y1={topY + 86} y2={topY + 86} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+    </g>
+  );
+}
+
 function CircuitDiagram({ solution, index }: { solution: LMatchSolution; index: number }) {
   const shuntFirst = solution.topology === "shunt-then-series";
+  const seriesX = shuntFirst ? 315 : 205;
+  const shuntX = shuntFirst ? 145 : 375;
+  const wireY = 76;
   return (
     <Card as="figure" padding="md" shadow={false}>
       <figcaption className="text-sm font-bold text-slate-950">解{index + 1}：{solutionText(solution)}</figcaption>
-      <svg role="img" aria-label={`L型整合回路の解${index + 1}`} viewBox="0 0 520 150" className="mt-3 h-auto w-full">
-        <line x1="35" y1="60" x2="485" y2="60" stroke="currentColor" strokeWidth="3" className="text-slate-600" />
-        <rect x={shuntFirst ? 260 : 165} y="38" width="90" height="44" rx="8" className="fill-sky-50 stroke-staf" strokeWidth="2" />
-        <text x={shuntFirst ? 305 : 210} y="65" textAnchor="middle" className="fill-slate-800 text-xs font-semibold">
-          {componentText(solution.seriesComponent)}
+      <svg
+        data-testid={`l-match-diagram-${index}`}
+        data-topology={solution.topology}
+        data-series-x={seriesX}
+        data-shunt-x={shuntX}
+        role="img"
+        aria-label={`L型整合回路の解${index + 1}。${solutionText(solution)}。並列素子は接地へ接続`}
+        viewBox="0 0 520 205"
+        className="mt-3 h-auto w-full"
+      >
+        <DiagramDefs />
+        <rect x="8" y="8" width="504" height="188" rx="10" fill={diagramPalette.canvas} stroke={diagramPalette.line} strokeWidth={diagramStroke.support} />
+        <line x1="34" x2={seriesX - 44} y1={wireY} y2={wireY} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+        <HorizontalComponent component={solution.seriesComponent} x={seriesX} y={wireY} />
+        <line x1={seriesX + 44} x2="486" y1={wireY} y2={wireY} stroke={diagramPalette.inkSoft} strokeWidth={diagramStroke.main} />
+        <circle cx={shuntX} cy={wireY} r="4" fill={diagramPalette.inkSoft} />
+        <text
+          x={seriesX}
+          y="43"
+          textAnchor="middle"
+          fill={solution.seriesComponent.kind === "inductor" ? diagramPalette.stafDark : diagramPalette.warnDeep}
+          fontSize={diagramText.value.fontSize}
+          fontWeight={diagramText.value.fontWeight}
+          style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+        >
+          直列 {componentText(solution.seriesComponent)}
         </text>
         {solution.shuntComponent ? (
           <>
-            <line x1={shuntFirst ? 150 : 370} y1="60" x2={shuntFirst ? 150 : 370} y2="112" stroke="currentColor" strokeWidth="3" className="text-slate-600" />
-            <rect x={shuntFirst ? 102 : 322} y="88" width="96" height="38" rx="8" className="fill-amber-50 stroke-amber-500" strokeWidth="2" />
-            <text x={shuntFirst ? 150 : 370} y="112" textAnchor="middle" className="fill-slate-800 text-xs font-semibold">
-              {componentText(solution.shuntComponent)}
+            <ShuntComponent component={solution.shuntComponent} x={shuntX} topY={wireY} />
+            <text
+              x={shuntX + 22}
+              y="123"
+              textAnchor="start"
+              fill={solution.shuntComponent.kind === "inductor" ? diagramPalette.stafDark : diagramPalette.warnDeep}
+              fontSize={diagramText.value.fontSize}
+              fontWeight={diagramText.value.fontWeight}
+              style={{ fontVariantNumeric: diagramText.value.fontVariantNumeric }}
+            >
+              並列 {componentText(solution.shuntComponent)}
             </text>
           </>
         ) : null}
-        <text x="35" y="42" className="fill-slate-500 text-xs">Z0</text>
-        <text x="455" y="42" className="fill-slate-500 text-xs">負荷</text>
+        <text x="34" y="62" textAnchor="start" {...diagramText.label}>Z0</text>
+        <text x="486" y="62" textAnchor="end" {...diagramText.label}>負荷 R+jX</text>
+        <line x1="42" x2="478" y1="180" y2="180" stroke={diagramPalette.faint} strokeWidth={diagramStroke.support} markerEnd={diagramRef(DIAGRAM_DEF_IDS.arrowHeadMuted)} />
+        <text x="260" y="195" textAnchor="middle" {...diagramText.caption}>信号源 → 負荷</text>
       </svg>
     </Card>
   );
