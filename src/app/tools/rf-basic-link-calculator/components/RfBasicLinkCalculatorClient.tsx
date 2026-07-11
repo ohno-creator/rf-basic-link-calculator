@@ -19,7 +19,7 @@ import {
 } from "@/lib/rf/share";
 import { BeginnerRoadmap } from "./BeginnerRoadmap";
 import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
-import { CalculatorTabs } from "./CalculatorTabs";
+import { CalculatorTabs, type CalculatorMode } from "./CalculatorTabs";
 import { FaqSection } from "./FaqSection";
 import { HeroSection } from "./HeroSection";
 import { QuickStartPresets } from "./QuickStartPresets";
@@ -27,6 +27,8 @@ import { SeoLinks } from "./SeoLinks";
 
 export function RfBasicLinkCalculatorClient() {
   const [input, setInput] = useState(defaultLinkBudgetInput);
+  // 既定は迷わない「かんたん」モード。共有URL・保存済み入力から来た人は全項目が見える詳細モードで開く。
+  const [mode, setMode] = useState<CalculatorMode>("guided");
   const [isHydrated, setIsHydrated] = useState(false);
   const [shareState, setShareState] = useState<"idle" | "copied" | "error">("idle");
   const calculatorRef = useRef<HTMLDivElement | null>(null);
@@ -59,6 +61,7 @@ export function RfBasicLinkCalculatorClient() {
     const fromQuery = decodeInputFromQuery(window.location.search);
     if (fromQuery) {
       setInput(fromQuery);
+      setMode("expert");
       hydratedRef.current = true;
       setIsHydrated(true);
       scrollToCalculator();
@@ -68,6 +71,7 @@ export function RfBasicLinkCalculatorClient() {
     const stored = loadStoredInput();
     if (stored) {
       setInput(stored);
+      setMode("expert");
     }
     hydratedRef.current = true;
     setIsHydrated(true);
@@ -141,6 +145,8 @@ export function RfBasicLinkCalculatorClient() {
           onReset={resetInput}
           onShare={copyShareLink}
           shareState={shareState}
+          mode={mode}
+          onModeChange={setMode}
         />
       </div>
       <SeoLinks />
