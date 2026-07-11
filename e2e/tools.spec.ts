@@ -29,14 +29,14 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
     { slug: "dbm-converter", h1: "dBm 変換", fig: "dBmと電力のスケール" },
     { slug: "db-feel", h1: "dBを体感する", fig: "dBの「ものさし」" },
     { slug: "free-space-loss", h1: "自由空間損失（FSPL）", fig: "距離ごとの損失比較" },
-    { slug: "wall-penetration", h1: "壁・建材の透過損失バジェット", fig: "建材ごとの透過損失レンジ" },
+    { slug: "wall-penetration", h1: "壁・建材の透過損失バジェット", fig: "壁を1枚通るたびに信号が下がる" },
     { slug: "ifa-initial-dimensions", h1: "逆F・IFAアンテナ初期寸法", fig: "IFA上面図の読み方" },
     { slug: "l-match", h1: "L型整合回路計算", fig: "解1" },
     { slug: "antenna-isolation", h1: "2アンテナ間アイソレーション", fig: "アンテナ間隔と結合経路" },
     { slug: "diversity-gain", h1: "ダイバーシティ利得推定", fig: "独立時と相関補正後の利得" },
-    { slug: "antenna-keepout", h1: "アンテナ・キープアウト領域チェック", fig: "必要キープアウトと確保領域" },
-    { slug: "ground-plane-size", h1: "GNDプレーン寸法と効率", fig: "GND長/λと効率変化の目安" },
-    { slug: "body-loss", h1: "人体・手のボディロス", fig: "人体近接による追加損失" },
+    { slug: "antenna-keepout", h1: "アンテナ・キープアウト領域チェック", fig: "確保した空き地と必要キープアウトの重なり" },
+    { slug: "ground-plane-size", h1: "GNDプレーン寸法と効率", fig: "GNDプレーン最長辺と効率低下" },
+    { slug: "body-loss", h1: "人体・手の影響ボディロス", fig: "装着シナリオ別のボディロス" },
     { slug: "battery-life", h1: "無線端末の電池寿命", fig: "平均電流の内訳" },
     { slug: "gnss-cn0", h1: "GNSS受信 C/N0バジェット", fig: "LNAを置く位置と後段雑音" },
     {
@@ -57,32 +57,6 @@ test.describe("tool pages render with hero, diagram and explanation", () => {
 });
 
 test.describe("G Tier2 tools", () => {
-  test("body loss switches scenarios and preserves missing data", async ({ page }) => {
-    await page.goto("/tools/body-loss/");
-    const primary = page.getByTestId("primary-result");
-    const diagram = page.getByTestId("body-loss-diagram");
-    await expect(primary).toContainText("5.0 / 10.0");
-    await page.getByRole("button", { name: "手首装着", exact: true }).click();
-    await expect(primary).toContainText("12.0 / 20.0");
-    await expect(diagram).toHaveAttribute("data-selected", "wrist");
-
-    await page.getByRole("button", { name: "1575MHz（GNSS）", exact: true }).click();
-    await expect(page.getByRole("button", { name: "頭部近接（データなし）" })).toBeDisabled();
-  });
-
-  test("ground plane efficiency reacts to GND length", async ({ page }) => {
-    await page.goto("/tools/ground-plane-size/");
-    const primary = page.getByTestId("primary-result");
-    const diagram = page.getByTestId("ground-plane-size-diagram");
-    await expect(primary).toContainText("0.0");
-    const initialRatio = await diagram.getAttribute("data-ratio");
-
-    await page.locator("#groundPlaneLength").fill("32.6");
-    await expect(primary).toContainText("-6.0");
-    await expect.poll(() => diagram.getAttribute("data-ratio")).not.toBe(initialRatio);
-    await expect(diagram).toHaveAttribute("data-ratio", /0\.100/);
-  });
-
   test("diversity gain reacts to antenna spacing", async ({ page }) => {
     await page.goto("/tools/diversity-gain/");
     const primary = page.getByTestId("primary-result");
@@ -97,40 +71,6 @@ test.describe("G Tier2 tools", () => {
     await page.locator("#diversitySpacing").fill("162.9");
     await expect.poll(() => diagram.getAttribute("data-correlation")).not.toBe("1.0000");
     expect(await diagram.getAttribute("data-correlation")).toBe(initialCorrelation);
-  });
-
-  test("wall penetration adds material loss ranges in dB", async ({ page }) => {
-    await page.goto("/tools/wall-penetration/");
-    const primary = page.getByTestId("primary-result");
-    const diagram = page.getByTestId("wall-penetration-diagram");
-    await expect(primary).toContainText("15.0–26.0");
-    await expect(diagram).toHaveAttribute("data-total-min", "15");
-
-    await page.getByRole("button", { name: "乾式石膏ボードを減らす" }).click();
-    await expect(primary).toContainText("13.5–23.0");
-
-    await page.getByRole("button", { name: "Low-E（金属複層ガラス）を増やす" }).click();
-    await expect(primary).toContainText("33.5–53.0");
-
-    await page.getByRole("button", { name: "28GHz", exact: true }).click();
-    await expect(primary).toContainText("59.0–92.0");
-  });
-
-  test("antenna keepout evaluates each dimension", async ({ page }) => {
-    await page.goto("/tools/antenna-keepout/");
-    const primary = page.getByTestId("primary-result");
-    const diagram = page.getByTestId("antenna-keepout-diagram");
-    await expect(primary).toContainText("必要領域を確保");
-    await expect(diagram).toHaveAttribute("data-status", "success");
-
-    await page.locator("#keepoutAvailableWidth").fill("7.9");
-    await expect(primary).toContainText("領域不足");
-    await expect(diagram).toHaveAttribute("data-status", "danger");
-
-    await page.locator("#keepoutAvailableWidth").fill("35");
-    await page.locator("#keepoutAvailableHeight").fill("10");
-    await page.getByRole("button", { name: "920MHz（LPWA）", exact: true }).click();
-    await expect(primary).toContainText("必要領域を確保");
   });
 
   test("LoRa airtime reacts to SF, payload and hourly limit", async ({ page }) => {
@@ -1055,4 +995,108 @@ test("metal plane effect derives +6dB at quarter-wave and collapses at contact",
 
   // リンクバジェット診断（アンテナ利得）への突き合わせ導線
   await expect(page.getByRole("link", { name: /リンクバジェット診断のアンテナ利得/ })).toBeVisible();
+});
+
+test("LTE signal metrics judges RSRP quality band and reacts to mode switch", async ({ page }) => {
+  await page.goto("/tools/lte-signal-metrics/");
+  const calculator = page.getByTestId("tool-calculator");
+  // 既定 RSSI=-70dBm・10MHz(50RB) → RSRP≈-97.8dBm（判定入力の前提を primary-result で確認）
+  await expect(calculator.getByTestId("primary-result")).toContainText("-97.8");
+  // LTE-M では -100〜-90dBm の Fair 帯（judgeCellularSignal で検算した確定値）
+  const badge = calculator.getByTestId("cellular-judge-level");
+  await expect(badge).toContainText("Fair");
+  // NB-IoT へ切替 → 同じ -97.8dBm は -105〜-95dBm の Good 帯に入り、判定バッジが変わる
+  await calculator.getByRole("button", { name: /NB-IoT/ }).click();
+  await expect(badge).toContainText("Good");
+});
+
+test("antenna keepout verdict reacts to the available area", async ({ page }) => {
+  await page.goto("/tools/antenna-keepout/");
+  const calculator = page.getByTestId("tool-calculator");
+  const primary = calculator.getByTestId("primary-result");
+  await expect(primary).toBeVisible();
+  // 既定: チップ×2.4GHz（必要10×4mm）に確保12×5mm → 充足・不足量ゼロ
+  await expect(primary).toContainText("キープアウト充足");
+  await expect(primary).toContainText("0.0 / 0.0");
+  // 幅を7mmへ → 幅3mm不足（不足率30%）で NG 判定・不足量表示が変わる
+  await calculator.locator("#keepoutWidth").fill("7");
+  await expect(primary).toContainText("20%以上不足");
+  await expect(primary).toContainText("3.0 / 0.0");
+});
+
+test("wall penetration tool sums material losses per band and reacts to wall counts", async ({ page }) => {
+  await page.goto("/tools/wall-penetration/");
+  const calculator = page.getByTestId("tool-calculator");
+
+  // 既定値 = 920MHz・石膏ボード×2＋コンクリート内壁×1 → 合計 10.0〜19.0dB
+  // 期待値はlib（sumWallLoss）とdata層（wallMaterials: 1.0×2+8.0 / 2.0×2+15.0）から検算した確定値
+  await expect(calculator.getByTestId("primary-result")).toContainText("10.0〜19.0");
+  await expect(calculator.getByTestId("primary-result")).toContainText("dB");
+
+  // 帯域チップ 2.4GHz で再計算（1.5×2+12=15.0 / 3.0×2+20=26.0）
+  await calculator.getByRole("button", { name: "2.4GHz", exact: true }).click();
+  await expect(calculator.getByTestId("primary-result")).toContainText("15.0〜26.0");
+
+  // 枚数カウンタで線形加算（石膏ボード+1枚 → 1.5×3+12=16.5 / 3.0×3+20=29.0）
+  await calculator.getByRole("button", { name: "石膏ボード（内壁）を1枚増やす" }).click();
+  await expect(calculator.getByTestId("primary-result")).toContainText("16.5〜29.0");
+
+  // リンクバジェット診断（環境損失）への導線
+  await expect(calculator.getByRole("link", { name: /リンクバジェット診断の環境損失/ })).toBeVisible();
+});
+
+test("body loss tool looks up literature values per scenario and band", async ({ page }) => {
+  await page.goto("/tools/body-loss/");
+  const calculator = page.getByTestId("tool-calculator");
+  // 既定値 = 2.4GHz × 手持ち → Typ 5.0dB（data層 BODY_LOSS_TABLE の文献値。Worst 10dB）
+  await expect(calculator.getByTestId("primary-result")).toContainText("5.0");
+  await expect(calculator.getByTestId("primary-result")).toContainText("dB");
+
+  // 体による遮蔽 × 2.4GHz → Typ 18.0dB（文献レンジ 18.0〜30.0dB）
+  await calculator.getByRole("button", { name: "体による遮蔽" }).click();
+  await expect(calculator.getByTestId("primary-result")).toContainText("18.0");
+  await expect(calculator.getByText("18.0〜30.0")).toBeVisible();
+
+  // GNSS L1 × 頭部近接 = 文献データなしの組合せ（null。0dBとみなさない）
+  await calculator.getByRole("button", { name: "頭部近接" }).click();
+  await calculator.getByRole("button", { name: "1575MHz" }).click();
+  await expect(calculator.getByTestId("primary-result")).toContainText("—");
+  await expect(calculator.getByText("この組合せの文献データがありません")).toBeVisible();
+});
+
+test("detuning estimator judges whether the shifted resonance stays in band", async ({ page }) => {
+  await page.goto("/tools/detuning-estimator/");
+  const calculator = page.getByTestId("tool-calculator");
+  const primary = calculator.getByTestId("primary-result");
+
+  // 既定 920MHz・BW46MHz（比帯域5%）・樹脂カバー3mm → シフト-4.6〜-9.2MHz・帯域端±23MHz内 → 収まる
+  // （estimateDetuning({920,46,"resin-cover-3mm"}) で検算した確定値）
+  await expect(primary).toContainText("収まる");
+
+  // 手把持（-4.0〜-8.0%）→ 最小シフト-36.8MHzでも帯域端(-23MHz)を超える → 外れる
+  await calculator.getByRole("button", { name: "手把持", exact: true }).click();
+  await expect(primary).toContainText("外れる");
+
+  // 比帯域10%（BW92MHz・帯域端±46MHz）→ 最小-36.8MHzは収まり最大-73.6MHzは外れる → 一部外れ
+  await calculator.getByRole("button", { name: "比帯域10%", exact: true }).click();
+  await expect(primary).toContainText("一部外れ");
+
+  // 金属面近接の利得変化への突き合わせ導線
+  await expect(calculator.getByRole("link", { name: /金属面近接の利得変化/ })).toBeVisible();
+});
+
+test("ground plane size tool shows the Lg/λ efficiency drop and reacts to length and frequency", async ({ page }) => {
+  await page.goto("/tools/ground-plane-size/");
+  const calculator = page.getByTestId("tool-calculator");
+  // 既定 920MHz・Lg=32.6mm → Lg/λ≈0.100 → 効率低下 ≈ -6.0dB（データ表の区分線形補間・libで検算した確定値）
+  await expect(calculator.getByTestId("primary-result")).toContainText("-6.0");
+  await expect(calculator.getByTestId("primary-result")).toContainText("dB");
+
+  // 2.4GHzプリセット: 同じ Lg=32.6mm でも λ=124.9mm と短くなり Lg/λ≈0.261 ≥ 0.25 → 低下 0dB（クランプ）
+  await calculator.getByRole("button", { name: "2.4GHz", exact: true }).click();
+  await expect(calculator.getByTestId("primary-result")).toContainText("0.0");
+
+  // GND最長辺を 0（GNDなし）へ → 目安表の下端 -20.0dB
+  await calculator.locator("#gpGroundLength").fill("0");
+  await expect(calculator.getByTestId("primary-result")).toContainText("-20.0");
 });

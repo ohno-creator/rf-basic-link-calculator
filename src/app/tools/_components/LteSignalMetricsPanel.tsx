@@ -3,17 +3,28 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { Callout, type CalloutTone } from "@/components/Callout";
 import { Card } from "@/components/Card";
 import { ChartFrame } from "@/components/ChartFrame";
 import { Field } from "@/components/Field";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
+import {
+  CE_COVERAGE_NOTE,
+  CELLULAR_SIGNAL_BAND_SOURCES,
+  CELLULAR_SIGNAL_BANDS,
+  CELLULAR_SIGNAL_LEVEL_LABELS,
+  type CellularMetricThresholds,
+  type CellularMode,
+  type CellularSignalLevel
+} from "@/data/cellularSignalBands";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import {
   LTE_RESOURCE_BLOCKS,
   SUBCARRIERS_PER_RESOURCE_BLOCK,
   fullLoadCorrectionDb,
+  judgeCellularSignal,
   resourceBlocksForLteBandwidthMhz,
   rsrpFromRssi,
   rsrqFromMeasurements,
@@ -46,6 +57,36 @@ const DIRECTIONS: Record<
 
 // LTEチャネル帯域幅チップ（RB数は 3GPP TS 36.101 の表＝lib LTE_RESOURCE_BLOCKS を正とする）。
 const BANDWIDTH_CHIPS = LTE_RESOURCE_BLOCKS;
+
+// ---- 良否判定（G15判定強化） --------------------------------------------------------------
+// 判定レベル→Calloutトーンの写像（excellent=success／good=info／fair=caution／poor=danger）。
+const JUDGE_TONE: Record<CellularSignalLevel, CalloutTone> = {
+  excellent: "success",
+  good: "info",
+  fair: "caution",
+  poor: "danger"
+};
+
+const JUDGE_MODES: readonly CellularMode[] = ["lte-m", "nb-iot"];
+
+const JUDGE_LEVELS: readonly CellularSignalLevel[] = ["excellent", "good", "fair", "poor"];
+
+// しきい値表の帯を表示文字列にする（境界は「下限以上（≥）」で上位の段に入る）。
+function thresholdRangeText(
+  thresholds: CellularMetricThresholds,
+  level: CellularSignalLevel
+): string {
+  switch (level) {
+    case "excellent":
+      return `${thresholds.excellentMin}${thresholds.unit} 以上`;
+    case "good":
+      return `${thresholds.goodMin} 〜 ${thresholds.excellentMin}${thresholds.unit}`;
+    case "fair":
+      return `${thresholds.fairMin} 〜 ${thresholds.goodMin}${thresholds.unit}`;
+    case "poor":
+      return `${thresholds.fairMin}${thresholds.unit} 未満`;
+  }
+}
 
 // ---- 帯域占有図＋電力ラダー（入力連動の動的SVG） -------------------------------------
 // 上段: 帯域を N_RB セルの帯で描き「RSSI=帯域全部(12×N_RB本)の合計／RSRP=基準信号1本分」を
@@ -207,6 +248,8 @@ export function LteSignalMetricsPanel() {
   const [direction, setDirection] = useState<Direction>("rssiToRsrp");
   const [inputDbm, setInputDbm] = useState(-70);
   const [bandwidthMhz, setBandwidthMhz] = useState(10);
+  // 良否判定のモード（LTE-M / NB-IoT でしきい値表が異なる）。
+  const [judgeMode, setJudgeMode] = useState<CellularMode>("lte-m");
 
   const meta = DIRECTIONS[direction];
 
@@ -226,6 +269,21 @@ export function LteSignalMetricsPanel() {
       return null;
     }
   }, [direction, inputDbm, bandwidthMhz]);
+
+  // RSRP（換算結果または入力そのもの）を安定運用の推奨帯で判定する。
+  const judgement = useMemo(() => {
+    if (result === null) {
+      return null;
+    }
+    try {
+      return judgeCellularSignal({ mode: judgeMode, rsrpDbm: result.rsrpDbm });
+    } catch {
+      return null;
+    }
+  }, [result, judgeMode]);
+
+  const judgeBand = CELLULAR_SIGNAL_BANDS[judgeMode];
+  const judgeRsrpThresholds = judgeBand.metrics.find((row) => row.metric === "rsrp");
 
   const inputError = !Number.isFinite(inputDbm)
     ? `${meta.outputLabel === "RSRP" ? "RSSI" : "RSRP"}の値をdBmで入力してください。`
@@ -338,6 +396,118 @@ export function LteSignalMetricsPanel() {
           <div id="lte-signal-metrics-primary-result">
             <ResultBar primary={primary} />
           </div>
+
+          <Card as="section" padding="lg">
+            <h2 className="text-base font-bold text-slate-950">RSRPの良否判定（セルラーIoT）</h2>
+            <p className="mt-1 text-xs leading-relaxed text-slate-500">
+              換算したRSRPを、LTE-M / NB-IoT の安定運用推奨帯で4段階判定します。
+            </p>
+            <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="判定モード">
+              {JUDGE_MODES.map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  className={chipClass(judgeMode === mode)}
+                  onClick={() => setJudgeMode(mode)}
+                >
+                  {CELLULAR_SIGNAL_BANDS[mode].label}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3">
+              {judgement && result ? (
+                <Callout
+                  tone={JUDGE_TONE[judgement.level]}
+                  title={
+                    <span data-testid="cellular-judge-level">
+                      判定: {CELLULAR_SIGNAL_LEVEL_LABELS[judgement.level].ja}（
+                      {CELLULAR_SIGNAL_LEVEL_LABELS[judgement.level].en}）
+                    </span>
+                  }
+                >
+                  RSRP {formatNumber(result.rsrpDbm, 1)} dBm は {judgeBand.label} の
+                  {CELLULAR_SIGNAL_LEVEL_LABELS[judgement.level].ja}帯
+                  {judgeRsrpThresholds
+                    ? `（${thresholdRangeText(judgeRsrpThresholds, judgement.level)}）`
+                    : ""}
+                  に入ります。
+                </Callout>
+              ) : (
+                <p className="rounded-lg border border-dashed border-slate-300 bg-white p-4 text-center text-sm text-slate-500">
+                  入力値を確認すると判定が表示されます。
+                </p>
+              )}
+            </div>
+
+            <details className="mt-3 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
+              <summary className="cursor-pointer text-xs font-semibold text-slate-600">
+                判定しきい値表（{judgeBand.label}・出典つき）
+              </summary>
+              <div className="mt-2 overflow-x-auto">
+                <table className="w-full min-w-[420px] border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-200 text-left text-slate-500">
+                      <th className="py-1.5 pr-2 font-semibold">指標</th>
+                      {JUDGE_LEVELS.map((level) => (
+                        <th key={level} className="py-1.5 pr-2 font-semibold">
+                          {CELLULAR_SIGNAL_LEVEL_LABELS[level].ja}（
+                          {CELLULAR_SIGNAL_LEVEL_LABELS[level].en}）
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {judgeBand.metrics.map((row) => (
+                      <tr key={row.metric} className="border-b border-slate-100">
+                        <td className="py-1.5 pr-2 font-semibold text-slate-700">
+                          {row.label}
+                          <span className="ml-1 font-normal text-slate-400">[{row.unit}]</span>
+                        </td>
+                        {JUDGE_LEVELS.map((level) => (
+                          <td key={level} className="py-1.5 pr-2 tabular-nums text-slate-600">
+                            {thresholdRangeText(row, level)}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-slate-500">
+                境界値は上位側の段に入ります（例: LTE-M の RSRP −100dBm は Fair の下端）。総合判定は
+                判明している指標（本ツールではRSRP）の最悪値です。
+              </p>
+              <ul className="mt-2 space-y-1 text-xs text-slate-500">
+                {CELLULAR_SIGNAL_BAND_SOURCES.map((source) => (
+                  <li key={source.label}>
+                    出典:{" "}
+                    {source.href ? (
+                      <a
+                        className="font-semibold underline"
+                        href={source.href}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {source.label}
+                      </a>
+                    ) : (
+                      <span className="font-semibold">{source.label}</span>
+                    )}
+                    {source.note ? ` ― ${source.note}` : ""}
+                  </li>
+                ))}
+              </ul>
+            </details>
+
+            <div className="mt-3">
+              <Callout tone="caution" size="sm" title="目安値・実測前提">
+                {CE_COVERAGE_NOTE}
+                アンテナ実装や筐体・設置環境でRSRPは実測で大きく変わるため、量産判断は筐体込みの
+                実測評価（ページ下部のご相談窓口）とあわせてご利用ください。
+              </Callout>
+            </div>
+          </Card>
 
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">帯域幅ごとの RSSI−RSRP 差（補正量）</h2>

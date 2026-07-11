@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
-import { AntennaKeepoutPanel } from "@/app/tools/_components/AntennaKeepoutPanel";
+import { DetuningEstimatorPanel } from "@/app/tools/_components/DetuningEstimatorPanel";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";
 
-const tool = getBasicTool("antenna-keepout")!;
+const tool = getBasicTool("detuning-estimator")!;
 
 export const metadata: Metadata = {
   title: tool.metaTitle,
@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   }
 };
 
-export default function AntennaKeepoutPage() {
+export default function DetuningEstimatorPage() {
   return (
     <ToolLayout>
       <BasicToolPageShell tool={tool}>
-        <AntennaKeepoutPanel />
+        <DetuningEstimatorPanel />
       </BasicToolPageShell>
     </ToolLayout>
   );

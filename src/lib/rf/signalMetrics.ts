@@ -11,10 +11,17 @@
  *
  * dB/線形: RSSI・RSRP は dBm（絶対電力）、RSRQ・SINR は dB（比）。ρ・s は線形（無次元）。
  * 適用条件: フルロード（全REでデータ送信）仮定の換算。部分負荷ではRSSIが下がるため
- * RSRP換算・SINR換算は悲観/楽観にずれる。良否判定の閾値はdata層が持ち、本libは変換のみ。
- * 出典: 3GPP TS 36.214 §5.1（RSRP/RSRQ定義）。
+ * RSRP換算・SINR換算は悲観/楽観にずれる。良否判定（judgeCellularSignal）の閾値は
+ * data層（@/data/cellularSignalBands）が単一ソースで持ち、本libは変換と判定ロジックのみ。
+ * 出典: 3GPP TS 36.214 §5.1（RSRP/RSRQ定義）。判定帯の出典はdata層に記載。
  */
 
+import {
+  CELLULAR_SIGNAL_BANDS,
+  type CellularMetricThresholds,
+  type CellularMode,
+  type CellularSignalLevel
+} from "@/data/cellularSignalBands";
 import { dbToPowerRatio } from "./db";
 import { assertFinite, assertPositiveFinite, RfError, RfErrorCode } from "./errors";
 
@@ -96,4 +103,105 @@ export function rsrqFromSinr(sinrDb: number): number {
   assertFinite(sinrDb, "sinr");
   const s = dbToPowerRatio(sinrDb);
   return 10 * Math.log10(s / (SUBCARRIERS_PER_RESOURCE_BLOCK * (1 + s)));
+}
+
+// ---- 良否判定（G15判定強化） ------------------------------------------------------------
+
+/** 判定レベルの悪い順比較用の重み（大きいほど悪い）。 */
+const LEVEL_SEVERITY: Record<CellularSignalLevel, number> = {
+  excellent: 0,
+  good: 1,
+  fair: 2,
+  poor: 3
+};
+
+/** 下限しきい値（≥）で4段階に区分する。境界値は上位側の段に入る（例: LTE-M RSRP −100 → fair）。 */
+function classifyByThresholds(
+  value: number,
+  thresholds: CellularMetricThresholds
+): CellularSignalLevel {
+  if (value >= thresholds.excellentMin) {
+    return "excellent";
+  }
+  if (value >= thresholds.goodMin) {
+    return "good";
+  }
+  if (value >= thresholds.fairMin) {
+    return "fair";
+  }
+  return "poor";
+}
+
+export type CellularSignalJudgementInput = {
+  /** 判定モード。しきい値表は LTE-M / NB-IoT で異なる。 */
+  mode: CellularMode;
+  /** RSRP[dBm]（絶対電力・必須）。 */
+  rsrpDbm: number;
+  /** RSRQ[dB]（比・任意）。NB-IoT には推奨帯が無いため指定しても判定に含まれない。 */
+  rsrqDb?: number;
+  /** SINR[dB]（比・任意）。 */
+  sinrDb?: number;
+};
+
+export type CellularSignalJudgement = {
+  /** 総合判定＝判明している指標のうち最悪のレベル。 */
+  level: CellularSignalLevel;
+  /** 指標別判定。しきい値表を持たない指標（NB-IoT の RSRQ）は含まれない。 */
+  perMetric: {
+    rsrp: CellularSignalLevel;
+    rsrq?: CellularSignalLevel;
+    sinr?: CellularSignalLevel;
+  };
+};
+
+/**
+ * セルラーIoT（LTE-M / NB-IoT）の電波品質を4段階（excellent/good/fair/poor）で判定する。
+ *
+ * dB/線形: RSRP は dBm（絶対電力）、RSRQ・SINR は dB（比）。判定は下限しきい値（≥）で
+ * 区分し、境界値は上位側の段に入る（LTE-M では RSRP ≥ −100dBm が fair）。
+ * 総合 level は「判明している指標の最悪値」（RSRP のみなら RSRP の判定がそのまま総合）。
+ *
+ * 適用条件: 安定運用の推奨帯（@/data/cellularSignalBands、3GPP TS 36.133／Quectel
+ * Application Notes／キャリアIoT実務仕様）に基づく目安判定であり、接続可否の判定ではない。
+ * CE（Coverage Enhancement）により RSRP −115dBm 以下（NB-IoT は −135dBm 程度まで）でも
+ * 接続自体は維持され得る。
+ */
+export function judgeCellularSignal(
+  input: CellularSignalJudgementInput
+): CellularSignalJudgement {
+  const band = CELLULAR_SIGNAL_BANDS[input.mode];
+  if (!band) {
+    throw new RfError(RfErrorCode.InvalidInput, { field: "cellular_mode" });
+  }
+  assertFinite(input.rsrpDbm, "rsrp");
+  if (input.rsrqDb !== undefined) {
+    assertFinite(input.rsrqDb, "rsrq");
+  }
+  if (input.sinrDb !== undefined) {
+    assertFinite(input.sinrDb, "sinr");
+  }
+
+  const valueFor: Record<CellularMetricThresholds["metric"], number | undefined> = {
+    rsrp: input.rsrpDbm,
+    rsrq: input.rsrqDb,
+    sinr: input.sinrDb
+  };
+
+  const perMetric: CellularSignalJudgement["perMetric"] = {
+    rsrp: "excellent"
+  };
+  let worst: CellularSignalLevel = "excellent";
+  for (const thresholds of band.metrics) {
+    const value = valueFor[thresholds.metric];
+    if (value === undefined) {
+      continue;
+    }
+    const level = classifyByThresholds(value, thresholds);
+    perMetric[thresholds.metric] = level;
+    if (LEVEL_SEVERITY[level] > LEVEL_SEVERITY[worst]) {
+      worst = level;
+    }
+  }
+
+  return { level: worst, perMetric };
 }
