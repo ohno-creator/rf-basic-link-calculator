@@ -1,92 +1,135 @@
 import { describe, expect, it } from "vitest";
-import {
-  evaluateAntennaKeepout,
-  type AntennaKeepoutRequirement
-} from "@/lib/rf/antennaKeepout";
-import {
-  ANTENNA_KEEPOUT_REQUIREMENTS,
-  getAntennaKeepoutRequirement
-} from "@/data/antennaKeepoutData";
+import { judgeKeepout, KEEPOUT_DANGER_SHORTFALL_RATIO } from "@/lib/rf/antennaKeepout";
+import { KEEPOUT_REQUIREMENTS } from "@/data/antennaKeepout";
 import { RfError } from "@/lib/rf/errors";
 
-const requirement: AntennaKeepoutRequirement = {
-  requiredWidthMm: 10,
-  requiredHeightMm: 4
-};
-
-describe("evaluateAntennaKeepout", () => {
-  it("必要寸法と同値ならsuccess", () => {
-    const result = evaluateAntennaKeepout({
+describe("judgeKeepout", () => {
+  it("returns success when the available area exactly meets the requirement (chip 2400MHz, 10x4)", () => {
+    const result = judgeKeepout({
+      antennaType: "chip",
+      band: "band2400",
       availableWidthMm: 10,
-      availableHeightMm: 4,
-      requirement
+      availableHeightMm: 4
     });
-    expect(result.status).toBe("success");
-    expect(result.widthShortfallMm).toBe(0);
-    expect(result.heightShortfallMm).toBe(0);
+    expect(result.requiredWidthMm).toBe(10);
+    expect(result.requiredHeightMm).toBe(4);
+    expect(result.verdict).toBe("success");
+    expect(result.shortfallWidthMm).toBe(0);
+    expect(result.shortfallHeightMm).toBe(0);
   });
 
-  it("1mm不足・不足率10%ならcaution", () => {
-    const result = evaluateAntennaKeepout({
+  it("returns caution when the only shortfall is under 20% (chip 2400MHz, W9 = 10% short)", () => {
+    const result = judgeKeepout({
+      antennaType: "chip",
+      band: "band2400",
       availableWidthMm: 9,
-      availableHeightMm: 4,
-      requirement
+      availableHeightMm: 4
     });
-    expect(result.status).toBe("caution");
-    expect(result.widthShortfallMm).toBe(1);
-    expect(result.maximumShortfallRatio).toBeCloseTo(0.1, 12);
+    expect(result.verdict).toBe("caution");
+    expect(result.shortfallWidthMm).toBeCloseTo(1, 10);
+    expect(result.shortfallHeightMm).toBe(0);
   });
 
-  it("両辺不足でも各20%未満ならcaution", () => {
-    expect(evaluateAntennaKeepout({
-      availableWidthMm: 8.1,
-      availableHeightMm: 3.3,
-      requirement
-    }).status).toBe("caution");
+  it("returns danger when a side is 20% or more short (chip 2400MHz, W7.9 = 21% short)", () => {
+    const result = judgeKeepout({
+      antennaType: "chip",
+      band: "band2400",
+      availableWidthMm: 7.9,
+      availableHeightMm: 4
+    });
+    expect(result.verdict).toBe("danger");
+    expect(result.shortfallWidthMm).toBeCloseTo(2.1, 10);
   });
 
-  it("ちょうど20%不足はdanger", () => {
-    const result = evaluateAntennaKeepout({
+  it("treats exactly 20% shortfall as danger (boundary, chip 2400MHz W8)", () => {
+    expect(KEEPOUT_DANGER_SHORTFALL_RATIO).toBe(0.2);
+    const result = judgeKeepout({
+      antennaType: "chip",
+      band: "band2400",
       availableWidthMm: 8,
-      availableHeightMm: 4,
-      requirement
+      availableHeightMm: 4
     });
-    expect(result.status).toBe("danger");
-    expect(result.maximumShortfallRatio).toBeCloseTo(0.2, 12);
+    expect(result.verdict).toBe("danger");
   });
 
-  it("W/Hは入れ替えず各辺を独立評価する", () => {
-    expect(evaluateAntennaKeepout({
-      availableWidthMm: 4,
-      availableHeightMm: 10,
-      requirement
-    }).status).toBe("danger");
+  it("returns success for the PCB pattern at 920MHz with W50 x H15", () => {
+    const result = judgeKeepout({
+      antennaType: "pcb",
+      band: "band920",
+      availableWidthMm: 50,
+      availableHeightMm: 15
+    });
+    expect(result.requiredWidthMm).toBe(50);
+    expect(result.requiredHeightMm).toBe(15);
+    expect(result.verdict).toBe("success");
   });
 
-  it("負値・0以下の必要寸法・非有限値はRfError", () => {
-    expect(() => evaluateAntennaKeepout({ availableWidthMm: -1, availableHeightMm: 4, requirement })).toThrowError(RfError);
-    expect(() => evaluateAntennaKeepout({ availableWidthMm: 10, availableHeightMm: 4, requirement: { requiredWidthMm: 0, requiredHeightMm: 4 } })).toThrowError(RfError);
-    expect(() => evaluateAntennaKeepout({ availableWidthMm: 10, availableHeightMm: Number.NaN, requirement })).toThrowError(RfError);
+  it("returns danger when both sides are short and one exceeds 20%", () => {
+    // FPC sub6: 必要 20x8。W15(25%不足)・H7(12.5%不足) → いずれかの辺で20%以上 → danger
+    const result = judgeKeepout({
+      antennaType: "fpc",
+      band: "sub6",
+      availableWidthMm: 15,
+      availableHeightMm: 7
+    });
+    expect(result.verdict).toBe("danger");
+    expect(result.shortfallWidthMm).toBeCloseTo(5, 10);
+    expect(result.shortfallHeightMm).toBeCloseTo(1, 10);
   });
-});
 
-describe("出典付きキープアウトdata", () => {
-  it("4種×4帯域=16件、寸法はすべて正値", () => {
-    expect(ANTENNA_KEEPOUT_REQUIREMENTS).toHaveLength(16);
-    for (const item of ANTENNA_KEEPOUT_REQUIREMENTS) {
-      expect(item.requiredWidthMm).toBeGreaterThan(0);
-      expect(item.requiredHeightMm).toBeGreaterThan(0);
-      expect(item.sourceRefs.length).toBeGreaterThan(0);
-      expect(item.confidence).toBe("confirmed");
+  it("returns caution when both sides are short but each is under 20%", () => {
+    // spring 920MHz: 必要 30x12。W28(6.7%不足)・H11(8.3%不足) → 全ての不足辺が20%未満 → caution
+    const result = judgeKeepout({
+      antennaType: "spring",
+      band: "band920",
+      availableWidthMm: 28,
+      availableHeightMm: 11
+    });
+    expect(result.verdict).toBe("caution");
+  });
+
+  it("never returns -0 for the shortfalls (oversized area)", () => {
+    const result = judgeKeepout({
+      antennaType: "chip",
+      band: "band2400",
+      availableWidthMm: 30,
+      availableHeightMm: 20
+    });
+    expect(Object.is(result.shortfallWidthMm, -0)).toBe(false);
+    expect(Object.is(result.shortfallHeightMm, -0)).toBe(false);
+    expect(result.verdict).toBe("success");
+  });
+
+  it("mirrors the data table for every type x band", () => {
+    for (const [type, byBand] of Object.entries(KEEPOUT_REQUIREMENTS)) {
+      for (const [band, req] of Object.entries(byBand)) {
+        const result = judgeKeepout({
+          antennaType: type as keyof typeof KEEPOUT_REQUIREMENTS,
+          band: band as keyof typeof byBand,
+          availableWidthMm: req.widthMm,
+          availableHeightMm: req.heightMm
+        });
+        expect(result.requiredWidthMm).toBe(req.widthMm);
+        expect(result.requiredHeightMm).toBe(req.heightMm);
+        expect(result.verdict).toBe("success");
+      }
     }
   });
 
-  it("2.4GHzチップ=10×4mm、920MHz PCB=50×15mm", () => {
-    expect(getAntennaKeepoutRequirement("chip", "2400")).toMatchObject({ requiredWidthMm: 10, requiredHeightMm: 4 });
-    expect(getAntennaKeepoutRequirement("pcb", "920")).toMatchObject({ requiredWidthMm: 50, requiredHeightMm: 15 });
-  });
-
-  it("未知キーはundefined", () => {
-    expect(getAntennaKeepoutRequirement("unknown", "920")).toBeUndefined();
+  it("guards non-positive and non-finite available dimensions", () => {
+    expect(() =>
+      judgeKeepout({ antennaType: "chip", band: "band2400", availableWidthMm: 0, availableHeightMm: 4 })
+    ).toThrowError(RfError);
+    expect(() =>
+      judgeKeepout({ antennaType: "chip", band: "band2400", availableWidthMm: -1, availableHeightMm: 4 })
+    ).toThrowError(RfError);
+    expect(() =>
+      judgeKeepout({
+        antennaType: "chip",
+        band: "band2400",
+        availableWidthMm: 10,
+        availableHeightMm: Number.NaN
+      })
+    ).toThrowError(RfError);
   });
 });
