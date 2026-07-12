@@ -5,6 +5,7 @@ import { Card } from "@/components/Card";
 import { MetricCard } from "@/components/MetricCard";
 import {
   CARRIER_PROFILES,
+  CARRIER_BAND_DETAILS,
   STANDARD_BAND_RANGES,
   type CarrierBandDeployment,
   type CarrierProfile,
@@ -50,29 +51,25 @@ const statusLabel: Record<DeploymentStatus, string> = {
   revoked: "免許取消・履歴"
 };
 
-function rangeLabel(key: string): string {
-  const range = STANDARD_BAND_RANGES.find((item) => item.key === key);
-  if (!range) return "標準レンジ未収録";
-  if (range.tddMHz) return `${range.tddMHz[0]}–${range.tddMHz[1]} MHz（TDD共用）`;
-  return `UL ${range.uplinkMHz![0]}–${range.uplinkMHz![1]} / DL ${range.downlinkMHz![0]}–${range.downlinkMHz![1]} MHz`;
-}
-
 function DeploymentRows({ profile }: { profile: CarrierProfile }) {
+  const details = CARRIER_BAND_DETAILS[profile.id];
   return (
     <div className="overflow-x-auto">
       <table className="min-w-[720px] w-full text-left text-sm">
         <thead className="border-b border-slate-200 text-xs text-slate-500">
-          <tr><th className="py-2 pr-3">Band</th><th className="py-2 pr-3">3GPP標準レンジ</th><th className="py-2 pr-3">位置づけ</th><th className="py-2">IoT／状態</th></tr>
+          <tr><th className="py-2 pr-3">Band</th><th className="py-2 pr-3">事業者実割当・利用周波数</th><th className="py-2 pr-3">このキャリアでの役割</th><th className="py-2">IoT／状態</th></tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
-          {profile.bands.map((deployment) => (
+          {profile.bands.map((deployment) => {
+            const bandDetail = details?.bands[deployment.band];
+            return (
             <tr key={`${profile.id}-${deployment.band}`} className={deployment.status === "revoked" ? "bg-slate-50 text-slate-400" : "text-slate-700"}>
               <td className="py-2 pr-3 font-bold text-slate-950">{deployment.band}</td>
-              <td className="py-2 pr-3 tabular-nums">{rangeLabel(deployment.band)}</td>
-              <td className="py-2 pr-3">{deployment.positioning}</td>
+              <td className="py-2 pr-3 tabular-nums">{bandDetail?.allocation ?? "実割当未確認"}</td>
+              <td className="py-2 pr-3 leading-relaxed">{bandDetail?.role ?? deployment.positioning}</td>
               <td className="py-2">{deployment.iot?.join(" / ") || statusLabel[deployment.status ?? "confirmed-current"]}</td>
             </tr>
-          ))}
+          );})}
         </tbody>
       </table>
     </div>
@@ -80,6 +77,7 @@ function DeploymentRows({ profile }: { profile: CarrierProfile }) {
 }
 
 function ProfileCard({ profile }: { profile: CarrierProfile }) {
+  const details = CARRIER_BAND_DETAILS[profile.id];
   return (
     <Card as="section" padding="lg" data-testid="carrier-profile" data-carrier={profile.id}>
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -90,8 +88,8 @@ function ProfileCard({ profile }: { profile: CarrierProfile }) {
       {profile.allocationNote ? <p className="mt-2 text-xs leading-relaxed text-amber-800">注意: {profile.allocationNote}</p> : null}
       <div className="mt-4"><DeploymentRows profile={profile} /></div>
       <p className="mt-3 text-xs leading-relaxed text-slate-500">
-        表の周波数は3GPP Band全体です。事業者の実割当・全国利用範囲ではありません。出典: {" "}
-        <a className="font-semibold underline" href={profile.sourceUrl} target="_blank" rel="noreferrer">{profile.sourceLabel}</a>
+        周波数は事業者の実割当・実利用範囲です。市場・地域別免許や端点非公表の地域は、全国一律値を作らずその旨を表示しています。出典: {" "}
+        <a className="font-semibold underline" href={details?.sourceUrl ?? profile.sourceUrl} target="_blank" rel="noreferrer">{details?.sourceLabel ?? profile.sourceLabel}</a>
       </p>
     </Card>
   );

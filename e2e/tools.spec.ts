@@ -1323,8 +1323,10 @@ test("cellular band map v3 switches five modes and drills down carrier data", as
   await calculator.getByRole("button", { name: "楽天モバイル" }).click();
   const profile = calculator.getByTestId("carrier-profile");
   await expect(profile).toHaveAttribute("data-carrier", "jp-rakuten");
-  await expect(profile).toContainText("2024年商用開始");
-  await expect(profile).toContainText("テスト利用段階");
+  await expect(profile).toContainText("700MHzプラチナバンド");
+  await expect(profile).toContainText("未商用");
+  await expect(profile).toContainText("UL 715–718 / DL 770–773 MHz");
+  await expect(profile).toContainText("3MHz×2");
 
   // 世界: 韓国3社の28GHzは現役Bandではなく取消履歴として表示。
   await calculator.getByRole("radio", { name: "世界" }).click();

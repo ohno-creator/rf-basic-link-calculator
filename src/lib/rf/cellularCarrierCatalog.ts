@@ -1,5 +1,6 @@
 import {
   CARRIER_PROFILES,
+  CARRIER_BAND_DETAILS,
   STANDARD_BAND_RANGES,
   type CarrierProfile,
   type StandardBandRange,
@@ -36,7 +37,10 @@ export function searchCarrierProfiles(query: string, sort: CarrierSearchSort = "
       profile.region,
       profile.iotSummary,
       profile.allocationNote ?? "",
-      ...profile.bands.flatMap((deployment) => [deployment.band, deployment.positioning, ...(deployment.iot ?? [])])
+      ...profile.bands.flatMap((deployment) => {
+        const detail = CARRIER_BAND_DETAILS[profile.id]?.bands[deployment.band];
+        return [deployment.band, detail?.allocation ?? "", detail?.role ?? deployment.positioning, ...(deployment.iot ?? [])];
+      })
     ].join(" ").toLocaleLowerCase("ja-JP");
     return haystack.includes(needle);
   });
@@ -63,4 +67,3 @@ export function representativeFrequencyMHz(band: StandardBandRange): number {
 export function fractionalBandwidthPercent(band: StandardBandRange): number {
   return (continuousBandwidthMHz(band) / representativeFrequencyMHz(band)) * 100;
 }
-
