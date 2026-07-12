@@ -9,16 +9,18 @@ import { TermPolarization } from "./TermPolarization";
 import { TermNearFarField } from "./TermNearFarField";
 import { TermReciprocity } from "./TermReciprocity";
 
+import { TermAntennaGain } from "./TermAntennaGain";
+
 export {
   TermFrequencyWavelength,
   TermDielectricConstant,
   TermPolarization,
   TermNearFarField,
-  TermReciprocity
+  TermReciprocity,
+  TermAntennaGain
 };
 
 // Placeholder terms
-export const TermAntennaGain = () => null;
 export const TermRadiationPattern = () => null;
 export const TermBeamwidth = () => null;
 export const TermRadiationEfficiency = () => null;
