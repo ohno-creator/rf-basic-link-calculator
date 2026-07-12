@@ -3,15 +3,19 @@ import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
+  Activity,
+  Building2,
   BookOpenCheck,
-  Bug,
-  CircuitBoard,
-  RadioTower
+  Cable,
+  FlaskConical,
+  Gauge,
+  RadioTower,
+  Spline
 } from "lucide-react";
 import { ButtonLink, buttonClasses } from "@/components/Button";
 import { ToolLayout } from "@/components/ToolLayout";
 import { CONTACT_URL } from "@/lib/rf/presets";
-import { toolDirectory } from "@/data/toolDirectory";
+import { toolCategories, toolDirectory, type ToolCategoryId } from "@/data/toolDirectory";
 import { ToolDirectoryBrowser } from "./components/ToolDirectoryBrowser";
 
 export const metadata: Metadata = {
@@ -22,54 +26,93 @@ export const metadata: Metadata = {
     "周波数・損失・整合・伝搬など、無線設計でよく使う基礎計算を1ツール1ページでまとめたツール集です。初心者でも目的から選べ、入力するとその場で図と意味がわかります。スタッフ株式会社。"
 };
 
-const purposeRoutes = [
-  {
-    label: "通信成立性を見積もる",
-    title: "電波が届くか確認したい",
-    body: "通信距離と余裕を計算し、壁やばらつきまで順番に追加します。",
+// 「目的別ガイド」と「カテゴリ一覧」の二重ナビを統合した単一の入口。
+// カテゴリ1件=1カード。質問形の見出しで目的別ガイドの分かりやすさを残しつつ、
+// クリックで /?category=<id>#tools（ToolDirectoryBrowserの既存フィルタ機構）へ渡す。
+const categoryGuides: Record<
+  ToolCategoryId,
+  { question: string; icon: typeof RadioTower; examples: Array<{ label: string; href: string }> }
+> = {
+  link: {
+    question: "電波が届くか確認したい",
     icon: RadioTower,
-    steps: [
-      { label: "リンクバジェットを計算", href: "/tools/rf-basic-link-calculator" },
-      { label: "壁・建材の損失を追加", href: "/tools/wall-penetration" },
-      { label: "必要な信頼性マージンを確認", href: "/tools/shadowing-margin" }
+    examples: [
+      { label: "リンクバジェット診断", href: "/tools/rf-basic-link-calculator" },
+      { label: "壁・建材の透過損失", href: "/tools/wall-penetration" },
+      { label: "デセンス（感度劣化）", href: "/tools/desense" }
     ]
   },
-  {
-    label: "基板・筐体へ組み込む",
-    title: "アンテナを実装したい",
-    body: "波長から必要寸法をつかみ、GNDとアンテナ周囲の空き地を確認します。",
-    icon: CircuitBoard,
-    steps: [
-      { label: "周波数から波長を確認", href: "/tools/frequency-wavelength" },
-      { label: "GNDプレーン寸法を確認", href: "/tools/ground-plane-size" },
-      { label: "キープアウト領域を確認", href: "/tools/antenna-keepout" }
+  antenna: {
+    question: "アンテナの性能を見積もりたい",
+    icon: Spline,
+    examples: [
+      { label: "VSWR帯域幅とQ", href: "/tools/vswr-bandwidth-q" },
+      { label: "偏波不整合損失", href: "/tools/polarization-loss" },
+      { label: "パッチアンテナ寸法", href: "/tools/patch-antenna-dimensions" }
     ]
   },
-  {
-    label: "測定値から原因を探す",
-    title: "通信不良を切り分けたい",
-    body: "受信品質、ノイズ、筐体による離調を分けて、疑う順番を整理します。",
-    icon: Bug,
-    steps: [
-      { label: "LTEの受信品質を読む", href: "/tools/lte-signal-metrics" },
-      { label: "受信感度の劣化を確認", href: "/tools/desense" },
-      { label: "筐体・近接物の離調を確認", href: "/tools/detuning-estimator" }
+  basics: {
+    question: "単位・基礎から理解したい",
+    icon: Gauge,
+    examples: [
+      { label: "dBを体感する", href: "/tools/db-feel" },
+      { label: "dBm変換", href: "/tools/dbm-converter" },
+      { label: "周波数・波長", href: "/tools/frequency-wavelength" }
     ]
   },
-  {
-    label: "用語と判断軸を学ぶ",
-    title: "基礎から理解したい",
-    body: "dBの感覚から始め、問題形式で無線設計の判断を身につけます。",
+  line: {
+    question: "ケーブル・整合を検討したい",
+    icon: Cable,
+    examples: [
+      { label: "VSWR・リターンロス", href: "/tools/vswr-return-loss" },
+      { label: "同軸ケーブル損失", href: "/tools/coaxial-cable-loss" },
+      { label: "L型整合回路", href: "/tools/l-match" }
+    ]
+  },
+  implementation: {
+    question: "アンテナを実装したい",
+    icon: Building2,
+    examples: [
+      { label: "GNDプレーン寸法と効率", href: "/tools/ground-plane-size" },
+      { label: "アンテナ・キープアウト領域", href: "/tools/antenna-keepout" },
+      { label: "筐体・近接物の離調推定", href: "/tools/detuning-estimator" }
+    ]
+  },
+  system: {
+    question: "電池・システム全体で見積もりたい",
+    icon: Activity,
+    examples: [
+      { label: "無線端末の電池寿命", href: "/tools/battery-life" },
+      { label: "LoRa送信時間・920MHz制限", href: "/tools/lora-airtime" },
+      { label: "GNSS C/N0バジェット", href: "/tools/gnss-cn0" }
+    ]
+  },
+  learning: {
+    question: "用語と判断軸を学びたい",
     icon: BookOpenCheck,
-    steps: [
-      { label: "dBの増減を体感", href: "/tools/db-feel" },
-      { label: "dBmと電力を変換", href: "/tools/dbm-converter" },
-      { label: "RF学習クエストへ進む", href: "/tools/rf-learning-quest" }
+    examples: [
+      { label: "RF学習クエスト", href: "/tools/rf-learning-quest" },
+      { label: "アンテナ用語の直感ラボ", href: "/tools/antenna-term-lab" },
+      { label: "感覚でわかる電波", href: "/tools/radio-wave-intuition" }
+    ]
+  },
+  research: {
+    question: "発展的な設計限界を確認したい",
+    icon: FlaskConical,
+    examples: [
+      { label: "小型アンテナ限界", href: "/tools/small-antenna-limit" },
+      { label: "大型アレイ近傍界", href: "/tools/large-array-near-field" },
+      { label: "反射板・RISサイズ効果", href: "/tools/reflector-ris-size-effect" }
     ]
   }
-];
+};
 
 export default function HomePage() {
+  const categoryCounts = new Map<string, number>();
+  for (const tool of toolDirectory) {
+    categoryCounts.set(tool.category, (categoryCounts.get(tool.category) ?? 0) + 1);
+  }
+
   return (
     <ToolLayout>
       <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pb-6 pt-10 sm:pb-8 sm:pt-12">
@@ -125,41 +168,49 @@ export default function HomePage() {
       <section id="purpose-routes" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-10">
         <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-semibold text-staf-dark">目的別ガイド</p>
-            <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">やりたいことに沿って、上から順に確認</h2>
+            <p className="text-sm font-semibold text-staf-dark">目的から探す</p>
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">知りたいことに近いカードを選ぶ</h2>
           </div>
           <p className="max-w-xl text-xs leading-relaxed text-slate-500">
-            今の課題に近いルートを1つ選び、必要なところまで進めます。
+            そのままツール一覧の該当カテゴリへ絞り込まれます。全部見たい場合は下の一覧へ。
           </p>
         </div>
 
-        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-          {purposeRoutes.map((route) => {
-            const Icon = route.icon;
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {toolCategories.map((category) => {
+            const guide = categoryGuides[category.id];
+            const Icon = guide.icon;
+            const count = categoryCounts.get(category.id) ?? 0;
             return (
-              <article key={route.title} className="rounded-xl border border-slate-200 bg-white p-4 shadow-card">
+              <Link
+                key={category.id}
+                href={`/?category=${category.id}#tools`}
+                className="group flex flex-col rounded-xl border border-slate-200 bg-white p-4 shadow-card transition hover:-translate-y-0.5 hover:border-staf/30 hover:shadow-card-hover"
+              >
                 <div className="flex items-start gap-2.5">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-staf-light text-staf-dark">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-staf-light text-staf-dark transition group-hover:bg-staf group-hover:text-white">
                     <Icon aria-hidden="true" className="h-4 w-4" />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-[11px] font-semibold text-staf-dark">{route.label}</p>
-                    <h3 className="mt-0.5 text-base font-bold leading-snug text-slate-950">{route.title}</h3>
+                    <p className="flex items-center gap-1.5 text-[11px] font-semibold text-staf-dark">
+                      {category.label}
+                      <span className="text-slate-400">{count}件</span>
+                    </p>
+                    <h3 className="mt-0.5 text-base font-bold leading-snug text-slate-950">{guide.question}</h3>
                   </div>
                 </div>
-                <p className="mt-2 text-xs leading-relaxed text-slate-600">{route.body}</p>
-                <ol className="mt-3 grid gap-1.5">
-                  {route.steps.map((step, index) => (
-                    <li key={step.href}>
-                      <Link href={step.href} className="group flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 transition hover:border-staf/40 hover:bg-staf-light/60">
-                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-bold text-staf-dark ring-1 ring-slate-200">{index + 1}</span>
-                        <span className="min-w-0 flex-1 truncate text-xs font-semibold text-slate-700 group-hover:text-staf-dark">{step.label}</span>
-                        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-slate-400 group-hover:text-staf-dark" />
-                      </Link>
+                <ul className="mt-3 grid gap-1">
+                  {guide.examples.map((example) => (
+                    <li key={example.href} className="truncate text-xs text-slate-600">
+                      ・{example.label}
                     </li>
                   ))}
-                </ol>
-              </article>
+                </ul>
+                <span className="mt-3 flex items-center gap-1 text-xs font-semibold text-staf-dark opacity-0 transition group-hover:opacity-100">
+                  このカテゴリを見る
+                  <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+                </span>
+              </Link>
             );
           })}
         </div>

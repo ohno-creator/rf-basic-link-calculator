@@ -10,11 +10,11 @@ test.describe("tool hub", () => {
       page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "やりたいことに沿って、上から順に確認" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "知りたいことに近いカードを選ぶ" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "すべての計算ツールから探す" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "アンテナを実装したい" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "通信不良を切り分けたい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ケーブル・整合を検討したい" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "基礎から理解したい" })).toBeVisible();
 
     for (const tool of toolDirectory) {
