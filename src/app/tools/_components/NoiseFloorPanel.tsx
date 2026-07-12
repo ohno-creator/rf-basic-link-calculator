@@ -13,7 +13,8 @@ import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { calculateNoiseSensitivity } from "@/lib/rf/noiseFloor";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { NoiseFloorColumn } from "./NoiseFloorColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { noiseFloorColumn } from "@/data/columns/noiseFloor";
 
 type BandwidthUnit = "Hz" | "kHz" | "MHz";
 
@@ -527,7 +528,17 @@ export function NoiseFloorPanel() {
       </div>
 
       <div className="mt-6">
-        <NoiseFloorColumn />
+        <ToolColumnCard
+          column={noiseFloorColumn}
+          live={
+            result
+              ? {
+                  noiseFloor: `${formatNumber(result.noiseFloorDbm, 1)} dBm`,
+                  sensitivity: `${formatNumber(result.sensitivityDbm, 1)} dBm`
+                }
+              : undefined
+          }
+        />
       </div>
 
       <MobileResultBar primary={primary} targetId="noise-floor-primary-result" />
