@@ -98,6 +98,8 @@ export type ToolEntry = {
   /** lucide アイコンのキー（表示側でコンポーネントに対応付け） */
   icon: string;
   category: ToolCategoryId;
+  /** scaffold対象パネルのexport名。未指定ツールは手書きページとして維持する。 */
+  panel?: string;
   basic?: BasicToolFields;
 };
 
@@ -906,6 +908,7 @@ export const tools: ToolEntry[] = [
   "tagline": "長さ[mm]を電気長[λ]と位相[°]へ",
   "icon": "ruler",
   "category": "line",
+  "panel": "ElectricalLengthPanel",
   "basic": {
     "title": "電気長・位相換算",
     "metaTitle": "電気長・位相換算 計算ツール｜VF・管内波長λgから位相[°]を求める",
@@ -946,6 +949,7 @@ export const tools: ToolEntry[] = [
   "tagline": "共振の鋭さQと使える帯域を相互換算",
   "icon": "activity",
   "category": "antenna",
+  "panel": "VswrBandwidthQPanel",
   "basic": {
     "title": "VSWR帯域幅とQ",
     "metaTitle": "VSWR帯域幅・Q 計算ツール｜比帯域とQの相互変換（単一共振近似）",
@@ -966,6 +970,7 @@ export const tools: ToolEntry[] = [
   "tagline": "ビームのずれで失う利得を見積もる",
   "icon": "radar",
   "category": "antenna",
+  "panel": "PointingMarginPanel",
   "basic": {
     "title": "アンテナ指向誤差マージン",
     "metaTitle": "アンテナ指向誤差マージン計算ツール｜HPBWとずれ角から利得低下を算出",

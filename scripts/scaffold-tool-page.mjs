@@ -39,6 +39,10 @@ export default function ${pascal(tool.slug)}Page() {
 `;
 const candidates = loadTools().filter((tool) => tool.basic && tool.panel && (all || tool.slug === slugArg));
 if (!all && !slugArg) throw new Error("slug または --all / --check を指定してください。");
+if (!candidates.length && check) {
+  console.log("candidates: 0");
+  process.exit(0);
+}
 if (!candidates.length) throw new Error(`生成対象がありません: ${slugArg ?? "registry"}`);
 let failed = false;
 for (const tool of candidates) {
