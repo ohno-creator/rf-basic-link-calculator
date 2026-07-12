@@ -13,9 +13,11 @@ import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { calculateEirp, dbiToDbd, dbiToLinear } from "@/lib/rf/antenna";
 import { dbmToMw, mwToDbm, mwToW, wToDbm, wToMw } from "@/lib/rf/db";
+import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { DecibelScaleVisual } from "./DecibelScaleVisual";
-import { DbmConverterColumn } from "./DbmConverterColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { dbmConverterColumn } from "@/data/columns/dbmConverter";
 
 type Mode = "dbm" | "mw" | "w";
 
@@ -426,7 +428,10 @@ export function DbmConverterPanel() {
         <p>dBmは電力そのもの、dBは比率や損失、dBiはアンテナ利得です。リンクバジェットではdB領域で足し引きします。</p>
       </FormulaExplanationCard>
 
-      <DbmConverterColumn />
+      <ToolColumnCard
+        column={dbmConverterColumn}
+        live={result ? { mwToDbm: `${formatNumber(result.dbm, 2)}dBm` } : undefined}
+      />
     </div>
   );
 }

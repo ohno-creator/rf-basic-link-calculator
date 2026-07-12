@@ -13,7 +13,8 @@ import { diagramPalette } from "@/lib/ui/diagramTheme";
 import { combinePowersDbm, dbiToDbd, DIPOLE_GAIN_DBI } from "@/lib/rf/dbFamily";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { DbFamilyColumn } from "./DbFamilyColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { dbFamilyColumn } from "@/data/columns/dbFamily";
 
 // ---- C) 足し算チェッカーの項目定義 ---------------------------------------------------
 // kind が単位の正体: "dBm"=絶対値（1mW基準の量そのもの）／"dB"・"dBi"=比率（倍率の対数）。
@@ -562,7 +563,10 @@ export function DbFamilyPanel() {
       </div>
 
       <div className="mt-6">
-        <DbFamilyColumn />
+        <ToolColumnCard
+          column={dbFamilyColumn}
+          live={Number.isFinite(gainDbd) ? { dbiToDbd: `${formatNumber(gainDbd, 2)}dBd` } : undefined}
+        />
       </div>
 
       <MobileResultBar primary={primary} targetId="db-family-primary-result" />
