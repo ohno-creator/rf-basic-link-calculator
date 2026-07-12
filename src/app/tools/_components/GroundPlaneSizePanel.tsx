@@ -21,7 +21,8 @@ import { GROUND_PLANE_EFFECT_SOURCES, GROUND_PLANE_EFFICIENCY_TABLE } from "@/da
 import { formatNumber } from "@/lib/rf/format";
 import { CONTACT_URL } from "@/lib/rf/presets";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { GroundPlaneSizeColumn } from "./GroundPlaneSizeColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { groundPlaneEffectColumn } from "@/data/columns/groundPlaneEffect";
 
 // 周波数プリセット（出典が固い帯のみ）。
 // 920: 日本のsub-GHz帯（ARIB STD-T108, LPWA/RFID）。1575: GNSS L1帯。2400: 2.4GHz ISM帯。
@@ -556,7 +557,10 @@ export function GroundPlaneSizePanel() {
       </div>
 
       <div className="mt-6">
-        <GroundPlaneSizeColumn />
+        <ToolColumnCard
+          column={groundPlaneEffectColumn}
+          live={result ? { drop: `${formatNumber(result.efficiencyDropDb, 1)}dB` } : undefined}
+        />
       </div>
 
       <MobileResultBar primary={primary} targetId="ground-plane-size-primary-result" />
