@@ -63,7 +63,7 @@ function ReciprocityExperience() {
           <line x1="-10" y1="35" x2="10" y2="35" stroke={diagramPalette.ink} strokeWidth="2" />
           
           <rect x="-40" y="-70" width="80" height="25" fill={isLeftTx ? chartTheme.series.gain : chartTheme.surface.canvas} rx="3" />
-          <text x="0" y="-54" textAnchor="middle" fill={isLeftTx ? "#ffffff" : diagramPalette.ink} fontSize="11" fontWeight="bold">
+          <text x="0" y="-54" textAnchor="middle" fill={isLeftTx ? diagramPalette.white : diagramPalette.ink} fontSize="11" fontWeight="bold">
             {isLeftTx ? "送信 (Tx)" : "受信 (Rx)"}
           </text>
 
@@ -76,11 +76,11 @@ function ReciprocityExperience() {
         {/* Right Antenna (Antenna 2) */}
         <g transform="translate(480, 100)">
           {/* Patch antenna representation */}
-          <rect x="-15" y="-30" width="30" height="60" fill="#1e293b" rx="2" />
-          <rect x="-8" y="-15" width="16" height="30" fill="#d97706" />
+          <rect x="-15" y="-30" width="30" height="60" fill={diagramPalette.ink} rx="2" />
+          <rect x="-8" y="-15" width="16" height="30" fill={diagramPalette.amber} />
 
           <rect x="-40" y="-70" width="80" height="25" fill={!isLeftTx ? chartTheme.series.gain : chartTheme.surface.canvas} rx="3" />
-          <text x="0" y="-54" textAnchor="middle" fill={!isLeftTx ? "#ffffff" : diagramPalette.ink} fontSize="11" fontWeight="bold">
+          <text x="0" y="-54" textAnchor="middle" fill={!isLeftTx ? diagramPalette.white : diagramPalette.ink} fontSize="11" fontWeight="bold">
             {!isLeftTx ? "送信 (Tx)" : "受信 (Rx)"}
           </text>
 

@@ -36,6 +36,7 @@ export function TermFrame({
       {/* 1. 体感ゾーン */}
       <Card as="section" padding="lg">
         <p className="text-xs font-bold uppercase tracking-wide text-staf-dark">さわって体感</p>
+        <h2 className="mt-1 text-xl font-bold text-slate-950">{title}</h2>
         <p className="mt-1 text-sm leading-relaxed text-slate-600">{experienceHint}</p>
         <div className="mt-3">{experience}</div>
       </Card>

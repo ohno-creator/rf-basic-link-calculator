@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Search, Sparkles } from "lucide-react";
 import { Card } from "@/components/Card";
+import Link from "next/link";
 import type { TermMeta, TermCategoryId } from "./types";
 import { termComponentsMap } from "./terms";
 
@@ -248,12 +249,12 @@ export function AntennaTermLabClient() {
             <Sparkles aria-hidden="true" className="h-4 w-4" />
             アンテナ用語の直感ラボ
           </p>
-          <a
+          <Link
             href="/tools/rf-learning-quest"
             className="text-xs font-bold text-staf hover:underline"
           >
             クエストで腕試し →
-          </a>
+          </Link>
         </div>
         <h1 className="mt-1 text-2xl font-bold text-slate-950 sm:text-3xl">アンテナ用語の直感ラボ</h1>
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-slate-600">
@@ -323,26 +324,20 @@ export function AntennaTermLabClient() {
             {filteredTerms.map((term) => {
               const isDone = Boolean(progress[term.id]);
               return (
-                <button
+                <div
                   key={term.id}
-                  type="button"
-                  onClick={() => setSelectedTermId(term.id)}
-                  data-testid={`term-${term.id}`}
-                  className="group flex flex-col justify-between text-left rounded-lg border border-slate-200 bg-white p-4 shadow-sm transition hover:border-staf/60 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                  className="group relative rounded-lg border border-slate-200 bg-white shadow-sm transition hover:border-staf/60 hover:shadow-md"
                 >
-                  <div>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedTermId(term.id)}
+                    data-testid={`term-${term.id}`}
+                    className="flex h-full w-full flex-col justify-between rounded-lg p-4 pr-12 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                  >
                     <div className="flex items-start justify-between gap-2">
                       <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
                         {CATEGORY_LABELS[term.category]}
                       </span>
-                      <button
-                        type="button"
-                        onClick={(e) => handleToggleProgress(term.id, e)}
-                        className={`text-slate-300 hover:text-staf ${isDone ? "text-staf" : ""}`}
-                        aria-label={`${term.title}の進捗を切り替え`}
-                      >
-                        <CheckCircle2 className="h-5 w-5 fill-current bg-white rounded-full" />
-                      </button>
                     </div>
                     <h3 className="mt-2 text-sm font-bold text-slate-900 group-hover:text-staf">
                       {term.title}
@@ -350,11 +345,19 @@ export function AntennaTermLabClient() {
                     <p className="mt-1 text-xs text-slate-500 line-clamp-2">
                       {term.description}
                     </p>
-                  </div>
-                  <div className="mt-4 flex items-center justify-end text-[11px] font-bold text-staf">
+                    <div className="mt-4 flex items-center justify-end text-[11px] font-bold text-staf">
                     体感する <ChevronRight className="h-3 w-3" />
-                  </div>
-                </button>
+                    </div>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={(e) => handleToggleProgress(term.id, e)}
+                    className={`absolute right-4 top-4 rounded-full text-slate-300 hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${isDone ? "text-staf" : ""}`}
+                    aria-label={`${term.title}の進捗を切り替え`}
+                  >
+                    <CheckCircle2 className="h-5 w-5 rounded-full bg-white fill-current" />
+                  </button>
+                </div>
               );
             })}
           </div>

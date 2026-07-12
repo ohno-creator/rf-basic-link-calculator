@@ -11,31 +11,36 @@ import { TermReciprocity } from "./TermReciprocity";
 
 import { TermAntennaGain } from "./TermAntennaGain";
 
+import { TermRadiationPattern } from "./TermRadiationPattern";
+import { TermBeamwidth } from "./TermBeamwidth";
+import { TermRadiationEfficiency } from "./TermRadiationEfficiency";
+import { TermEffectiveAperture } from "./TermEffectiveAperture";
+import { TermEfficiencyGainDiff } from "./TermEfficiencyGainDiff";
+import { TermVSWR } from "./TermVSWR";
+import { TermReturnLossS11 } from "./TermReturnLossS11";
+import { TermImpedanceMatching } from "./TermImpedanceMatching";
+import { TermResonance } from "./TermResonance";
+import { TermBandwidthVswr2 } from "./TermBandwidthVswr2";
+import { TermCableLossSqrtF } from "./TermCableLossSqrtF";
+import { TermGroundPlane } from "./TermGroundPlane";
+import { TermEirp } from "./TermEirp";
+import { TermIsolation } from "./TermIsolation";
+import { TermMultipathFading } from "./TermMultipathFading";
+
 export {
   TermFrequencyWavelength,
   TermDielectricConstant,
   TermPolarization,
   TermNearFarField,
   TermReciprocity,
-  TermAntennaGain
+  TermAntennaGain,
+  TermRadiationPattern
+  ,TermBeamwidth, TermRadiationEfficiency, TermEffectiveAperture, TermEfficiencyGainDiff,
+  TermVSWR, TermReturnLossS11, TermImpedanceMatching, TermResonance, TermBandwidthVswr2, TermCableLossSqrtF,
+  TermGroundPlane, TermEirp, TermIsolation, TermMultipathFading
 };
 
 // Placeholder terms
-export const TermRadiationPattern = () => null;
-export const TermBeamwidth = () => null;
-export const TermRadiationEfficiency = () => null;
-export const TermEffectiveAperture = () => null;
-export const TermEfficiencyGainDiff = () => null;
-export const TermVSWR = () => null;
-export const TermReturnLossS11 = () => null;
-export const TermImpedanceMatching = () => null;
-export const TermResonance = () => null;
-export const TermBandwidthVswr2 = () => null;
-export const TermCableLossSqrtF = () => null;
-export const TermGroundPlane = () => null;
-export const TermEirp = () => null;
-export const TermIsolation = () => null;
-export const TermMultipathFading = () => null;
 
 export const termComponentsMap: Record<string, ComponentType> = {
   "frequency-wavelength": TermFrequencyWavelength,

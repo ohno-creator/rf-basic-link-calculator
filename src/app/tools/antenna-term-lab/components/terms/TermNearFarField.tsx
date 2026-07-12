@@ -40,7 +40,7 @@ function NearFarFieldExperience() {
   } else if (distCm <= farFieldLimitCm) {
     zoneName = "放射近傍界 (Radiating Near Field / Fresnel)";
     zoneDesc = "電磁界は放射されていますが、アンテナ各部からの波の位相が揃っておらず、ビームパターンが距離で変化する過渡領域。";
-    zoneColor = "#b45309"; // Amber/Orange
+    zoneColor = diagramPalette.amberDeep;
   } else {
     zoneName = "遠方界 (Far Field / Fraunhofer)";
     zoneDesc = "アンテナから十分に離れた領域。電波は平面波となり、放射パターンや利得が距離に依存せず一定の形に落ち着きます（OTA測定条件）。";
@@ -72,7 +72,7 @@ function NearFarFieldExperience() {
         {/* Reactive zone */}
         <rect x={antX} y="30" width={reactiveX - antX} height="120" fill={chartTheme.seriesText.loss} opacity="0.08" />
         {/* Transition zone */}
-        <rect x={reactiveX} y="30" width={farFieldX - reactiveX} height="120" fill="#b45309" opacity="0.08" />
+        <rect x={reactiveX} y="30" width={farFieldX - reactiveX} height="120" fill={diagramPalette.amberDeep} opacity="0.08" />
         {/* Far field zone */}
         <rect x={farFieldX} y="30" width={530 - farFieldX} height="120" fill={chartTheme.series.gain} opacity="0.08" />
 
@@ -122,7 +122,7 @@ function NearFarFieldExperience() {
 
         {/* Legend */}
         <text x="40" y="195" fill={chartTheme.seriesText.loss} fontSize="9" fontWeight="bold">■ リアクティブ近傍界</text>
-        <text x="175" y="195" fill="#b45309" fontSize="9" fontWeight="bold">■ 放射近傍界</text>
+        <text x="175" y="195" fill={diagramPalette.amberDeep} fontSize="9" fontWeight="bold">■ 放射近傍界</text>
         <text x="290" y="195" fill={chartTheme.series.gain} fontSize="9" fontWeight="bold">■ 遠方界</text>
       </svg>
 

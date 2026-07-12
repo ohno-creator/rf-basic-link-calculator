@@ -24,22 +24,11 @@ function DielectricExperience() {
   const lambda0 = 299792458 / (freqMHz * 1e6);
   // Substrate effective wavelength (simplified or patch-based)
   // Let's use calculatePatchAntenna to show actual sizes
-  const patchInfo = useMemo(() => {
-    try {
-      return calculatePatchAntenna({
-        frequencyMHz: freqMHz,
-        dielectricConstant: er,
-        substrateHeightMm: 1.6
-      });
-    } catch {
-      // Fallback
-      return {
-        widthM: 0.05,
-        lengthM: 0.05 / Math.sqrt(er),
-        wavelengthM: lambda0
-      };
-    }
-  }, [er]);
+  const patchInfo = useMemo(() => calculatePatchAntenna({
+    frequencyMHz: freqMHz,
+    dielectricConstant: er,
+    substrateHeightMm: 1.6
+  }), [er]);
 
   // Scaled wavelengths for plotting
   // Let's say lambda0 is represented by 160px
@@ -117,8 +106,8 @@ function DielectricExperience() {
           <text x="0" y="15" fill={diagramPalette.ink} fontSize="12" fontWeight="bold">基板上のパッチアンテナ（サイズ感）</text>
           
           {/* FR-4 Green Board background */}
-          <rect x="220" y="-5" width="280" height="60" fill="#1e3f20" rx="4" />
-          <text x="230" y="15" fill="#ffffff" opacity="0.6" fontSize="9">FR-4 基板</text>
+          <rect x="220" y="-5" width="280" height="60" fill={diagramPalette.successDark} rx="4" />
+          <text x="230" y="15" fill={diagramPalette.white} opacity="0.6" fontSize="9">FR-4 基板</text>
 
           {/* Copper patch */}
           <rect
@@ -126,8 +115,8 @@ function DielectricExperience() {
             y={25 - patchWidthPx / 4}
             width={patchLengthPx}
             height={patchWidthPx / 2}
-            fill="#d97706"
-            stroke="#b45309"
+            fill={diagramPalette.amber}
+            stroke={diagramPalette.amberDeep}
             strokeWidth="1"
           />
           
@@ -136,7 +125,7 @@ function DielectricExperience() {
             x="360"
             y="48"
             textAnchor="middle"
-            fill="#ffffff"
+            fill={diagramPalette.white}
             fontSize="10"
             fontWeight="bold"
             style={{ fontVariantNumeric: "tabular-nums" }}
@@ -158,7 +147,7 @@ function DielectricExperience() {
         <input
           id="term-dielectric-slider"
           type="range"
-          min="1.0"
+          min="1.1"
           max="10.0"
           step="0.1"
           value={er}
