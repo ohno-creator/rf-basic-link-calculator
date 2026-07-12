@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   BookOpenCheck,
   Bug,
-  CheckCircle2,
   CircuitBoard,
   RadioTower
 } from "lucide-react";
@@ -73,22 +72,22 @@ const purposeRoutes = [
 export default function HomePage() {
   return (
     <ToolLayout>
-      <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pb-10 pt-12 sm:pb-12 sm:pt-20">
+      <section className="relative mx-auto max-w-6xl overflow-hidden px-6 pb-6 pt-10 sm:pb-8 sm:pt-12">
         {/* 計測方眼（v4-3: 主題を語る極薄モチーフ。線は不透明度4%・印刷非表示・読み上げ対象外） */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:32px_32px] [mask-image:radial-gradient(90%_80%_at_30%_20%,black,transparent)] print:hidden"
         />
-        <div className="relative grid gap-8 lg:grid-cols-[1.08fr_0.92fr] lg:items-center">
+        <div className="relative grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-center">
           <div>
             <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
-            <h1 className="mt-4 max-w-3xl text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">
+            <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
               無線設計を、目的から迷わず計算。
             </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-slate-600">
+            <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
               通信が届くか、アンテナをどう実装するか、なぜ通信が不安定なのか。知りたいことから計算の順番を選べます。
             </p>
-            <div className="mt-7 flex flex-wrap items-center gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-3">
               <a href="#purpose-routes" className={buttonClasses("primary")}>
                 目的から選ぶ
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
@@ -96,70 +95,66 @@ export default function HomePage() {
               <a href="#tools" className={buttonClasses("secondary")}>
                 全{toolDirectory.length}ツールを検索
               </a>
+              <span className="text-xs text-slate-500">無料・登録不要／数式・単位・適用条件を明示</span>
             </div>
-            <p className="mt-6 text-sm text-slate-500">
-              全{toolDirectory.length}ツール無料・登録不要 ／ 数式・単位・適用条件を明示
-            </p>
           </div>
 
-          <aside aria-labelledby="start-here-title" className="rounded-2xl border border-staf/20 bg-white p-5 shadow-soft sm:p-6">
-            <p className="text-xs font-bold uppercase tracking-[0.14em] text-staf-dark">Start here</p>
-            <h2 id="start-here-title" className="mt-2 text-2xl font-bold text-slate-950">まずは総合診断</h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate-600">
+          <aside aria-labelledby="start-here-title" className="rounded-2xl border border-staf/20 bg-white p-4 shadow-soft sm:p-5">
+            <div className="flex items-baseline justify-between gap-2">
+              <p className="text-xs font-bold uppercase tracking-[0.14em] text-staf-dark">Start here</p>
+              <span className="flex flex-wrap justify-end gap-x-2 text-[11px] text-slate-500">
+                <span>すぐ試せる</span>
+                <span>URLで共有</span>
+              </span>
+            </div>
+            <h2 id="start-here-title" className="mt-1.5 text-xl font-bold text-slate-950">まずは総合診断</h2>
+            <p className="mt-1.5 text-sm leading-snug text-slate-600">
               周波数・距離・送信電力・アンテナ利得・損失から、受信電力とリンクマージンをまとめて確認します。
             </p>
-            <ul className="mt-4 grid gap-2 text-sm text-slate-700">
-              {["代表条件からすぐ試せる", "滝グラフを見ながら調整できる", "条件をURLで共有できる"].map((item) => (
-                <li key={item} className="flex items-center gap-2">
-                  <CheckCircle2 aria-hidden="true" className="h-4 w-4 shrink-0 text-emerald-600" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <ButtonLink href="/tools/rf-basic-link-calculator" variant="primary" className="mt-5 w-full justify-center">
+            <ButtonLink href="/tools/rf-basic-link-calculator" variant="primary" className="mt-4 w-full justify-center">
               リンクバジェット診断を開く
               <ArrowUpRight aria-hidden="true" className="h-4 w-4" />
             </ButtonLink>
-            <Link href="/tools/simple-link-budget" className="mt-3 block text-center text-xs font-semibold text-staf-dark hover:underline">
+            <Link href="/tools/simple-link-budget" className="mt-2 block text-center text-xs font-semibold text-staf-dark hover:underline">
               もっと簡単な5項目だけの計算はこちら
             </Link>
           </aside>
         </div>
       </section>
 
-      <section id="purpose-routes" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-14">
-        <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
+      <section id="purpose-routes" className="mx-auto max-w-6xl scroll-mt-24 px-6 pb-10">
+        <div className="flex flex-col gap-1 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-sm font-semibold text-staf-dark">目的別ガイド</p>
-            <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">やりたいことに沿って、上から順に確認</h2>
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-slate-950">やりたいことに沿って、上から順に確認</h2>
           </div>
-          <p className="max-w-xl text-sm leading-relaxed text-slate-600">
-            すべて使う必要はありません。今の課題に近いルートを1つ選び、必要なところまで進めます。
+          <p className="max-w-xl text-xs leading-relaxed text-slate-500">
+            今の課題に近いルートを1つ選び、必要なところまで進めます。
           </p>
         </div>
 
-        <div className="mt-5 grid gap-4 md:grid-cols-2">
+        <div className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
           {purposeRoutes.map((route) => {
             const Icon = route.icon;
             return (
-              <article key={route.title} className="rounded-xl border border-slate-200 bg-white p-5 shadow-card">
-                <div className="flex items-start gap-3">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-staf-light text-staf-dark">
-                    <Icon aria-hidden="true" className="h-5 w-5" />
+              <article key={route.title} className="rounded-xl border border-slate-200 bg-white p-4 shadow-card">
+                <div className="flex items-start gap-2.5">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-staf-light text-staf-dark">
+                    <Icon aria-hidden="true" className="h-4 w-4" />
                   </span>
-                  <div>
-                    <p className="text-xs font-semibold text-staf-dark">{route.label}</p>
-                    <h3 className="mt-1 text-lg font-bold text-slate-950">{route.title}</h3>
-                    <p className="mt-1 text-sm leading-relaxed text-slate-600">{route.body}</p>
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold text-staf-dark">{route.label}</p>
+                    <h3 className="mt-0.5 text-base font-bold leading-snug text-slate-950">{route.title}</h3>
                   </div>
                 </div>
-                <ol className="mt-4 grid gap-2">
+                <p className="mt-2 text-xs leading-relaxed text-slate-600">{route.body}</p>
+                <ol className="mt-3 grid gap-1.5">
                   {route.steps.map((step, index) => (
                     <li key={step.href}>
-                      <Link href={step.href} className="group flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 transition hover:border-staf/40 hover:bg-staf-light/60">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white text-xs font-bold text-staf-dark ring-1 ring-slate-200">{index + 1}</span>
-                        <span className="min-w-0 flex-1 text-sm font-semibold text-slate-700 group-hover:text-staf-dark">{step.label}</span>
-                        <ArrowRight aria-hidden="true" className="h-4 w-4 shrink-0 text-slate-400 group-hover:text-staf-dark" />
+                      <Link href={step.href} className="group flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 transition hover:border-staf/40 hover:bg-staf-light/60">
+                        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white text-[11px] font-bold text-staf-dark ring-1 ring-slate-200">{index + 1}</span>
+                        <span className="min-w-0 flex-1 truncate text-xs font-semibold text-slate-700 group-hover:text-staf-dark">{step.label}</span>
+                        <ArrowRight aria-hidden="true" className="h-3.5 w-3.5 shrink-0 text-slate-400 group-hover:text-staf-dark" />
                       </Link>
                     </li>
                   ))}
