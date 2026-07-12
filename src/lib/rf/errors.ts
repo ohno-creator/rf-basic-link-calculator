@@ -24,7 +24,11 @@ export const RfErrorCode = {
   /** 複合入力の検証に失敗。 */
   InvalidInput: "invalid_input",
   /** 必要なデータが空。 */
-  Empty: "empty"
+  Empty: "empty",
+  /** 下限値以下。 */
+  TooSmall: "too_small",
+  /** 範囲が無効。 */
+  InvalidRange: "invalid_range"
 } as const;
 
 export type RfErrorCode = (typeof RfErrorCode)[keyof typeof RfErrorCode];
