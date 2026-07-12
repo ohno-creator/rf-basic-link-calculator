@@ -1398,12 +1398,12 @@ test.describe("antenna term intuition lab", () => {
     const calculator = page.getByTestId("tool-calculator");
     await expect(calculator.getByTestId("term-progress")).toContainText("0/21");
 
-    await calculator.getByRole("button", { name: "整合と給電" }).click();
+    await calculator.getByRole("button", { name: "整合と給電", exact: true }).click();
     await expect(calculator.getByTestId("term-vswr")).toBeVisible();
     await expect(calculator.getByTestId("term-ground-plane")).toBeHidden();
 
     await calculator.getByPlaceholder("用語を検索...").fill("マルチパス");
-    await calculator.getByRole("button", { name: "すべて" }).click();
+    await calculator.getByRole("button", { name: "すべて", exact: true }).click();
     await calculator.getByTestId("term-multipath-fading").click();
     const multipath = calculator.getByTestId("experience-multipath-svg");
     await expect(multipath).toHaveAttribute("data-position", "5");
@@ -1424,7 +1424,7 @@ test.describe("antenna term intuition lab", () => {
     await calculator.getByTestId("term-eirp").click();
     await calculator.getByRole("button", { name: "この用語を理解する" }).click();
     await expect(calculator.getByTestId("term-progress")).toContainText("1/21");
-    await expect(calculator.getByRole("link", { name: "EIRP適合性を計算" })).toHaveAttribute("href", "/tools/eirp-compliance");
+    await expect(calculator.getByRole("link", { name: "EIRP適合性を計算" })).toHaveAttribute("href", "/tools/eirp-compliance/");
 
     await page.reload();
     await expect(page.getByTestId("term-progress")).toContainText("1/21");
