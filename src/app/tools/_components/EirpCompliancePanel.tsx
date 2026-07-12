@@ -18,7 +18,8 @@ import {
   type AribT108PowerClass
 } from "@/data/aribT108PowerClasses";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { EirpComplianceColumn } from "./EirpComplianceColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { eirpComplianceColumn } from "@/data/columns/eirpCompliance";
 
 // 区分の規格値は data 層（src/data/aribT108PowerClasses.ts・出典: ARIB STD-T108／
 // 電波法施行規則第6条・一次確認済み）のみを参照する。本ファイルに規格数値を直書きしない。
@@ -544,7 +545,7 @@ export function EirpCompliancePanel() {
       </div>
 
       <div className="mt-6">
-        <EirpComplianceColumn />
+        <ToolColumnCard column={eirpComplianceColumn} />
       </div>
 
       <MobileResultBar primary={primary} targetId="eirp-compliance-primary-result" />
