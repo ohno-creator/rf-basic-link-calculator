@@ -61,16 +61,18 @@ export type ActionPlanItem = { title: string; summary: string; timeline: string;
 export type WgActivity = { wgName: string; parentBody: string; scope: string; recentOutput: string; sourceLabel: string; sourceUrl: string; checkedAt: string };
 ```
 
-## データ内容（数値の発明禁止・以下のアンカーは Claude が2026-07-12にWebSearchで確認済み）
+## データ内容（数値の発明禁止・以下のアンカーは Claude が2026-07-12にWebSearchで確認済み・下記6項目はさらに独立した2ソースでの相互照合済み＝高確度）
 
 ### 確定アンカー（そのまま使用可・出典明記）
-- **周波数再編アクションプラン（令和7年度版）**: 2025年11月28日公表。[総務省 報道資料](https://www.soumu.go.jp/menu_news/s-news/01kiban09_02000563.html)／[本文PDF](https://www.soumu.go.jp/main_content/001042686.pdf)
-  - 目標: **2040年末までに＋約47GHz幅**の帯域確保（2023年末時点で約26.5GHz幅確保済み）
-  - **7つの重点的取組**（本文PDFから正確に転記すること）。うち確認済み3件:
-    1. **26GHz帯5Gオークション**: 令和7年度内目途に技術基準・価額競争指針を整備→速やかに価額競争で割当（日本初の周波数オークション）
-    2. **Wi-Fi周波数の拡張**: 6GHz帯無線LANのSPモード屋外利用＋**6.5GHz帯（6425〜7125MHz）への拡張**の周波数共用technical条件を令和7年度中目途に取りまとめ
-    3. **V2X**: 5.9GHz帯（5850-5925MHz）のうち**5895-5925MHzの最大30MHz幅**をV2X通信向けに割当てる方向
-  - 700MHz帯の**衛星直接通信（NTN, スマホ直接接続）**制度整備は令和8年目途（[ケータイWatch報道](https://k-tai.watch.impress.co.jp/docs/news/2068058.html)）
+- **周波数再編アクションプラン（令和7年度版）**: 2025年11月28日公表。[総務省 報道資料](https://www.soumu.go.jp/menu_news/s-news/01kiban09_02000563.html)／[本文PDF](https://www.soumu.go.jp/main_content/001042686.pdf)（**本文PDFはWebFetchでのテキスト抽出に失敗＝画像/複雑レイアウトPDFの可能性。以下は二次報道2誌の相互照合値。実装前に本文PDFの目視確認を推奨**）
+  - 目標: **2040年末までに＋約47GHz幅**の帯域確保（2023年末時点で約26.5GHz幅確保済み・令和6年度中に+0.34GHz幅確保）——[BUSINESS NETWORK](https://businessnetwork.jp/article/31719/)と[ケータイWatch](https://k-tai.watch.impress.co.jp/docs/news/2068058.html)の2誌で数値一致確認済み
+  - **7つの重点的取組**（本文PDFから正確に転記すること・二次報道で確認できたのは以下）:
+    1. **26GHz帯5Gオークション**: 令和7年度内目途に技術基準・価額競争（条件付オークション）指針を整備→速やかに割当（日本初の周波数オークション）。**周波数レンジ: 25.25〜27GHz**（ケータイWatch記事で確認）
+    2. **Wi-Fi周波数の拡張**: 6GHz帯無線LAN（**5925〜6425MHz**・2022年開放済み）のSPモード屋外利用＋**6.5GHz帯（6425〜7125MHz）への拡張**の周波数共用技術的条件を令和7年度中目途に取りまとめ。参考: WRC-23でIMT特定された**7025〜7125MHz**もこの隣接帯
+    3. **V2X**: 5.9GHz帯（5850-5925MHz）のうち**5895〜5925MHzの30MHz幅**をV2X通信向けに割当てる方向で調整
+    4. （残り4項目は本文PDF未確認。Codexは実装前に上記PDFリンクへ直接アクセスして残りを埋めるか、埋められない場合はプレースホルダにせず該当項目を割愛すること——**創作禁止**）
+  - 700MHz帯の**衛星直接通信（NTN, スマホ直接接続）**制度整備は令和8年（2026年）中目途（ケータイWatch記事で確認）
+  - 参考: **40GHz帯は37.0〜43.5GHz**（ケータイWatch記事に記載・本ツールでは高GHz帯の一例として世界比較モードに使用可）
 - **2.3GHz帯ダイナミック周波数共用**: 放送事業用等と携帯（KDDIが2022年割当済み）が場所・時間で共用する国内初のDSS運用。※本ツールでは「共用の代表例」として日本詳細モードに掲載
 - **6GHz帯Wi-Fi**: 5925-6425MHzは屋内LPI等で2022年開放済み。SP屋外・上部6GHz拡張は上記アクションプラン参照
 
