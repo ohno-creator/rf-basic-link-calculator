@@ -9,6 +9,7 @@ import { Field } from "@/components/Field";
 import { MetricCard } from "@/components/MetricCard";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
+import { SegmentedControl } from "@/components/SegmentedControl";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import {
@@ -23,8 +24,9 @@ import type { LinkJudgementLevel } from "@/lib/rf/judgement";
 import { MAX_OTA_BANDS, OTA_BAND_PRESETS } from "@/data/otaBandPresets";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { OtaImplementationLossColumn } from "./OtaImplementationLossColumn";
+import { OtaExpertPanel } from "./OtaExpertPanel";
 
-type BandRow = {
+export type OtaBandRow = {
   id: number;
   label: string;
   conductedPowerDbm: number;
@@ -254,8 +256,9 @@ function OtaGapBars({
 }
 
 export function OtaImplementationLossPanel() {
+  const [mode, setMode] = useState<"standard" | "expert">("standard");
   // 既定はLTE-M 3Bandのサンプル値（教材用の例。実測値に置き換えて使う）。
-  const [rows, setRows] = useState<BandRow[]>(() =>
+  const [rows, setRows] = useState<OtaBandRow[]>(() =>
     OTA_BAND_PRESETS.map((preset, index) => ({ id: index + 1, ...preset }))
   );
   const [selectedId, setSelectedId] = useState(1);
@@ -286,7 +289,7 @@ export function OtaImplementationLossPanel() {
   );
   const selectedAnalysis = analyses[selectedIndex];
 
-  const updateSelected = (patch: Partial<BandRow>) => {
+  const updateSelected = (patch: Partial<OtaBandRow>) => {
     setRows((prev) => prev.map((row) => (row.id === selected.id ? { ...row, ...patch } : row)));
   };
 
@@ -361,7 +364,10 @@ export function OtaImplementationLossPanel() {
     <>
       <section className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
         <Card as="section" padding="lg">
-          <h2 className="text-base font-bold text-slate-950">Band別の測定値</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-3">
+            <h2 className="text-base font-bold text-slate-950">Band別の測定値</h2>
+            <SegmentedControl options={[{ id: "standard", label: "標準" }, { id: "expert", label: "エキスパート" }]} value={mode} onChange={setMode} ariaLabel="OTA動作モード切替" />
+          </div>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             Bandごとに、伝導測定（無線機コネクタ端の出力・感度）とアンテナ放射効率、OTA実測
             （TRP/TIS）を入力します。初期値はLTE-M端末を想定した<strong>サンプル値（例）</strong>です。
@@ -515,6 +521,8 @@ export function OtaImplementationLossPanel() {
           )}
         </div>
       </section>
+
+      {mode === "expert" ? <OtaExpertPanel rows={rows} setRows={setRows} nextId={nextId} setNextId={setNextId} setSelectedId={setSelectedId} /> : null}
 
       <div className="mt-6">
         <ChartFrame
