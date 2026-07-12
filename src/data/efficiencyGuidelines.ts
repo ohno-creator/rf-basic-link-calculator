@@ -17,5 +17,5 @@ export const EFFICIENCY_GUIDELINES: readonly EfficiencyGuideline[] = [
   { id: "24-embedded", category: "embedded", situation: "2.4GHz BLE／Wi-Fi 小型機内蔵", percentLow: 30, percentHigh: 60, comment: "部品が密集する実装での現実解。" },
   { id: "gnss-patch", category: "embedded", situation: "GNSSパッチ（良好実装）", percentLow: 50, percentHigh: 70, comment: "効率低下が受信C/N0へ直結する。" },
   { id: "wearable", category: "wearable", situation: "ウェアラブル（人体近接）", percentLow: 5, percentHigh: 20, comment: "人体吸収と離調を含む厳しい条件。", relatedTool: "/tools/body-loss" },
-  { id: "metal", category: "harsh", situation: "金属筐体・過酷実装", percentLow: 5, percentHigh: 15, comment: "金属近接と離調を実機で確認する。", relatedTool: "/tools/metal-plane-effect" }
+  { id: "metal", category: "harsh", situation: "金属筐体・過酷実装", percentLow: 5, percentHigh: 15, comment: "金属近接と離調を実機で確認する。", relatedTool: "/tools/detuning-estimator" }
 ];

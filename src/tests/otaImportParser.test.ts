@@ -70,4 +70,17 @@ B3,23
     expect(result.errors[1]).toContain("行 3: 放射効率 η は 0dB 以下である必要があります");
     expect(result.errors[2]).toContain("行 4: 6列のデータ");
   });
+
+  it("does not silently treat an invalid first data row as a header", () => {
+    const result = parseOtaImport("B9,abc,-108,-3,20,-105");
+    expect(result.success).toBe(false);
+    expect(result.errors).toHaveLength(1);
+    expect(result.errors[0]).toContain("行 1: 伝導出力 Pc が数値ではありません");
+  });
+
+  it("does not skip a band label merely containing the word band", () => {
+    const result = parseOtaImport("Band,Pc,Sc,η,TRP,TIS\nBroadband-1,23,-108,-3,20,-105");
+    expect(result.success).toBe(true);
+    expect(result.data[0].label).toBe("Broadband-1");
+  });
 });

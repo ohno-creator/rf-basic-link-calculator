@@ -20,8 +20,6 @@ function DielectricExperience() {
   }, playing);
 
   const freqMHz = 2450;
-  // Free space wavelength (er = 1.0)
-  const lambda0 = 299792458 / (freqMHz * 1e6);
   // Substrate effective wavelength (simplified or patch-based)
   // Let's use calculatePatchAntenna to show actual sizes
   const patchInfo = useMemo(() => calculatePatchAntenna({

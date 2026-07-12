@@ -29,6 +29,7 @@ export function RadiationEfficiencyPanel() {
     : percent < 20 ? { label: "実装見直しを推奨", level: "poor" as const }
       : { label: "実装条件と実測を確認", level: "caution" as const };
   const visible = EFFICIENCY_GUIDELINES.filter((item) => filter === "all" || item.category === filter);
+  const hasMatchingGuideline = EFFICIENCY_GUIDELINES.some((item) => percent >= item.percentLow && percent <= item.percentHigh);
 
   return <>
     <section className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
@@ -50,8 +51,10 @@ export function RadiationEfficiencyPanel() {
     <Card as="section" padding="lg" className="mt-6">
       <h2 className="text-base font-bold">実務目安との照合</h2>
       <p className="mt-2 text-sm text-slate-600">代表的な設計目安です。最終判断は実機OTA測定を優先してください。</p>
-      <div className="mt-3 flex flex-wrap gap-2">{filters.map((item) => <button key={item.id} type="button" onClick={() => setFilter(item.id)} className={`rounded-full border px-3 py-2 text-sm font-semibold ${filter === item.id ? "border-staf bg-staf text-white" : "border-slate-200"}`}>{item.label}</button>)}</div>
+      <div className="mt-3 flex flex-wrap gap-2">{filters.map((item) => <button key={item.id} type="button" aria-pressed={filter === item.id} onClick={() => setFilter(item.id)} className={`rounded-full border px-3 py-2 text-sm font-semibold ${filter === item.id ? "border-staf bg-staf text-white" : "border-slate-200"}`}>{item.label}</button>)}</div>
+      {!hasMatchingGuideline ? <Callout tone="caution" title="代表的な目安範囲外">現在の効率は収録した代表レンジに該当しません。入力条件と測定定義を確認してください。</Callout> : null}
       <div className="mt-4 grid gap-3 md:grid-cols-2">{visible.map((item) => { const active = percent >= item.percentLow && percent <= item.percentHigh; return <div key={item.id} data-testid={`efficiency-guideline-${item.id}`} data-active={active} className={`rounded-lg border p-4 ${active ? "border-staf bg-staf-light/40" : "border-slate-200"}`}><div className="flex justify-between gap-3"><strong>{item.situation}</strong><span className="tabular-nums">{item.percentLow}〜{item.percentHigh}%</span></div><p className="mt-2 text-sm text-slate-600">{item.comment}</p>{item.relatedTool ? <Link href={item.relatedTool} className="mt-2 inline-block text-sm font-semibold text-staf-dark">関連ツールへ →</Link> : null}</div>; })}</div>
+      <Link href="/tools/radiation-resistance" className="mt-4 inline-block text-sm font-semibold text-staf-dark">放射抵抗と効率の物理を見る →</Link>
     </Card>
 
     <div className="mt-6"><FormulaExplanationCard title="効率・dB・距離の読み替え" formula="η[dB] = 10log10(η[%]/100)\n距離倍率（自由空間） = 10^(η[dB]/20)" showColumnLink={false}><p>効率は電力比なので10log10を使います。一方、自由空間損失は距離に対して20log10で増えるため、効率50%は距離約0.71倍に相当します。遠方界・自由空間で他の条件が同じ場合の目安です。</p></FormulaExplanationCard></div>

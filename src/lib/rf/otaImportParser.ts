@@ -45,22 +45,14 @@ export function parseOtaImport(text: string): ParseResult {
     if (isFirstRow) {
       isFirstRow = false;
       const firstColLower = parts[0].toLowerCase();
-      const secondColLower = parts[1]?.toLowerCase() || "";
-      if (
-        firstColLower.includes("band") ||
-        firstColLower.includes("バンド") ||
-        secondColLower.includes("pc") ||
-        secondColLower.includes("power") ||
-        isNaN(Number(parts[1])) ||
-        isNaN(Number(parts[2]))
-      ) {
+      if (firstColLower === "band" || firstColLower === "バンド") {
         // ヘッダー行とみなしてスキップ
         continue;
       }
     } else {
       // 2行目以降でも明らかにヘッダー行のような場合はスキップ
       const firstColLower = parts[0].toLowerCase();
-      if (firstColLower.includes("band") || firstColLower.includes("バンド")) {
+      if (firstColLower === "band" || firstColLower === "バンド") {
         continue;
       }
     }

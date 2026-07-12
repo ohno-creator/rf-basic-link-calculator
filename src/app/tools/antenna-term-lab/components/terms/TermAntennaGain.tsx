@@ -18,8 +18,8 @@ function AntennaGainExperience() {
   const patternPath = useMemo(() => {
     const cx = 220;
     const cy = 110;
-    const points: string[] = [];
     const baseR = 60; // Isotropic radius
+    const samples: Array<{ rad: number; radius: number }> = [];
 
     // We want to deform the circle based on gain
     // As gain increases, we stretch forward (phi=0) and compress sides/back
@@ -52,10 +52,18 @@ function AntennaGainExperience() {
       // Ensure r doesn't go negative
       r = Math.max(10, r);
 
-      const x = cx + r * Math.cos(rad);
-      const y = cy + r * Math.sin(rad);
-      points.push(`${deg === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`);
+      samples.push({ rad, radius: r });
     }
+    // 極座標図の面積∝∫r²dθ。平均r²を基準円と一致させ、総放射電力の保存を図形でも表す。
+    const meanSquareRadius = samples.reduce((sum, sample) => sum + sample.radius ** 2, 0) / samples.length;
+    const normalization = baseR / Math.sqrt(meanSquareRadius);
+    const points: string[] = [];
+    samples.forEach(({ rad, radius }, index) => {
+      const normalizedRadius = radius * normalization;
+      const x = cx + normalizedRadius * Math.cos(rad);
+      const y = cy + normalizedRadius * Math.sin(rad);
+      points.push(`${index === 0 ? "M" : "L"} ${x.toFixed(1)} ${y.toFixed(1)}`);
+    });
     return points.join(" ") + " Z";
   }, [gainDbi]);
 
