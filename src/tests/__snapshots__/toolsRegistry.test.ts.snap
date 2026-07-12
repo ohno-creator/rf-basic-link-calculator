@@ -922,6 +922,13 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "tagline": "触って体感するアンテナ基礎用語21",
   },
   {
+    "category": "basics",
+    "href": "/tools/spectrum-use-atlas",
+    "icon": "radio",
+    "name": "周波数の用途地図（非セルラー編）",
+    "tagline": "Wi-Fi・LPWA・放送・衛星等を日本と世界8地域で比較",
+  },
+  {
     "category": "learning",
     "href": "/tools/radio-wave-intuition",
     "icon": "radio",

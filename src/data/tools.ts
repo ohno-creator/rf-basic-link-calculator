@@ -337,6 +337,13 @@ export const tools: ToolEntry[] = [
     "category": "learning"
   },
   {
+    "slug": "spectrum-use-atlas",
+    "name": "周波数の用途地図（非セルラー編）",
+    "tagline": "Wi-Fi・LPWA・放送・衛星等を日本と世界8地域で比較",
+    "icon": "radio",
+    "category": "basics"
+  },
+  {
     "slug": "radio-wave-intuition",
     "name": "感覚でわかる電波",
     "tagline": "触って体感する電波の直感6章",
