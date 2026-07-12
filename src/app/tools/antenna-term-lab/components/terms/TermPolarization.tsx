@@ -103,7 +103,7 @@ function PolarizationExperience() {
           <text x="25" y="-10" textAnchor="middle" fill={diagramPalette.ink} fontSize="11" fontWeight="bold">受信電力比</text>
           
           {/* Background bar */}
-          <rect x="15" y="0" width="20" height="120" fill={chartTheme.surface.nested} rx="3" />
+          <rect x="15" y="0" width="20" height="120" fill={chartTheme.surface.canvas} rx="3" />
           
           {/* Foreground active power bar */}
           <rect
