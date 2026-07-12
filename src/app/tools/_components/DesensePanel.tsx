@@ -19,7 +19,8 @@ import {
 } from "@/lib/rf/desense";
 import { formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { DesenseColumn } from "./DesenseColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { desenseColumn } from "@/data/columns/desense";
 
 // 経路損失指数 n の代表値（出典: T. Rappaport, "Wireless Communications: Principles and
 // Practice," 2nd ed., Table 4.2。自由空間 n=2、市街地セルラー n≈2.7–3.5、建物内 n≈3–5）。
@@ -538,7 +539,10 @@ export function DesensePanel() {
       </div>
 
       <div className="mt-6">
-        <DesenseColumn />
+        <ToolColumnCard
+          column={desenseColumn}
+          live={result ? { desense: `+${formatNumber(result.delta, 2)}dB` } : undefined}
+        />
       </div>
 
       <MobileResultBar primary={primary} targetId="desense-primary-result" />
