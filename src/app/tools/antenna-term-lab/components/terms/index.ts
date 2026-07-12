@@ -5,10 +5,9 @@ import type { ComponentType } from "react";
 // Placeholder terms
 import { TermFrequencyWavelength } from "./TermFrequencyWavelength";
 
-import { TermPolarization } from "./TermPolarization";
+import { TermNearFarField } from "./TermNearFarField";
 
-export { TermFrequencyWavelength, TermDielectricConstant, TermPolarization };
-export const TermNearFarField = () => null;
+export { TermFrequencyWavelength, TermDielectricConstant, TermPolarization, TermNearFarField };
 export const TermReciprocity = () => null;
 export const TermAntennaGain = () => null;
 export const TermRadiationPattern = () => null;
