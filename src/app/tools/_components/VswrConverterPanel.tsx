@@ -14,7 +14,8 @@ import { convertVswr, type VswrSourceKind } from "@/lib/rf/vswr";
 import { rfErrorMessage } from "@/lib/rfErrorMessages";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { VswrStandingWaveDiagram } from "./VswrStandingWaveDiagram";
-import { VswrColumn } from "./VswrColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { vswrColumn } from "@/data/columns/vswr";
 
 const modes: Array<{ id: VswrSourceKind; label: string; unit: string; placeholder: number }> = [
   { id: "vswr", label: "VSWR", unit: "", placeholder: 1.5 },
@@ -251,7 +252,10 @@ export function VswrConverterPanel() {
         </p>
       </FormulaExplanationCard>
 
-      <VswrColumn />
+      <ToolColumnCard
+        column={vswrColumn}
+        live={result ? { vswr15: `Γ${formatNumber(result.reflectionCoefficient, 3)} / RL${formatNumber(result.returnLossDb, 2)}dB / 反射${formatNumber(result.reflectedPowerPercent, 1)}% / ML${formatNumber(result.mismatchLossDb, 3)}dB` } : undefined}
+      />
     </div>
   );
 }
