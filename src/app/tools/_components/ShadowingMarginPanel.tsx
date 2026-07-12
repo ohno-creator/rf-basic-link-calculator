@@ -8,6 +8,8 @@ import { ChartFrame } from "@/components/ChartFrame";
 import { Field } from "@/components/Field";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { ResultBar } from "@/components/ResultBar";
+import { SegmentedControl } from "@/components/SegmentedControl";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
 import { chartTheme } from "@/lib/chartTheme";
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import {
@@ -16,7 +18,10 @@ import {
   shadowingMarginDbByPercent,
   type ShadowFadingEnvironment
 } from "@/lib/rf/shadowingMargin";
+import { areaCoverageFraction, buildAreaCoverageTable, standardNormalCdf } from "@/lib/rf/areaCoverage";
+import { inverseStandardNormalCdf } from "@/lib/rf/shadowingMargin";
 import { formatNumber } from "@/lib/rf/format";
+import { areaCoverageColumn } from "@/data/columns/areaCoverage";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
 import { ShadowingMarginColumn } from "./ShadowingMarginColumn";
 
@@ -231,10 +236,31 @@ function ShadowingBellCurve({
   );
 }
 
+function AreaCoverageDisk({ edgeReliability, sigmaDb, pathLossExponent }: { edgeReliability: number; sigmaDb: number; pathLossExponent: number }) {
+  const a = inverseStandardNormalCdf(edgeReliability);
+  const b = (10 * pathLossExponent) / (sigmaDb * Math.LN10);
+  const rings = Array.from({ length: 16 }, (_, index) => {
+    const outer = 150 * (1 - index / 16);
+    const t = Math.max(1 / 32, (outer - 150 / 32) / 150);
+    return { radius: outer, reliability: standardNormalCdf(a - b * Math.log(t)) };
+  });
+  const areaPercent = areaCoverageFraction(edgeReliability, sigmaDb, pathLossExponent) * 100;
+  return <svg role="img" viewBox="0 0 420 380" className="mx-auto h-auto w-full max-w-xl" data-testid="area-coverage-disk" data-area-coverage={areaPercent.toFixed(2)}>
+    <rect width="420" height="380" fill={chartTheme.surface.canvas} />
+    {rings.map((ring, index) => <circle key={index} cx="210" cy="175" r={ring.radius} fill={chartTheme.series.source} opacity={0.12 + ring.reliability * 0.78} />)}
+    <circle cx="210" cy="175" r="150" fill="none" stroke={diagramPalette.inkSoft} strokeWidth="2" />
+    <circle cx="210" cy="175" r="4" fill={diagramPalette.ink} />
+    <text x="210" y="350" textAnchor="middle" fill={diagramPalette.ink} fontSize="16" fontWeight="700">面積被覆率 {formatNumber(areaPercent, 2)}%</text>
+    <text x="210" y="32" textAnchor="middle" fill={diagramPalette.inkSoft} fontSize="12">中心≈100% ／ セル端 {formatNumber(edgeReliability * 100, 0)}%</text>
+  </svg>;
+}
+
 export function ShadowingMarginPanel() {
+  const [mode, setMode] = useState<"standard" | "expert">("standard");
   // 既定は 都市σ=8dB・信頼率90%（マージン ≈ 10.3dB）: セル設計の代表的な出発点。
   const [sigmaDb, setSigmaDb] = useState(SHADOW_FADING_STD_PRESETS_DB.urban);
   const [reliabilityPercent, setReliabilityPercent] = useState<number>(90);
+  const [pathLossExponent, setPathLossExponent] = useState(3);
 
   const marginDb = useMemo(() => {
     try {
@@ -252,6 +278,9 @@ export function ShadowingMarginPanel() {
       return null;
     }
   }, [sigmaDb]);
+  const areaTable = useMemo(() => {
+    try { return buildAreaCoverageTable(sigmaDb, pathLossExponent); } catch { return null; }
+  }, [sigmaDb, pathLossExponent]);
 
   const sigmaError =
     !Number.isFinite(sigmaDb) || sigmaDb < 0
@@ -275,7 +304,7 @@ export function ShadowingMarginPanel() {
     <>
       <section className="grid gap-6 lg:grid-cols-[minmax(0,5fr)_minmax(0,4fr)]">
         <Card as="section" padding="lg">
-          <h2 className="text-base font-bold text-slate-950">入力条件</h2>
+          <div className="flex items-center justify-between gap-3 border-b border-slate-100 pb-3"><h2 className="text-base font-bold text-slate-950">入力条件</h2><SegmentedControl options={[{id:"standard",label:"標準"},{id:"expert",label:"エキスパート"}]} value={mode} onChange={setMode} ariaLabel="シャドウイング計算モード" /></div>
           <p className="mt-2 text-sm leading-relaxed text-slate-600">
             必要マージンは2つだけで決まります。①受信レベルが場所ごとにどれだけばらつくか（σ）
             ②そのばらつきの中で何%の地点・時間まで通信を成立させたいか（目標信頼率）。
@@ -316,6 +345,7 @@ export function ShadowingMarginPanel() {
               error={sigmaError}
             />
           </div>
+          {mode === "expert" ? <div className="mt-5"><p className="text-xs font-semibold text-slate-500">伝搬指数 n</p><div className="mt-2 flex flex-wrap gap-2" role="group" aria-label="伝搬指数">{[2,3,3.5,4].map((value)=><button key={value} type="button" onClick={()=>setPathLossExponent(value)} className={chipClass(pathLossExponent===value)}>{value}</button>)}</div><p className="mt-2 text-xs text-slate-500">中央値パスロスが距離のn乗で増える円形セル近似に使います。</p></div> : null}
 
           <div className="mt-5">
             <p className="text-xs font-semibold text-slate-500">
@@ -350,12 +380,14 @@ export function ShadowingMarginPanel() {
               必要マージン = σ×Φ⁻¹(信頼率)。信頼率を上げるほど係数zが伸び、マージンが積み上がります。
             </p>
             <div className="mt-3 space-y-1.5">
-              {(marginTable ?? []).map((row) => {
+              {mode === "expert" ? <div className="grid grid-cols-[52px_1fr_88px_92px] gap-3 px-2 text-xs font-semibold text-slate-500"><span>端信頼率</span><span>z</span><span>マージン</span><span>面積被覆</span></div> : null}
+              <div data-testid={mode === "expert" ? "area-coverage-table" : undefined} className="space-y-1.5">{(marginTable ?? []).map((row) => {
                 const isCurrent = row.reliabilityPercent === reliabilityPercent;
+                const area = areaTable?.find((item) => item.reliabilityPercent === row.reliabilityPercent);
                 return (
                   <div
                     key={row.reliabilityPercent}
-                    className={`grid grid-cols-[52px_1fr_88px] items-center gap-3 rounded-lg px-2 py-1 text-sm ${
+                    className={`grid ${mode === "expert" ? "grid-cols-[52px_1fr_88px_92px]" : "grid-cols-[52px_1fr_88px]"} items-center gap-3 rounded-lg px-2 py-1 text-sm ${
                       isCurrent ? "bg-staf-light ring-1 ring-staf/40" : ""
                     }`}
                   >
@@ -368,9 +400,10 @@ export function ShadowingMarginPanel() {
                     <span className="text-right font-semibold tabular-nums text-slate-900">
                       {formatNumber(row.marginDb, 1)}dB
                     </span>
+                    {mode === "expert" ? <span className="text-right font-semibold tabular-nums text-staf-dark">{area ? formatNumber(area.areaCoveragePercent, 2) : "—"}%</span> : null}
                   </div>
                 );
-              })}
+              })}</div>
             </div>
             <p className="mt-4 text-sm leading-relaxed text-slate-600">
               求めたマージンは、
@@ -415,6 +448,8 @@ export function ShadowingMarginPanel() {
         </ChartFrame>
       </div>
 
+      {mode === "expert" && sigmaDb > 0 ? <div className="mt-6"><ChartFrame eyebrow="エリアカバレッジ" title="セル中心から端までの局所信頼率" description="円形セル内で、中心ほど余裕が大きく、端で指定した信頼率になる様子です。面積は半径の二乗で効くため、端50%でも全体の被覆率は50%を上回ります。" exportName="shadowing-area-coverage"><AreaCoverageDisk edgeReliability={reliabilityPercent/100} sigmaDb={sigmaDb} pathLossExponent={pathLossExponent}/></ChartFrame></div> : null}
+
       <div className="mt-6">
         <FormulaExplanationCard
           title="基礎から: なぜσと信頼率だけでマージンが決まるのか"
@@ -451,6 +486,7 @@ export function ShadowingMarginPanel() {
       <div className="mt-6">
         <ShadowingMarginColumn />
       </div>
+      {mode === "expert" ? <div className="mt-6"><ToolColumnCard column={areaCoverageColumn} live={{ areaCoverage: `${formatNumber(areaCoverageFraction(reliabilityPercent/100,sigmaDb,pathLossExponent)*100,2)}%` }} /></div> : null}
 
       <MobileResultBar primary={primary} targetId="shadowing-margin-primary-result" />
     </>
