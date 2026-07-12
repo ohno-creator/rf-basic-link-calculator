@@ -13,6 +13,7 @@ import {
   Cable,
   Calculator,
   CircuitBoard,
+  Compass,
   FlaskConical,
   Gauge,
   type LucideIcon,
@@ -52,7 +53,8 @@ const iconMap: Record<string, LucideIcon> = {
   antenna: RadioTower,
   orbit: Activity,
   grid: CircuitBoard,
-  mirror: Box
+  mirror: Box,
+  compass: Compass
 };
 
 const researchModeGuide = [

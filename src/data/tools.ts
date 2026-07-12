@@ -330,11 +330,34 @@ export const tools: ToolEntry[] = [
     "category": "learning"
   },
   {
+    "slug": "antenna-term-lab",
+    "name": "アンテナ用語の直感ラボ",
+    "tagline": "触って体感するアンテナ基礎用語21",
+    "icon": "book",
+    "category": "learning"
+  },
+  {
     "slug": "radio-wave-intuition",
     "name": "感覚でわかる電波",
     "tagline": "触って体感する電波の直感6章",
     "icon": "radio",
     "category": "learning"
+  },
+  {
+    "slug": "patch-hpbw-explorer",
+    "name": "パッチアンテナの半値角",
+    "tagline": "ビームの太さ・利得・設置範囲を体感",
+    "icon": "compass",
+    "category": "learning",
+    "basic": {
+      "title": "パッチアンテナの半値角",
+      "metaTitle": "パッチアンテナ半値角体感ツール｜HPBW・利得・床面カバー",
+      "description": "パッチアンテナの半値角HPBWを極座標パターンで走査し、−3dB境界、概算利得、設置ずれ損失、天井ゲートウェイの床面カバーを体感します。",
+      "scopeNote": "放射パターンと利得は主ローブの簡略近似です。最終設計ではメーカーのE面・H面実測パターンを確認してください。",
+      "formula": "L=12(θ/HPBW)²　／　D≈41253/(θE·θH)　／　床面直径=2h·tan(HPBW/2)",
+      "essenceLead": "半値角は電力が半分になるビームの全幅で、利得と設置ずれ耐性の代償を表します。",
+      "beginnerGuide": {"purpose":"半値角とは何か、なぜ重要か、現場でどう使うかを図で理解します。","inputs":"半値全角、角度マーカー、設置ずれ、天井高を動かします。","result":"相対利得、概算指向性、ずれ損失、床面カバー直径を読みます。"}
+    }
   },
   {
     "slug": "rf-antipatterns",
@@ -359,6 +382,26 @@ export const tools: ToolEntry[] = [
         "purpose": "周波数から波長を出し、アンテナ長やアンテナ間隔のサイズ感をつかみます。",
         "inputs": "使う周波数を入れます。基板上や材料中で考える場合は誘電率も確認します。",
         "result": "λ/2やλ/4を、アンテナ長、配置間隔、基板配線の最初の目安にします。"
+      }
+    }
+  },
+  {
+    "slug": "radiation-efficiency-converter",
+    "name": "放射効率 dB⇔% 変換",
+    "tagline": "効率をdB・距離・実務目安へ読み替え",
+    "icon": "gauge",
+    "category": "basics",
+    "basic": {
+      "title": "放射効率 dB⇔% 変換",
+      "metaTitle": "放射効率 dB・%変換ツール｜距離影響とアンテナ効率の実務目安",
+      "description": "アンテナの放射効率を%とdBで双方向変換し、自由空間での通信距離倍率と、外付け・内蔵・ウェアラブル・金属近接の実務目安を確認します。",
+      "scopeNote": "効率レンジは代表的な設計目安です。製品寸法・筐体・人体・周波数で変わるため、最終判断は実機OTA測定を優先してください。",
+      "formula": "η[dB] = 10log10(η[%]/100)　／　距離倍率 = 10^(η[dB]/20)",
+      "essenceLead": "効率50%は約−3dBで、自由空間の距離は約0.71倍です。",
+      "beginnerGuide": {
+        "purpose": "アンテナ効率を%・dB・通信距離の感覚へ読み替えます。",
+        "inputs": "効率%または効率dBのどちらかを入力します。",
+        "result": "変換値、自由空間距離倍率、用途別の実務目安を確認します。"
       }
     }
   },

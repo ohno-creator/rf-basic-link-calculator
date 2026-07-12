@@ -996,6 +996,18 @@ test("shadowing margin derives the required margin from sigma and reliability", 
   await expect(page.getByTestId("tool-calculator").getByRole("link", { name: /リンクバジェット診断/ })).toBeVisible();
 });
 
+test("shadowing expert mode derives Jakes area coverage", async ({ page }) => {
+  await page.goto("/tools/shadowing-margin/");
+  const calculator = page.getByTestId("tool-calculator");
+  await calculator.getByRole("radio", { name: "エキスパート" }).click();
+  await calculator.getByRole("button", { name: "3.5", exact: true }).click();
+  await expect(calculator.getByTestId("area-coverage-table")).toContainText("96.57%");
+  await expect(calculator.getByTestId("area-coverage-disk")).toHaveAttribute("data-area-coverage", "96.57");
+
+  await calculator.getByRole("button", { name: "50%", exact: true }).click();
+  await expect(calculator.getByTestId("area-coverage-disk")).toHaveAttribute("data-area-coverage", "75.45");
+});
+
 test("polarization loss tool computes linear 45deg default and switches polarization modes", async ({ page }) => {
   await page.goto("/tools/polarization-loss/");
   // 既定値 = 直線-直線 θ=45° → -20log10(cos45°) = 3.0103 ≈ 3.0dB
@@ -1378,6 +1390,116 @@ test.describe("OTA implementation loss / desense analysis", () => {
     await calculator.getByRole("button", { name: "追加Band 4を削除" }).click();
     await expect(primary).toContainText("デセンス推定値（LTE-M B1（例））");
   });
+});
+
+test.describe("antenna term intuition lab", () => {
+  test("filters terms and updates two interactive experiences", async ({ page }) => {
+    await page.goto("/tools/antenna-term-lab/");
+    const calculator = page.getByTestId("tool-calculator");
+    await expect(calculator.getByTestId("term-progress")).toContainText("0/21");
+
+    await calculator.getByRole("button", { name: "整合と給電" }).click();
+    await expect(calculator.getByTestId("term-vswr")).toBeVisible();
+    await expect(calculator.getByTestId("term-ground-plane")).toBeHidden();
+
+    await calculator.getByPlaceholder("用語を検索...").fill("マルチパス");
+    await calculator.getByRole("button", { name: "すべて" }).click();
+    await calculator.getByTestId("term-multipath-fading").click();
+    const multipath = calculator.getByTestId("experience-multipath-svg");
+    await expect(multipath).toHaveAttribute("data-position", "5");
+    await calculator.locator('input[type="range"]').fill("12");
+    await expect(multipath).toHaveAttribute("data-position", "12");
+
+    await calculator.getByRole("button", { name: "用語一覧に戻る" }).click();
+    await calculator.getByPlaceholder("用語を検索...").fill("VSWR");
+    await calculator.getByTestId("term-vswr").click();
+    const vswr = calculator.getByTestId("experience-vswr-svg");
+    await calculator.locator('input[type="range"]').fill("3");
+    await expect(vswr).toHaveAttribute("data-vswr", "3");
+  });
+
+  test("persists progress and exposes the related calculator link", async ({ page }) => {
+    await page.goto("/tools/antenna-term-lab/");
+    const calculator = page.getByTestId("tool-calculator");
+    await calculator.getByTestId("term-eirp").click();
+    await calculator.getByRole("button", { name: "この用語を理解する" }).click();
+    await expect(calculator.getByTestId("term-progress")).toContainText("1/21");
+    await expect(calculator.getByRole("link", { name: "EIRP適合性を計算" })).toHaveAttribute("href", "/tools/eirp-compliance");
+
+    await page.reload();
+    await expect(page.getByTestId("term-progress")).toContainText("1/21");
+  });
+});
+
+test.describe("OTA expert workflow", () => {
+  test("finds B8 harmonics, judges targets, and translates range impact", async ({ page }) => {
+    await page.goto("/tools/ota-implementation-loss/");
+    const calculator = page.getByTestId("tool-calculator");
+    await calculator.getByRole("radio", { name: "エキスパート" }).click();
+    const expert = calculator.getByTestId("ota-expert-panel");
+    await expect(expert).toBeVisible();
+    await expect(expert.getByTestId("harmonic-hits")).toContainText("936");
+    await expect(expert.getByTestId("harmonic-hits")).toContainText("36次");
+
+    await expert.getByRole("button", { name: "社内目標例を入力" }).click();
+    await expect(expert).toContainText("合格");
+    await expect(expert).toContainText("距離 -25.0%（n=2）");
+  });
+
+  test("imports six Excel columns and reports invalid rows", async ({ page }) => {
+    await page.goto("/tools/ota-implementation-loss/");
+    const calculator = page.getByTestId("tool-calculator");
+    await calculator.getByRole("radio", { name: "エキスパート" }).click();
+    const expert = calculator.getByTestId("ota-expert-panel");
+    const input = expert.getByLabel("OTA測定結果インポート");
+    await input.fill("Band\tPc\tSc\tη\tTRP\tTIS\nB8\t23\t-108\t-4\t18\t-99");
+    await expert.getByRole("button", { name: "一括投入" }).click();
+    await expect(calculator.getByRole("button", { name: "B8", exact: true })).toBeVisible();
+
+    await input.fill("B1,23,invalid,-3,19,-101");
+    await expert.getByRole("button", { name: "一括投入" }).click();
+    await expect(expert).toContainText("Band名と5つの数値を確認してください");
+  });
+});
+
+test("radiation efficiency converts percent, dB, range, and highlights guidance", async ({ page }) => {
+  await page.goto("/tools/radiation-efficiency-converter/");
+  const calculator = page.getByTestId("tool-calculator");
+  await expect(calculator.getByTestId("primary-result")).toContainText("50.0");
+  await expect(calculator).toContainText("-3.01");
+  await expect(calculator).toContainText("×0.71");
+
+  await calculator.locator("#efficiencyDb").fill("-10");
+  await expect(calculator.getByTestId("primary-result")).toContainText("10.0");
+  await expect(calculator.getByTestId("efficiency-guideline-920-small")).toHaveAttribute("data-active", "false");
+  await calculator.locator("#efficiencyPercent").fill("20");
+  await expect(calculator.getByTestId("efficiency-guideline-920-small")).toHaveAttribute("data-active", "true");
+});
+
+test("patch HPBW connects half-power boundary, gain, coverage, and catalog orientation", async ({ page }) => {
+  await page.goto("/tools/patch-hpbw-explorer/");
+  const calculator = page.getByTestId("tool-calculator");
+  const pattern = calculator.getByTestId("patch-hpbw-pattern");
+  await expect(pattern).toHaveAttribute("data-half-edge", "true");
+  await expect(calculator.getByTestId("primary-result")).toContainText("-3.0");
+
+  const hpbwSlider = calculator.getByTestId("patch-hpbw-slider");
+  const offsetSlider = calculator.getByTestId("patch-offset-slider");
+  await hpbwSlider.fill("120");
+  await offsetSlider.fill("110");
+  await hpbwSlider.fill("30");
+  await expect(offsetSlider).toHaveValue("30");
+  await hpbwSlider.fill("40");
+  await expect(calculator.getByTestId("patch-directivity")).toContainText("14.1");
+
+  await calculator.getByRole("button", { name: "天井GW" }).click();
+  await calculator.locator('input[type="range"]').last().fill("6");
+  await expect(calculator.getByTestId("coverage-diameter")).toHaveAttribute("data-diameter", "4.37");
+
+  await calculator.getByRole("button", { name: "カタログE/H面" }).click();
+  const orientation = calculator.getByTestId("catalog-orientation");
+  await orientation.click();
+  await expect(orientation).toHaveAttribute("data-orientation", "landscape");
 });
 
 test("diffraction shadow compares bands and reacts to inputs", async ({ page }) => {
