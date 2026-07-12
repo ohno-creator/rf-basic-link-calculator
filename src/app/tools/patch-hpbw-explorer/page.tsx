@@ -1,0 +1,2 @@
+import type{Metadata}from"next";import{ToolLayout}from"@/components/ToolLayout";import{BasicToolPageShell}from"@/components/BasicToolPageShell";import{getBasicTool}from"@/data/basicTools";import{PatchHpbwPanel}from"@/app/tools/_components/PatchHpbwPanel";
+const tool=getBasicTool("patch-hpbw-explorer")!;export const metadata:Metadata={title:tool.metaTitle,description:tool.description,alternates:{canonical:tool.canonical}};export default function Page(){return <ToolLayout><BasicToolPageShell tool={tool}><PatchHpbwPanel/></BasicToolPageShell></ToolLayout>}
