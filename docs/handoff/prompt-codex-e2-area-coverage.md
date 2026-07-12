@@ -71,7 +71,7 @@ export function buildAreaCoverageTable(sigmaDb: number, pathLossExponentN: numbe
 - 数値は`tabular-nums`、n変更で表と円図が再計算される（入力連動）
 
 ## コラム（`ShadowingMarginColumn.tsx` への追記または新規構造化コラム、D1形式推奨）
-題材候補: 「なぜ“端っこ50%”で満足していいのか——Jakesが解いた面積の錯覚」。フックは「セルの端で五分五分の勝負なのに、なぜ会社は"50%エッジ信頼率"で設計するのか？」。本文で「面積は中心近くに集中する（半径×半径則）ので、端が五分五分でも面積の75%は余裕で届く」を物語化。たとえ: 「的の中心に近いほど分厚く着色される標的紙」＋たとえの破れ（実際のセルは円形ではない・干渉限界のセルでは成立しにくい）。深掘りに導出の要点（部分積分・ガウス完全平方）を2〜3行。出典: Jakes, W.C. (ed.), *Microwave Mobile Communications*, Wiley (1974)／Rappaport, T.S., *Wireless Communications: Principles and Practice*, 2nd ed., Prentice Hall（該当章: セル被覆率）／3GPP TR 38.901（σ_SFプリセットの出典、第1段と共通）。
+題材候補: 「なぜ“端っこ50%”で満足していいのか——Jakesが解いた面積の錯覚」。フックは「セルの端で五分五分の勝負なのに、なぜ会社は"50%エッジ信頼率"で設計するのか？」。本文で「面積は中心近くに集中する（半径×半径則）ので、端が五分五分でも面積の75%は余裕で届く」を物語化。たとえ: 「的の中心に近いほど分厚く着色される標的紙」＋たとえの破れ（実際のセルは円形ではない・干渉限界のセルでは成立しにくい）。深掘りに導出の要点（部分積分・ガウス完全平方）を2〜3行。出典: Jakes, W.C. (ed.), *Microwave Mobile Communications*, Wiley (1974)／Rappaport, T.S., *Wireless Communications: Principles and Practice*, 2nd ed., Prentice Hall（該当章: セル被覆率）／3GPP TR 38.901 §7.4.1（σ_SFプリセットの出典、第1段と共通。href: https://www.3gpp.org/dynareport?code=38-series.htm — Claude Sonnet 5がWebSearchで存在確認済み・2026-07-12取得）。
 
 ## e2e（納品に含める）
 エキスパートトグルON→n選択→エリアカバレッジ表に上表の都市σ=8dB/n=3.5/edge90%→96.57%系列のいずれかが表示される、の検証1本（tool-calculator配下・既存テスト名と重複回避）。
