@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { HataColumn } from "@/app/tools/_components/HataColumn";
 import { PropagationExplorer } from "@/app/tools/_components/PropagationExplorer";
 import { PropagationMeasurementColumn } from "@/app/tools/_components/PropagationMeasurementColumn";
 import { TwoRayInterferenceLab } from "@/app/tools/_components/TwoRayInterferenceLab";
 import { BasicToolPageShell } from "@/components/BasicToolPageShell";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
 import { ToolLayout } from "@/components/ToolLayout";
 import { getBasicTool } from "@/data/basicTools";
+import { hataColumn } from "@/data/columns/hata";
 
 const tool = getBasicTool("propagation-loss")!;
 
@@ -29,7 +30,7 @@ export default function PropagationLossPage() {
         <PropagationExplorer />
         <TwoRayInterferenceLab />
         <PropagationMeasurementColumn />
-        <HataColumn />
+        <ToolColumnCard column={hataColumn} />
       </BasicToolPageShell>
     </ToolLayout>
   );

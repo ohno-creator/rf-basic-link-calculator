@@ -9,7 +9,8 @@ import {
   validateLinkBudgetInput
 } from "@/lib/rf/linkBudget";
 import { resolveLinkBudgetErrors } from "@/lib/linkBudgetErrorMessages";
-import { HataColumn } from "@/app/tools/_components/HataColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { hataColumn } from "@/data/columns/hata";
 import { LinkAssumptionDiagram } from "./LinkAssumptionDiagram";
 import { LinkActionsBar, type ShareState } from "./LinkActionsBar";
 import { GuidedLinkBudget } from "./GuidedLinkBudget";
@@ -236,7 +237,7 @@ export function CalculatorTabs({
       ) : null}
 
       <div className="mt-8">
-        <HataColumn />
+        <ToolColumnCard column={hataColumn} />
       </div>
 
       <div className="mt-8 flex flex-wrap items-center gap-3 rounded-2xl border border-slate-200/70 bg-white p-4">
