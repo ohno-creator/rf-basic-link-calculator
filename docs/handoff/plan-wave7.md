@@ -1,6 +1,8 @@
-# 第7波 実行プラン（2026-07-12 改訂v13・能力別3者分担の正本）
+# 第7波 実行プラン（2026-07-13 改訂v14・能力別3者分担の正本）
 
 **位置づけ**: `plan-wave6.md`（v1〜v12）の後継。第6波の主要5案件はmainへ着地済み・Antigravity受入も完了。本書は第7波（G-3量産・G-4活用・トップページ・新規G-8）の分担正本。
+
+**v14変更点**: T-1（rebaseline10）完了✅（part1〜3の3周でトップページ再構成＋文献パック9本分の視覚スナップショットを確定、feature=ab3f13e1・CI緑）。G-3文献パックは9/10本完了（残hata）。**新規案件「ケーブル付きアンテナ 設置ナビ」を追加**（T-6/U-5/A-12。仕様正本: `docs/handoff/spec-antenna-install-navi.md` v2.1、U-5向けプロンプト: `docs/handoff/prompt-u5-antenna-navi.md`）。
 
 **担当体制**: Claude Sonnet 5（設計・レビュー・統括・git実行・文献パック執筆）／GPT-5.6=Codex（実装。git操作なし）／Antigravity（実機受入・視覚承認・一次情報裏取り）
 
@@ -23,9 +25,10 @@
 ### Claude Sonnet 5
 | # | タスク | 状態 |
 |---|---|---|
-| **T-1** | **rebaseline10実施**: トップページ再構成の視覚差分をCI toggleループで確定（home-desktop/mobile snapshot更新） | **最優先・次のアクション** |
-| **T-2** | **feature→main PR**: rebaseline10後、CI緑確認しmainへ統合（第7波の全成果を配信） | T-1後 |
-| T-3 | G-3文献パック残り6本を継続執筆（hata→coax→desense→eirp→lora→ground-plane、1〜2本/ターン） | 継続 |
+| T-1 | rebaseline10実施（part1〜3の3周: トップページ＋文献パック9本分の視覚確定） | **✅完了（feature=ab3f13e1・CI緑）** |
+| **T-2** | **feature→main PR**: CI緑確認済み。mainへ統合（第7波の全成果を配信） | **次のアクション** |
+| T-3 | G-3文献パック残り**1本（hata）**を執筆（coax/desense/eirp/lora/ground-plane✅済み） | 継続 |
+| **T-6** | **【新規】設置ナビ**: (a)スケルトン＋スタブエンジン先行コミット→(b)U-5完了後にSECTION 3/5本実装（データ正本・compute・SELFTEST 1008通り）→(c)統合レビュー・git。仕様=spec-antenna-install-navi.md §11 | T-6a済→U-5待ち |
 | T-4 | spectrumUses.tsの`e()`既定ステータスを`unverified-current`へ反転（新規追加分の裏取り漏れ防止。既存データは変更不要＝Antigravity済み検証を保持） | 低優先度・時間があれば |
 | **T-5** | **【新規】3GPPモバイル世代進化ラボ仕様の技術レビュー**: 773行の正確性注記（5G NSA/SA・6G未確定・世代とReleaseの分離等）を精査し、Codex実装前に懸念点があれば差し戻し。テスト用の期待値（世代別の代表Bandやスループット等、数値を伴う主張）があれば自己検算 | G-8着手前に実施推奨 |
 | 済 | S-1〜S-2の前半（rebaseline9・G-3×4本・トップページ）✅／G-4検収✅ | — |
@@ -38,6 +41,7 @@
 | **U-2** | **【新規】3GPPモバイル世代進化ラボの実装**: `docs/3gpp-mobile-generation-lab-spec.md`（773行・完成済み仕様）に基づき実装。T-5のレビューコメントがあれば反映してから着手 | docs/3gpp-mobile-generation-lab-spec.md |
 | U-3 | G-7 P2: コラム9本へカテゴリ別の一次出典を追加（低優先度） | review-g4-g7.md |
 | U-4 | G-4の本格展開: `panel`フィールドを残り約40ツールへ順次追加し、scaffold管理下を拡大（任意・急ぎではない） | prompt-codex-f1kai-f3.md |
+| **U-5** | **【新規】設置ナビのUI実装**: `public/demo/antenna-install-navi.html` の SECTION 1/2/4（スタイル・マークアップ・UIバインディング・印刷CSS）。SECTION 3/5とマーカー・バッファ行は編集禁止 | **prompt-u5-antenna-navi.md（専用プロンプト）＋spec-antenna-install-navi.md** |
 
 ### Antigravity
 | # | タスク | 前提 |
@@ -46,14 +50,16 @@
 | **A-9** | **【新規】トップページ再構成の実機受入**: サブカテゴリ表示の分かりやすさ・モバイル375pxでの密度上昇後の視認性・タップ領域を官能評価 | T-1（rebaseline10）後 |
 | A-10 | 文献パック4本（fspl/vswr/dbFamily/dbmConverter）の出典リンク実在・鮮度確認 | 随時 |
 | **A-11** | **【新規】3GPPモバイル世代進化ラボの受入**: 実装後、5G NSA/SA区別・世代とReleaseの混同がないか等、正確性注記が画面上でも保たれているかを重点確認 | U-2後 |
+| **A-12** | **【新規】設置ナビの受入**: ネットワーク遮断`file://`で全機能動作／3プリセット数値を出典資料と照合／印刷A4縦1枚／SELFTEST OK／企業名grep 0件。合格条件=spec-antenna-install-navi.md §11 | T-6c後 |
 
 ## 3. 実行順序
 ```
-T-1 rebaseline10（トップページ視覚確定）
+T-1 rebaseline10 ✅
  └→ T-2 feature→main PR（第7波配信）
      └→ A-9 トップページ受入
 
-T-3 文献パック執筆（継続）→ U-1 実装反映 → A-10 出典確認
+T-6a スケルトン先行コミット ✅ → U-5 UI実装（SECTION 1/2/4） → T-6b エンジン本実装（SECTION 3/5） → T-6c 統合 → A-12 受入
+T-3 文献パック執筆（残hata 1本）→ U-1 実装反映 → A-10 出典確認
 T-5 3GPPラボ仕様レビュー → U-2 実装 → A-11 受入
 U-3/U-4（低優先度・並行可）
 ```
