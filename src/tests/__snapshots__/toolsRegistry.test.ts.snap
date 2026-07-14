@@ -828,6 +828,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/rf-basic-link-calculator",
     "icon": "gauge",
     "name": "リンクバジェット診断",
+    "subcategory": "link-overview",
     "tagline": "通信が届くかを総合的に判定",
   },
   {
@@ -835,6 +836,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/simple-link-budget",
     "icon": "calculator",
     "name": "かんたんリンク計算",
+    "subcategory": "link-overview",
     "tagline": "受信電力と通信余裕だけを見る",
   },
   {
@@ -842,6 +844,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/free-space-loss",
     "icon": "waves",
     "name": "自由空間損失（FSPL）",
+    "subcategory": "link-loss-models",
     "tagline": "距離と周波数による基本損失",
   },
   {
@@ -849,6 +852,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/noise-floor",
     "icon": "activity",
     "name": "ノイズフロア・受信感度",
+    "subcategory": "link-sensitivity",
     "tagline": "「どこまで弱い電波を受けられるか」の物理限界",
   },
   {
@@ -856,6 +860,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/eirp-compliance",
     "icon": "gauge",
     "name": "EIRP法規チェック（920MHz帯）",
+    "subcategory": "link-regulation",
     "tagline": "空中線電力＋利得が法規上限内かを判定",
   },
   {
@@ -863,6 +868,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/rain-attenuation",
     "icon": "waves",
     "name": "降雨・大気減衰",
+    "subcategory": "link-loss-models",
     "tagline": "雨と空気はどの周波数から電波を食うか",
   },
   {
@@ -870,6 +876,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/shadowing-margin",
     "icon": "activity",
     "name": "シャドウイングマージン",
+    "subcategory": "link-indoor",
     "tagline": "場所ごとのばらつきに何dB積むか",
   },
   {
@@ -877,6 +884,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/polarization-loss",
     "icon": "repeat",
     "name": "偏波不整合損失",
+    "subcategory": undefined,
     "tagline": "偏波の向きずれで失うdBを確認",
   },
   {
@@ -884,6 +892,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/fresnel-zone",
     "icon": "spline",
     "name": "フレネルゾーン半径",
+    "subcategory": "link-loss-models",
     "tagline": "見通しと必要クリアランス",
   },
   {
@@ -891,6 +900,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/propagation-loss",
     "icon": "building",
     "name": "伝搬損失モデル比較",
+    "subcategory": "link-loss-models",
     "tagline": "自由空間〜Hata系を一括比較",
   },
   {
@@ -898,6 +908,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/ncu-below-ground",
     "icon": "box",
     "name": "GL以下NCU・水道BOX診断",
+    "subcategory": "link-indoor",
     "tagline": "地下・BOX内端末の追加損失を分解",
   },
   {
@@ -905,6 +916,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/nami-gate-window",
     "icon": "window",
     "name": "ナミゲート 室内受信電力シミュレーター",
+    "subcategory": "link-indoor",
     "tagline": "窓設置30cm角・室内分布をOFF/ON/差分で可視化",
   },
   {
@@ -912,6 +924,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/rf-learning-quest",
     "icon": "book",
     "name": "RF学習クエスト",
+    "subcategory": undefined,
     "tagline": "1060問のアンテナ設計RPG",
   },
   {
@@ -919,13 +932,23 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/antenna-term-lab",
     "icon": "book",
     "name": "アンテナ用語の直感ラボ",
+    "subcategory": undefined,
     "tagline": "触って体感するアンテナ基礎用語21",
+  },
+  {
+    "category": "basics",
+    "href": "/tools/spectrum-use-atlas",
+    "icon": "radio",
+    "name": "周波数の用途地図（非セルラー編）",
+    "subcategory": undefined,
+    "tagline": "Wi-Fi・LPWA・放送・衛星等を日本と世界8地域で比較",
   },
   {
     "category": "learning",
     "href": "/tools/radio-wave-intuition",
     "icon": "radio",
     "name": "感覚でわかる電波",
+    "subcategory": undefined,
     "tagline": "触って体感する電波の直感6章",
   },
   {
@@ -933,6 +956,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/patch-hpbw-explorer",
     "icon": "compass",
     "name": "パッチアンテナの半値角",
+    "subcategory": undefined,
     "tagline": "ビームの太さ・利得・設置範囲を体感",
   },
   {
@@ -940,6 +964,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/rf-antipatterns",
     "icon": "bug",
     "name": "RFアンチパターン図鑑",
+    "subcategory": undefined,
     "tagline": "繰り返される設計ミス10選を数字で学ぶ",
   },
   {
@@ -947,6 +972,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/frequency-wavelength",
     "icon": "radio",
     "name": "周波数・波長",
+    "subcategory": undefined,
     "tagline": "波長とアンテナのサイズ感",
   },
   {
@@ -954,6 +980,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/radiation-efficiency-converter",
     "icon": "gauge",
     "name": "放射効率 dB⇔% 変換",
+    "subcategory": undefined,
     "tagline": "効率をdB・距離・実務目安へ読み替え",
   },
   {
@@ -961,6 +988,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/dbm-converter",
     "icon": "repeat",
     "name": "dBm 変換",
+    "subcategory": undefined,
     "tagline": "dBm / mW / W を相互変換",
   },
   {
@@ -968,6 +996,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/db-feel",
     "icon": "ruler",
     "name": "dBを体感する",
+    "subcategory": undefined,
     "tagline": "+3dBで2倍・+6dBで距離2倍",
   },
   {
@@ -975,6 +1004,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/vswr-return-loss",
     "icon": "activity",
     "name": "VSWR・リターンロス",
+    "subcategory": undefined,
     "tagline": "整合の良し悪しを見る",
   },
   {
@@ -982,6 +1012,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/coaxial-cable-loss",
     "icon": "cable",
     "name": "同軸ケーブル損失",
+    "subcategory": undefined,
     "tagline": "標準品の実測ロスを品番×周波数で",
   },
   {
@@ -989,6 +1020,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/microstrip-line",
     "icon": "circuit",
     "name": "マイクロストリップ線路",
+    "subcategory": undefined,
     "tagline": "基板配線の Z0 と曲げ設計",
   },
   {
@@ -996,6 +1028,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/effective-aperture",
     "icon": "aperture",
     "name": "有効開口面積",
+    "subcategory": undefined,
     "tagline": "利得を受信面積に換算",
   },
   {
@@ -1003,6 +1036,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/aperture-gain-beamwidth",
     "icon": "satellite",
     "name": "開口利得・ビーム幅",
+    "subcategory": undefined,
     "tagline": "必要利得とビーム幅を確認",
   },
   {
@@ -1010,6 +1044,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/antenna-spacing",
     "icon": "scan",
     "name": "アンテナ間隔 λ換算",
+    "subcategory": undefined,
     "tagline": "複数アンテナの離し方を判断",
   },
   {
@@ -1017,6 +1052,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/array-grating-lobe",
     "icon": "radar",
     "name": "不要ビーム判定",
+    "subcategory": undefined,
     "tagline": "狙っていない方向に強く出ないか確認",
   },
   {
@@ -1024,6 +1060,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/patch-antenna-dimensions",
     "icon": "panel",
     "name": "パッチアンテナ寸法",
+    "subcategory": undefined,
     "tagline": "基板CADの初期寸法を決める",
   },
   {
@@ -1031,6 +1068,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/small-loop-resonance",
     "icon": "refresh",
     "name": "小型ループ共振",
+    "subcategory": undefined,
     "tagline": "同調コンデンサ容量を決める",
   },
   {
@@ -1038,6 +1076,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/radiation-resistance",
     "icon": "antenna",
     "name": "放射抵抗・効率",
+    "subcategory": undefined,
     "tagline": "短いアンテナの飛びにくさを確認",
   },
   {
@@ -1045,6 +1084,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/small-antenna-limit",
     "icon": "orbit",
     "name": "小型アンテナ限界",
+    "subcategory": undefined,
     "tagline": "筐体サイズで帯域が足りるか確認",
   },
   {
@@ -1052,6 +1092,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/large-array-near-field",
     "icon": "grid",
     "name": "大型アレイ近傍界",
+    "subcategory": undefined,
     "tagline": "遠方界扱いでよいか確認",
   },
   {
@@ -1059,6 +1100,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/reflector-ris-size-effect",
     "icon": "mirror",
     "name": "反射板・RISサイズ効果",
+    "subcategory": undefined,
     "tagline": "反射面を置く効果を見積もる",
   },
   {
@@ -1066,6 +1108,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/ifa-initial-dimensions",
     "icon": "circuit",
     "name": "逆F・IFA初期寸法",
+    "subcategory": undefined,
     "tagline": "周波数と基板εrからパターン長を概算",
   },
   {
@@ -1073,6 +1116,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/l-match",
     "icon": "circuit",
     "name": "L型整合回路",
+    "subcategory": undefined,
     "tagline": "複素負荷を50Ωへ合わせる2解",
   },
   {
@@ -1080,6 +1124,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/diversity-gain",
     "icon": "antenna",
     "name": "ダイバーシティ利得",
+    "subcategory": undefined,
     "tagline": "アンテナ間隔と相関から2ブランチ利得を推定",
   },
   {
@@ -1087,6 +1132,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/antenna-isolation",
     "icon": "antenna",
     "name": "2アンテナ間アイソレーション",
+    "subcategory": undefined,
     "tagline": "間隔から自由空間S21を概算",
   },
   {
@@ -1094,6 +1140,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/lora-airtime",
     "icon": "radio",
     "name": "LoRa送信時間・920MHz制限",
+    "subcategory": undefined,
     "tagline": "SF・ペイロードからToAと送信時間制限を確認",
   },
   {
@@ -1101,6 +1148,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/battery-life",
     "icon": "activity",
     "name": "無線端末の電池寿命",
+    "subcategory": undefined,
     "tagline": "送信周期と電流から稼働年数を概算",
   },
   {
@@ -1108,6 +1156,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/gnss-cn0",
     "icon": "satellite",
     "name": "GNSS C/N0バジェット",
+    "subcategory": undefined,
     "tagline": "パッシブとアクティブアンテナを比較",
   },
   {
@@ -1115,6 +1164,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/mismatch-range-impact",
     "icon": "repeat",
     "name": "ミスマッチと通信距離",
+    "subcategory": "link-sensitivity",
     "tagline": "VSWRの整合ずれが飛距離に響く量",
   },
   {
@@ -1122,6 +1172,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/desense",
     "icon": "radio",
     "name": "デセンス（感度劣化）",
+    "subcategory": "link-sensitivity",
     "tagline": "干渉が加わってノイズの水面が持ち上がる量",
   },
   {
@@ -1129,6 +1180,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/measurement-sampling",
     "icon": "scan",
     "name": "電測サンプリング設計",
+    "subcategory": undefined,
     "tagline": "平均受信レベルを測るのに何点必要か",
   },
   {
@@ -1136,6 +1188,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/electrical-length",
     "icon": "ruler",
     "name": "電気長・位相換算",
+    "subcategory": undefined,
     "tagline": "長さ[mm]を電気長[λ]と位相[°]へ",
   },
   {
@@ -1143,6 +1196,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/lte-signal-metrics",
     "icon": "activity",
     "name": "LTE電波指標の換算（RSSI/RSRP/RSRQ）",
+    "subcategory": "link-regulation",
     "tagline": "スマホの棒表示RSRPと電測RSSIを相互換算",
   },
   {
@@ -1150,6 +1204,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/vswr-bandwidth-q",
     "icon": "activity",
     "name": "VSWR帯域幅とQ",
+    "subcategory": undefined,
     "tagline": "共振の鋭さQと使える帯域を相互換算",
   },
   {
@@ -1157,6 +1212,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/pointing-margin",
     "icon": "radar",
     "name": "指向誤差マージン",
+    "subcategory": undefined,
     "tagline": "ビームのずれで失う利得を見積もる",
   },
   {
@@ -1164,6 +1220,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/metal-plane-effect",
     "icon": "mirror",
     "name": "金属面近接の利得変化",
+    "subcategory": undefined,
     "tagline": "金属板からの離隔で±する利得を見る",
   },
   {
@@ -1171,6 +1228,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/antenna-keepout",
     "icon": "box",
     "name": "アンテナ・キープアウト領域チェック",
+    "subcategory": undefined,
     "tagline": "アンテナに必要な空き地W×Hの充足を判定",
   },
   {
@@ -1178,6 +1236,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/wall-penetration",
     "icon": "building",
     "name": "壁・建材の透過損失",
+    "subcategory": "link-indoor",
     "tagline": "壁の枚数で屋内の減衰を積算",
   },
   {
@@ -1185,6 +1244,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/body-loss",
     "icon": "activity",
     "name": "人体・手の影響ボディロス",
+    "subcategory": undefined,
     "tagline": "装着・持ち方で消えるdBを表引きで確認",
   },
   {
@@ -1192,6 +1252,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/detuning-estimator",
     "icon": "box",
     "name": "筐体・近接物の離調推定",
+    "subcategory": undefined,
     "tagline": "ケース・手・金属でずれる共振を判定",
   },
   {
@@ -1199,6 +1260,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/ground-plane-size",
     "icon": "circuit",
     "name": "GNDプレーン寸法と効率",
+    "subcategory": undefined,
     "tagline": "基板GNDの最長辺で決まる効率低下を見る",
   },
   {
@@ -1206,6 +1268,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/db-family",
     "icon": "gauge",
     "name": "dB・dBm・dBi・dBdの違い",
+    "subcategory": undefined,
     "tagline": "比率か絶対値か、基準は何かで見分ける",
   },
   {
@@ -1213,6 +1276,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/cellular-band-map",
     "icon": "radio",
     "name": "周波数と4G/5G Band早わかり",
+    "subcategory": undefined,
     "tagline": "バンド地図で周波数とBand番号を読む",
   },
   {
@@ -1220,6 +1284,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/ota-implementation-loss",
     "icon": "gauge",
     "name": "OTA実装損失・デセンス分析",
+    "subcategory": undefined,
     "tagline": "TRP/TISのギャップ差から自己ノイズを分離",
   },
   {
@@ -1227,6 +1292,7 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "href": "/tools/diffraction-shadow",
     "icon": "building",
     "name": "回折・回り込みの見える化",
+    "subcategory": "link-loss-models",
     "tagline": "ビル・山の影に周波数でどれだけ回り込むか",
   },
 ]

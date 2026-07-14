@@ -3,6 +3,9 @@
 export {
   toolCategories,
   toolDirectory,
+  toolSubcategories,
   type DirectoryTool,
-  type ToolCategory
+  type ToolCategory,
+  type ToolCategoryId,
+  type ToolSubcategory
 } from "./tools";

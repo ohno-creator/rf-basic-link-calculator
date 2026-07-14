@@ -12,7 +12,8 @@ import { glossary } from "@/data/glossary";
 import { calculateFsplDb } from "@/lib/rf/fspl";
 import { formatDb, formatNumber } from "@/lib/rf/format";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { FsplColumn } from "./FsplColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { fsplColumn } from "@/data/columns/fspl";
 
 // ---- 距離-FSPLの対数カーブ（入力連動の動的SVG） --------------------------------------
 // FSPL は距離の対数に対して直線（片対数グラフで直線）になる。周波数を変えるとカーブが上下に
@@ -416,7 +417,7 @@ export function FsplPanel() {
       </div>
 
       <div className="mt-6">
-        <FsplColumn />
+        <ToolColumnCard column={fsplColumn} live={result !== null ? { fspl: formatDb(result) } : undefined} />
       </div>
 
       <MobileResultBar primary={primary} targetId="fspl-primary-result" />

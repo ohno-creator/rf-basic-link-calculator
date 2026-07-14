@@ -20,6 +20,24 @@ export type ToolCategory = {
   description: string;
 };
 
+/**
+ * カテゴリ内の小見出し（任意）。ツール数が多いカテゴリ（例: link=16件）を
+ * 意味のある単位へ分け、一覧の走査性を上げる。指定順に表示する。
+ */
+export type ToolSubcategory = {
+  id: string;
+  categoryId: ToolCategoryId;
+  label: string;
+};
+
+export const toolSubcategories: ToolSubcategory[] = [
+  { id: "link-overview", categoryId: "link", label: "総合診断" },
+  { id: "link-loss-models", categoryId: "link", label: "基本損失モデル" },
+  { id: "link-sensitivity", categoryId: "link", label: "感度・ノイズ" },
+  { id: "link-indoor", categoryId: "link", label: "屋内・遮蔽環境" },
+  { id: "link-regulation", categoryId: "link", label: "規制・実測換算" }
+];
+
 export const toolCategories: ToolCategory[] = [
   {
     "id": "link",
@@ -98,6 +116,10 @@ export type ToolEntry = {
   /** lucide アイコンのキー（表示側でコンポーネントに対応付け） */
   icon: string;
   category: ToolCategoryId;
+  /** scaffold対象パネルのexport名。未指定ツールは手書きページとして維持する。 */
+  panel?: string;
+  /** カテゴリ内の小見出しID（toolSubcategories参照）。未指定ならカテゴリ直下に表示。 */
+  subcategory?: string;
   basic?: BasicToolFields;
 };
 
@@ -107,7 +129,8 @@ export const tools: ToolEntry[] = [
     "name": "リンクバジェット診断",
     "tagline": "通信が届くかを総合的に判定",
     "icon": "gauge",
-    "category": "link"
+    "category": "link",
+    "subcategory": "link-overview",
   },
   {
     "slug": "simple-link-budget",
@@ -115,6 +138,7 @@ export const tools: ToolEntry[] = [
     "tagline": "受信電力と通信余裕だけを見る",
     "icon": "calculator",
     "category": "link",
+    "subcategory": "link-overview",
     "basic": {
       "title": "かんたんリンク計算",
       "metaTitle": "かんたんリンク計算ツール｜受信電力とリンクマージンを1行で確認",
@@ -135,6 +159,7 @@ export const tools: ToolEntry[] = [
     "tagline": "距離と周波数による基本損失",
     "icon": "waves",
     "category": "link",
+    "subcategory": "link-loss-models",
     "basic": {
       "title": "自由空間損失（FSPL）",
       "metaTitle": "自由空間損失 FSPL 計算ツール｜距離と周波数による損失",
@@ -154,6 +179,7 @@ export const tools: ToolEntry[] = [
     "tagline": "「どこまで弱い電波を受けられるか」の物理限界",
     "icon": "activity",
     "category": "link",
+    "subcategory": "link-sensitivity",
     "basic": {
       "title": "ノイズフロアと受信感度",
       "metaTitle": "ノイズフロア・受信感度 計算ツール｜帯域幅・NF・所要SNRから導出",
@@ -173,6 +199,7 @@ export const tools: ToolEntry[] = [
     "tagline": "空中線電力＋利得が法規上限内かを判定",
     "icon": "gauge",
     "category": "link",
+    "subcategory": "link-regulation",
     "basic": {
       "title": "EIRP法規チェック（920MHz帯）",
       "metaTitle": "EIRP計算・920MHz帯法規チェックツール｜ARIB STD-T108の上限と余裕",
@@ -192,6 +219,7 @@ export const tools: ToolEntry[] = [
     "tagline": "雨と空気はどの周波数から電波を食うか",
     "icon": "waves",
     "category": "link",
+    "subcategory": "link-loss-models",
     "basic": {
       "title": "降雨・大気減衰",
       "metaTitle": "降雨・大気減衰 計算ツール｜ITU-R P.838-3/P.676-13準拠",
@@ -211,6 +239,7 @@ export const tools: ToolEntry[] = [
     "tagline": "場所ごとのばらつきに何dB積むか",
     "icon": "activity",
     "category": "link",
+    "subcategory": "link-indoor",
     "basic": {
       "title": "シャドウイングマージン",
       "metaTitle": "シャドウイングマージン計算ツール｜σ×Φ⁻¹(信頼率)で必要マージンを算出",
@@ -250,6 +279,7 @@ export const tools: ToolEntry[] = [
     "tagline": "見通しと必要クリアランス",
     "icon": "spline",
     "category": "link",
+    "subcategory": "link-loss-models",
     "basic": {
       "title": "フレネルゾーン半径",
       "metaTitle": "フレネルゾーン半径計算ツール｜見通し・クリアランスの目安",
@@ -270,6 +300,7 @@ export const tools: ToolEntry[] = [
     "tagline": "自由空間〜Hata系を一括比較",
     "icon": "building",
     "category": "link",
+    "subcategory": "link-loss-models",
     "basic": {
       "title": "伝搬損失モデル比較",
       "metaTitle": "伝搬損失モデル比較ツール｜自由空間・2波・Log-distance・奥村-秦/COST231-Hata",
@@ -289,6 +320,7 @@ export const tools: ToolEntry[] = [
     "tagline": "地下・BOX内端末の追加損失を分解",
     "icon": "box",
     "category": "link",
+    "subcategory": "link-indoor",
     "basic": {
       "title": "GL以下NCU・水道BOX診断",
       "metaTitle": "GL以下NCU・水道BOX通信診断｜地下・メーターボックス内端末の追加損失を評価",
@@ -308,6 +340,7 @@ export const tools: ToolEntry[] = [
     "tagline": "窓設置30cm角・室内分布をOFF/ON/差分で可視化",
     "icon": "window",
     "category": "link",
+    "subcategory": "link-indoor",
     "basic": {
       "title": "ナミゲート 室内受信電力シミュレーター",
       "metaTitle": "ナミゲート室内受信電力シミュレーター｜窓設置30cm角・OFF/ON/差分ヒートマップ",
@@ -335,6 +368,13 @@ export const tools: ToolEntry[] = [
     "tagline": "触って体感するアンテナ基礎用語21",
     "icon": "book",
     "category": "learning"
+  },
+  {
+    "slug": "spectrum-use-atlas",
+    "name": "周波数の用途地図（非セルラー編）",
+    "tagline": "Wi-Fi・LPWA・放送・衛星等を日本と世界8地域で比較",
+    "icon": "radio",
+    "category": "basics"
   },
   {
     "slug": "radio-wave-intuition",
@@ -840,6 +880,7 @@ export const tools: ToolEntry[] = [
   "tagline": "VSWRの整合ずれが飛距離に響く量",
   "icon": "repeat",
   "category": "link",
+  "subcategory": "link-sensitivity",
   "basic": {
     "title": "ミスマッチと通信距離",
     "metaTitle": "ミスマッチ損失と通信距離 計算ツール｜VSWRから距離への影響を算出",
@@ -860,6 +901,7 @@ export const tools: ToolEntry[] = [
   "tagline": "干渉が加わってノイズの水面が持ち上がる量",
   "icon": "radio",
   "category": "link",
+  "subcategory": "link-sensitivity",
   "basic": {
     "title": "デセンス（ノイズ干渉による感度劣化）",
     "metaTitle": "デセンス計算ツール｜干渉でノイズフロアが何dB持ち上がるか（電力加算）",
@@ -899,6 +941,7 @@ export const tools: ToolEntry[] = [
   "tagline": "長さ[mm]を電気長[λ]と位相[°]へ",
   "icon": "ruler",
   "category": "line",
+  "panel": "ElectricalLengthPanel",
   "basic": {
     "title": "電気長・位相換算",
     "metaTitle": "電気長・位相換算 計算ツール｜VF・管内波長λgから位相[°]を求める",
@@ -919,6 +962,7 @@ export const tools: ToolEntry[] = [
   "tagline": "スマホの棒表示RSRPと電測RSSIを相互換算",
   "icon": "activity",
   "category": "link",
+  "subcategory": "link-regulation",
   "basic": {
     "title": "LTE電波指標の換算（RSSI・RSRP・RSRQ）",
     "metaTitle": "LTE電波指標 換算ツール｜RSSI⇔RSRP・RSRQをフルロード仮定で計算（3GPP準拠）",
@@ -939,6 +983,7 @@ export const tools: ToolEntry[] = [
   "tagline": "共振の鋭さQと使える帯域を相互換算",
   "icon": "activity",
   "category": "antenna",
+  "panel": "VswrBandwidthQPanel",
   "basic": {
     "title": "VSWR帯域幅とQ",
     "metaTitle": "VSWR帯域幅・Q 計算ツール｜比帯域とQの相互変換（単一共振近似）",
@@ -959,6 +1004,7 @@ export const tools: ToolEntry[] = [
   "tagline": "ビームのずれで失う利得を見積もる",
   "icon": "radar",
   "category": "antenna",
+  "panel": "PointingMarginPanel",
   "basic": {
     "title": "アンテナ指向誤差マージン",
     "metaTitle": "アンテナ指向誤差マージン計算ツール｜HPBWとずれ角から利得低下を算出",
@@ -975,14 +1021,14 @@ export const tools: ToolEntry[] = [
 },
   {"slug":"metal-plane-effect","name":"金属面近接の利得変化","tagline":"金属板からの離隔で±する利得を見る","icon":"mirror","category":"antenna","basic":{"title":"金属面近接の利得変化（イメージ理論）","metaTitle":"金属面近接の利得変化 計算ツール｜イメージ理論・λ/4で+6dB・密着で消える","description":"金属面の手前に置いたアンテナの利得変化を、イメージ理論（鏡像法）で計算します。金属板は鏡＝面の奥に逆相の鏡像アンテナができ、直接波と鏡像波の干渉で電界係数 F=2·|sin(2π·d/λ)| に従って強め合い/打ち消しが起きます。d=λ/4で+6.02dBのピーク、密着（d→0）とd=λ/2で理論∞のヌル（＝金属筐体にベタ付けすると飛ばない）を、d/λのカーブと現在点マーカーで確認できます。","scopeNote":"面はアンテナに平行な波長オーダー以上の完全導体（PEC）平板、正面（板側ブロードサイド）方向の理想値です。有限板ではエッジ回折で理論上の−∞ヌルは−15〜−25dB程度に埋まり、+6dBピークもやや目減りします。当たり付け用で、最終判断は実測を前提にしてください。","formula":"ΔG[dB] = 20·log10(2·|sin(2π·d/λ)|)　d=λ/4で+6.02dB・d=n·λ/2で−∞","essenceLead":"金属面の効果は距離そのものではなく波長比 d/λ で決まり、λ/4で+6dB・密着とλ/2で消えます。","beginnerGuide":{"purpose":"金属筐体や金属壁の近くにアンテナを実装するとき、どれだけ離せば飛び、どこでベタ付けすると死ぬかの当たりを付けます。「金属にベタ付けで飛ばない」の理由も図で分かります。","inputs":"①周波数（920MHz/2.4GHz/5GHzのプリセット）②金属面までの距離d（mmスライダー、内部でd/λに換算）。プリセットは最適離隔λ/4にも自動セットします。","result":"利得変化ΔG[dB]が出ます。+6dBに近いほど面を味方につけた状態、≤-40dB（ヌル）は離隔の見直しが必要です。この値をリンクバジェット診断のアンテナ利得に反映できます。"}}},
   {"slug": "antenna-keepout", "name": "アンテナ・キープアウト領域チェック", "tagline": "アンテナに必要な空き地W×Hの充足を判定", "icon": "box", "category": "implementation", "basic": {"title": "アンテナ・キープアウト領域チェック", "metaTitle": "アンテナ・キープアウト領域チェック｜チップ/PCB/FPC/スプリングの必要空き地W×H判定", "description": "チップ・PCBパターン・FPC・スプリングの4方式×920MHz/1575MHz/2.4GHz/sub6帯について、データシートが要求するキープアウト（銅箔・部品の実装禁止領域）の目安寸法W×Hと、基板上に確保できた空き地を比較してOK/注意/NGを判定します。不足量と不足率（20%が境界）から、整合調整で追い込める範囲か、外付けアンテナ等へ方式変更すべきかの当たりを付けられます。", "scopeNote": "必要寸法はJohanson・Ignion・Molex・Taoglas各社のレイアウトガイド／データシートの代表値を丸めた目安で、採用する製品のデータシート指定が常に優先です。基板面内のW×H平面での評価であり、筐体・電池・ネジなど三次元的な近接物やGNDプレーン全体の大きさの影響は含みません。最終判断は実測を前提にしてください。", "formula": "不足量 = max(0, 必要寸法−確保寸法)　不足率 = 不足量÷必要寸法（両辺充足→OK・全不足辺<20%→注意・いずれか≥20%→NG）", "essenceLead": "アンテナの性能は素子ではなく周囲の空き地（近傍界の空間）が決めます。必要な空き地を確保できているかを最初に確認します。", "beginnerGuide": {"purpose": "基板レイアウトの初期段階で、アンテナ用に確保した空き地が足りるかを確認します。「詰め込み設計でアンテナだけ性能が出ない」定番失敗を、配線前に防ぎます。", "inputs": "①アンテナ方式（チップ/PCBパターン/FPC/スプリング）②周波数帯（920MHz/1575MHz/2.4GHz/sub6）③基板上に確保できた空き地の幅Wと奥行きH[mm]を入れます。", "result": "OK/注意/NGの判定と不足量[mm]が出ます。注意（不足率20%未満）は整合調整と実測で追い込む前提、NG（20%以上不足）は配置見直しか外付けアンテナ等への方式変更を検討します。"}}},
-  {"slug": "wall-penetration", "name": "壁・建材の透過損失", "tagline": "壁の枚数で屋内の減衰を積算", "icon": "building", "category": "link", "basic": {"title": "壁・建材の透過損失バジェット", "metaTitle": "壁・建材の透過損失 計算ツール｜石膏・コンクリート・Low-Eガラスの枚数でdBを積算", "description": "電波が通り抜ける壁・窓を材質ごとに数えて、合計の透過損失をdBレンジで見積もります。石膏ボード・木製ドア・コンクリート内壁・鉄筋コンクリート外壁・レンガ・単層ガラス・Low-E複層ガラスの7建材×920MHz/2.4GHz/5GHz/28GHzの目安表（ITU-R P.2040-2／NISTIR 6055／iBwaveデータベース）を線形加算し、壁を通るたび信号が下がる階段グラフと内訳表で確認できます。", "scopeNote": "各壁を独立な減衰体とみなす一次近似の目安値です。実際の損失は壁厚・含水率・鉄筋ピッチ・金属膜・入射角で大きく変わり、窓・廊下経由の回り込みは含みません。当たり付け用で、最終判断は現場実測を前提にしてください。", "formula": "合計透過損失[dB] = Σ(1枚あたり損失[dB/枚] × 枚数)", "essenceLead": "dBは掛け算を足し算に変えるので、直列に並んだ壁の損失は「材質別の1枚あたりdB×枚数」の和で見積もれます。", "beginnerGuide": {"purpose": "屋内やビルの奥へ電波を届けたいとき、経路上の壁・窓で何dB食われるかの当たりを付けます。「省エネ窓のある部屋だけ届かない」の理由も数字で分かります。", "inputs": "①周波数帯（920MHz/2.4GHz/5GHz/28GHzのチップ）②通過する建材の枚数（材質ごとの＋/−カウンタ。シーンのプリセットで一括設定もできます）。", "result": "合計透過損失がmin〜maxのdBレンジで出ます。悲観側（max）をリンクバジェット診断の環境損失に入れると、屋内到達の見積もりにつながります。"}}},
+  {"slug": "wall-penetration", "name": "壁・建材の透過損失", "tagline": "壁の枚数で屋内の減衰を積算", "icon": "building", "category": "link", "subcategory": "link-indoor", "basic": {"title": "壁・建材の透過損失バジェット", "metaTitle": "壁・建材の透過損失 計算ツール｜石膏・コンクリート・Low-Eガラスの枚数でdBを積算", "description": "電波が通り抜ける壁・窓を材質ごとに数えて、合計の透過損失をdBレンジで見積もります。石膏ボード・木製ドア・コンクリート内壁・鉄筋コンクリート外壁・レンガ・単層ガラス・Low-E複層ガラスの7建材×920MHz/2.4GHz/5GHz/28GHzの目安表（ITU-R P.2040-2／NISTIR 6055／iBwaveデータベース）を線形加算し、壁を通るたび信号が下がる階段グラフと内訳表で確認できます。", "scopeNote": "各壁を独立な減衰体とみなす一次近似の目安値です。実際の損失は壁厚・含水率・鉄筋ピッチ・金属膜・入射角で大きく変わり、窓・廊下経由の回り込みは含みません。当たり付け用で、最終判断は現場実測を前提にしてください。", "formula": "合計透過損失[dB] = Σ(1枚あたり損失[dB/枚] × 枚数)", "essenceLead": "dBは掛け算を足し算に変えるので、直列に並んだ壁の損失は「材質別の1枚あたりdB×枚数」の和で見積もれます。", "beginnerGuide": {"purpose": "屋内やビルの奥へ電波を届けたいとき、経路上の壁・窓で何dB食われるかの当たりを付けます。「省エネ窓のある部屋だけ届かない」の理由も数字で分かります。", "inputs": "①周波数帯（920MHz/2.4GHz/5GHz/28GHzのチップ）②通過する建材の枚数（材質ごとの＋/−カウンタ。シーンのプリセットで一括設定もできます）。", "result": "合計透過損失がmin〜maxのdBレンジで出ます。悲観側（max）をリンクバジェット診断の環境損失に入れると、屋内到達の見積もりにつながります。"}}},
   {"slug": "body-loss", "name": "人体・手の影響ボディロス", "tagline": "装着・持ち方で消えるdBを表引きで確認", "icon": "activity", "category": "implementation", "basic": {"title": "人体・手の影響ボディロス（装着シナリオ別）", "metaTitle": "人体・手の影響ボディロス 目安ツール｜手持ち・手首・体表・遮蔽で何dB消えるか", "description": "スマホの手持ち、スマートウォッチ、体貼付けセンサ、人体による遮蔽など、装着・保持シナリオと周波数帯（920MHz/GNSS L1/2.4GHz/Sub-6）から、ボディロスの文献代表値（Typ/Worst）を表引きします。出典は3GPP TR 36.814 §8.2（TR 37.840併記）、CTIA OTA Test Plan（Head/Hand Phantoms）、AntennaWare Body Loss Data。リンクバジェットの環境損失欄へ計上する値の当たり付けに使えます。", "scopeNote": "文献代表値による設計初期の目安です。実機は筐体・アンテナ配置・姿勢・個人差で±数dB以上変わるため、最終判断はファントム試験・実測を前提にしてください。GNSS L1×頭部近接など文献データが無い組合せは「データなし」となります（0dBという意味ではありません）。", "formula": "環境損失[dB] += ボディロス[dB]（表引き: 装着シナリオ×周波数帯・Typ/Worst）", "essenceLead": "ボディロスは式ではなく使い方で決まり、手持ちの数dBから体遮蔽の30dBまで幅があります。", "beginnerGuide": {"purpose": "身に着ける・手に持つ機器で、体が電波を何dB弱らせるかの当たりを付けます。「机上では届くのに装着すると届かない」を設計段階で防ぎます。", "inputs": "①周波数帯（920MHz/1575MHz/2.4GHz/Sub-6のチップ）②装着・保持シナリオ（手持ち/手首装着/頭部近接/体表密着/体による遮蔽）。数値入力は不要です。", "result": "推奨追加損失（Typ）と悪条件（Worst）が出ます。Typをリンクバジェット診断の環境損失欄に足し、Worstとの差はマージンで吸収できるかを確認します。"}}},
   {"slug": "detuning-estimator", "name": "筐体・近接物の離調推定", "tagline": "ケース・手・金属でずれる共振を判定", "icon": "box", "category": "implementation", "basic": {"title": "筐体・近接物による離調推定", "metaTitle": "アンテナ離調推定ツール｜樹脂カバー・手把持・金属近接で共振はどれだけ下がるか", "description": "アンテナ単体で調整した中心周波数とVSWR≤2帯域幅から、樹脂カバー（密着/1mm/3mm）・手把持・金属面近接1mmの5シナリオで共振周波数の低周波側シフト量（-0.5〜-20%）と劣化後VSWRを推定し、シフト後の中心周波数が元の帯域に収まるかを判定します。シフト率はAntenova/Laird Connectivity/査読論文(2024)の公開典型レンジです。", "scopeNote": "単共振の小形アンテナ（モノポール・IFA・チップ等）の一次近似で、シフト率・VSWRは公開資料の典型レンジ（目安値）です。実際の離調は筐体材質・厚み・離隔・GND寸法・部品配置で大きく変わるため、量産判断は筐体込みの実測を前提にしてください。", "formula": "シフト量[MHz] = f0 × シフト率[%]/100（負値=低周波側）　|シフト量| ≤ BW/2 なら帯域内", "essenceLead": "誘電体・人体・金属が近づくと共振は必ず低周波側へずれ、収まるかはVSWR≤2帯域幅との勝負になります。", "beginnerGuide": {"purpose": "評価ボードで調整したアンテナを筐体に入れたり手で持ったりしたとき、どれだけ共振がずれて帯域から外れそうかの当たりを付けます。「ケースに入れたら飛ばない」の予防です。", "inputs": "①中心周波数MHz ②VSWR≤2帯域幅MHz（不明なら比帯域2%/5%/10%のプリセット）③近接物シナリオ（樹脂カバー密着/1mm/3mm・手把持・金属面近接1mm）を選びます。", "result": "帯域内判定（収まる/一部外れ/外れる）と想定シフトMHz・劣化後VSWRが出ます。外れる場合は帯域の広い素子選定・3mm以上の離隔・筐体込み再調整を検討し、最終確認は実測で行います。"}}},
   {"slug": "ground-plane-size", "name": "GNDプレーン寸法と効率", "tagline": "基板GNDの最長辺で決まる効率低下を見る", "icon": "circuit", "category": "implementation", "basic": {"title": "GNDプレーン寸法と効率（λ/4モノポール系）", "metaTitle": "GNDプレーン寸法と効率 計算ツール｜Lg/λで決まる効率低下・GND最長辺はλ/4推奨", "description": "チップアンテナやIFAなどλ/4モノポール系アンテナの効率が、基板GNDプレーンの最長辺Lgでどれだけ低下するかを見積もります。GNDはアンテナの鏡像＝残り半分を担うため、波長比Lg/λが0.25（λ/4）を切ると効率が急落します。TI AN058（SWRA161）§3.1.2等の実測系の目安表を区分線形補間し、λ/10で-6dB（電力1/4）・λ/20で-12dBの低下を、Lg/λカーブと現在点マーカー・λ/4基準線で確認できます。", "scopeNote": "TI/EnOceanアプリケーションノートの実測系の目安を区分線形でなぞった一次判断用です。実機では基板形状・部品配置・筐体で共振ずれ・整合ずれも同時に起きるため、最終判断は実測を前提にしてください。平衡系（ダイポール等）には適用しません。", "formula": "効率低下[dB] = 目安表(Lg/λ)の区分線形補間　Lg/λ≥0.25（λ/4確保）で0dB・λ/10で-6dB・λ/20で-12dB", "essenceLead": "λ/4モノポールの残り半分はGNDに映る鏡像で、GND最長辺がλ/4を切ると効率が段階的に消えていきます。", "beginnerGuide": {"purpose": "小型IoT基板で「アンテナ部品は同じなのに飛ばない」原因になりやすい、GNDプレーン不足の影響を当たり付けします。基板の外形寸法を決める前のレビューに使えます。", "inputs": "①周波数（920MHz/1575MHz/2.4GHzのプリセット）②基板でGNDが連続して確保できる最長辺Lg（mmスライダー）。内部で波長比Lg/λに換算します。", "result": "効率低下[dB]が出ます。0dBならλ/4確保、-6dBは電力1/4です。この値をリンクバジェット診断のアンテナ利得（または追加損失）に反映すると、小型化の代償を通信距離で見積もれます。"}}},
   {"slug": "db-family", "name": "dB・dBm・dBi・dBdの違い", "tagline": "比率か絶対値か、基準は何かで見分ける", "icon": "gauge", "category": "basics", "basic": {"title": "dB・dBm・dBi・dBdの違い", "metaTitle": "dB・dBm・dBi・dBdの違い｜比率と絶対値・2.15dBの基準差を体感", "description": "dBの仲間たちの本質的な違い——比率か絶対値か、基準は何か——を体感で理解します。dB・dBi・dBdは単位のない比率（dBi=等方アンテナ基準・dBd=半波長ダイポール基準で dBd=dBi−2.15）、dBmだけが1mW基準の絶対値。アンテナ利得スライダーでdBi/dBd表示の2.15dB差を、足し算チェッカーでdBm+dB=dBmは有効・dBm+dBmは無効（正しくは電力和で合成）を確認できます。", "scopeNote": "dBd=dBi−2.15は半波長ダイポールの指向性1.64（IEEE Std 145）による理論値です。カタログのdBi/dBd表記の読み替えと、リンクバジェットで足してよい組合せの判断に使ってください。", "formula": "dBm = 10log10(P/1mW)　dBd = dBi − 2.15", "essenceLead": "dB・dBi・dBdは「割り算の答え」の比率、dBmだけが1mW基準の絶対値です。", "beginnerGuide": {"purpose": "カタログや仕様書に出てくるdB・dBm・dBi・dBdを取り違えずに読み、リンクバジェットで正しく足し算できるようにします。", "inputs": "アンテナ利得スライダー（0〜15dBi）を動かしてdBd表示との2.15dB差を見ます。足し算チェッカーでは2つの量を選んで組み合わせます。", "result": "dBm＋dB（比率）はdBmのまま足せる、dBm＋dBmは足せない（電力和で合成）、dBiとdBdは基準差2.15dBを補正して読み替えます。"}}},
   {"slug": "cellular-band-map", "name": "周波数と4G/5G Band早わかり", "tagline": "バンド地図で周波数とBand番号を読む", "icon": "radio", "category": "basics", "basic": {"title": "周波数と4G/5G Band早わかり（バンド地図）", "metaTitle": "周波数と4G/5G Band早わかり｜バンド地図・プラチナバンド・UL/DLとλ/2目安", "description": "日本の主要4G(LTE)/5G(NR)バンド（B1/B3/B8/B18/B19/B28/B41/B42/n77/n78/n79/n257）を600MHz〜30GHzの対数軸バンド地図に並べ、周波数スライダーの縦カーソルで該当バンドと「その周波数の性質」（回り込み・建物透過・アンテナサイズ・速度）を連動表示します。各バンドのUL/DLレンジ・FDD/TDD・波長とλ/2アンテナ目安、700〜900MHz帯が「プラチナバンド」と呼ばれる理由を地図感覚で学べます。レンジは3GPP TS 36.101 / TS 38.101-1 / TS 38.101-2、国内割当の通称は総務省資料（2026年時点）による。", "scopeNote": "バンドのレンジは3GPPの定義幅で、国内で実際に割り当てられている幅はその一部です（総務省 周波数割当計画・2026年時点。割当は再編で変わり得ます）。「周波数の性質」は入口理解用の定性3段階表示で、実際の伝搬・速度は帯域幅・環境・実装で変わります。", "formula": "Band = 3GPPが周波数レンジに付けた名前　λ[mm] ≈ 299792 ÷ f[MHz]（λ/2が基本アンテナ長の目安）", "essenceLead": "Band番号は周波数レンジの名前で、低い帯は「届く係」・高い帯は「速い係」という分業です。", "beginnerGuide": {"purpose": "スマホの対応バンド表や「プラチナバンド」のニュースを、周波数の地図として読めるようになります。低い帯がなぜ奥まで届き、高い帯がなぜ速いのかの直感も身につきます。", "inputs": "①周波数（MHz入力・対数スライダー・代表プリセット）②地図上のバンド帯や該当バンドチップのクリック/タップで詳細を選択③「プラチナバンド（700〜900MHz帯）を金色で表示」トグル。", "result": "入力周波数に該当するバンド数と一覧（FDDはUL/DLどちらの帯に入ったかも表示）、選択バンドのUL/DL（またはTDD）レンジ・波長とλ/2アンテナ目安[mm]、周波数の性質4軸（回り込み/透過/アンテナ/速度）が出ます。"}}},
   {"slug": "ota-implementation-loss", "name": "OTA実装損失・デセンス分析", "tagline": "TRP/TISのギャップ差から自己ノイズを分離", "icon": "gauge", "category": "implementation", "basic": {"title": "OTA実装損失・デセンス分析（TRP/TISギャップ分離）", "metaTitle": "OTA実装損失・デセンス分析ツール｜TRP/TISギャップの差で自己ノイズを推定", "description": "伝導測定（無線機単体の出力Pc・感度Sc）とアンテナ放射効率η、OTA実測（TRP/TIS）から、Band別に「アンテナ以外の劣化要因」を分離推定します。期待TRP=Pc+η・期待TIS=Sc−ηとの差（TRPギャップ/TISギャップ）を比べ、受動的な実装損失は送受対称に効く性質を使って、TIS側だけ余計に悪い分＝端末自身の雑音による自己デセンスを推定。≦1dBクリーン／1〜3dB要注意／>3dBノイジーの3段階で判定し、Band別の横棒ペアで可視化します。", "scopeNote": "放射効率はTRP/TISと同一実装状態・同一条件（自由空間/ファントム・同一姿勢）の値、TISは伝導感度と同じBER/スループット判定条件が前提です。CA動作や隣接Band干渉・外来波によるデセンスは分離対象外の別要因です。初期値はLTE-M端末を想定したサンプル（例）で、実測値に置き換えて使ってください。", "formula": "デセンス推定[dB] = (TIS実測 − (Sc − η)) − ((Pc + η) − TRP実測)　≦1dBクリーン／>3dBノイジー", "essenceLead": "受動損失は送受に同じだけ効くため、TISギャップからTRPギャップを引いた残りが「自分の雑音を聞いている量」の推定です。", "beginnerGuide": {"purpose": "OTA測定でTISだけ悪いとき、それがアンテナ・整合などの受動損失なのか、端末内部ノイズによる自己デセンスなのかを、追加測定の前に切り分けます。", "inputs": "Bandごとに①伝導出力Pc ②伝導感度Sc ③アンテナ放射効率η（負dB。50%≈-3dB）④OTA実測TRP ⑤OTA実測TISの5つ。最大6Band、LTE-M B1/B8/B18のサンプル行（例）入りです。", "result": "デセンス推定値[dB]と3段階判定（クリーン/要注意/ノイジー）、送信側TRPギャップ・受信側TISギャップが出ます。ノイジーのBandから、スペクトラム測定と機能ブロックの切り分けに進んでください。"}}},
-  {"slug": "diffraction-shadow", "name": "回折・回り込みの見える化", "tagline": "ビル・山の影に周波数でどれだけ回り込むか", "icon": "building", "category": "link", "basic": {"title": "回折・回り込みの見える化（ナイフエッジ回折）", "metaTitle": "回折・回り込み計算ツール｜ビル・山の影に電波はどれだけ届くか（ITU-R P.526）", "description": "ビルや山の陰にある受信点へ、電波が周波数によってどれだけ回り込むかをITU-R P.526の単一ナイフエッジ回折で計算します。同じ障害物ジオメトリで150MHz/430MHz/920MHz/2.4GHz/5.6GHz/28GHzの6バンドを一括計算し、「同じ影・違う損失」を横棒グラフで比較。断面図では障害物の陰の「影の濃さ」を選択周波数の損失で塗り分け、縁すれすれ（v=0）でも約6dB失われるというナイフエッジ回折の要点を体感できます。", "scopeNote": "波長より十分薄い単一の「ナイフエッジ」障害物による一次近似です。厚みのある丘・ビル群や複数障害物では損失はこれより増え（ITU-R P.526の円筒・多重エッジモデルの領域）、周囲からの反射・散乱の寄与は含みません。当たり付け用で、最終判断は実測を前提にしてください。", "formula": "J(v) = 6.9 + 20·log10(√((v−0.1)²+1)+v−0.1)［v>−0.78、それ以下は0dB］　v = h·√(2(d1+d2)/(λ·d1·d2))", "essenceLead": "影への回り込みは波長で決まり、同じビルの影でも150MHzと28GHzでは損失が20dB前後違います。", "beginnerGuide": {"purpose": "ビルや山の陰にある受信点へ電波がどれだけ回り込むか、周波数選定と経路設計の当たりを付けます。「見通しが切れた瞬間に弱る高い周波数」と「影でも粘る低い周波数」の違いが数字と絵で分かります。", "inputs": "①障害物プリセット（ビル20m/丘50m/山200m。高さは手動調整可）②送信塔→障害物の距離d1と障害物→受信点の距離d2（100m〜10kmの対数スライダー）③送信アンテナ高と受信点の高さ。150MHz〜28GHzの6バンドは自動で一括計算します。", "result": "選択バンドの回折損失[dB]が主結果です。0dBなら見通し余裕十分、約6dBは縁すれすれ、20dB超は深い影です。この値をリンクバジェット診断の環境損失に足すと、影の中まで届くかの見積もりにつながります。"}}}
+  {"slug": "diffraction-shadow", "name": "回折・回り込みの見える化", "tagline": "ビル・山の影に周波数でどれだけ回り込むか", "icon": "building", "category": "link", "subcategory": "link-loss-models", "basic": {"title": "回折・回り込みの見える化（ナイフエッジ回折）", "metaTitle": "回折・回り込み計算ツール｜ビル・山の影に電波はどれだけ届くか（ITU-R P.526）", "description": "ビルや山の陰にある受信点へ、電波が周波数によってどれだけ回り込むかをITU-R P.526の単一ナイフエッジ回折で計算します。同じ障害物ジオメトリで150MHz/430MHz/920MHz/2.4GHz/5.6GHz/28GHzの6バンドを一括計算し、「同じ影・違う損失」を横棒グラフで比較。断面図では障害物の陰の「影の濃さ」を選択周波数の損失で塗り分け、縁すれすれ（v=0）でも約6dB失われるというナイフエッジ回折の要点を体感できます。", "scopeNote": "波長より十分薄い単一の「ナイフエッジ」障害物による一次近似です。厚みのある丘・ビル群や複数障害物では損失はこれより増え（ITU-R P.526の円筒・多重エッジモデルの領域）、周囲からの反射・散乱の寄与は含みません。当たり付け用で、最終判断は実測を前提にしてください。", "formula": "J(v) = 6.9 + 20·log10(√((v−0.1)²+1)+v−0.1)［v>−0.78、それ以下は0dB］　v = h·√(2(d1+d2)/(λ·d1·d2))", "essenceLead": "影への回り込みは波長で決まり、同じビルの影でも150MHzと28GHzでは損失が20dB前後違います。", "beginnerGuide": {"purpose": "ビルや山の陰にある受信点へ電波がどれだけ回り込むか、周波数選定と経路設計の当たりを付けます。「見通しが切れた瞬間に弱る高い周波数」と「影でも粘る低い周波数」の違いが数字と絵で分かります。", "inputs": "①障害物プリセット（ビル20m/丘50m/山200m。高さは手動調整可）②送信塔→障害物の距離d1と障害物→受信点の距離d2（100m〜10kmの対数スライダー）③送信アンテナ高と受信点の高さ。150MHz〜28GHzの6バンドは自動で一括計算します。", "result": "選択バンドの回折損失[dB]が主結果です。0dBなら見通し余裕十分、約6dBは縁すれすれ、20dB超は深い影です。この値をリンクバジェット診断の環境損失に足すと、影の中まで届くかの見積もりにつながります。"}}}
 ];
 
 // ── 派生ビュー（後方互換） ──
@@ -993,6 +1039,7 @@ export type DirectoryTool = {
   tagline: string;
   icon: string;
   category: string;
+  subcategory?: string;
 };
 
 export const toolDirectory: DirectoryTool[] = tools.map((tool) => ({
@@ -1000,7 +1047,8 @@ export const toolDirectory: DirectoryTool[] = tools.map((tool) => ({
   name: tool.name,
   tagline: tool.tagline,
   icon: tool.icon,
-  category: tool.category
+  category: tool.category,
+  subcategory: tool.subcategory
 }));
 
 export const basicTools: BasicToolMeta[] = tools

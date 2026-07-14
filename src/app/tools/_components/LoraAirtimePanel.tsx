@@ -20,7 +20,8 @@ import {
 import { diagramPalette } from "@/lib/ui/diagramTheme";
 import type { LinkJudgementLevel } from "@/lib/rf/judgement";
 import { FormulaExplanationCard } from "./FormulaExplanationCard";
-import { LoraAirtimeColumn } from "./LoraAirtimeColumn";
+import { ToolColumnCard } from "@/components/ToolColumnCard";
+import { loraAirtimeColumn } from "@/data/columns/loraAirtime";
 
 const SF_OPTIONS = [7, 8, 9, 10, 11, 12] as const;
 const BW_OPTIONS = [125, 250, 500] as const;
@@ -288,7 +289,10 @@ export function LoraAirtimePanel() {
         </FormulaExplanationCard>
       </div>
 
-      <LoraAirtimeColumn />
+      <ToolColumnCard
+        column={loraAirtimeColumn}
+        live={result ? { airtime: `${formatNumber(result.airtime.airtimeMs / 1000, 2)}秒` } : undefined}
+      />
       <MobileResultBar primary={primary} judgement={judgement} targetId="lora-airtime-primary-result" />
     </>
   );

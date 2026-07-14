@@ -10,11 +10,11 @@ test.describe("tool hub", () => {
       page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "やりたいことに沿って、上から順に確認" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "知りたいことに近いカードを選ぶ" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "すべての計算ツールから探す" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "アンテナを実装したい" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "通信不良を切り分けたい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ケーブル・整合を検討したい" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "基礎から理解したい" })).toBeVisible();
 
     for (const tool of toolDirectory) {
@@ -552,8 +552,8 @@ test("RF calculator shows model assumptions, double-counting guidance, and resea
   await expect(page.getByText("二重計上に注意")).toBeVisible();
   await expect(page.getByText("奥村・秦の高さ入力")).toBeVisible();
   await expect(page.getByText("計算値と現地RSSI/RSRPの差分をまとめて補正します。")).toBeVisible();
-  await expect(page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })).toBeVisible();
-  await expect(page.getByText("2025〜2026年の研究を追うと")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "奥村-秦モデル——実測から生まれ、実測で校正する" })).toBeVisible();
+  await expect(page.getByText("RMSEを8.07dBから7.09dBへ改善")).toBeVisible();
 });
 
 test("RF calculator diagrams show the two-ray interference lab synced with inputs", async ({ page }) => {
@@ -747,7 +747,7 @@ test("fresnel long-distance mode subtracts earth curvature and shows the radio h
 test("propagation page includes the Okumura-Hata column", async ({ page }) => {
   await page.goto("/tools/propagation-loss/");
   await expect(
-    page.getByRole("heading", { name: "コラム：奥村-秦モデルと最新IoT伝搬研究" })
+    page.getByRole("heading", { name: "奥村-秦モデル——実測から生まれ、実測で校正する" })
   ).toBeVisible();
   await expect(page.getByRole("heading", { name: "伝搬損失モデル比較" }).first()).toBeVisible();
   await expect(page.getByText("2波モデル実験室：干渉で波打つ様子を見る")).toBeVisible();
