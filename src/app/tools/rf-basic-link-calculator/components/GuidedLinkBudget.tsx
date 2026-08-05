@@ -43,6 +43,7 @@ type GuidedLinkBudgetProps = {
   result: LinkBudgetResult | null;
   onChange: (input: LinkBudgetInput) => void;
   onOpenExpert: () => void;
+  onOpenResearchDistance: () => void;
 };
 
 /** 距離[m]を人が読みやすい表記へ（1000m以上はkm）。 */
@@ -155,7 +156,13 @@ function adviceChip(
  * かんたんモード：3ステップ（シナリオ→距離と環境→機器）＋常時ゲージ＋「次の一手」チップ。
  * 全項目の細部調整は詳細モード（従来パネル）へ引き継ぐ。
  */
-export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: GuidedLinkBudgetProps) {
+export function GuidedLinkBudget({
+  input,
+  result,
+  onChange,
+  onOpenExpert,
+  onOpenResearchDistance
+}: GuidedLinkBudgetProps) {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
   // STEP2の解き方：距離を決めて余裕を見る（順算）／目標マージンから到達距離を出す（逆算）。
   const [solveFor, setSolveFor] = useState<"distance" | "reach">("distance");
@@ -282,6 +289,15 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
             <p className="mt-2 text-xs leading-relaxed text-slate-500">
               電波は環境で±に変動します。信頼率が高いほど変動に負けにくい代わりに、届く距離は短くなります。σ（ばらつき）が大きい市街地ほどレンジの差が広がります。
             </p>
+            <button
+              type="button"
+              data-testid="guided-open-research"
+              onClick={onOpenResearchDistance}
+              className="mt-2 inline-flex items-center gap-1 rounded-md px-1 py-0.5 text-xs font-bold text-staf-dark underline-offset-2 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            >
+              もっと精密に：地形10モデル・信頼率で距離計算（研究ベース距離計算へ）
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+            </button>
           </Card>
 
           <StateCard
