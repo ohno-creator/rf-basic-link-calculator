@@ -281,6 +281,36 @@ exports[`tool registries > basicTools snapshot (slug順で内容を固定。配�
   },
   {
     "beginnerGuide": {
+      "inputs": "①周波数②アンテナ最大寸法D（開口の最大差し渡し）。",
+      "purpose": "アンテナ測定・OTA・電波暗室で、どれだけ離せば遠方界として測れるかの目安を出します。",
+      "result": "3領域の境界と測定推奨距離が出ます。小型アンテナでは r≳数λ が支配的になります。",
+    },
+    "canonical": "https://www.staf.co.jp/tools/far-field-distance",
+    "description": "アンテナ最大寸法Dと周波数から、反応近傍界の上限0.62√(D³/λ)・遠方界の開始2D²/λ・実用の測定推奨距離を計算します。電気的に小さいアンテナ（D<λ）では波長基準(3λ)が支配的になる点も注記します。",
+    "essenceLead": "遠方界ではパターンが距離によらず一定になり、開口が大きいほど 2D²/λ は急に伸びます。",
+    "formula": "反応近傍 r<0.62√(D³/λ)／放射近傍 0.62√(D³/λ)≤r<2D²/λ／遠方界 r≥2D²/λ",
+    "metaTitle": "遠方界距離 計算ツール｜フラウンホーファ 2D²/λ と近傍界の境界",
+    "scopeNote": "遠方界は 2D²/λ に加え r≫λ・r≫D も要件です。本ツールは実用目安として max(2D²/λ, 3λ, 反応近傍上限) を採用します。",
+    "slug": "far-field-distance",
+    "title": "遠方界距離（測定距離の目安）",
+  },
+  {
+    "beginnerGuide": {
+      "inputs": "①送信源のEIRP[dBm]②距離r。任意で③周波数④受信アンテナ利得（受信電力も出す場合）。",
+      "purpose": "ある地点の電界強度・電力密度・受信レベルを、EIRPと距離から一気に見積もります。",
+      "result": "E[V/m・dBµV/m]・S[W/m²・mW/cm²]、指定時は受信電力[dBm]が出ます。",
+    },
+    "canonical": "https://www.staf.co.jp/tools/field-strength",
+    "description": "送信源のEIRPと距離から、電力密度S[W/m²・mW/cm²]と電界強度E[V/m・dBµV/m]を計算します。周波数と受信利得を与えれば受信電力も換算します。規制（電波防護指針）・実測・受信レベルの一次見積もりに。",
+    "essenceLead": "電力は球面に広がって距離の2乗で薄まり、自由空間インピーダンスη0≈377Ωで電界強度に換算できます。",
+    "formula": "S=EIRP/(4πr²)、E=√(η0·S)=√(30·EIRP[W])/r、E[dBµV/m]=20log10(E/1µV)、Prx=S·Gλ²/4π",
+    "metaTitle": "電界強度・電力密度 計算ツール｜EIRPと距離からV/m・dBµV/m・W/m²",
+    "scopeNote": "遠方界・自由空間の理想条件です。反射・地面・多重波のある実環境では変動します。一次目安として使ってください。",
+    "slug": "field-strength",
+    "title": "電界強度・電力密度（EIRPと距離から）",
+  },
+  {
+    "beginnerGuide": {
       "inputs": "使う周波数と通信距離を入れます。まず基本損失だけを知りたい時に使います。",
       "purpose": "障害物がない理想条件で、距離と周波数だけで電波がどれくらい弱くなるかを見ます。",
       "result": "この損失に、ケーブル損、アンテナ利得、環境損を足し引きして受信電力を見積もります。",
@@ -659,6 +689,21 @@ exports[`tool registries > basicTools snapshot (slug順で内容を固定。配�
   },
   {
     "beginnerGuide": {
+      "inputs": "①指向性[dBi]②放射効率[%]③入力整合のVSWR。",
+      "purpose": "アンテナの利得表記を正しく解釈し、リンクバジェットに入れる利得の妥当性を確認します。",
+      "result": "利得・実現利得・総合効率・dBi/dBd換算が出ます。定義を揃えて他品と比較できます。",
+    },
+    "canonical": "https://www.staf.co.jp/tools/realized-gain",
+    "description": "指向性・放射効率・VSWRから、利得（=指向性+10log η）と実現利得（=利得−不整合損失）、総合効率、dBi↔dBd換算を計算します。データシートの『利得』が何を含むかの混乱を解消します。",
+    "essenceLead": "利得は指向性に放射効率を掛けたもので、さらに整合損失を引くと系が実際に得る実現利得になります。",
+    "formula": "利得=指向性+10log10(η)、実現利得=利得−(−10log10(1−|Γ|²))、|Γ|=(VSWR−1)/(VSWR+1)",
+    "metaTitle": "実効利得 計算ツール｜指向性×放射効率×整合損とdBi/dBd変換",
+    "scopeNote": "dBdは半波長ダイポール基準（dBi−2.15）。円偏波×直線偏波の受信ではさらに約3dBの偏波損が加わります。",
+    "slug": "realized-gain",
+    "title": "実効（実現）利得と利得変換",
+  },
+  {
+    "beginnerGuide": {
       "inputs": "周波数、反射面の幅と高さ、送信側・受信側までの距離、見込む効率を入れます。",
       "purpose": "反射板やRISを置いて、効きそうな面積と距離条件かを概算します。",
       "result": "反射経路が厳しい場合は、面積を増やす、距離を短くする、設置角度や方式を見直します。",
@@ -670,6 +715,21 @@ exports[`tool registries > basicTools snapshot (slug順で内容を固定。配�
     "metaTitle": "反射板・RISサイズ効果計算ツール｜面積・距離・波長による概算",
     "slug": "reflector-ris-size-effect",
     "title": "反射板・RISサイズ効果",
+  },
+  {
+    "beginnerGuide": {
+      "inputs": "①周波数②素子タイプ（λ/4モノポール・λ/2ダイポール・全波）③短縮率k（既定0.95）④被覆線なら波長短縮率VF。",
+      "purpose": "使う周波数に対して、アンテナのエレメント（線）を何mmで切ればよいかの初期値を素早く出します。",
+      "result": "実用エレメント全長（ダイポールは片側長も）が出ます。これを起点に実測で追い込みます。",
+    },
+    "canonical": "https://www.staf.co.jp/tools/resonant-element-length",
+    "description": "周波数から、λ/4モノポール・λ/2ダイポール・全波素子の物理長を計算します。端部効果の短縮率k（既定0.95）と被覆線・巻線の波長短縮率VFを掛けて、実装で切る線・ホイップの初期長の目安を出します。",
+    "essenceLead": "共振長は波長の分数が基本で、端部効果で数%短くなり、被覆線・巻線ではさらに短縮します。",
+    "formula": "物理長 = 分数(1/4・1/2・1)×λ×短縮率k×波長短縮VF、λ[m]=300/周波数[MHz]",
+    "metaTitle": "共振素子長 計算ツール｜λ/4モノポール・λ/2ダイポールの物理長",
+    "scopeNote": "初期値の目安です。実際は基板GND・給電・近接部品で共振がずれるため、量産前は実測での追い込みを前提にしてください。",
+    "slug": "resonant-element-length",
+    "title": "共振素子長（モノポール/ダイポール）",
   },
   {
     "beginnerGuide": {
@@ -1294,6 +1354,38 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
     "name": "回折・回り込みの見える化",
     "subcategory": "link-loss-models",
     "tagline": "ビル・山の影に周波数でどれだけ回り込むか",
+  },
+  {
+    "category": "antenna",
+    "href": "/tools/resonant-element-length",
+    "icon": "ruler",
+    "name": "共振素子長（モノポール/ダイポール）",
+    "subcategory": undefined,
+    "tagline": "この周波数で線は何mmかを即算",
+  },
+  {
+    "category": "antenna",
+    "href": "/tools/far-field-distance",
+    "icon": "radar",
+    "name": "遠方界距離（測定距離の目安）",
+    "subcategory": undefined,
+    "tagline": "OTA・暗室で何m離せば測れるか",
+  },
+  {
+    "category": "antenna",
+    "href": "/tools/realized-gain",
+    "icon": "antenna",
+    "name": "実効利得・利得変換",
+    "subcategory": undefined,
+    "tagline": "指向性×効率×整合＝実現利得",
+  },
+  {
+    "category": "basics",
+    "href": "/tools/field-strength",
+    "icon": "waves",
+    "name": "電界強度・電力密度",
+    "subcategory": undefined,
+    "tagline": "EIRPと距離から E・S・受信電力",
   },
 ]
 `;
