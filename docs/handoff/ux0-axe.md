@@ -1,13 +1,13 @@
 # アクセシビリティ基準線 (UX-0 Axe Baseline)
 
-**作成日時**: 2026-08-07T07:38:33.593Z
+**作成日時**: 2026-08-07T07:47:19.293Z
 
 重大(serious/critical)なアクセシビリティ違反の一覧です。現状の違反を記録し、今後の改善の基準線とします。
 
 ### 統計情報
 - 調査ページ数: 64
 - 違反ありページ数: 64
-- 重大違反(種類数)の総和: 67
+- 重大違反(種類数)の総和: 64
 
 ## 違反詳細
 
@@ -110,18 +110,7 @@
 
 ---
 
-### [rf-basic-link-calculator](file:///tools/rf-basic-link-calculator/) (2件の重大違反)
-
-#### 🔴 [SERIOUS] aria-prohibited-attr: Elements must only use permitted ARIA attributes
-- **説明**: Ensure ARIA attributes are not prohibited for an element's role
-- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright](https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright)
-- **対象要素**:
-  ```html
-  <div class="h-72 w-full" aria-label="距離とリンクマージンのグラフ">
-  ```
-  - セレクタ: `[".h-72"]`
-  - 修正要約: Fix all of the following:
-  aria-label attribute cannot be used on a div with no valid role attribute.
+### [rf-basic-link-calculator](file:///tools/rf-basic-link-calculator/) (1件の重大違反)
 
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
@@ -2706,7 +2695,7 @@
 
 ---
 
-### [patch-hpbw-explorer](file:///tools/patch-hpbw-explorer/) (2件の重大違反)
+### [patch-hpbw-explorer](file:///tools/patch-hpbw-explorer/) (1件の重大違反)
 
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
@@ -2725,20 +2714,6 @@
   - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-#### 🔴 [SERIOUS] svg-img-alt: <svg> elements with an img role must have alternative text
-- **説明**: Ensure <svg> elements with an img, graphics-document or graphics-symbol role have accessible text
-- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/svg-img-alt?application=playwright](https://dequeuniversity.com/rules/axe/4.12/svg-img-alt?application=playwright)
-- **対象要素**:
-  ```html
-  <svg role="img" viewBox="0 0 560 380" class="mt-4 w-full" data-testid="patch-hpbw-pattern" data-relative-db="-3.01" data-half-edge="true">
-  ```
-  - セレクタ: `["svg[role=\"img\"]"]`
-  - 修正要約: Fix any of the following:
-  Element has no child that is a title
-  aria-label attribute does not exist or is empty
-  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
-  Element has no title attribute
 
 ---
 
@@ -3817,39 +3792,7 @@
 
 ---
 
-### [cellular-band-map](file:///tools/cellular-band-map/) (2件の重大違反)
-
-#### 🔴 [SERIOUS] aria-prohibited-attr: Elements must only use permitted ARIA attributes
-- **説明**: Ensure ARIA attributes are not prohibited for an element's role
-- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright](https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright)
-- **対象要素**:
-  ```html
-  <span class="flex items-center gap-1" aria-label="3段階中3"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span></span>
-  ```
-  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(1) > .gap-1.flex[aria-label=\"3段階中3\"]"]`
-  - 修正要約: Fix all of the following:
-  aria-label attribute cannot be used on a span with no valid role attribute.
-
-  ```html
-  <span class="flex items-center gap-1" aria-label="3段階中3"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span></span>
-  ```
-  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(2) > .gap-1.flex[aria-label=\"3段階中3\"]"]`
-  - 修正要約: Fix all of the following:
-  aria-label attribute cannot be used on a span with no valid role attribute.
-
-  ```html
-  <span class="flex items-center gap-1" aria-label="3段階中1"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span></span>
-  ```
-  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(3) > .gap-1.flex[aria-label=\"3段階中1\"]"]`
-  - 修正要約: Fix all of the following:
-  aria-label attribute cannot be used on a span with no valid role attribute.
-
-  ```html
-  <span class="flex items-center gap-1" aria-label="3段階中1"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span></span>
-  ```
-  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(4) > .gap-1.flex[aria-label=\"3段階中1\"]"]`
-  - 修正要約: Fix all of the following:
-  aria-label attribute cannot be used on a span with no valid role attribute.
+### [cellular-band-map](file:///tools/cellular-band-map/) (1件の重大違反)
 
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds

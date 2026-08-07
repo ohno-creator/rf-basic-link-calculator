@@ -52,7 +52,7 @@ export function ReachDistanceChart({ input, result, maxReachM, targetMarginDb = 
       }
       exportName="reach-distance"
     >
-      <div className="h-72 w-full" aria-label="距離とリンクマージンのグラフ">
+      <div role="img" className="h-72 w-full" aria-label="距離とリンクマージンのグラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>
