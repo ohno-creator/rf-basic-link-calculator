@@ -1,13 +1,13 @@
 # アクセシビリティ基準線 (UX-0 Axe Baseline)
 
-**作成日時**: 2026-07-06T13:45:08.688Z
+**作成日時**: 2026-08-07T07:38:33.593Z
 
 重大(serious/critical)なアクセシビリティ違反の一覧です。現状の違反を記録し、今後の改善の基準線とします。
 
 ### 統計情報
-- 調査ページ数: 26
-- 違反ありページ数: 26
-- 重大違反(種類数)の総和: 27
+- 調査ページ数: 64
+- 違反ありページ数: 64
+- 重大違反(種類数)の総和: 67
 
 ## 違反詳細
 
@@ -18,11 +18,88 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="text-white/80">25</span>
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">16<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=link#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">13<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=antenna#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">8<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=basics#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">5<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=line#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">6<!-- -->件</span>
+  ```
+  - セレクタ: `[".flex-col.shadow-card.border-slate-200:nth-child(5) > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">3<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=system#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">5<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=learning#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">7<!-- -->件</span>
+  ```
+  - セレクタ: `["a[href=\"/?category=research#tools\"] > .gap-2\\.5.items-start > .min-w-0 > .text-\\[11px\\].gap-1\\.5 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-white/80">63</span>
   ```
   - セレクタ: `[".text-white\\/80"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 3.86 (foreground color: #cce3f2, background color: #0071bd, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">16</span>
+  ```
+  - セレクタ: `[".min-h-11.hover\\:border-staf\\/40.px-3:nth-child(2) > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-slate-400">13</span>
+  ```
+  - セレクタ: `[".min-h-11.hover\\:border-staf\\/40.px-3:nth-child(3) > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -35,34 +112,118 @@
 
 ### [rf-basic-link-calculator](file:///tools/rf-basic-link-calculator/) (2件の重大違反)
 
+#### 🔴 [SERIOUS] aria-prohibited-attr: Elements must only use permitted ARIA attributes
+- **説明**: Ensure ARIA attributes are not prohibited for an element's role
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright](https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright)
+- **対象要素**:
+  ```html
+  <div class="h-72 w-full" aria-label="距離とリンクマージンのグラフ">
+  ```
+  - セレクタ: `[".h-72"]`
+  - 修正要約: Fix all of the following:
+  aria-label attribute cannot be used on a div with no valid role attribute.
+
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="mt-1 block text-xs text-white/85">現在の距離で通信成立の余裕を見る</span>
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="px-1 pb-1 pt-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">STEP 0・何を求めますか？</p>
+  ```
+  - セレクタ: `[".pb-1"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 8.3pt (11px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="mt-1 block text-xs text-white/85">距離・機器・環境から通信の余裕と到達距離を診る（かんたん／詳細）</span>
   ```
   - セレクタ: `[".text-white\\/85"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 4.15 (foreground color: #d9eaf5, background color: #0071bd, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
+  <span class="mt-1 block text-[11px] font-medium opacity-75">0-3dB</span>
+  ```
+  - セレクタ: `[".bg-orange-100 > .opacity-75.text-\\[11px\\].font-medium"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.49 (foreground color: #9d5d43, background color: #ffedd5, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="mt-1 block text-[11px] font-medium opacity-75">3-10dB</span>
+  ```
+  - セレクタ: `[".bg-amber-100 > .opacity-75.text-\\[11px\\].font-medium"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.38 (foreground color: #9a653d, background color: #fef3c7, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="mt-1 block text-[11px] font-medium opacity-75">10-20dB</span>
+  ```
+  - セレクタ: `[".bg-sky-100 > .opacity-75.text-\\[11px\\].font-medium"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.42 (foreground color: #417492, background color: #e0f2fe, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(4) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(5) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(6) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(7) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".border-slate-100 > .text-slate-400"]`
+  - セレクタ: `[".pt-6 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
-
-#### 🔴 [SERIOUS] nested-interactive: Interactive controls must not be nested
-- **説明**: Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies
-- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/nested-interactive?application=playwright](https://dequeuniversity.com/rules/axe/4.12/nested-interactive?application=playwright)
-- **対象要素**:
-  ```html
-  <svg role="img" aria-label="送信電力から受信電力までのリンクバジェット滝グラフ" viewBox="0 0 860 380" class="h-auto w-full">
-  ```
-  - セレクタ: `["svg[aria-label=\"送信電力から受信電力までのリンクバジェット滝グラフ\"]"]`
-  - 修正要約: Fix any of the following:
-  Element has focusable descendants
 
 ---
 
@@ -73,9 +234,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -87,6 +255,27 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .ml-1\\.5.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">書籍</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .ml-1\\.5.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
@@ -103,11 +292,155 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <span class="text-xs tabular-nums text-slate-500">SNR <!-- -->-20.0<!-- -->dB</span>
   ```
   - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [eirp-compliance](file:///tools/eirp-compliance/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [rain-attenuation](file:///tools/rain-attenuation/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [shadowing-margin](file:///tools/shadowing-margin/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-xs tabular-nums text-slate-500">z = <!-- -->1.28</span>
+  ```
+  - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [polarization-loss](file:///tools/polarization-loss/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -125,18 +458,25 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
   ```
-  - セレクタ: `[".mr-auto"]`
+  - セレクタ: `["kbd"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <p class="mt-1 text-[11px] leading-relaxed text-slate-400">※横方向（距離）と縦方向（高さ）の縮尺は異なります（路線断面図と同様）。回折損失はナイフエッジ近似による目安で、樹木・建物の透過・反射や地形の細部は含みません。</p>
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
   ```
-  - セレクタ: `[".text-slate-400.text-\\[11px\\].mt-1"]`
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 8.3pt (11px), font weight: normal). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -153,6 +493,13 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <button type="button" aria-pressed="false" class="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600">
   ```
@@ -175,18 +522,53 @@
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="ml-0.5 text-xs font-medium text-slate-400">MHz</span>
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
   ```
-  - セレクタ: `[".rounded-md.p-4.bg-white:nth-child(1) > .justify-between.gap-2.flex > .text-staf-dark.font-bold.text-sm > .ml-0\\.5.font-medium.text-slate-400"]`
+  - セレクタ: `["li:nth-child(1) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
   ```
-  - セレクタ: `["div:nth-child(5) > .justify-end.mb-2.gap-2 > .mr-auto.text-slate-400.gap-1"]`
+  - セレクタ: `["li:nth-child(2) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(4) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(5) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(6) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(7) > .ml-1\\.5.bg-slate-100.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -203,6 +585,13 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <span class="mt-1 block text-sm leading-relaxed text-white/85">写真・図面・距離から、危険因子と通信余裕レンジを先に見る。</span>
   ```
@@ -226,18 +615,11 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <button type="button" role="radio" aria-checked="false" tabindex="-1" class="rounded-md px-4 py-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 text-slate-500 hover:text-slate-700">設置なし</button>
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
   ```
-  - セレクタ: `[".hover\\:text-slate-700.py-1\\.5[role=\"radio\"]:nth-child(1)"]`
+  - セレクタ: `["kbd"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 10.5pt (14px), font weight: bold). Expected contrast ratio of 4.5:1
-
-  ```html
-  <button type="button" role="radio" aria-checked="false" tabindex="-1" class="rounded-md px-4 py-1.5 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 text-slate-500 hover:text-slate-700">改善量</button>
-  ```
-  - セレクタ: `[".hover\\:text-slate-700.py-1\\.5[role=\"radio\"]:nth-child(3)"]`
-  - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 10.5pt (14px), font weight: bold). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -254,6 +636,13 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <span class="text-xs font-bold text-slate-400">STEP <!-- -->1</span>
   ```
@@ -353,21 +742,21 @@
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="text-slate-400">0<!-- -->/<!-- -->100</span>
+  <span class="text-slate-400">0<!-- -->/<!-- -->120</span>
   ```
   - セレクタ: `[".py-1\\.5.px-3.gap-1\\.5:nth-child(3) > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="text-slate-400">0<!-- -->/<!-- -->100</span>
+  <span class="text-slate-400">0<!-- -->/<!-- -->120</span>
   ```
   - セレクタ: `[".py-1\\.5.px-3.gap-1\\.5:nth-child(4) > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: bold). Expected contrast ratio of 4.5:1
 
   ```html
-  <span class="text-slate-400">0<!-- -->/<!-- -->100</span>
+  <span class="text-slate-400">0<!-- -->/<!-- -->120</span>
   ```
   - セレクタ: `[".py-1\\.5.px-3.gap-1\\.5:nth-child(5) > .text-slate-400"]`
   - 修正要約: Fix any of the following:
@@ -2104,12 +2493,326 @@
 
 ---
 
+### [antenna-term-lab](file:///tools/antenna-term-lab/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">電波の基本</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-frequency-wavelength\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">電波の基本</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-dielectric-constant\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">電波の基本</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-polarization\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">電波の基本</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-near-far-field\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">電波の基本</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-reciprocity\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-antenna-gain\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-radiation-pattern\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-beamwidth\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-radiation-efficiency\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-effective-aperture\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">アンテナの性能</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-efficiency-gain-diff\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-vswr\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-return-loss-s11\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-impedance-matching\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-resonance\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-bandwidth-vswr2\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">整合と給電</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-cable-loss-sqrt-f\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">実装と環境</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-ground-plane\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">実装と環境</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-eirp\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">実装と環境</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-isolation\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">実装と環境</span>
+  ```
+  - セレクタ: `["button[data-testid=\"term-multipath-fading\"] > .items-start.gap-2.justify-between > .bg-slate-100.px-2.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: bold). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [spectrum-use-atlas](file:///tools/spectrum-use-atlas/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [radio-wave-intuition](file:///tools/radio-wave-intuition/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [patch-hpbw-explorer](file:///tools/patch-hpbw-explorer/) (2件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+#### 🔴 [SERIOUS] svg-img-alt: <svg> elements with an img role must have alternative text
+- **説明**: Ensure <svg> elements with an img, graphics-document or graphics-symbol role have accessible text
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/svg-img-alt?application=playwright](https://dequeuniversity.com/rules/axe/4.12/svg-img-alt?application=playwright)
+- **対象要素**:
+  ```html
+  <svg role="img" viewBox="0 0 560 380" class="mt-4 w-full" data-testid="patch-hpbw-pattern" data-relative-db="-3.01" data-half-edge="true">
+  ```
+  - セレクタ: `["svg[role=\"img\"]"]`
+  - 修正要約: Fix any of the following:
+  Element has no child that is a title
+  aria-label attribute does not exist or is empty
+  aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty
+  Element has no title attribute
+
+---
+
+### [rf-antipatterns](file:///tools/rf-antipatterns/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-xs text-white/80" style="font-variant-numeric:tabular-nums">10</span>
+  ```
+  - セレクタ: `[".text-white\\/80"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 3.86 (foreground color: #cce3f2, background color: #0071bd, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
 ### [frequency-wavelength](file:///tools/frequency-wavelength/) (1件の重大違反)
 
 #### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [radiation-efficiency-converter](file:///tools/radiation-efficiency-converter/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-xs font-semibold text-slate-500">放射効率</p>
+  ```
+  - セレクタ: `[".mt-2 > .text-slate-500.text-xs.font-semibold"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.46 (foreground color: #64748b, background color: #f0f9ff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
@@ -2126,6 +2829,27 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
   - セレクタ: `[".mt-10 > .text-slate-400"]`
@@ -2140,6 +2864,13 @@
 - **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
@@ -2156,11 +2887,32 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
-  <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
   ```
-  - セレクタ: `[".mr-auto"]`
+  - セレクタ: `["kbd"]`
   - 修正要約: Fix any of the following:
-  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">書籍</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .px-1\\.5.bg-slate-100.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .px-1\\.5.bg-slate-100.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">書籍</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .px-1\\.5.bg-slate-100.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -2178,11 +2930,39 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <span class="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
   ```
   - セレクタ: `[".mr-auto"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">書籍</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
 
   ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
@@ -2200,9 +2980,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2215,9 +3002,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2230,9 +3024,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2245,9 +3046,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2260,9 +3068,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2275,9 +3090,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2290,9 +3112,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2305,9 +3134,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2320,9 +3156,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2335,9 +3178,16 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
@@ -2350,9 +3200,804 @@
 - **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
 - **対象要素**:
   ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
   <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
   ```
-  - セレクタ: `[".text-slate-400"]`
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [ifa-initial-dimensions](file:///tools/ifa-initial-dimensions/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [l-match](file:///tools/l-match/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-xs text-sky-900/70">※「一手でチャート中心へ」というたとえは直感用です。実際の2素子は順番に動くのではなく、 同時に成立する連立方程式の解——2本の弧は計算を追う人間の目のための道筋にすぎません。</p>
+  ```
+  - セレクタ: `[".text-sky-900\\/70"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.06 (foreground color: #507f9a, background color: #f0f9ff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [diversity-gain](file:///tools/diversity-gain/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-xs font-semibold text-slate-500">相関補正後ダイバーシティ利得</p>
+  ```
+  - セレクタ: `[".mt-2 > .text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.46 (foreground color: #64748b, background color: #f0f9ff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 text-sm font-semibold text-slate-500">dB</span>
+  ```
+  - セレクタ: `[".md\\:text-4xl > .ml-1\\.5.text-slate-500"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.46 (foreground color: #64748b, background color: #f0f9ff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [antenna-isolation](file:///tools/antenna-isolation/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [lora-airtime](file:///tools/lora-airtime/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-xs font-semibold text-slate-500">Time-on-Air</p>
+  ```
+  - セレクタ: `[".mt-2 > .text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.46 (foreground color: #64748b, background color: #f0f9ff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 text-sm font-semibold text-slate-500">ms</span>
+  ```
+  - セレクタ: `[".md\\:text-4xl > .ml-1\\.5.text-slate-500"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.46 (foreground color: #64748b, background color: #f0f9ff, font size: 10.5pt (14px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">データシート</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [battery-life](file:///tools/battery-life/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [gnss-cn0](file:///tools/gnss-cn0/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [mismatch-range-impact](file:///tools/mismatch-range-impact/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [desense](file:///tools/desense/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">記事</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.px-1\\.5.py-0\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [measurement-sampling](file:///tools/measurement-sampling/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [electrical-length](file:///tools/electrical-length/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [lte-signal-metrics](file:///tools/lte-signal-metrics/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1 text-xs font-normal opacity-80">50<!-- -->RB</span>
+  ```
+  - セレクタ: `[".border-staf.bg-staf.min-h-11 > .opacity-80.ml-1.font-normal"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 3.86 (foreground color: #cce3f2, background color: #0071bd, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-xs tabular-nums text-slate-500">50<!-- -->RB ／ <!-- -->600<!-- -->本</span>
+  ```
+  - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [vswr-bandwidth-q](file:///tools/vswr-bandwidth-q/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-xs tabular-nums text-slate-500">1.41%</span>
+  ```
+  - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [pointing-margin](file:///tools/pointing-margin/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [metal-plane-effect](file:///tools/metal-plane-effect/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [antenna-keepout](file:///tools/antenna-keepout/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [wall-penetration](file:///tools/wall-penetration/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [body-loss](file:///tools/body-loss/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [detuning-estimator](file:///tools/detuning-estimator/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [ground-plane-size](file:///tools/ground-plane-size/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="text-xs tabular-nums text-slate-500">≈32.6mm</span>
+  ```
+  - セレクタ: `[".ring-1 > .tabular-nums.text-slate-500.text-xs"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.25 (foreground color: #64748b, background color: #e8f4fc, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">データシート</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.px-1\\.5.ml-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">データシート</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.px-1\\.5.ml-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">データシート</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.px-1\\.5.ml-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [db-family](file:///tools/db-family/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">規格</span>
+  ```
+  - セレクタ: `["li:nth-child(1) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">書籍</span>
+  ```
+  - セレクタ: `["li:nth-child(2) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <span class="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">論文</span>
+  ```
+  - セレクタ: `["li:nth-child(3) > .bg-slate-100.ml-1\\.5.px-1\\.5"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 4.34 (foreground color: #64748b, background color: #f1f5f9, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [cellular-band-map](file:///tools/cellular-band-map/) (2件の重大違反)
+
+#### 🔴 [SERIOUS] aria-prohibited-attr: Elements must only use permitted ARIA attributes
+- **説明**: Ensure ARIA attributes are not prohibited for an element's role
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright](https://dequeuniversity.com/rules/axe/4.12/aria-prohibited-attr?application=playwright)
+- **対象要素**:
+  ```html
+  <span class="flex items-center gap-1" aria-label="3段階中3"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span></span>
+  ```
+  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(1) > .gap-1.flex[aria-label=\"3段階中3\"]"]`
+  - 修正要約: Fix all of the following:
+  aria-label attribute cannot be used on a span with no valid role attribute.
+
+  ```html
+  <span class="flex items-center gap-1" aria-label="3段階中3"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-staf"></span></span>
+  ```
+  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(2) > .gap-1.flex[aria-label=\"3段階中3\"]"]`
+  - 修正要約: Fix all of the following:
+  aria-label attribute cannot be used on a span with no valid role attribute.
+
+  ```html
+  <span class="flex items-center gap-1" aria-label="3段階中1"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span></span>
+  ```
+  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(3) > .gap-1.flex[aria-label=\"3段階中1\"]"]`
+  - 修正要約: Fix all of the following:
+  aria-label attribute cannot be used on a span with no valid role attribute.
+
+  ```html
+  <span class="flex items-center gap-1" aria-label="3段階中1"><span class="h-2 w-2 rounded-full bg-staf"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span><span class="h-2 w-2 rounded-full bg-slate-200"></span></span>
+  ```
+  - セレクタ: `[".grid-cols-\\[128px_44px_1fr\\].grid.gap-2:nth-child(4) > .gap-1.flex[aria-label=\"3段階中1\"]"]`
+  - 修正要約: Fix all of the following:
+  aria-label attribute cannot be used on a span with no valid role attribute.
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [ota-implementation-loss](file:///tools/ota-implementation-loss/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [diffraction-shadow](file:///tools/diffraction-shadow/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [resonant-element-length](file:///tools/resonant-element-length/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [far-field-distance](file:///tools/far-field-distance/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [realized-gain](file:///tools/realized-gain/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
+
+---
+
+### [field-strength](file:///tools/field-strength/) (1件の重大違反)
+
+#### 🔴 [SERIOUS] color-contrast: Elements must meet minimum color contrast ratio thresholds
+- **説明**: Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds
+- **詳細リンク**: [https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright](https://dequeuniversity.com/rules/axe/4.12/color-contrast?application=playwright)
+- **対象要素**:
+  ```html
+  <kbd class="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">⌘K</kbd>
+  ```
+  - セレクタ: `["kbd"]`
+  - 修正要約: Fix any of the following:
+  Element has insufficient color contrast of 2.45 (foreground color: #94a3b8, background color: #f8fafc, font size: 7.5pt (10px), font weight: normal). Expected contrast ratio of 4.5:1
+
+  ```html
+  <p class="text-slate-400">本ツールの計算値は初期検討の目安です。</p>
+  ```
+  - セレクタ: `[".mt-10 > .text-slate-400"]`
   - 修正要約: Fix any of the following:
   Element has insufficient color contrast of 2.56 (foreground color: #94a3b8, background color: #ffffff, font size: 9.0pt (12px), font weight: normal). Expected contrast ratio of 4.5:1
 
