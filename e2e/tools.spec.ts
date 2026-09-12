@@ -1184,12 +1184,12 @@ test("antenna keepout verdict reacts to the available area", async ({ page }) =>
   const calculator = page.getByTestId("tool-calculator");
   const primary = calculator.getByTestId("primary-result");
   await expect(primary).toBeVisible();
-  // 既定: チップ×2.4GHz（必要10×4mm）に確保12×5mm → 充足・不足量ゼロ
-  await expect(primary).toContainText("キープアウト充足");
+  // 既定: チップ×2.4GHz（目安10×4mm）に確保12×5mm → 目安寸法以上・不足量ゼロ
+  await expect(primary).toContainText("入力した目安寸法以上");
   await expect(primary).toContainText("0.0 / 0.0");
-  // 幅を7mmへ → 幅3mm不足（不足率30%）で NG 判定・不足量表示が変わる
+  // 幅を7mmへ → 幅3mm不足（不足率30%）として不足量表示が変わる
   await calculator.locator("#keepoutWidth").fill("7");
-  await expect(primary).toContainText("20%以上不足");
+  await expect(primary).toContainText("入力した目安寸法に不足（20%以上）");
   await expect(primary).toContainText("3.0 / 0.0");
 });
 

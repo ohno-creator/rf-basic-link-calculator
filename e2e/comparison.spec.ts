@@ -23,8 +23,8 @@ test('B19 入力消去・方式往復でも古い値を保存しない',async({p
  await page.getByRole('button',{name:'変更前後を測った',exact:true}).click();await page.getByRole('button',{name:'まだ測っていない',exact:true}).click();await expect(page.getByLabel('現在の長さ（m）',{exact:true})).toHaveValue('');await expect(page.locator('#result-title')).toContainText('入力未完了');
 });
 test('B09/B10/B11 単位と連動を保存・復元',async({page})=>{
- await example(page);await page.getByLabel('長さの単位',{exact:true}).selectOption('mm');await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');
- await page.getByLabel('周波数の単位',{exact:true}).selectOption('GHz');await expect(page.getByLabel('使用周波数（GHz）',{exact:true})).toHaveValue('2.4');
+ await example(page);const unitSelects=page.locator('.units select');await unitSelects.nth(1).selectOption('mm');await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');
+ await unitSelects.nth(0).selectOption('GHz');await expect(page.getByLabel('使用周波数（GHz）',{exact:true})).toHaveValue('2.4');
  await page.getByLabel('現在の損失係数（dB/m）',{exact:true}).fill('0.5');await expect(page.locator('.result')).toContainText('1 dB');
  await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await page.getByRole('button',{name:'自分の条件で始める（編集を置換）'}).click();await page.getByRole('button',{name:'保存した1件を復元'}).click();await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');await expect(page.locator('.result')).toContainText('1 dB');
 });
