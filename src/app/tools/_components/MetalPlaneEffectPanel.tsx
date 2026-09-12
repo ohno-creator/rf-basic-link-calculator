@@ -461,15 +461,15 @@ export function MetalPlaneEffectPanel() {
               })}
             </div>
             <p className="mt-4 text-sm leading-relaxed text-slate-600">
-              この利得変化を
+              ここでの利得変化は理想モデルの学習用です。
               <Link
                 href="/tools/rf-basic-link-calculator"
                 className="mx-1 inline-flex items-center gap-1 rounded font-semibold text-staf-dark transition hover:text-staf focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
-                リンクバジェット診断のアンテナ利得
+                リンクバジェット診断
                 <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
               </Link>
-              に反映すると、金属筐体への実装込みで通信余裕を見積もれます。
+              やケーブル・位置比較へ、実端末の配置効果として自動転記しません。実使用条件で確認した値を使用してください。
             </p>
           </Card>
         </div>

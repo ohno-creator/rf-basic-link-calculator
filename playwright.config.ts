@@ -8,7 +8,7 @@ export default defineConfig({
   reporter: [["list"]],
   testMatch: process.env.TEST_VISUAL
     ? ["**/measure.spec.ts", "**/visual.spec.ts", "**/axe.spec.ts", "**/foldBudget.spec.ts"]
-    : ["**/tools.spec.ts"],
+    : ["**/tools.spec.ts", "**/comparison.spec.ts"],
   use: {
     baseURL: "http://localhost:3000",
     trace: "on-first-retry"
