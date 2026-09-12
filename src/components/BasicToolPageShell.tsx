@@ -13,20 +13,30 @@ type BasicToolPageShellProps = {
   children: ReactNode;
 };
 
-// 看板ツール（リンクバジェット診断・RF学習クエスト）は必ず関連導線に含める。
+// 看板ツール（リンクバジェット診断・RF学習クエスト）は関連導線の末尾で常設する。
 const flagshipHrefs = ["/tools/rf-basic-link-calculator", "/tools/rf-learning-quest"];
 
 export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) {
   const currentHref = `/tools/${tool.slug}`;
   const others = toolDirectory.filter((item) => item.href !== currentHref);
-  // 回遊の関連度を上げる: 看板ツール → 同カテゴリ → その他 の優先順（v4 R3）。
-  const currentCategory = toolDirectory.find((item) => item.href === currentHref)?.category;
+  // 回遊の関連度順: 同サブカテゴリ → 同カテゴリ → 看板 → その他。
+  // 以前は看板2枠が先頭固定で「いま見ている計算の隣のツール」が押し出されていたため、
+  // 近い順を先に出し、看板は入口として末尾側に残す（6枠）。
+  const current = toolDirectory.find((item) => item.href === currentHref);
   const nonFlagship = others.filter((item) => !flagshipHrefs.includes(item.href));
-  const related = [
-    ...others.filter((item) => flagshipHrefs.includes(item.href)),
-    ...nonFlagship.filter((item) => item.category === currentCategory),
-    ...nonFlagship.filter((item) => item.category !== currentCategory)
-  ].slice(0, 6);
+  const sameSubcategory = current?.subcategory
+    ? nonFlagship.filter(
+        (item) => item.subcategory === current.subcategory && item.category === current.category
+      )
+    : [];
+  const sameCategory = nonFlagship.filter(
+    (item) => item.category === current?.category && !sameSubcategory.includes(item)
+  );
+  const flagships = others.filter((item) => flagshipHrefs.includes(item.href));
+  const rest = nonFlagship.filter(
+    (item) => !sameSubcategory.includes(item) && !sameCategory.includes(item)
+  );
+  const related = [...sameSubcategory, ...sameCategory, ...flagships, ...rest].slice(0, 6);
   const beginnerItems = [
     {
       title: "何を決める？",

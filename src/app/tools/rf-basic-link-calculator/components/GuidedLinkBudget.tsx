@@ -1,21 +1,49 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ArrowRight, Lightbulb, SlidersHorizontal, Wand2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { ArrowRight, Lightbulb, Ruler, SlidersHorizontal, Target, Wand2 } from "lucide-react";
 import { Card, StateCard } from "@/components/Card";
 import { MobileResultBar } from "@/components/MobileResultBar";
 import { environmentLossPresets } from "@/data/environmentLossPresets";
 import { quickStartPresets, type QuickStartPreset } from "@/data/quickStartPresets";
 import { formatSigned } from "@/lib/rf/format";
 import type { LinkBudgetInput, LinkBudgetResult } from "@/lib/rf/linkBudget";
-import { adviseLinkBudget, type LinkAdvice } from "@/lib/rf/linkBudgetAdvisor";
+import { adviseLinkBudget, solveMaxDistanceM, type LinkAdvice } from "@/lib/rf/linkBudgetAdvisor";
 import { LinkMarginGauge } from "./LinkMarginGauge";
+import { ReachDistanceChart } from "./ReachDistanceChart";
+
+/** 逆算（到達距離）モードで狙う目標マージンの選択肢。 */
+const reachTargets = [
+  { db: 0, label: "限界", hint: "届くだけ（0dB）" },
+  { db: 6, label: "標準", hint: "通常運用の余裕（6dB）" },
+  { db: 10, label: "安定", hint: "安定重視（10dB）" },
+  { db: 20, label: "余裕", hint: "変動に強い（20dB）" }
+] as const;
+
+/**
+ * 信頼率レンジ（D）。対数正規シャドウフェージング下で信頼率p%を満たすには
+ * 中央値マージン ≥ z(p)·σ が必要。z は標準正規の上側分位点。
+ * 距離は solveMaxDistanceM(input, z·σ) で逆算する（Bの目標マージン逆算を流用）。
+ */
+const reliabilityLevels = [
+  { p: 50, z: 0, label: "だいたい届く", sub: "信頼率50%" },
+  { p: 90, z: 1.2816, label: "しっかり届く", sub: "信頼率90%" },
+  { p: 99, z: 2.3263, label: "ほぼ確実", sub: "信頼率99%" }
+] as const;
+
+/** 環境のばらつき（シャドウフェージング標準偏差σ[dB]）の代表値。 */
+const shadowSigmaOptions = [
+  { db: 4, label: "小", hint: "見通し良好・屋外の開けた場所" },
+  { db: 6, label: "標準", hint: "一般的な環境" },
+  { db: 8, label: "大", hint: "市街地・遮蔽物が多い" }
+] as const;
 
 type GuidedLinkBudgetProps = {
   input: LinkBudgetInput;
   result: LinkBudgetResult | null;
   onChange: (input: LinkBudgetInput) => void;
   onOpenExpert: () => void;
+  onOpenResearchDistance: () => void;
 };
 
 /** 距離[m]を人が読みやすい表記へ（1000m以上はkm）。 */
@@ -92,7 +120,7 @@ function adviceChip(
     case "headroom":
       return {
         key: "headroom",
-        label: `余裕 ${advice.extraDb.toFixed(1)}dB — このままなら約${formatDistanceM(advice.distanceM)}まで届く見込み`
+        label: `いまの余裕 ${advice.extraDb.toFixed(1)}dB（到達距離は上に表示）`
       };
     case "reach_distance": {
       const target = Math.max(1, advice.distanceM * 0.95); // 5%の安全側で提案
@@ -128,8 +156,19 @@ function adviceChip(
  * かんたんモード：3ステップ（シナリオ→距離と環境→機器）＋常時ゲージ＋「次の一手」チップ。
  * 全項目の細部調整は詳細モード（従来パネル）へ引き継ぐ。
  */
-export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: GuidedLinkBudgetProps) {
+export function GuidedLinkBudget({
+  input,
+  result,
+  onChange,
+  onOpenExpert,
+  onOpenResearchDistance
+}: GuidedLinkBudgetProps) {
   const [selectedPresetId, setSelectedPresetId] = useState<string | null>(null);
+  // STEP2の解き方：距離を決めて余裕を見る（順算）／目標マージンから到達距離を出す（逆算）。
+  const [solveFor, setSolveFor] = useState<"distance" | "reach">("distance");
+  const [targetMarginDb, setTargetMarginDb] = useState<number>(10);
+  // D: 信頼率レンジで使う環境ばらつき（シャドウフェージングσ[dB]）。
+  const [shadowSigmaDb, setShadowSigmaDb] = useState<number>(6);
 
   const distanceM = currentDistanceM(input);
   const distanceLog = Math.min(DISTANCE_LOG_MAX, Math.max(DISTANCE_LOG_MIN, Math.log10(Math.max(1, distanceM))));
@@ -140,6 +179,35 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
     }
     return adviseLinkBudget(input, result);
   }, [input, result]);
+
+  // A: マージン0でちょうど届く到達距離。結果カードで常時見せる第一級の指標。
+  const maxReachM = useMemo(() => (result ? solveMaxDistanceM(input) : null), [input, result]);
+  // D: 信頼率50/90/99%それぞれで届く距離（z·σの余裕を確保した到達距離）。
+  const reachByReliability = useMemo(
+    () =>
+      reliabilityLevels.map((level) => ({
+        ...level,
+        distanceM: result ? solveMaxDistanceM(input, level.z * shadowSigmaDb) : null
+      })),
+    [input, result, shadowSigmaDb]
+  );
+  // B: 逆算モードで狙う目標マージンを満たす最大距離。
+  const reachForTargetM = useMemo(
+    () => (result ? solveMaxDistanceM(input, targetMarginDb) : null),
+    [input, result, targetMarginDb]
+  );
+
+  // 逆算モードでは、距離を「目標マージンを満たす到達距離」に固定し続ける。
+  // reach は現在距離に依存しないため、丸めた表現が一致したら更新しない＝ループしない。
+  useEffect(() => {
+    if (solveFor !== "reach" || reachForTargetM === null) {
+      return;
+    }
+    const next = distanceMToInput(reachForTargetM);
+    if (next.distance !== input.distance || next.distanceUnit !== input.distanceUnit) {
+      onChange({ ...input, ...next });
+    }
+  }, [solveFor, reachForTargetM, input, onChange]);
 
   const applyPreset = (preset: QuickStartPreset) => {
     setSelectedPresetId(preset.id);
@@ -154,6 +222,84 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
       {result ? (
         <div id="guided-result-anchor" className="space-y-3">
           <LinkMarginGauge result={result} />
+
+          {/* A+D: 到達距離を第一級の指標として、信頼率レンジ（環境ばらつき込み）で常時表示 */}
+          <Card padding="md" shadow={false} className="border-staf/30 bg-staf-light/40">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="flex items-center gap-1.5 text-xs font-bold text-staf-dark">
+                <Ruler aria-hidden="true" className="h-4 w-4" />
+                到達距離の目安（環境のばらつき込み）
+              </p>
+              <p className="text-xs text-slate-500">
+                いまの設定距離: <span className="font-semibold text-slate-700">{formatDistanceM(distanceM)}</span>
+              </p>
+            </div>
+
+            {/* D: 環境のばらつき（シャドウフェージングσ）セレクタ */}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-semibold text-slate-600">環境のばらつき</span>
+              <div role="group" aria-label="環境のばらつき（シャドウフェージング）" className="inline-flex flex-wrap gap-1">
+                {shadowSigmaOptions.map((option) => {
+                  const active = shadowSigmaDb === option.db;
+                  return (
+                    <button
+                      key={option.db}
+                      type="button"
+                      aria-pressed={active}
+                      title={option.hint}
+                      data-testid={`guided-sigma-${option.db}`}
+                      onClick={() => setShadowSigmaDb(option.db)}
+                      className={`rounded-full border px-2.5 py-1 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                        active
+                          ? "border-staf bg-staf text-white"
+                          : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
+                      }`}
+                    >
+                      {option.label}（σ{option.db}dB）
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* D: 信頼率レンジ（50/90/99%） */}
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              {reachByReliability.map((level, index) => (
+                <div
+                  key={level.p}
+                  className={`rounded-lg border bg-white/70 p-2.5 text-center ${
+                    level.p === 90 ? "border-staf/50" : "border-slate-200"
+                  }`}
+                >
+                  <p className="text-[11px] font-semibold text-slate-500">
+                    {level.label}
+                    <span className="mt-0.5 block text-[10px] font-medium text-slate-400">{level.sub}</span>
+                  </p>
+                  <p
+                    data-testid={index === 0 ? "guided-reach-distance" : `guided-reach-p${level.p}`}
+                    className={`mt-1 font-bold text-slate-950 ${level.p === 50 ? "text-xl" : "text-lg"}`}
+                    style={{ fontVariantNumeric: "tabular-nums" }}
+                  >
+                    {level.distanceM ? formatDistanceM(level.distanceM) : "届きません"}
+                  </p>
+                </div>
+              ))}
+            </div>
+
+            <p className="mt-2 text-xs leading-relaxed text-slate-500">
+              電波は環境で±に変動します。信頼率が高いほど変動に負けにくい代わりに、届く距離は短くなります。σ（ばらつき）が大きい市街地ほどレンジの差が広がります。
+            </p>
+            <button
+              type="button"
+              data-testid="guided-open-research"
+              onClick={onOpenResearchDistance}
+              className="mt-2 inline-flex items-center gap-1 rounded-md px-1 py-0.5 text-xs font-bold text-staf-dark underline-offset-2 transition hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+            >
+              もっと精密に：地形10モデル・信頼率で距離計算（研究ベース距離計算へ）
+              <ArrowRight aria-hidden="true" className="h-3.5 w-3.5" />
+            </button>
+          </Card>
+
           <StateCard
             tone={result.linkMarginDb >= 0 ? "info" : "caution"}
             padding="md"
@@ -216,6 +362,14 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
               </p>
             </Card>
           </div>
+
+          {/* C: 距離とリンクマージンの曲線（現在地点と到達限界を明示） */}
+          <ReachDistanceChart
+            input={input}
+            result={result}
+            maxReachM={maxReachM}
+            targetMarginDb={solveFor === "reach" ? targetMarginDb : 0}
+          />
         </div>
       ) : (
         <StateCard tone="caution" padding="md">
@@ -260,37 +414,112 @@ export function GuidedLinkBudget({ input, result, onChange, onOpenExpert }: Guid
       <Card as="section" padding="lg">
         <p className="text-xs font-bold uppercase tracking-wide text-staf-dark">STEP 2</p>
         <h3 className="mt-1 text-base font-bold text-slate-950">どこで、どのくらいの距離を飛ばしますか？</h3>
-        <div className="mt-3">
-          <div className="flex items-center justify-between gap-2">
-            <label htmlFor="guided-distance" className="text-sm font-semibold text-slate-900">
-              通信距離
-            </label>
-            <span
-              data-testid="guided-distance-value"
-              className="text-base font-bold text-staf-dark"
-              style={{ fontVariantNumeric: "tabular-nums" }}
-            >
-              {formatDistanceM(distanceM)}
-            </span>
-          </div>
-          <input
-            id="guided-distance"
-            type="range"
-            min={DISTANCE_LOG_MIN}
-            max={DISTANCE_LOG_MAX}
-            step={0.01}
-            value={distanceLog}
-            aria-label="通信距離（対数スライダー）"
-            className="mt-2 w-full"
-            onChange={(event) => onChange({ ...input, ...distanceMToInput(10 ** Number(event.target.value)) })}
-          />
-          <div className="mt-1 flex justify-between text-[11px] text-slate-400" aria-hidden="true">
-            <span>1m</span>
-            <span>100m</span>
-            <span>1km</span>
-            <span>20km</span>
-          </div>
+
+        {/* B: 順算（距離→余裕）/ 逆算（目標マージン→到達距離）の切替 */}
+        <div
+          role="group"
+          aria-label="距離の求め方"
+          className="mt-3 inline-flex rounded-full border border-slate-200 bg-slate-50 p-1"
+        >
+          {(
+            [
+              { id: "distance", label: "距離を決める", icon: SlidersHorizontal },
+              { id: "reach", label: "到達距離を出す", icon: Target }
+            ] as const
+          ).map((option) => {
+            const Icon = option.icon;
+            const active = solveFor === option.id;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                aria-pressed={active}
+                data-testid={`guided-solvefor-${option.id}`}
+                onClick={() => setSolveFor(option.id)}
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                  active ? "bg-staf text-white shadow-card" : "text-slate-600 hover:text-staf-dark"
+                }`}
+              >
+                <Icon aria-hidden="true" className="h-3.5 w-3.5" />
+                {option.label}
+              </button>
+            );
+          })}
         </div>
+
+        {solveFor === "distance" ? (
+          <div className="mt-3">
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="guided-distance" className="text-sm font-semibold text-slate-900">
+                通信距離
+              </label>
+              <span
+                data-testid="guided-distance-value"
+                className="text-base font-bold text-staf-dark"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {formatDistanceM(distanceM)}
+              </span>
+            </div>
+            <input
+              id="guided-distance"
+              type="range"
+              min={DISTANCE_LOG_MIN}
+              max={DISTANCE_LOG_MAX}
+              step={0.01}
+              value={distanceLog}
+              aria-label="通信距離（対数スライダー）"
+              className="mt-2 w-full"
+              onChange={(event) => onChange({ ...input, ...distanceMToInput(10 ** Number(event.target.value)) })}
+            />
+            <div className="mt-1 flex justify-between text-[11px] text-slate-400" aria-hidden="true">
+              <span>1m</span>
+              <span>100m</span>
+              <span>1km</span>
+              <span>20km</span>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-3">
+            <div className="rounded-lg border border-staf/30 bg-staf-light/40 p-3">
+              <p className="text-xs font-semibold text-staf-dark">到達距離（目標マージンを満たす最大距離）</p>
+              <p
+                data-testid="guided-reach-target-distance"
+                className="mt-0.5 text-2xl font-bold text-slate-950"
+                style={{ fontVariantNumeric: "tabular-nums" }}
+              >
+                {reachForTargetM ? `約 ${formatDistanceM(reachForTargetM)}` : "この条件では目標を満たせません"}
+              </p>
+            </div>
+            <p className="mt-3 text-sm font-semibold text-slate-900">どれくらいの余裕（信頼度）で届かせたい？</p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {reachTargets.map((option) => {
+                const active = targetMarginDb === option.db;
+                return (
+                  <button
+                    key={option.db}
+                    type="button"
+                    aria-pressed={active}
+                    title={option.hint}
+                    data-testid={`guided-target-${option.db}`}
+                    onClick={() => setTargetMarginDb(option.db)}
+                    className={`rounded-full border px-3 py-1.5 text-xs font-semibold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                      active
+                        ? "border-staf bg-staf text-white"
+                        : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
+                    }`}
+                  >
+                    {option.label}（{option.db}dB）
+                  </button>
+                );
+              })}
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-slate-500">
+              目標マージンが大きいほど電波の変動やフェージングに強くなりますが、到達距離は短くなります。距離は自動で更新されます。
+            </p>
+          </div>
+        )}
+
         <div className="mt-4">
           <p className="text-sm font-semibold text-slate-900">周りの環境</p>
           <div className="mt-2 flex flex-wrap gap-1.5">

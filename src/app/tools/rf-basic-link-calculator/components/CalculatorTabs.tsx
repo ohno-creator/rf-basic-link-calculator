@@ -45,13 +45,13 @@ const relatedTools = [
 const sheets = [
   {
     id: "link-budget",
-    label: "リンクバジェット",
-    description: "現在の距離で通信成立の余裕を見る"
+    label: "リンクバジェット診断",
+    description: "距離・機器・環境から通信の余裕と到達距離を診る（かんたん／詳細）"
   },
   {
     id: "research-distance",
     label: "研究ベース距離計算",
-    description: "信頼率とばらつき込みで最大距離を逆算する"
+    description: "地形10モデル・信頼率で最大距離を精密に逆算する（上級）"
   }
 ] as const;
 
@@ -102,43 +102,21 @@ export function CalculatorTabs({
 
   return (
     <section className="mx-auto max-w-7xl px-4 pt-10 pb-24 sm:px-6 lg:px-8 lg:pb-10">
-      <div className="mb-5">
+      <div className="mb-4">
         <p className="text-sm font-semibold text-staf-dark">メイン診断</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight text-slate-950">
-          リンクバジェットと研究ベース距離計算を切り替えて確認できます
+          目的に合わせて、2つの計算を切り替えられます
         </h2>
+        <p className="mt-1 text-sm leading-relaxed text-slate-600">
+          まず「何を求めるか」を選びます。リンクバジェット診断の中で、表示の詳しさ（かんたん／詳細）を切り替えられます。
+        </p>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div
-          role="group"
-          aria-label="入力モード"
-          className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-card"
-        >
-          {(
-            [
-              { id: "guided", label: "かんたん" },
-              { id: "expert", label: "詳細" }
-            ] as const
-          ).map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              aria-pressed={mode === option.id}
-              data-testid={`calculator-mode-${option.id}`}
-              onClick={() => onModeChange(option.id)}
-              className={`rounded-full px-4 py-1.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
-                mode === option.id ? "bg-staf text-white" : "text-slate-600 hover:text-staf-dark"
-              }`}
-            >
-              {option.label}
-            </button>
-          ))}
-        </div>
-        <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
-      </div>
-
-      <div className="mb-5 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
+      {/* 第一階層: 何を計算するか（シート選択） */}
+      <div className="mb-4 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
+        <p className="px-1 pb-1 pt-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+          STEP 0・何を求めますか？
+        </p>
         <div role="tablist" aria-label="計算シート" className="grid gap-2 sm:grid-cols-2">
           {sheets.map((sheet) => {
             const selected = activeSheet === sheet.id;
@@ -163,12 +141,51 @@ export function CalculatorTabs({
         </div>
       </div>
 
+      <div className="mb-4 flex justify-end">
+        <LinkActionsBar onReset={onReset} onShare={onShare} shareState={shareState} />
+      </div>
+
+      {activeSheet === "link-budget" ? (
+        <>
+          {/* 第二階層: リンクバジェットの表示の詳しさ（この計算にだけ効く） */}
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-slate-500">表示の詳しさ</span>
+            <div
+              role="group"
+              aria-label="入力モード"
+              className="inline-flex rounded-full border border-slate-200 bg-white p-1 shadow-card"
+            >
+              {(
+                [
+                  { id: "guided", label: "かんたん" },
+                  { id: "expert", label: "詳細" }
+                ] as const
+              ).map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  aria-pressed={mode === option.id}
+                  data-testid={`calculator-mode-${option.id}`}
+                  onClick={() => onModeChange(option.id)}
+                  className={`rounded-full px-4 py-1.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 ${
+                    mode === option.id ? "bg-staf text-white" : "text-slate-600 hover:text-staf-dark"
+                  }`}
+                >
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      ) : null}
+
       {activeSheet === "link-budget" && mode === "guided" ? (
         <GuidedLinkBudget
           input={input}
           result={result}
           onChange={onInputChange}
           onOpenExpert={() => onModeChange("expert")}
+          onOpenResearchDistance={() => setActiveSheet("research-distance")}
         />
       ) : null}
 

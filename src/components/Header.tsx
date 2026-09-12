@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { ChevronDown, Menu, RadioTower, X } from "lucide-react";
+import { ChevronDown, Menu, RadioTower, Search, X } from "lucide-react";
 import { COLUMN_URL, CONTACT_URL } from "@/lib/rf/presets";
 import { toolCategories, toolDirectory } from "@/data/toolDirectory";
+import { recordRecentTool } from "@/lib/recentTools";
+import { ToolSearchPalette } from "./ToolSearchPalette";
 
 // ツールをカテゴリごとにまとめる（ツールスイッチャー用）。
 const groupedTools = toolCategories
@@ -26,13 +28,37 @@ export function Header() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const toolsRef = useRef<HTMLDivElement>(null);
 
   // ルート遷移でメニューを閉じる。
   useEffect(() => {
     setMobileOpen(false);
     setToolsOpen(false);
+    setSearchOpen(false);
   }, [pathname]);
+
+  // ツールページを開いたら「最近使ったツール」履歴へ記録（検索パレットの空クエリ表示用）。
+  useEffect(() => {
+    const match = pathname?.match(/^\/tools\/([^/]+)\/?$/);
+    if (match) {
+      recordRecentTool(match[1]);
+    }
+  }, [pathname]);
+
+  // ⌘K / Ctrl+K でどのページからでも検索パレットを開く。
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen((open) => !open);
+        setToolsOpen(false);
+        setMobileOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, []);
 
   // デスクトップのツールメニュー：外側クリック・Escで閉じる。
   useEffect(() => {
@@ -83,6 +109,18 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex" aria-label="メインナビゲーション">
+          <button
+            type="button"
+            data-testid="header-search-button"
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white py-1.5 pl-3 pr-2 text-sm text-slate-500 transition hover:border-staf/40 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+          >
+            <Search aria-hidden="true" className="h-4 w-4" />
+            ツールを検索
+            <kbd className="rounded border border-slate-200 bg-slate-50 px-1.5 py-0.5 text-[10px] font-semibold text-slate-400">
+              ⌘K
+            </kbd>
+          </button>
           <div className="relative" ref={toolsRef}>
             <button
               type="button"
@@ -98,9 +136,22 @@ export function Header() {
               <div
                 role="menu"
                 aria-label="ツール一覧"
-                className="absolute right-0 top-full mt-2 w-[38rem] max-w-[calc(100vw-2rem)] rounded-xl border border-slate-200 bg-white p-4 shadow-soft"
+                className="absolute right-0 top-full mt-2 flex max-h-[min(70vh,40rem)] w-[38rem] max-w-[calc(100vw-2rem)] flex-col rounded-xl border border-slate-200 bg-white shadow-soft"
               >
-                <div className="grid gap-4 sm:grid-cols-2">
+                {/* 63件を目視で探さなくて済むよう、パネル先頭に検索への近道を置く */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToolsOpen(false);
+                    setSearchOpen(true);
+                  }}
+                  className="mx-4 mt-4 flex items-center gap-2 rounded-lg border border-dashed border-slate-300 px-3 py-2 text-sm text-slate-500 transition hover:border-staf/40 hover:text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+                >
+                  <Search aria-hidden="true" className="h-4 w-4" />
+                  キーワードで検索する（⌘K）
+                </button>
+                {/* 63件が縦に収まらないビューポートでも全ツールへ届くよう、パネル内スクロールにする */}
+                <div className="grid gap-4 overflow-y-auto p-4 sm:grid-cols-2">
                   {groupedTools.map((group) => (
                     <div key={group.id}>
                       <p className="px-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">{group.label}</p>
@@ -150,21 +201,42 @@ export function Header() {
           </a>
         </nav>
 
-        <button
-          type="button"
-          aria-expanded={mobileOpen}
-          aria-controls="mobile-menu"
-          aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
-          onClick={() => setMobileOpen((open) => !open)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40 md:hidden"
-        >
-          {mobileOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
-        </button>
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            aria-label="ツールを検索"
+            onClick={() => setSearchOpen(true)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+          >
+            <Search aria-hidden="true" className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-menu"
+            aria-label={mobileOpen ? "メニューを閉じる" : "メニューを開く"}
+            onClick={() => setMobileOpen((open) => !open)}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-slate-200 text-slate-700 transition hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+          >
+            {mobileOpen ? <X aria-hidden="true" className="h-5 w-5" /> : <Menu aria-hidden="true" className="h-5 w-5" />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen ? (
         <div id="mobile-menu" className="md:hidden">
           <div className="max-h-[calc(100vh-3.75rem)] overflow-y-auto border-t border-slate-200 bg-white px-4 py-4 sm:px-6">
+            <button
+              type="button"
+              onClick={() => {
+                setMobileOpen(false);
+                setSearchOpen(true);
+              }}
+              className="mb-3 flex w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-500"
+            >
+              <Search aria-hidden="true" className="h-4 w-4" />
+              ツール名・キーワードで検索
+            </button>
             <div className="flex flex-wrap gap-2">
               <Link href="/" className="rounded-md bg-slate-100 px-3 py-2 text-sm font-semibold text-slate-800">
                 ツール一覧
@@ -208,6 +280,8 @@ export function Header() {
           </div>
         </div>
       ) : null}
+
+      <ToolSearchPalette open={searchOpen} onClose={() => setSearchOpen(false)} />
     </header>
   );
 }

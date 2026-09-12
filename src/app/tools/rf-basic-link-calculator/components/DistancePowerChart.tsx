@@ -42,7 +42,7 @@ export function DistancePowerChart({ input }: DistancePowerChartProps) {
       }
       exportName="distance-power"
     >
-      <div className="h-72 w-full" aria-label="距離と受信電力のグラフ">
+      <div role="img" className="h-72 w-full" aria-label="距離と受信電力のグラフ">
         {isMounted ? (
           <ResponsiveContainer width="100%" height="100%" minWidth={0} minHeight={288}>
             <LineChart data={data} margin={{ left: 6, right: 18, top: 12, bottom: 8 }}>

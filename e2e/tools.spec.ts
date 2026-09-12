@@ -7,7 +7,7 @@ test.describe("tool hub", () => {
   test("home lists every tool and links to its page", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })
+      page.getByRole("heading", { level: 1, name: "ケーブルと位置の変更を、条件から比較。" })
     ).toBeVisible();
     await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "知りたいことに近いカードを選ぶ" })).toBeVisible();
@@ -26,7 +26,7 @@ test.describe("tool hub", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1, name: "無線設計を、目的から迷わず計算。" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "ケーブルと位置の変更を、条件から比較。" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
     await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
     await page.locator("#purpose-routes").scrollIntoViewIfNeeded();
@@ -1162,8 +1162,8 @@ test("metal plane effect derives +6dB at quarter-wave and collapses at contact",
   await page.getByRole("button", { name: "2.4GHz", exact: true }).click();
   await expect(page.getByTestId("primary-result")).toContainText("+6.0");
 
-  // リンクバジェット診断（アンテナ利得）への突き合わせ導線
-  await expect(page.getByRole("link", { name: /リンクバジェット診断のアンテナ利得/ })).toBeVisible();
+  // 理想モデルの値は実端末の利得に自動転記しない。
+  await expect(page.getByRole("link", { name: "リンクバジェット診断", exact: true }).first()).toBeVisible();
 });
 
 test("LTE signal metrics judges RSRP quality band and reacts to mode switch", async ({ page }) => {
@@ -1184,12 +1184,12 @@ test("antenna keepout verdict reacts to the available area", async ({ page }) =>
   const calculator = page.getByTestId("tool-calculator");
   const primary = calculator.getByTestId("primary-result");
   await expect(primary).toBeVisible();
-  // 既定: チップ×2.4GHz（必要10×4mm）に確保12×5mm → 充足・不足量ゼロ
-  await expect(primary).toContainText("キープアウト充足");
+  // 既定: チップ×2.4GHz（目安10×4mm）に確保12×5mm → 目安寸法以上・不足量ゼロ
+  await expect(primary).toContainText("入力した目安寸法以上");
   await expect(primary).toContainText("0.0 / 0.0");
-  // 幅を7mmへ → 幅3mm不足（不足率30%）で NG 判定・不足量表示が変わる
+  // 幅を7mmへ → 幅3mm不足（不足率30%）として不足量表示が変わる
   await calculator.locator("#keepoutWidth").fill("7");
-  await expect(primary).toContainText("20%以上不足");
+  await expect(primary).toContainText("入力した目安寸法に不足（20%以上）");
   await expect(primary).toContainText("3.0 / 0.0");
 });
 

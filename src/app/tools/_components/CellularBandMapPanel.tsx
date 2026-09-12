@@ -316,7 +316,7 @@ function frequencyProperties(freqMHz: number): PropertyRow[] {
 
 function LevelDots({ level }: { level: 1 | 2 | 3 }) {
   return (
-    <span className="flex items-center gap-1" aria-label={`3段階中${level}`}>
+    <span role="img" className="flex items-center gap-1" aria-label={`3段階中${level}`}>
       {[1, 2, 3].map((step) => (
         <span
           key={step}

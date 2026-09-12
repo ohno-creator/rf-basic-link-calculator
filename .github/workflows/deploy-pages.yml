@@ -55,6 +55,10 @@ jobs:
         env:
           GITHUB_PAGES: "true"
 
+      # 配信される静的成果物そのものを、保存・印刷・相談導線まで確認する。
+      - name: Production comparison E2E
+        run: npm run test:comparison:e2e
+
       - name: Deploy to gh-pages branch
         uses: peaceiris/actions-gh-pages@v3
         with:

@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { generateDistancePowerData, simulateImprovements } from "@/lib/rf/chartData";
+import {
+  generateDistancePowerData,
+  generateReachCurveData,
+  simulateImprovements
+} from "@/lib/rf/chartData";
 import { defaultLinkBudgetInput } from "@/lib/rf/linkBudget";
+import { solveMaxDistanceM } from "@/lib/rf/linkBudgetAdvisor";
 
 describe("generateDistancePowerData", () => {
   const points = generateDistancePowerData(defaultLinkBudgetInput);
@@ -20,6 +25,37 @@ describe("generateDistancePowerData", () => {
   it("carries the sensitivity through to every point", () => {
     for (const p of points) {
       expect(p.sensitivityDbm).toBe(defaultLinkBudgetInput.receiverSensitivityDbm);
+    }
+  });
+});
+
+describe("generateReachCurveData", () => {
+  const maxReachM = solveMaxDistanceM(defaultLinkBudgetInput);
+  const points = generateReachCurveData(defaultLinkBudgetInput, maxReachM);
+
+  it("距離に対してリンクマージンが単調減少する", () => {
+    for (let i = 1; i < points.length; i += 1) {
+      expect(points[i].distanceM).toBeGreaterThan(points[i - 1].distanceM);
+      expect(points[i].linkMarginDb).toBeLessThanOrEqual(points[i - 1].linkMarginDb + 1e-6);
+    }
+  });
+
+  it("到達限界（maxReachM）を範囲に含み、その付近で margin が 0 を跨ぐ", () => {
+    expect(maxReachM).not.toBeNull();
+    const reach = maxReachM as number;
+    expect(points[0].distanceM).toBeLessThan(reach);
+    expect(points[points.length - 1].distanceM).toBeGreaterThan(reach);
+    const before = [...points].reverse().find((p) => p.distanceM <= reach);
+    const after = points.find((p) => p.distanceM >= reach);
+    expect(before && before.linkMarginDb).toBeGreaterThanOrEqual(0);
+    expect(after && after.linkMarginDb).toBeLessThanOrEqual(0.5);
+  });
+
+  it("有限値のみを返す", () => {
+    for (const p of points) {
+      expect(Number.isFinite(p.distanceM)).toBe(true);
+      expect(Number.isFinite(p.linkMarginDb)).toBe(true);
+      expect(p.distanceLabel.length).toBeGreaterThan(0);
     }
   });
 });

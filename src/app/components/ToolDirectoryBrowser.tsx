@@ -2,60 +2,11 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import {
-  Bug,
-  Activity,
-  AppWindow,
-  ArrowUpRight,
-  BookOpenCheck,
-  Box,
-  Building2,
-  Cable,
-  Calculator,
-  CircuitBoard,
-  Compass,
-  FlaskConical,
-  Gauge,
-  type LucideIcon,
-  RadioTower,
-  Repeat,
-  Ruler,
-  Search,
-  Spline,
-  Waves,
-  X
-} from "lucide-react";
+import { ArrowUpRight, FlaskConical, Search, X } from "lucide-react";
 import { Tooltip } from "@/components/Tooltip";
+import { resolveToolIcon } from "@/components/toolIconMap";
 import { toolCategories, toolDirectory, toolSubcategories, type DirectoryTool } from "@/data/toolDirectory";
-
-const iconMap: Record<string, LucideIcon> = {
-  bug: Bug,
-  gauge: Gauge,
-  calculator: Calculator,
-  waves: Waves,
-  spline: Spline,
-  building: Building2,
-  book: BookOpenCheck,
-  radio: RadioTower,
-  repeat: Repeat,
-  ruler: Ruler,
-  activity: Activity,
-  cable: Cable,
-  circuit: CircuitBoard,
-  box: Box,
-  window: AppWindow,
-  aperture: Spline,
-  satellite: RadioTower,
-  scan: Ruler,
-  radar: Waves,
-  panel: CircuitBoard,
-  refresh: Repeat,
-  antenna: RadioTower,
-  orbit: Activity,
-  grid: CircuitBoard,
-  mirror: Box,
-  compass: Compass
-};
+import { searchTools } from "@/lib/toolSearch";
 
 const researchModeGuide = [
   {
@@ -97,7 +48,7 @@ const researchTerms = [
 
 // ツールカード（密度優先: アイコン36px・padding控えめ・2行以内で収める）。
 function ToolCard({ tool }: { tool: DirectoryTool }) {
-  const Icon = iconMap[tool.icon] ?? Gauge;
+  const Icon = resolveToolIcon(tool.icon);
   return (
     <Link
       href={tool.href}
@@ -134,20 +85,16 @@ export function ToolDirectoryBrowser() {
     }
   }, []);
 
-  const normalizedQuery = query.trim().toLowerCase();
+  const trimmedQuery = query.trim();
 
-  const filtered = useMemo(
-    () =>
-      toolDirectory.filter((tool) => {
-        const matchesQuery =
-          !normalizedQuery ||
-          tool.name.toLowerCase().includes(normalizedQuery) ||
-          tool.tagline.toLowerCase().includes(normalizedQuery);
-        const matchesCategory = activeCategory === "all" || tool.category === activeCategory;
-        return matchesQuery && matchesCategory;
-      }),
-    [normalizedQuery, activeCategory]
-  );
+  // 検索は同義語辞書込みの共通実装（⌘Kパレットと同じ toolSearch）を使う。
+  // 「技適」「fresnel」「パスロス」のような name/tagline に無い語でもヒットする。
+  const filtered = useMemo(() => {
+    const base: DirectoryTool[] = trimmedQuery
+      ? searchTools(trimmedQuery, toolDirectory.length).map((result) => result.tool)
+      : toolDirectory;
+    return base.filter((tool) => activeCategory === "all" || tool.category === activeCategory);
+  }, [trimmedQuery, activeCategory]);
 
   const groups = toolCategories
     .map((category) => {

@@ -64,6 +64,29 @@ describe("solveMaxDistanceM", () => {
     expect(solved).not.toBeNull();
     expect(solved as number).toBeGreaterThan(10_000);
   });
+
+  it("targetMarginDb>0: margin=target となる距離を返す（自由空間・解析解と一致）", () => {
+    const input = freeSpaceInput();
+    const d0 = solveMaxDistanceM(input, 0) as number;
+    const target = 10;
+    const dT = solveMaxDistanceM(input, target);
+    expect(dT).not.toBeNull();
+    // 自由空間は 20dB/decade → d(T) = d0 · 10^(-T/20)
+    const analytic = d0 * 10 ** (-target / 20);
+    expect(Math.abs((dT as number) - analytic) / analytic).toBeLessThan(0.01);
+    // 解いた距離で再計算すると margin ≈ target
+    const verified = calculateLinkBudget({ ...input, distance: dT as number, distanceUnit: "m" });
+    expect(Math.abs(verified.linkMarginDb - target)).toBeLessThan(0.15);
+  });
+
+  it("targetMarginDb が大きいほど到達距離は短くなる（単調減少）", () => {
+    const input = freeSpaceInput();
+    const d0 = solveMaxDistanceM(input, 0) as number;
+    const d10 = solveMaxDistanceM(input, 10) as number;
+    const d20 = solveMaxDistanceM(input, 20) as number;
+    expect(d0).toBeGreaterThan(d10);
+    expect(d10).toBeGreaterThan(d20);
+  });
 });
 
 describe("adviseLinkBudget", () => {

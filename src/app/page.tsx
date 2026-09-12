@@ -125,20 +125,20 @@ export default function HomePage() {
           <div>
             <p className="text-sm font-semibold text-staf-dark">アンテナ・無線 基礎計算ツール</p>
             <h1 className="mt-3 max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-5xl">
-              無線設計を、目的から迷わず計算。
+              ケーブルと位置の変更を、条件から比較。
             </h1>
             <p className="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
-              通信が届くか、アンテナをどう実装するか、なぜ通信が不安定なのか。知りたいことから計算の順番を選べます。
+              ケーブルで失う分、測定で分かった差、まだ分からない条件を整理し、次の評価・相談へ進めます。社内・営業伴走β。
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-3">
-              <a href="#purpose-routes" className={buttonClasses("primary")}>
-                目的から選ぶ
+              <Link href="/tools/cable-position-comparison" className={buttonClasses("primary")}>
+                ケーブル・位置変更を比較する
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
-              </a>
+              </Link>
               <a href="#tools" className={buttonClasses("secondary")}>
-                全{toolDirectory.length}ツールを検索
+                計算ツール一覧
               </a>
-              <span className="text-xs text-slate-500">無料・登録不要／数式・単位・適用条件を明示</span>
+              <span className="text-sm text-slate-500">比較値は外部送信せず、未確認の条件も記録できます</span>
             </div>
           </div>
 
