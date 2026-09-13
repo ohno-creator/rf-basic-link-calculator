@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ケーブル付きアンテナ 設置ナビ</title>
+<!--
+  ケーブル付きアンテナ 設置ナビ（単一HTMLファイル・file://直開き対応）
+  仕様正本: docs/handoff/spec-antenna-install-navi.md v2.1
+  セクション所有制（§7）: SECTION 1/2/4 = U-5(GPT-5.6)、SECTION 3/5 = T-6(Sonnet 5)
+  共通ルール: SECTIONマーカー行・BUFFER行は両担当とも変更禁止。
+             ファイル全体への整形ツール適用・改行コード変更も禁止。
+             CDN・外部フォント・fetch/XHR禁止（file://で完全動作）。
+-->
+<!-- ===== SECTION 1: STYLE      (owner: U-5 / GPT-5.6) ===== -->
+<style>
+/* TODO(U-5): 仕様§1/§2/§4を参照して全CSSをここに実装する。
+   - system-uiフォントスタック / 左フォーム右結果の2カラム / 900px未満縦積み / 375px対応
+   - @media print: A4縦1枚の設置指示書（§4D）。フォーム・画面UIは非表示
+   - #selftest-badge の印刷非表示（@media print { #selftest-badge { display:none !important; } }）
+     ※ バッジ要素の生成はSECTION 5(T-6)が行う。マークアップには置かないこと */
+body { font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif; margin: 16px; }
+</style>
+<!-- ===== SECTION 1 END ===== -->
+</head>
+<body>
+<!-- ===== SECTION 2: MARKUP     (owner: U-5 / GPT-5.6) ===== -->
+<div id="app">
+  <h1>ケーブル付きアンテナ 設置ナビ</h1>
+  <p>（スケルトン段階）TODO(U-5): 仕様§2/§3/§4を参照してプリセットボタン・入力フォーム・結果パネル・印刷指示書のマークアップをここに実装する。</p>
+</div>
+<!-- ===== SECTION 2 END ===== -->
+
+<!-- ===== BUFFER (DO NOT EDIT: このコメント行と下の空行6行は変更禁止) ===== -->
+
+
+
+
+
+
+<!-- ===== SECTION 3: DATA+ENGINE(owner: T-6 / Sonnet 5) ===== -->
+<script>
+/*
+ * スタブエンジン（T-6a）。契約の形状は本実装（T-6b）と同一、値は仮。
+ * U-5はこのスタブを相手にSECTION 1/2/4を開発する（仕様§11「T-6aスタブエンジンの仕様」）。
+ * フィクスチャ分岐（判定順序に意味あり。仕様§11の5フィクスチャ）:
+ *   1. environment==="cabinet"                         → P1相当（highlight非null・extension非null qty1）
+ *   2. band==="b3500" && method==="5g" && metal_direct → 範囲外行（valueDb:null）
+ *   3. surface==="metal_direct"                        → extension qty2＋W7/W13（highlight null）
+ *   4. surface==="metal_spacer"                        → レンジ行（rangeDb非null）
+ *   5. それ以外                                        → P3相当（警告0件・rows空・0dB）
+ */
+(function () {
+  "use strict";
+
+  var CONFIG = {
+    company: "当社",
+    extensionModels: { ext3: "1702-004A", ext10: "1702-013A" },
+    categoryNames: { single: "小型シングル", mimo: "小型MIMO一体型", g5: "5G Sub6対応MIMO" }
+  };
+
+  var PRESETS = [
+    {
+      id: "p1", name: "屋外遠隔監視BOX（太陽光・駐車場）",
+      input: { method: "single", environment: "cabinet", surface: "metal_direct", distance: "ext3", band: "b900", mimoSpacingOk: null }
+    },
+    {
+      id: "p2", name: "屋外ポール型・長距離延長（河川監視・農業IoT等）",
+      input: { method: "mimo", environment: "outdoor", surface: "nonmetal", distance: "ext10", band: "b800", mimoSpacingOk: false }
+    },
+    {
+      id: "p3", name: "屋内ルーター（事務所）",
+      input: { method: "single", environment: "indoor", surface: "nonmetal", distance: "std", band: "b2000", mimoSpacingOk: null }
+    }
+  ];
+
+  var DISCLAIMER = "本ナビの数値は当社実測データ（アンテナ放射効率・ケーブル減衰量）に基づく参考値です。実環境は反射・遮蔽等により変動します。必ず仮設置で通信品質を確認してから本固定してください。";
+  var LEGEND = "●実測参考値／◐換算目安／○一般的な目安";
+  var FOOTER = "圏内/圏外の判定は本ナビでは行いません。仮設置での電測確認が最終判断です。";
+
+  var BASE_CHECKLIST = [
+    { id: "c1", text: "アンテナは縦向き（長手方向を地面と垂直・ケーブル下出し）" },
+    { id: "c2", text: "できるだけ高所・見通しの良い場所" },
+    { id: "c3", text: "ケーブル：コネクタ直後2cm直進・曲げ半径2.1cm以上・余長は直径12cm巻き" },
+    { id: "c4", text: "SMAトルク6〜10kgf・cm（トルクレンチ使用）・ピンに触れない" },
+    { id: "c5", text: "仮設置で通信品質を確認してから本固定" },
+    { id: "c6", text: "電測値を下欄に記録（設置前後）" },
+    { id: "c7", text: "記入後は本紙を撮影し施工報告に添付" }
+  ];
+
+  function echo(input) {
+    return [
+      { label: "通信方式", value: String(input.method) },
+      { label: "設置環境", value: String(input.environment) },
+      { label: "設置面", value: String(input.surface) },
+      { label: "距離", value: String(input.distance) },
+      { label: "主要バンド", value: String(input.band) },
+      { label: "MIMO間隔20cm", value: String(input.mimoSpacingOk) }
+    ];
+  }
+
+  function baseResult(input) {
+    return {
+      product: {
+        category: CONFIG.categoryNames.single,
+        freqRange: "814–960 / 1428–2170MHz",
+        cableLengths: ["2.5m", "5m"],
+        cableAdvice: "良好地点に届く最短を選ぶ（余長最小）",
+        mounting: ["両面テープ（付属）", "M4ねじ"],
+        extension: null,
+        remarks: []
+      },
+      budget: {
+        rows: [],
+        totalText: "設置起因の損失なし（0dB）",
+        highlight: null,
+        footer: FOOTER
+      },
+      warnings: [],
+      checklist: BASE_CHECKLIST.slice(),
+      print: { measurementFields: ["RSRP", "RSRQ", "SINR", "RSSI(参考)"] },
+      meta: { disclaimer: DISCLAIMER, legend: LEGEND, inputEcho: echo(input) }
+    };
+  }
+
+  function compute(input) {
+    if (!input || typeof input !== "object") { throw new Error("input must be an object"); }
+    var r = baseResult(input);
+
+    // フィクスチャ1: 盤内（P1相当）
+    if (input.environment === "cabinet") {
+      r.product.mounting = ["ネオジム磁石", "M4ねじ"];
+      r.product.extension = { label: "低損失防水延長3m", model: CONFIG.extensionModels.ext3, lossText: "約−2.0dB@900MHz ●", quantity: 1 };
+      r.budget.rows = [
+        { id: "metal", label: "金属直貼りペナルティ（900MHz帯）", valueDb: -4, rangeDb: null, valueText: "約−4dB", cls: "measured", note: "実測は小型シングル・金属板400×300mm・スペーサー無し" },
+        { id: "ext", label: "延長ケーブル損失（3m）", valueDb: -2, rangeDb: null, valueText: "約−2dB", cls: "measured", note: "@900MHz実測" }
+      ];
+      r.budget.totalText = "設置起因の損失 合計 約−6dB ●";
+      r.budget.highlight = { text: "盤内は一般に十数dB以上の遮蔽損（環境依存・一般値）。延長損 約−2dB を払って外に出す方が大幅に有利です。" };
+      r.warnings = [
+        { id: "W1", severity: "must", text: "コネクタ部はIPX6適用外。自己融着テープ＋絶縁テープで防水処理（延長先が屋外・雨がかりの場合）" },
+        { id: "W2", severity: "must", text: "排水穴に水が入らない姿勢で設置（ケーブル下向き推奨）（延長先が屋外・雨がかりの場合）" },
+        { id: "W8", severity: "must", text: "盤内アンテナは実質NG。延長ケーブルで盤外の良好地点（窓際・屋外）へ出すこと" }
+      ];
+      r.checklist = BASE_CHECKLIST.concat([
+        { id: "c8", text: "アンテナを盤外の良好地点に延長ケーブルで設置した" },
+        { id: "c9", text: "周囲金属から四方5cm以上（金属面はスペーサー2〜8cm検討）" },
+        { id: "c10", text: "コネクタ防水処理（自己融着＋絶縁テープ）・排水穴に水が入らない姿勢" }
+      ]);
+      return r;
+    }
+
+    // フィクスチャ2: 実測範囲外（5G＋3.5GHz帯＋金属直貼り）
+    if (input.band === "b3500" && input.method === "5g" && input.surface === "metal_direct") {
+      r.product.category = CONFIG.categoryNames.g5;
+      r.product.freqRange = "617–6000MHz";
+      r.product.cableLengths = ["1m", "2.5m", "5m"];
+      r.product.mounting = ["ネオジム磁石", "M4ねじ"];
+      r.budget.rows = [
+        { id: "metal", label: "金属直貼りペナルティ（3.5GHz帯）", valueDb: null, rangeDb: null, valueText: "実測範囲外（〜2.17GHzまで実測）", cls: "general", note: "高周波では傾向が異なるため必ず仮設置で確認" }
+      ];
+      r.budget.totalText = "合計 0dB＋実測範囲外の項目あり（数値化不可、必ず仮設置で確認） ○";
+      return r;
+    }
+
+    // フィクスチャ3: 金属直貼り（盤内以外）
+    if (input.surface === "metal_direct") {
+      r.product.category = CONFIG.categoryNames.mimo;
+      r.product.mounting = ["ネオジム磁石", "M4ねじ"];
+      r.product.extension = { label: "低損失防水延長10m", model: CONFIG.extensionModels.ext10, lossText: "約−3.2dB@900MHz ●", quantity: 2 };
+      r.budget.rows = [
+        { id: "metal", label: "金属直貼りペナルティ（800MHz帯）", valueDb: -7, rangeDb: null, valueText: "約−7dB", cls: "measured", note: "実測は小型シングルによる傾向値" },
+        { id: "ext", label: "延長ケーブル損失（10m）", valueDb: -3.0, rangeDb: null, valueText: "約−3.0dB（◐換算）", cls: "converted", note: "L(f)=L900×√(f/0.9GHz)" }
+      ];
+      r.budget.totalText = "設置起因の損失 合計 約−10dB ◐";
+      r.warnings = [
+        { id: "W7", severity: "recommend", text: "20cm確保不可→一体型MIMO推奨。代替：高さをずらす／平行にならないよう角度を変える" },
+        { id: "W13", severity: "recommend", text: "延長ケーブルは系統ごとに1本＝合計2本必要。2本は同一長で揃えること" }
+      ];
+      r.checklist = BASE_CHECKLIST.concat([
+        { id: "c9", text: "周囲金属から四方5cm以上（金属面はスペーサー2〜8cm検討）" },
+        { id: "c11", text: "間隔20cm確保（不可なら一体型MIMOを使用）" }
+      ]);
+      return r;
+    }
+
+    // フィクスチャ4: 金属面＋スペーサー（レンジ表示）
+    if (input.surface === "metal_spacer") {
+      r.product.mounting = ["ネオジム磁石", "M4ねじ"];
+      r.budget.rows = [
+        { id: "metal_spacer", label: "金属面＋スペーサー（900MHz帯）", valueDb: null, rangeDb: [0, -4], valueText: "0〜約−4dB（軽減効果の定量実測なし）", cls: "general", note: "スペーサー厚2〜8cm目安。仮設置で通信品質確認" }
+      ];
+      r.budget.totalText = "設置起因の損失 合計 約0〜−4dB ○";
+      r.warnings = [
+        { id: "W4", severity: "recommend", text: "スペーサー厚2〜8cm目安（環境依存）。仮設置で通信品質確認" }
+      ];
+      r.checklist = BASE_CHECKLIST.concat([
+        { id: "c9", text: "周囲金属から四方5cm以上（金属面はスペーサー2〜8cm検討）" }
+      ]);
+      return r;
+    }
+
+    // フィクスチャ5: 既定（P3相当・警告0件）
+    return r;
+  }
+
+  window.NAVI_ENGINE = {
+    VERSION: "stub-0.1.0",
+    CONFIG: CONFIG,
+    PRESETS: PRESETS,
+    compute: compute
+  };
+})();
+</script>
+<!-- ===== SECTION 3 END ===== -->
+
+<!-- ===== BUFFER (DO NOT EDIT: このコメント行と下の空行6行は変更禁止) ===== -->
+
+
+
+
+
+
+<!-- ===== SECTION 4: UI-BINDING (owner: U-5 / GPT-5.6) ===== -->
+<script>
+/* TODO(U-5): 仕様§3/§4/§7を参照して実装する。
+   - フォーム→inputオブジェクト→ try { NAVI_ENGINE.compute(input) } catch { 劣化動作(§1) } →結果パネル描画
+   - UIはResultのみを描画（CONFIG・データ定数を直接参照しない）。dB値表示はvalueTextのみ使用
+   - budget.highlightは表の直下の独立コールアウト。warnings/rows/checklistは返却順のまま
+   - プリセット: NAVI_ENGINE.PRESETS をフォームへ反映→再計算（手動変更フラグをリセット）
+   - 連動ルール(§3): 方式→バンド既定値 / b3500はdisabled制御 / MIMO間隔の表示切替
+   - 現場名・印刷日付はUIローカル状態（Result外の唯一の例外）。印刷ボタン→window.print() */
+</script>
+<!-- ===== SECTION 4 END ===== -->
+
+<!-- ===== BUFFER (DO NOT EDIT: このコメント行と下の空行6行は変更禁止) ===== -->
+
+
+
+
+
+
+<!-- ===== SECTION 5: SELFTEST   (owner: T-6 / Sonnet 5) ===== -->
+<script>
+/*
+ * SELFTEST（T-6）。スタブ段階（VERSIONが"stub"で始まる間）は検証をスキップし
+ * STUB MODEバッジのみ強制表示する（仕様§8「スタブ段階の挙動」）。
+ * 本実装（T-6b）で全域性1008通り・不変条件・プリセットスナップショット検証を有効化する。
+ */
+(function () {
+  "use strict";
+  var badge = document.createElement("div");
+  badge.id = "selftest-badge";
+  badge.style.cssText = "position:fixed;right:8px;bottom:8px;padding:4px 10px;font-size:12px;border-radius:4px;z-index:9999;";
+  var v = (window.NAVI_ENGINE && window.NAVI_ENGINE.VERSION) || "";
+  if (v.indexOf("stub") === 0) {
+    badge.textContent = "STUB MODE（エンジン本実装前）";
+    badge.style.background = "#b45309";
+    badge.style.color = "#fff";
+    document.body.appendChild(badge);
+    console.info("[SELFTEST] stub engine (" + v + ") — 検証スキップ");
+    return;
+  }
+  // TODO(T-6b): 全域性1008通り・不変条件・スナップショット検証をここに実装。
+  // 成功時: location.hashに"selftest"を含む場合のみバッジ表示。失敗時: 赤バッジ強制表示。
+  badge.textContent = "SELFTEST 未実装";
+  badge.style.background = "#dc2626";
+  badge.style.color = "#fff";
+  document.body.appendChild(badge);
+})();
+</script>
+<!-- ===== SECTION 5 END ===== -->
+</body>
+</html>
