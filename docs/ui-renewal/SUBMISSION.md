@@ -1,10 +1,10 @@
 # UI刷新 ローカル提出
 
-**判定: 確認済み範囲のレビュー候補。公開元ソースブランチへの反映対象であり、GitHub Pagesの公開完了版や依頼全体の全操作検証完了版ではない。**
+**判定: 確認済み範囲のレビュー候補。公開元ソースブランチへ反映済みであり、GitHub Pagesの公開完了版や依頼全体の全操作検証完了版ではない。**
 
 作業正本: `/Users/pc141/Documents/RF Basic Link Calculator/.ui-renewal-20260913/app`
 
-基底: `9aab9eb5635afd08327b2069542746f3a4344562`（公開元）。基底との差は追跡53ファイル＋新規E2E 1ファイルで、提出manifestの全ハッシュと一致。元チェックアウトの切替、reset、stash、commitは実施せず、元の未コミット・未追跡23ファイルは最終SHA256照合で変更0件。`src/lib/rf/**` の変更も0件。ユーザーの追加指示により、この検証済み差分と提出記録を独立cloneから `feature/reach-distance-ui` へコミット・pushする。Pagesデプロイは別操作として実施しない。
+基底: `9aab9eb5635afd08327b2069542746f3a4344562`（公開元）。基底との差は追跡53ファイル＋新規E2E 1ファイルで、提出manifestの全ハッシュと一致。元チェックアウトの切替、reset、stash、commitは実施せず、元の未コミット・未追跡23ファイルは最終SHA256照合で変更0件。`src/lib/rf/**` の変更も0件。ユーザーの追加指示により、独立cloneからUIソースコミット `fe1e4c7780808d0358b7d44e41e68570bfb35967` を `feature/reach-distance-ui` へfast-forward push済み。Pagesデプロイは別操作として実施していない。
 
 ## 起動
 

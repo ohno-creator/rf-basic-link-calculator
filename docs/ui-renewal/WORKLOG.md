@@ -162,3 +162,8 @@ E2E91591は120秒webServer timeoutでexit1終了。ブラウザテスト本体�
 - ユーザーの追加指示でcommit・pushを許可範囲へ追加。元チェックアウトの `.git` はこのセッションから書き込み禁止で実worktree作成が拒否されたため、権限回避はせず `/private/tmp` の独立cloneでコミットする経路へ切り替えた。
 - リモートを再取得し、公開成果物 `gh-pages` の記録とActions成功履歴から公開元を `feature/reach-distance-ui` の `9aab9eb5635afd08327b2069542746f3a4344562` と再確認。完成版の基底と一致する。
 - manifest固定の追跡53ファイル＋新規E2E 1ファイルと `docs/ui-renewal/` の提出記録だけを移す。通常のfast-forward pushを使い、元チェックアウト、`main`、リモート既定ブランチへは触れない。現在のworkflowでは同ブランチへの通常pushでPagesデプロイは起動しない。
+
+## 05:21 commit・push完了
+- 独立cloneでlint、型検査、Vitest 80ファイル768件、Pages静的build 68ページを再実行し、すべて成功。manifestの54コードファイルは全SHA256一致、余分・欠落0。
+- UIソースと提出記録を `fe1e4c7780808d0358b7d44e41e68570bfb35967`（親 `9aab9eb5635afd08327b2069542746f3a4344562`）としてコミットし、`feature/reach-distance-ui` へfast-forward push。GitHub上のbranch refとcommitを照合した。
+- 同SHAを対象とするActions実行は0件。workflowのpush対象外ブランチなのでGitHub Pagesは未デプロイ。元チェックアウトの作業ファイルは変更していない。
