@@ -373,7 +373,13 @@ export function LinkBudgetPanel({ input, errors, onChange }: LinkBudgetPanelProp
                     : nextUnit === "km"
                       ? input.distance / 1000
                       : input.distance * 1000;
-                onChange({ ...input, distanceUnit: nextUnit, distance: Number(converted.toFixed(3)) });
+                onChange({
+                  ...input,
+                  distanceUnit: nextUnit,
+                  distance: Number.isFinite(converted)
+                    ? Number.parseFloat(converted.toPrecision(15))
+                    : converted
+                });
               }
             }}
             min={distanceMin}

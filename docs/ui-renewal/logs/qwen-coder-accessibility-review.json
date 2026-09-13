@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-09-14T01:48:00+09:00",
+  "preflight": {
+    "result": "rejected before model invocation",
+    "reason": "17 files totaled 325038 bytes and exceeded the delegate tool 120000 byte limit",
+    "elapsedModelSeconds": 0
+  },
+  "run": {
+    "id": "20260914-014601-ollama",
+    "backend": "ollama",
+    "model": "qwen3-coder:30b",
+    "elapsedSeconds": 103.648,
+    "promptEvalCount": 31300,
+    "evalCount": 314,
+    "timedOut": false,
+    "changedFiles": [],
+    "filesActuallyProvided": [
+      "src/components/MetricCard.tsx",
+      "src/components/Stat.tsx",
+      "src/components/ResultBar.tsx",
+      "src/components/ToolColumnCard.tsx",
+      "src/components/DiagramExportButton.tsx",
+      "src/app/components/ToolDirectoryBrowser.tsx",
+      "src/app/tools/_components/PropagationExplorer.tsx",
+      "src/app/tools/_components/ShadowingMarginPanel.tsx",
+      "src/app/tools/_components/LteSignalMetricsPanel.tsx"
+    ]
+  },
+  "resultSummary": "No concrete class-conflict defect was identified in the provided files.",
+  "adoption": {
+    "accepted": "No additional change was made because the review identified no concrete defect in the nine provided files.",
+    "rejected": [
+      "The claim that all listed files contain no logic changes was broader than the nine files actually provided and lacked a base diff.",
+      "The claim that WCAG requirements are satisfied and axe warnings did not occur was unsupported because the reviewer did not run a browser or axe."
+    ]
+  }
+}

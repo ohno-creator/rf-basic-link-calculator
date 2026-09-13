@@ -1,0 +1,47 @@
+{
+  "recordedAt": "2026-09-14T00:32:01+09:00",
+  "target": "GitHub Pages basePath static export at http://127.0.0.1:4173/rf-basic-link-calculator/",
+  "browser": "Chrome via computer-use session",
+  "checks": [
+    {
+      "route": "field-strength",
+      "conversion": "10 m to 0.01 km",
+      "resultBefore": "0.548 V/m",
+      "resultAfter": "0.548 V/m",
+      "passed": true
+    },
+    {
+      "route": "far-field-distance",
+      "conversion": "100 mm to 0.1 m",
+      "resultBefore": "37.5 cm",
+      "resultAfter": "37.5 cm",
+      "passed": true
+    },
+    {
+      "route": "battery-life",
+      "conversion": "1 hour to 60 minutes",
+      "resultBefore": "34.1 years",
+      "resultAfter": "34.1 years",
+      "viewport": "390x844",
+      "horizontalLayout": "input and unit select remained within the viewport",
+      "passed": true
+    },
+    {
+      "route": "rf-basic-link-calculator",
+      "mode": "expert quick controls, iot_hata_calibrated",
+      "conversion": "1234.5 m to 1.2345 km",
+      "resultBefore": "link margin +28.5 dB, received power -91.5 dBm",
+      "resultAfter": "link margin +28.5 dB, received power -91.5 dBm",
+      "passed": true
+    },
+    {
+      "route": "ncu-below-ground",
+      "conversion": "300 m to 0.3 km",
+      "resultBefore": "standard judgement difficult, margin -3.9 dB",
+      "resultAfter": "standard judgement difficult, margin -3.9 dB",
+      "passed": true
+    }
+  ],
+  "calculationFunctionsChanged": false,
+  "playwrightExecution": "Not used for these checks; the existing Chromium MachPort limitation remains."
+}

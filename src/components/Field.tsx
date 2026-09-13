@@ -31,6 +31,10 @@ type FieldCommonProps = {
   /** レンジスライダー併設（min/max指定時のみ）。 */
   showSlider?: boolean;
   error?: string;
+  /** 範囲外を自動補正せず、画面側のエラーで扱う場合はfalse。 */
+  clampOnBlur?: boolean;
+  /** 同値プリセットも明示的に復元するための世代番号。 */
+  resetKey?: number;
 };
 
 type FieldProps =
@@ -57,7 +61,9 @@ export function Field(props: FieldProps) {
     max,
     step,
     showSlider = false,
-    error
+    error,
+    clampOnBlur = true,
+    resetKey
   } = props;
 
   // nullable は空欄=null。内部 NumberInput は number(NaN=空) で扱い、境界で null と相互変換する。
@@ -93,12 +99,15 @@ export function Field(props: FieldProps) {
         <span className="mt-1 block text-xs leading-relaxed text-slate-500">{help}</span>
       ) : null}
       {description ? (
-        <span className="mt-1 block text-xs leading-relaxed text-slate-500">{description}</span>
+        <span id={`${id}-description`} className="mt-1 block text-xs leading-relaxed text-slate-500">{description}</span>
       ) : null}
 
       <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/40">
         <NumberInput
+          key={resetKey}
           id={id}
+          clampOnBlur={clampOnBlur}
+          ariaDescribedBy={[description ? `${id}-description` : "", error ? `${id}-error` : ""].filter(Boolean).join(" ") || undefined}
           className="min-w-0 flex-1 px-3 py-2.5 text-base font-semibold text-slate-950 outline-none"
           value={numericValue}
           min={min}
@@ -110,7 +119,7 @@ export function Field(props: FieldProps) {
         />
         {unitSelect ? (
           <select
-            className="min-w-20 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-600 outline-none focus:bg-white"
+            className="min-w-0 w-28 max-w-[45%] shrink-0 border-l border-slate-200 bg-slate-50 px-2 text-sm font-semibold text-slate-600 outline-none focus:bg-white"
             value={unitSelect.value}
             onChange={(event) => unitSelect.onChange(event.target.value)}
             aria-label={unitSelect.ariaLabel ?? `${label}の単位`}
@@ -144,7 +153,7 @@ export function Field(props: FieldProps) {
       {example || error ? (
         <span className="mt-1 flex flex-wrap justify-between gap-2 text-xs">
           {example ? <span className="text-slate-500">例: {example}</span> : <span />}
-          {error ? <span className="font-medium text-rose-700">{error}</span> : null}
+          {error ? <span id={`${id}-error`} className="font-medium text-rose-700">{error}</span> : null}
         </span>
       ) : null}
     </label>

@@ -1,0 +1,22 @@
+{
+  "id": "20260913-214417-ollama",
+  "backend": "ollama",
+  "model": "qwen3-coder:30b",
+  "mode": "chat",
+  "ok": true,
+  "elapsedMs": 12402,
+  "queuedMs": 0,
+  "exitCode": 0,
+  "priority": "night",
+  "timedOut": false,
+  "changedFiles": [],
+  "warnings": [],
+  "task": "司令塔GPT-6。変更前の共通NumberInputだけを読み取りレビューしてください。UI刷新前に保持すべき挙動と、空欄・不正値・外部リセットの境界テストを各3点以内。コードに基づく場所/再現条件/影響/修正案で記載。実行・画面確認はしていないと明記。ファイル編集は禁止。入力消去を0にしない、未入力結果を有効な計算と誤認しないことが目的。仕様上のpreserveとinvalidの差を踏まえ、計算関数は変更しない。",
+  "result": "### 結論\n\n`NumberInput` コンポーネントは、入力途中の文字列を保持し、離脱時に min/max でクランプする仕様である。空欄・不正値・外部リセットの境界テストにおいて、以下の挙動が確認される。\n\n---\n\n### レビュー結果（共通NumberInput）\n\n#### 1. 空欄時の挙動（preserve）\n- **場所**：`handleChange` と `handleBlur` の処理\n- **再現条件**：入力欄を空にし、離脱する\n- **影響**：`emptyBehavior=\"preserve\"` 時、直前値が復元されるが、未入力状態は計算結果として誤認されない\n- **修正案**：現状で問題なし。未入力は `draft` に空文字を設定し、`onChange` に NaN を渡さない\n\n#### 2. 不正値（NaN）の挙動\n- **場所**：`handleChange` と `handleBlur`\n- **再現条件**：「abc」など非数値を入力し、離脱する\n- **影響**：`emptyBehavior=\"invalid\"` 時に NaN が親コンポーネントへ通知されるが、計算関数は変更しない\n- **修正案**：現状で問題なし。`commitInvalid()` により NaN が正しく伝搬される\n\n#### 3. 外部リセット時の挙動\n- **場所**：`useEffect` 内の `setDraft` 処理\n- **再現条件**：親コンポーネントから `value` が変更された場合\n- **影響**：`value` が変更されると `draft` に反映されるが、入力途中の文字列は維持される\n- **修正案**：現状で問題なし。`Object.is` により値が一致しない場合のみ更新される\n\n---\n\n### 補足\n\n- `NumberInput` の `emptyBehavior=\"preserve\"` は、空欄時に直前値を復元するが、未入力結果は計算結果として誤認しない。\n- `onChange` 関数は、`NaN` を渡すことで親コンポーネントにエラーを通知する仕組みであり、変更不要。\n- 入力消去を 0 にしない仕様は、編集途中の文字列を保持する設計により保たれている。",
+  "stats": {
+    "eval_count": 565,
+    "prompt_eval_count": 1663,
+    "load_ms": 4325
+  },
+  "runFile": "/Users/pc141/Documents/RF Basic Link Calculator/.claude/delegate/runs/20260913-214417-ollama.md"
+}

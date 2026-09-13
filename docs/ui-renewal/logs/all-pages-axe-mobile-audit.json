@@ -1,0 +1,11 @@
+{
+  "recordedAt": "2026-09-13T16:40:41.156Z",
+  "viewport": "390x844",
+  "registeredPages": 65,
+  "completedScans": 0,
+  "status": "chromium-launch-failure",
+  "attempts": 2,
+  "testBodyElapsedMilliseconds": 0,
+  "reason": "Chromium MachPort permission denied (1100) before each test body; first attempt also reported EMFILE from the temporary development server",
+  "failures": null
+}

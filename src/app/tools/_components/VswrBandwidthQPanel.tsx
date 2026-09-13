@@ -458,7 +458,7 @@ export function VswrBandwidthQPanel() {
                     <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                       VSWR≤{formatNumber(row.vswrLimit, 1)}
                     </span>
-                    <span className="text-xs tabular-nums text-slate-500">
+                    <span className="text-xs tabular-nums text-slate-600">
                       {Number.isFinite(row.fbwPercent) ? `${formatNumber(row.fbwPercent, 2)}%` : "—"}
                     </span>
                     <span className="text-right font-semibold tabular-nums text-slate-900">

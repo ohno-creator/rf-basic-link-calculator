@@ -400,14 +400,85 @@ export function BatteryLifePanel() {
     }
   }, [mode, chemistry, capacityMah, temperatureC, sleepCurrentUa, txCurrentMa, txDurationMs, intervalSeconds, rxCurrentMa, rxDurationMs, agingYears]);
 
-  const activeResult = mode === "expert" ? expertResult : result;
+  const capacityError =
+    !Number.isFinite(capacityMah) || capacityMah <= 0
+      ? "電池容量は0より大きい数値を入力してください。"
+      : undefined;
+  const txCurrentError =
+    !Number.isFinite(txCurrentMa) || txCurrentMa < 0
+      ? "送信電流は0以上の数値を入力してください。"
+      : undefined;
+  const txDurationError =
+    !Number.isFinite(txDurationMs) || txDurationMs < 0
+      ? "送信時間は0以上の数値を入力してください。"
+      : undefined;
+  const rxCurrentError =
+    !Number.isFinite(rxCurrentMa) || rxCurrentMa < 0
+      ? "受信電流は0以上の数値を入力してください。"
+      : undefined;
+  const rxDurationError =
+    !Number.isFinite(rxDurationMs) || rxDurationMs < 0
+      ? "受信時間は0以上の数値を入力してください。"
+      : undefined;
+  const activeDurationSeconds = (txDurationMs + rxDurationMs) / 1000;
+  const intervalError =
+    !Number.isFinite(intervalValue) || intervalValue <= 0
+      ? "動作間隔は0より大きい数値を入力してください。"
+      : Number.isFinite(activeDurationSeconds) && activeDurationSeconds > intervalSeconds
+        ? "送信時間と受信時間の合計は、動作間隔以下にしてください。"
+        : undefined;
+  const sleepCurrentError =
+    !Number.isFinite(sleepCurrentUa) || sleepCurrentUa < 0
+      ? "スリープ電流は0以上の数値を入力してください。"
+      : undefined;
+  const deratingError =
+    !Number.isFinite(deratingPercent) || deratingPercent <= 0 || deratingPercent > 100
+      ? "有効容量は0より大きく100以下の割合を入力してください。"
+      : undefined;
+  const temperatureError =
+    !Number.isFinite(temperatureC) || temperatureC < -20 || temperatureC > 60
+      ? "動作温度は-20〜60℃で入力してください。"
+      : undefined;
+  const agingError =
+    !Number.isFinite(agingYears) || agingYears < 0 || agingYears > 10
+      ? "経年期間は0〜10年で入力してください。"
+      : undefined;
+
+  const commonInputError = Boolean(
+    capacityError ||
+    txCurrentError ||
+    txDurationError ||
+    rxCurrentError ||
+    rxDurationError ||
+    intervalError ||
+    sleepCurrentError
+  );
+  const validatedStandardResult = commonInputError || deratingError ? null : result;
+  const validatedExpertResult = commonInputError || temperatureError || agingError ? null : expertResult;
+  const activeResult = mode === "expert" ? validatedExpertResult : validatedStandardResult;
+  const activeLifeYears = mode === "expert"
+    ? validatedExpertResult?.lifeYears
+    : validatedStandardResult?.lifetimeYears;
+  const chartDeratingPercent = mode === "expert" && validatedExpertResult
+    ? validatedExpertResult.tempCoeff * validatedExpertResult.pulseCoeff * 100
+    : deratingPercent;
+
+  const handleIntervalUnitChange = (nextUnit: IntervalUnit) => {
+    if (nextUnit === intervalUnit) return;
+    setIntervalValue((current) => {
+      if (!Number.isFinite(current)) return current;
+      const converted = (current * intervalFactors[intervalUnit]) / intervalFactors[nextUnit];
+      return Number.parseFloat(converted.toPrecision(15));
+    });
+    setIntervalUnit(nextUnit);
+  };
 
   const primary = {
     label: mode === "expert" ? "実効電池寿命 (エキスパート)" : "理論電池寿命",
     value: mode === "expert"
-      ? (expertResult ? (expertResult.exceedsTenYears ? "10年+" : `${formatNumber(expertResult.lifeYears, 1)}`) : "—")
-      : (result ? formatNumber(result.lifetimeYears, 1) : "—"),
-    unit: mode === "expert" && expertResult?.exceedsTenYears ? "（特性限界クランプ）" : "年"
+      ? (validatedExpertResult ? (validatedExpertResult.exceedsTenYears ? "10年+" : `${formatNumber(validatedExpertResult.lifeYears, 1)}`) : "—")
+      : (validatedStandardResult ? formatNumber(validatedStandardResult.lifetimeYears, 1) : "—"),
+    unit: mode === "expert" && validatedExpertResult?.exceedsTenYears ? "（特性限界クランプ）" : "年"
   };
 
   const applyPreset = (preset: (typeof presets)[number]) => {
@@ -423,9 +494,9 @@ export function BatteryLifePanel() {
     setMode("standard"); // プリセット適用時は標準にリセット
   };
 
-  const totalUa = result?.averageCurrentUa ?? 1;
-  const txPercent = result ? (result.txAverageCurrentUa / totalUa) * 100 : 0;
-  const rxPercent = result ? (result.rxAverageCurrentUa / totalUa) * 100 : 0;
+  const totalUa = validatedStandardResult?.averageCurrentUa ?? 1;
+  const txPercent = validatedStandardResult ? (validatedStandardResult.txAverageCurrentUa / totalUa) * 100 : 0;
+  const rxPercent = validatedStandardResult ? (validatedStandardResult.rxAverageCurrentUa / totalUa) * 100 : 0;
   const sleepPercent = Math.max(0, 100 - txPercent - rxPercent);
 
   // 化学特性別警告の表示条件
@@ -434,7 +505,7 @@ export function BatteryLifePanel() {
   const isLiSOCl2 = chemistry === "lisocl2_bobbin" || chemistry === "lisocl2_spiral";
 
   const showCR2032Warning = mode === "expert" && isCR2032 && (txCurrentMa > 10 || rxCurrentMa > 10);
-  const showPassivationWarning = mode === "expert" && isLiSOCl2 && expertResult?.passivationWarning;
+  const showPassivationWarning = mode === "expert" && isLiSOCl2 && validatedExpertResult?.passivationWarning;
   const showAlkalineWarning = mode === "expert" && isAlkaline && temperatureC <= 0;
 
   return (
@@ -493,6 +564,7 @@ export function BatteryLifePanel() {
                   emptyBehavior="invalid"
                   onChange={setTemperatureC}
                   help="電池が動作する周囲環境温度です。極端な低温は実効容量を低下させます。"
+                  error={temperatureError}
                 />
                 <Field
                   id="batteryAging"
@@ -506,33 +578,34 @@ export function BatteryLifePanel() {
                   emptyBehavior="invalid"
                   onChange={setAgingYears}
                   help="機器の運用開始前に電池が保管されていた、またはすでに消費された年数です。"
+                  error={agingError}
                 />
               </div>
             </div>
           )}
 
           <div className="mt-5 grid gap-4 sm:grid-cols-2">
-            <Field id="batteryCapacity" label="電池容量" unit="mAh" value={capacityMah} min={1} step={100} emptyBehavior="invalid" onChange={setCapacityMah} help="電池データシートの公称容量です。" />
+            <Field id="batteryCapacity" label="電池容量" unit="mAh" value={capacityMah} min={1} step={100} emptyBehavior="invalid" onChange={setCapacityMah} help="電池データシートの公称容量です。" error={capacityError} />
             
             {mode === "standard" && (
-              <Field id="batteryDerate" label="有効容量 derate" unit="%" value={deratingPercent} min={1} max={100} step={1} showSlider emptyBehavior="invalid" onChange={setDeratingPercent} help="温度、自己放電、終止電圧を見込んだ使用可能容量の割合です。" />
+              <Field id="batteryDerate" label="有効容量 derate" unit="%" value={deratingPercent} min={1} max={100} step={1} showSlider emptyBehavior="invalid" onChange={setDeratingPercent} help="温度、自己放電、終止電圧を見込んだ使用可能容量の割合です。" error={deratingError} />
             )}
 
-            <Field id="batteryTxCurrent" label="送信電流" unit="mA" value={txCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setTxCurrentMa} help="送信中の代表電流です。" />
-            <Field id="batteryTxDuration" label="1回の送信時間" unit="ms" value={txDurationMs} min={0} step={1} emptyBehavior="invalid" onChange={setTxDurationMs} help="1周期内で送信状態にいる合計時間です。" />
-            <Field id="batteryRxCurrent" label="受信電流" unit="mA" value={rxCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setRxCurrentMa} help="待受ではなく、受信処理中の代表電流です。" />
-            <Field id="batteryRxDuration" label="1回の受信時間" unit="ms" value={rxDurationMs} min={0} step={1} emptyBehavior="invalid" onChange={setRxDurationMs} help="1周期内で受信状態にいる合計時間です。" />
+            <Field id="batteryTxCurrent" label="送信電流" unit="mA" value={txCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setTxCurrentMa} help="送信中の代表電流です。" error={txCurrentError} />
+            <Field id="batteryTxDuration" label="1回の送信時間" unit="ms" value={txDurationMs} min={0} step={1} emptyBehavior="invalid" onChange={setTxDurationMs} help="1周期内で送信状態にいる合計時間です。" error={txDurationError} />
+            <Field id="batteryRxCurrent" label="受信電流" unit="mA" value={rxCurrentMa} min={0} step={1} emptyBehavior="invalid" onChange={setRxCurrentMa} help="待受ではなく、受信処理中の代表電流です。" error={rxCurrentError} />
+            <Field id="batteryRxDuration" label="1回の受信時間" unit="ms" value={rxDurationMs} min={0} step={1} emptyBehavior="invalid" onChange={setRxDurationMs} help="1周期内で受信状態にいる合計時間です。" error={rxDurationError} />
             <Field
               id="batteryInterval"
               label="動作間隔"
               value={intervalValue}
-              min={0.001}
-              step={1}
+              min={0.001 / intervalFactors[intervalUnit]}
+              step={1 / intervalFactors[intervalUnit]}
               emptyBehavior="invalid"
               onChange={setIntervalValue}
               unitSelect={{
                 value: intervalUnit,
-                onChange: (value) => setIntervalUnit(value as IntervalUnit),
+                onChange: (value) => handleIntervalUnitChange(value as IntervalUnit),
                 ariaLabel: "動作間隔の単位",
                 options: [
                   { value: "seconds", label: "秒" },
@@ -541,28 +614,35 @@ export function BatteryLifePanel() {
                   { value: "days", label: "日" }
                 ]
               }}
-              help="送信・受信を1回行う周期です。"
+              help="送信・受信を1回行う周期です。単位を切り替えても実際の周期は変わりません。"
+              error={intervalError}
             />
-            <Field id="batterySleepCurrent" label="スリープ電流" unit="µA" value={sleepCurrentUa} min={0} step={0.1} emptyBehavior="invalid" onChange={setSleepCurrentUa} help="低消費電力状態のベース電流です。" />
+            <Field id="batterySleepCurrent" label="スリープ電流" unit="µA" value={sleepCurrentUa} min={0} step={0.1} emptyBehavior="invalid" onChange={setSleepCurrentUa} help="低消費電力状態のベース電流です。" error={sleepCurrentError} />
           </div>
         </Card>
 
         <div id="battery-primary-result" className="space-y-4 lg:sticky lg:top-20">
-          <ResultBar primary={primary} />
+          <ResultBar
+            primary={primary}
+            assumption={mode === "expert"
+              ? "選択した電池化学特性、温度、経年、パルス負荷を含む推定値です。実機の終止電圧と送信波形で確認してください。"
+              : "一定周期の平均電流から求める理論値です。自己放電とパルス時の電圧降下は別に確認してください。"}
+            next={activeResult ? { href: "/tools/lora-airtime", label: "LoRaの場合：送信時間を確認" } : undefined}
+          />
           
           {mode === "standard" && (
             <>
-              {result ? (
+              {validatedStandardResult ? (
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <MetricCard label="平均電流" value={formatNumber(result.averageCurrentUa, 2)} unit="µA" />
-                  <MetricCard label="送信の平均寄与" value={formatNumber(result.txAverageCurrentUa, 2)} unit="µA" />
-                  <MetricCard label="受信の平均寄与" value={formatNumber(result.rxAverageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="平均電流" value={formatNumber(validatedStandardResult.averageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="送信の平均寄与" value={formatNumber(validatedStandardResult.txAverageCurrentUa, 2)} unit="µA" />
+                  <MetricCard label="受信の平均寄与" value={formatNumber(validatedStandardResult.rxAverageCurrentUa, 2)} unit="µA" />
                   <MetricCard label="有効容量" value={formatNumber(capacityMah * deratingPercent / 100, 0)} unit="mAh" />
                 </div>
               ) : (
                 <Callout tone="danger">入力値、derate、動作時間と周期の関係を確認してください。</Callout>
               )}
-              {result?.exceedsTenYears ? (
+              {validatedStandardResult?.exceedsTenYears ? (
                 <Callout tone="caution" title="10年超は電池特性が支配的">
                   自己放電、温度、電圧降下、保管劣化を含む実電池データで上限を確認してください。
                 </Callout>
@@ -574,13 +654,13 @@ export function BatteryLifePanel() {
 
           {mode === "expert" && (
             <>
-              {expertResult ? (
+              {validatedExpertResult ? (
                 <div className="space-y-4">
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <MetricCard label="平均動作電流" value={formatNumber(expertResult.averageCurrentUa, 2)} unit="µA" />
-                    <MetricCard label="実効容量（補正後）" value={formatNumber(expertResult.effectiveCapacityMah, 0)} unit="mAh" />
-                    <MetricCard label="温度係数 (tempCoeff)" value={formatNumber(expertResult.tempCoeff, 2)} />
-                    <MetricCard label="パルス係数 (pulseCoeff)" value={formatNumber(expertResult.pulseCoeff, 2)} />
+                    <MetricCard label="平均動作電流" value={formatNumber(validatedExpertResult.averageCurrentUa, 2)} unit="µA" />
+                    <MetricCard label="実効容量（補正後）" value={formatNumber(validatedExpertResult.effectiveCapacityMah, 0)} unit="mAh" />
+                    <MetricCard label="温度係数 (tempCoeff)" value={formatNumber(validatedExpertResult.tempCoeff, 2)} />
+                    <MetricCard label="パルス係数 (pulseCoeff)" value={formatNumber(validatedExpertResult.pulseCoeff, 2)} />
                   </div>
 
                   {/* 支配要因バッジと解説 */}
@@ -588,36 +668,36 @@ export function BatteryLifePanel() {
                     <div className="flex items-center justify-between">
                       <span className="text-sm font-bold text-slate-800">寿命の支配要因</span>
                       <Badge tone={
-                        expertResult.dominantFactor === "sleep" || expertResult.dominantFactor === "tx" ? "info" :
-                        expertResult.dominantFactor === "self_discharge" ? "caution" : "danger"
+                        validatedExpertResult.dominantFactor === "sleep" || validatedExpertResult.dominantFactor === "tx" ? "info" :
+                        validatedExpertResult.dominantFactor === "self_discharge" ? "caution" : "danger"
                       }>
-                        {expertResult.dominantFactor === "sleep" ? "スリープ電流" :
-                         expertResult.dominantFactor === "tx" ? "送信電流" :
-                         expertResult.dominantFactor === "self_discharge" ? "自己放電" :
-                         expertResult.dominantFactor === "temperature" ? "温度ロス" : "パルスロス"}
+                        {validatedExpertResult.dominantFactor === "sleep" ? "スリープ電流" :
+                         validatedExpertResult.dominantFactor === "tx" ? "送信電流" :
+                         validatedExpertResult.dominantFactor === "self_discharge" ? "自己放電" :
+                         validatedExpertResult.dominantFactor === "temperature" ? "温度ロス" : "パルスロス"}
                       </Badge>
                     </div>
                     <p className="text-xs leading-relaxed text-slate-600">
-                      {expertResult.dominantFactor === "sleep" && "待機（スリープ）時間が長いため、ベースとなるスリープ電流が主な消費要素となっています。"}
-                      {expertResult.dominantFactor === "tx" && "送信頻度が高いため、送信時の消費電力が主な寿命決定要因となっています。"}
-                      {expertResult.dominantFactor === "self_discharge" && "動作電流が非常に小さいため、電池自体の化学特性である経年自己放電が最大の容量消失要因となっています。"}
-                      {expertResult.dominantFactor === "temperature" && "過酷な周囲温度環境（特に低温）による電解液活性の低下と実効容量低下が支配的です。"}
-                      {expertResult.dominantFactor === "pulse" && "送信・受信時の大電流パルスによる電圧降下と内部抵抗損失が支配的な容量低下要因です。"}
+                      {validatedExpertResult.dominantFactor === "sleep" && "待機（スリープ）時間が長いため、ベースとなるスリープ電流が主な消費要素となっています。"}
+                      {validatedExpertResult.dominantFactor === "tx" && "送信頻度が高いため、送信時の消費電力が主な寿命決定要因となっています。"}
+                      {validatedExpertResult.dominantFactor === "self_discharge" && "動作電流が非常に小さいため、電池自体の化学特性である経年自己放電が最大の容量消失要因となっています。"}
+                      {validatedExpertResult.dominantFactor === "temperature" && "過酷な周囲温度環境（特に低温）による電解液活性の低下と実効容量低下が支配的です。"}
+                      {validatedExpertResult.dominantFactor === "pulse" && "送信・受信時の大電流パルスによる電圧降下と内部抵抗損失が支配的な容量低下要因です。"}
                     </p>
                   </div>
 
                   {/* 並記情報 */}
-                  {result && (
+                  {validatedStandardResult && (
                     <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-card">
                       <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider">シンプル版理論寿命との比較</h4>
                       <div className="mt-2 grid grid-cols-2 gap-4 text-center">
                         <div>
                           <p className="text-xs text-slate-500">シンプル理論寿命</p>
-                          <p className="mt-1 text-lg font-bold text-slate-700">{formatNumber(result.lifetimeYears, 1)} 年</p>
+                          <p className="mt-1 text-lg font-bold text-slate-700">{formatNumber(validatedStandardResult.lifetimeYears, 1)} 年</p>
                         </div>
                         <div>
                           <p className="text-xs text-slate-500">エキスパート実効寿命</p>
-                          <p className="mt-1 text-lg font-bold text-staf">{expertResult.exceedsTenYears ? "10年+" : `${formatNumber(expertResult.lifeYears, 1)} 年`}</p>
+                          <p className="mt-1 text-lg font-bold text-staf">{validatedExpertResult.exceedsTenYears ? "10年+" : `${formatNumber(validatedExpertResult.lifeYears, 1)} 年`}</p>
                         </div>
                       </div>
                     </div>
@@ -649,7 +729,7 @@ export function BatteryLifePanel() {
       </section>
 
       {/* 平均電流・消費内訳の内訳 */}
-      {mode === "standard" && result && (
+      {mode === "standard" && validatedStandardResult && (
         <Card as="figure" padding="lg" className="mt-6">
           <figcaption className="text-base font-bold text-slate-950">平均電流の内訳</figcaption>
           <div className="mt-4 flex h-10 overflow-hidden rounded-lg border border-slate-200" aria-label="平均電流の内訳バー">
@@ -661,15 +741,15 @@ export function BatteryLifePanel() {
         </Card>
       )}
 
-      {mode === "expert" && expertResult && (
+      {mode === "expert" && validatedExpertResult && (
         <Card as="figure" padding="lg" className="mt-6">
           <figcaption className="text-base font-bold text-slate-950">消費電力（等価自己放電含む）の内訳積み上げ</figcaption>
           <p className="mt-1 text-xs text-slate-500">電池の経年自己放電を等価電流（µA）として加算した、全エネルギーの消費内訳です。</p>
           <ExpertConsumptionBar
-            txUa={expertResult.txAverageCurrentUa}
-            rxUa={expertResult.rxAverageCurrentUa}
-            sleepUa={expertResult.sleepAverageCurrentUa}
-            selfDischargeUa={expertResult.selfDischargeEquivalentUa}
+            txUa={validatedExpertResult.txAverageCurrentUa}
+            rxUa={validatedExpertResult.rxAverageCurrentUa}
+            sleepUa={validatedExpertResult.sleepAverageCurrentUa}
+            selfDischargeUa={validatedExpertResult.selfDischargeEquivalentUa}
           />
         </Card>
       )}
@@ -682,7 +762,7 @@ export function BatteryLifePanel() {
           exportName="battery-life-duty-curve"
           caption={
             activeResult
-              ? `条件: 容量=${formatNumber(capacityMah, 0)}mAh / 送信 ${formatNumber(txCurrentMa, 0)}mA×${formatNumber(txDurationMs, 0)}ms / スリープ ${formatNumber(sleepCurrentUa, 1)}µA ─ 現在の運用点 ${formatNumber(mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0), 1)}年（${formatNumber(3600 / intervalSeconds, 2)}回/時）を丸印で表示`
+              ? `条件: 容量=${formatNumber(capacityMah, 0)}mAh / 送信 ${formatNumber(txCurrentMa, 0)}mA×${formatNumber(txDurationMs, 0)}ms / スリープ ${formatNumber(sleepCurrentUa, 1)}µA ─ 現在の運用点 ${formatNumber(activeLifeYears ?? 0, 1)}年（${formatNumber(3600 / intervalSeconds, 2)}回/時）を丸印で表示`
               : "入力値を確認してください。"
           }
         >
@@ -691,28 +771,28 @@ export function BatteryLifePanel() {
               <div className="hidden sm:block">
                 <BatteryLifeDutyCurve
                   capacityMah={capacityMah}
-                  deratingPercent={mode === "expert" && expertResult ? (expertResult.tempCoeff * expertResult.pulseCoeff * 100) : deratingPercent}
+                  deratingPercent={chartDeratingPercent}
                   txCurrentMa={txCurrentMa}
                   txDurationMs={txDurationMs}
                   rxCurrentMa={rxCurrentMa}
                   rxDurationMs={rxDurationMs}
                   sleepCurrentUa={sleepCurrentUa}
                   intervalSeconds={intervalSeconds}
-                  currentLifeYears={mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0)}
+                  currentLifeYears={activeLifeYears ?? 0}
                 />
               </div>
               <div className="sm:hidden">
                 <BatteryLifeDutyCurve
                   compact
                   capacityMah={capacityMah}
-                  deratingPercent={mode === "expert" && expertResult ? (expertResult.tempCoeff * expertResult.pulseCoeff * 100) : deratingPercent}
+                  deratingPercent={chartDeratingPercent}
                   txCurrentMa={txCurrentMa}
                   txDurationMs={txDurationMs}
                   rxCurrentMa={rxCurrentMa}
                   rxDurationMs={rxDurationMs}
                   sleepCurrentUa={sleepCurrentUa}
                   intervalSeconds={intervalSeconds}
-                  currentLifeYears={mode === "expert" && expertResult ? expertResult.lifeYears : (result ? result.lifetimeYears : 0)}
+                  currentLifeYears={activeLifeYears ?? 0}
                 />
               </div>
             </div>
@@ -743,4 +823,3 @@ export function BatteryLifePanel() {
     </>
   );
 }
-

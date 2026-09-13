@@ -1,0 +1,13 @@
+{
+  "id": "20260913-225134-ollama",
+  "backend": "ollama",
+  "model": "qwen3-coder:30b",
+  "elapsedMs": 74475,
+  "promptTokens": 25371,
+  "outputTokens": 496,
+  "input": "Read-only review of FSPL and noise unit conversions, guided result flow, mobile result focus, spectrum SVG hydration fix, and related E2E source.",
+  "result": "No additional code defect identified in the supplied files.",
+  "accepted": "Only the absence of a concrete additional code finding.",
+  "rejected": "Claims that Playwright, a real device, or a mobile simulator had been run. The model only read source. P0 and 100 percent labels on no-finding statements were also rejected.",
+  "changedFiles": []
+}

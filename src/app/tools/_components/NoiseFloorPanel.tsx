@@ -255,6 +255,7 @@ export function NoiseFloorPanel() {
   const [bandwidthUnit, setBandwidthUnit] = useState<BandwidthUnit>("kHz");
   const [noiseFigureDb, setNoiseFigureDb] = useState(6);
   const [requiredSnrDb, setRequiredSnrDb] = useState(-20);
+  const [resetKey, setResetKey] = useState(0);
 
   const bandwidthHz = toHz(bandwidthValue, bandwidthUnit);
 
@@ -303,6 +304,17 @@ export function NoiseFloorPanel() {
     setBandwidthValue(125);
     setBandwidthUnit("kHz");
     setRequiredSnrDb(snrDb);
+    setResetKey((key) => key + 1);
+  };
+
+  const handleBandwidthUnitChange = (nextUnit: BandwidthUnit) => {
+    if (nextUnit === bandwidthUnit) return;
+    setBandwidthValue((current) => {
+      if (!Number.isFinite(current)) return current;
+      const converted = toHz(current, bandwidthUnit) / BANDWIDTH_UNIT_FACTOR[nextUnit];
+      return Number.parseFloat(converted.toPrecision(15));
+    });
+    setBandwidthUnit(nextUnit);
   };
 
   const chipClass = (active: boolean) =>
@@ -355,6 +367,7 @@ export function NoiseFloorPanel() {
                       setBandwidthValue(preset.valueHz / 1e3);
                       setBandwidthUnit("kHz");
                     }
+                    setResetKey((key) => key + 1);
                   }}
                 >
                   {preset.label}
@@ -365,12 +378,14 @@ export function NoiseFloorPanel() {
 
           <div className="mt-5 space-y-4">
             <Field
+              resetKey={resetKey}
               id="noiseBandwidth"
               label="帯域幅 BW"
               value={bandwidthValue}
               min={0.001}
               step={bandwidthUnit === "MHz" ? 0.1 : 1}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               onChange={setBandwidthValue}
               unitSelect={{
                 value: bandwidthUnit,
@@ -379,7 +394,7 @@ export function NoiseFloorPanel() {
                   { value: "kHz", label: "kHz" },
                   { value: "MHz", label: "MHz" }
                 ],
-                onChange: (value) => setBandwidthUnit(value as BandwidthUnit),
+                onChange: (value) => handleBandwidthUnitChange(value as BandwidthUnit),
                 ariaLabel: "帯域幅の単位"
               }}
               help="ラジオの選局幅のようなものです。幅を広げるほど多くの雑音も一緒に拾うため、ノイズフロアが上がります（10倍で+10dB）。"
@@ -387,6 +402,7 @@ export function NoiseFloorPanel() {
               error={bandwidthError}
             />
             <Field
+              resetKey={resetKey}
               id="noiseFigure"
               label="雑音指数 NF"
               unit="dB"
@@ -394,13 +410,15 @@ export function NoiseFloorPanel() {
               min={0}
               max={30}
               step={0.5}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               onChange={setNoiseFigureDb}
               help="受信機の増幅回路が自分で足してしまう雑音です。高性能な受信ICで3dB前後、一般的には5〜8dB程度です。"
               example="6"
               error={noiseFigureError}
             />
             <Field
+              resetKey={resetKey}
               id="requiredSnr"
               label="所要SNR"
               unit="dB"
@@ -408,7 +426,8 @@ export function NoiseFloorPanel() {
               min={-30}
               max={40}
               step={0.5}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               onChange={setRequiredSnrDb}
               help="「雑音より何dB強ければ復調できるか」です。LoRaの拡散変調では負値＝雑音より弱い信号でも復調できます。"
               example="-20"
@@ -419,7 +438,7 @@ export function NoiseFloorPanel() {
 
         <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div id="noise-floor-primary-result">
-            <ResultBar primary={primary} />
+            <ResultBar primary={primary} assumption="290 Kの熱雑音と入力したNF・所要SNRによる目安です。実機の干渉・実装損失は含みません。" next={{ href: "/tools/simple-link-budget", label: "受信感度を使って通信余裕を確認" }} />
           </div>
 
           <Card as="section" padding="lg">
@@ -440,7 +459,7 @@ export function NoiseFloorPanel() {
                     <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                       SF{row.sf}
                     </span>
-                    <span className="text-xs tabular-nums text-slate-500">
+                    <span className="text-xs tabular-nums text-slate-600">
                       SNR {formatNumber(row.snrDb, 1)}dB
                     </span>
                     <span className="text-right font-semibold tabular-nums text-slate-900">

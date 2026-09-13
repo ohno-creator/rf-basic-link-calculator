@@ -1,0 +1,50 @@
+{
+  "recordedAt": "2026-09-14T00:47:30+09:00",
+  "target": "GitHub Pages basePath static preview",
+  "baseUrl": "http://127.0.0.1:4173/rf-basic-link-calculator/",
+  "checks": [
+    {
+      "route": "tools/battery-life/",
+      "input": "batteryCapacity empty",
+      "observed": "capacity field reported 電池容量は0より大きい数値を入力してください。 and the primary result became —",
+      "passed": true
+    },
+    {
+      "route": "tools/battery-life/",
+      "input": "batteryTxDuration 4000000 ms with interval 1 hour",
+      "observed": "interval field reported 送信時間と受信時間の合計は、動作間隔以下にしてください。 and the primary result became —",
+      "passed": true
+    },
+    {
+      "route": "tools/battery-life/",
+      "input": "restore capacity 2400 mAh and transmit duration 50 ms",
+      "observed": "validation cleared and theoretical battery life returned to 34.1 years",
+      "passed": true
+    },
+    {
+      "route": "tools/battery-life/",
+      "input": "standard result card",
+      "observed": "assumption about average-current theory and omitted self-discharge/pulse voltage drop was visible; next-action link navigated to /rf-basic-link-calculator/tools/lora-airtime",
+      "passed": true
+    },
+    {
+      "route": "tools/field-strength/",
+      "input": "30 dBm EIRP and 10 m",
+      "observed": "0.548 V/m remained visible with free-space/far-field assumption; next-action link navigated to far-field-distance with the Pages basePath",
+      "passed": true
+    },
+    {
+      "route": "tools/far-field-distance/",
+      "input": "2400 MHz and 100 mm",
+      "observed": "37.5 cm remained visible with theoretical/environment qualification; reciprocal link targeted field-strength with the Pages basePath",
+      "passed": true
+    },
+    {
+      "route": "tools/far-field-distance/",
+      "viewport": {"width": 390, "height": 844},
+      "observed": "result qualification and next-action link wrapped within the visible card without clipped text in the screenshot",
+      "passed": true
+    }
+  ],
+  "consoleAssessment": "The browser log API retains earlier tab history and extension channel errors, so it was not used as a current-page zero-error assertion for this check."
+}

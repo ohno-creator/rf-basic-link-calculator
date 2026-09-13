@@ -220,7 +220,7 @@ function DistanceField({
         <FieldHint text="地上側のゲートウェイ・基地局から、BOX付近までの水平距離です。" />
       </span>
       <span className="mt-1 block text-xs leading-relaxed text-slate-500">
-        地上側距離＝GW・基地局からBOX付近までの水平の直線距離。距離が伸びるほど電波は弱まります（自由空間では距離2倍で約6dB増）。右で単位（m/km）を切替。数値はキーボードで直接入力できます。
+        地上側距離＝GW・基地局からBOX付近までの水平の直線距離。距離が伸びるほど電波は弱まります（自由空間では距離2倍で約6dB増）。右で単位（m/km）を切り替えても実距離は変わりません。数値はキーボードで直接入力できます。
       </span>
       <span className="mt-2 flex overflow-hidden rounded-lg border border-slate-200 bg-white focus-within:border-staf/70 focus-within:ring-2 focus-within:ring-staf/40">
         <input
@@ -513,6 +513,18 @@ export function NcuBelowGroundClient() {
     setInput((current) => ({ ...current, [key]: value }));
   }
 
+  function changeDistanceUnit(nextUnit: NcuBelowGroundInput["distanceUnit"]) {
+    setInput((current) => {
+      if (current.distanceUnit === nextUnit) return current;
+      const converted = nextUnit === "km" ? current.distance / 1000 : current.distance * 1000;
+      return {
+        ...current,
+        distanceUnit: nextUnit,
+        distance: Number.isFinite(converted) ? Number.parseFloat(converted.toPrecision(15)) : converted
+      };
+    });
+  }
+
   function updateFieldMeasurement<K extends keyof NcuFieldMeasurementsInput>(
     key: K,
     value: NcuFieldMeasurementsInput[K]
@@ -641,7 +653,7 @@ export function NcuBelowGroundClient() {
                 value={input.distance}
                 unit={input.distanceUnit}
                 onValueChange={(value) => update("distance", value)}
-                onUnitChange={(unit) => update("distanceUnit", unit)}
+                onUnitChange={changeDistanceUnit}
               />
               <SelectField
                 id="ncu-outdoorModel"

@@ -31,18 +31,18 @@ const VERDICT_META: Record<
 > = {
   success: {
     level: "excellent",
-    label: "判定：OK — キープアウト充足",
-    lead: "必要な空き地を幅・奥行きとも確保できています。この配置を基準に実測で追い込めます。"
+    label: "入力した目安寸法以上（個別製品の適合は未判定）",
+    lead: "代表寸法との比較です。製品固有の実装資料・周辺条件を確認し、実機で評価してください。"
   },
   caution: {
     level: "caution",
-    label: "判定：注意 — わずかに不足（不足率20%未満）",
-    lead: "同調ずれ・効率低下の可能性があります。整合調整と実測評価を前提に進めてください。"
+    label: "入力した目安寸法に不足（20%未満）",
+    lead: "20%未満を許容する意味ではありません。製品固有の必須条件を確認してください。"
   },
   danger: {
     level: "poor",
-    label: "判定：NG — 20%以上不足",
-    lead: "この配置では所定の性能が出ない可能性が高い状態です。配置見直しか外付けアンテナ等の方式変更を検討してください。"
+    label: "入力した目安寸法に不足（20%以上）",
+    lead: "代表寸法との差を示しています。この比較だけでは個別品番の性能や採否を判定できません。"
   }
 };
 
@@ -378,7 +378,7 @@ export function AntennaKeepoutPanel() {
                         ? "danger"
                         : "neutral"
                 }
-                sub="20%以上の辺が1つでもあるとNG"
+                sub="20%は表示上の区分です。製品の許容不足率ではありません"
               />
             </div>
             {meta ? <p className="mt-3 text-sm leading-relaxed text-slate-600">{meta.lead}</p> : null}
@@ -434,7 +434,7 @@ export function AntennaKeepoutPanel() {
       <div className="mt-6">
         <FormulaExplanationCard
           title="基礎から: なぜ「空き地」の寸法だけで判定できるのか"
-          formula="不足量 = max(0, 必要寸法 − 確保寸法)　不足率 = 不足量 ÷ 必要寸法　判定: 両辺充足→OK／全不足辺<20%→注意／いずれか≥20%→NG"
+          formula="不足量 = max(0, 目安寸法 − 確保寸法)　不足率 = 不足量 ÷ 目安寸法　20%は表示区分であり、製品の適合・許容不足率ではありません"
           showColumnLink={false}
         >
           <p>

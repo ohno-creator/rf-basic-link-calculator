@@ -44,12 +44,12 @@ export function Stat({
 }: StatProps) {
   return (
     <div className={`${align === "right" ? "text-right" : "text-left"} ${className}`.trim()}>
-      {label ? <p className="text-xs font-semibold text-slate-500">{label}</p> : null}
+      {label ? <p className="text-xs font-semibold text-slate-600">{label}</p> : null}
       <p className={`font-bold tabular-nums ${sizeText[size]} ${toneText[tone]} ${label ? "mt-1" : ""}`.trim()}>
         {value}
-        {unit ? <span className="ml-1.5 text-sm font-semibold text-slate-500">{unit}</span> : null}
+        {unit ? <span className="ml-1.5 text-sm font-semibold text-slate-600">{unit}</span> : null}
       </p>
-      {note ? <p className="mt-1 text-xs leading-relaxed text-slate-500">{note}</p> : null}
+      {note ? <p className="mt-1 text-xs leading-relaxed text-slate-600">{note}</p> : null}
     </div>
   );
 }

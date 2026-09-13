@@ -1,0 +1,379 @@
+- link "メインコンテンツへスキップ":
+  - /url: "#main-content"
+- banner:
+  - link "ホーム（ツール一覧）へ":
+    - /url: /rf-basic-link-calculator/
+    - generic: RF Basic Link Calculator
+    - generic: アンテナ・無線 基礎計算ツール
+  - navigation "メインナビゲーション":
+    - button "ツールを検索 ⌘K":
+      - text: ツールを検索
+      - generic: ⌘K
+    - button "ツールを切り替え":
+      - text: ツールを切り替え
+    - link "ツール一覧":
+      - /url: /rf-basic-link-calculator/
+    - link "解説コラム":
+      - /url: https://www.staf.co.jp/media/
+    - link "相談する":
+      - /url: https://www.staf.co.jp/contact.html
+- navigation "パンくず":
+  - list:
+    - link "ホーム":
+      - /url: /rf-basic-link-calculator/
+    - link "リンク設計":
+      - /url: /rf-basic-link-calculator/?category=link#tools
+    - listitem: かんたんリンク計算
+- main:
+  - heading "かんたんリンク計算" [level=1]
+  - button "説明を表示": "?"
+  - paragraph:
+    - generic: わかること
+    - generic: dBmとdBは足し引きでき、受信電力が受信感度を何dB上回るかが通信余裕です。
+  - paragraph: 送信電力、アンテナ利得、自由空間損失、追加損失、受信感度だけで、受信電力とリンクマージンを計算します。RFリンクバジェットの足し引きを最小構成で確認できます。
+  - button "はじめての見方":
+    - text: はじめての見方
+  - heading "かんたんリンク計算" [level=2]
+  - paragraph: 送信電力から距離損失と追加損失を引き、受信感度に対して何dB余裕があるかだけを見ます。
+  - button "LPWA 920MHz / 1km":
+    - text: LPWA 920MHz / 1km
+  - button "Wi-Fi 2.4GHz / 20m":
+    - text: Wi-Fi 2.4GHz / 20m
+  - button "BLE 2.4GHz / 10m":
+    - text: BLE 2.4GHz / 10m
+  - text: 周波数
+  - button "説明を表示": "?"
+  - textbox "周波数 説明を表示 MHz": "920"
+  - generic: MHz
+  - text: 通信距離
+  - button "説明を表示": "?"
+  - textbox "通信距離 説明を表示 km": "1"
+  - combobox "距離の単位":
+    - option "m"
+    - option "km" [selected]
+  - text: 送信電力
+  - button "説明を表示": "?"
+  - textbox "送信電力 説明を表示 dBm": "13"
+  - generic: dBm
+  - text: 受信感度
+  - button "説明を表示": "?"
+  - textbox "受信感度 説明を表示 dBm": "-120"
+  - generic: dBm
+  - heading "必要なら少しだけ補正" [level=3]
+  - button "補正":
+    - text: 補正
+    - generic: "?"
+  - generic: アンテナ利得（送受信合計）
+  - textbox "アンテナ利得（送受信合計） dBi": "0"
+  - generic: dBi
+  - generic: 追加損失
+  - textbox "追加損失 dB": "10"
+  - generic: dB
+  - heading "結果" [level=3]
+  - paragraph: 自由空間損失だけで見る、最小構成のリンク余裕です。
+  - generic: 安定
+  - paragraph: リンク余裕
+  - paragraph: +31.3 dB
+  - paragraph: 0dBを上回るほど余裕あり
+  - paragraph: 受信電力
+  - paragraph: "-88.7dBm"
+  - paragraph: 感度 -120.0 dBm
+  - paragraph: 自由空間損失
+  - paragraph: 91.7dB
+  - paragraph: 1.000 km
+  - paragraph: 0dBラインとの距離
+  - button "0dBライン":
+    - text: 0dBライン
+    - generic: "?"
+  - generic: "-30dB"
+  - generic: 0dB
+  - generic: +30dB
+  - paragraph: 十分なリンクマージンがあります。通常の設置ばらつきや軽微な環境変動があっても、通信が成立しやすい条件です。
+  - heading "足し引きの中身" [level=3]
+  - button "リンクバジェット":
+    - text: リンクバジェット
+    - generic: "?"
+  - generic: 送信電力
+  - generic: 13.0 dBm
+  - generic: +
+  - generic: アンテナ利得（合計）
+  - generic: 0.0 dBi
+  - generic: "-"
+  - generic: 自由空間損失
+  - generic: 91.7 dB
+  - generic: "-"
+  - generic: 追加損失
+  - generic: 10.0 dB
+  - generic: =
+  - generic: 受信電力
+  - generic: "-88.7 dBm"
+  - generic: "-"
+  - generic: 受信感度
+  - generic: "-120.0 dBm"
+  - generic: =
+  - generic: リンク余裕
+  - generic: +31.3 dB
+  - generic "一番小さなリンクバジェット":
+    - text: 一番小さなリンクバジェット
+  - link "この計算の詳しい解説を読む":
+    - /url: https://www.staf.co.jp/media/
+  - link "詳細版で見る":
+    - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+    - text: 詳細版で見る
+  - link "FSPLだけ見る":
+    - /url: /rf-basic-link-calculator/tools/free-space-loss/
+    - text: FSPLだけ見る
+  - 'figure "条件: 送信 13.0 dBm / 利得 0.0dBi / FSPL 91.7dB / 追加損失 10.0 dB ─ 受信電力 -88.7 dBm・感度 -120.0 dBm・リンク余裕 +31.3 dB"':
+    - paragraph: 滝グラフ
+    - paragraph: 送信電力から受信電力への積み上げ引き
+    - paragraph: 送信電力から出発し、＋アンテナ利得／−自由空間損失／−追加損失と足し引きして受信電力に到達します。受信感度の基準線との差が「リンク余裕」です。入力に連動して動きます。
+    - text: 図を保存
+    - button "SVG"
+    - button "PNG"
+    - img "送信電力13.0dBmから受信電力-88.7dBmへの積み上げ。受信感度-120.0dBmに対しリンク余裕+31.3 dB":
+      - generic: "20"
+      - generic: "-10"
+      - generic: "-40"
+      - generic: "-70"
+      - generic: "-100"
+      - generic: "-130"
+      - generic: dBm
+      - generic: 受信感度 -120.0dBm
+      - generic: 13.0dBm
+      - generic: 送信電力
+      - generic: +0.0dBi
+      - generic: ＋利得
+      - generic: "-91.7dB"
+      - generic: −FSPL
+      - generic: "-10.0dB"
+      - generic: −追加損失
+      - generic: "-88.7dBm"
+      - generic: 受信電力
+      - generic: 余裕 +31.3 dB
+      - generic: リンク余裕
+    - generic: "条件: 送信 13.0 dBm / 利得 0.0dBi / FSPL 91.7dB / 追加損失 10.0 dB ─ 受信電力 -88.7 dBm・感度 -120.0 dBm・リンク余裕 +31.3 dB"
+  - heading "コラム：リンクバジェットは通信の家計簿" [level=2]
+  - paragraph:
+    - text: いま地球からいちばん遠くにいる人工物、ボイジャー1号。その送信機の出力は
+    - strong: わずか20W級
+    - text: ——白熱電球より暗いくらいです。それが約240億km彼方から 発する電波を、NASAは今も受け取り続けています。地球に届くころの電力は、1兆分の1のさらに 10億分の1という、想像を絶する微弱さ。なぜそんなものが「聞こえる」のでしょうか。
+  - paragraph:
+    - text: 答えは、エンジニアが電波の
+    - strong: 家計簿
+    - text: を1円単位ならぬ1dB単位でつけているからです。 収入は
+    - strong: 送信電力＋アンテナ利得
+    - text: 。ボイジャー側は3.7mのパラボラで電波を一点に絞り、 受け取る地球側は直径70mの巨大アンテナで利得を稼ぎます。支出は
+    - strong: 距離による損失（自由空間損失）
+    - text: 。 240億kmともなると、この費目だけで桁外れの「出費」になります。収入から支出を全部引いて、 最後に受信機が聞き取れる下限（受信感度）を差し引いた
+    - strong: 手残りが「リンク余裕（マージン）」
+    - text: 。 これがプラスである限り、通信は黒字＝成立します。
+  - paragraph: このツールがやっているのも、まさにその家計簿です。送信電力に利得を足し、距離損失と追加損失を引き、 受信電力を出す。それが感度を何dB上回っているか——手残りだけを見ます。ボイジャーの手残りは 薄氷のように薄く、だからこそ通信速度をどんどん落として（数十bps）まで黒字を死守しています。
+  - paragraph:
+    - text: ※「家計簿」はあくまで直感用のたとえです。
+    - strong: たとえの破れ
+    - text: ：家計簿は円という 線形の金額を足し引きしますが、dBは対数です。dBの足し算は本当は電力比の掛け算で、 「-190dB」は10のマイナス19乗という天文学的な割り算を意味します。だから桁が違うのに 「手残り数dB」で成立し得るのです。
+  - paragraph:
+    - text: 屋外の壁反射や地面、筐体の損失まで分けて積み上げたくなったら、旗艦ツールへ。
+    - link "リンクバジェット診断":
+      - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+      - text: リンクバジェット診断
+    - text: で詳細な費目まで計上できます。
+  - generic "深掘り（式と出典）"
+  - heading "ほかのツール" [level=2]
+  - link "自由空間損失（FSPL） 距離と周波数による基本損失 開く":
+    - /url: /rf-basic-link-calculator/tools/free-space-loss/
+    - paragraph: 自由空間損失（FSPL）
+    - paragraph: 距離と周波数による基本損失
+    - text: 開く
+  - link "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 開く":
+    - /url: /rf-basic-link-calculator/tools/noise-floor/
+    - paragraph: ノイズフロア・受信感度
+    - paragraph: 「どこまで弱い電波を受けられるか」の物理限界
+    - text: 開く
+  - link "EIRP法規チェック（920MHz帯） 空中線電力＋利得が法規上限内かを判定 開く":
+    - /url: /rf-basic-link-calculator/tools/eirp-compliance/
+    - paragraph: EIRP法規チェック（920MHz帯）
+    - paragraph: 空中線電力＋利得が法規上限内かを判定
+    - text: 開く
+  - link "降雨・大気減衰 雨と空気はどの周波数から電波を食うか 開く":
+    - /url: /rf-basic-link-calculator/tools/rain-attenuation/
+    - paragraph: 降雨・大気減衰
+    - paragraph: 雨と空気はどの周波数から電波を食うか
+    - text: 開く
+  - link "シャドウイングマージン 場所ごとのばらつきに何dB積むか 開く":
+    - /url: /rf-basic-link-calculator/tools/shadowing-margin/
+    - paragraph: シャドウイングマージン
+    - paragraph: 場所ごとのばらつきに何dB積むか
+    - text: 開く
+  - link "フレネルゾーン半径 見通しと必要クリアランス 開く":
+    - /url: /rf-basic-link-calculator/tools/fresnel-zone/
+    - paragraph: フレネルゾーン半径
+    - paragraph: 見通しと必要クリアランス
+    - text: 開く
+  - heading "アンテナ選定・実機評価でお困りの場合" [level=3]
+  - paragraph: リンクバジェット上は通信可能に見えても、実際のIoT機器では筐体、基板GND、金属部品、アンテナ配置、ケーブル、設置姿勢により通信性能が大きく変わります。スタッフ株式会社では、IoTアンテナの選定、内蔵アンテナの配置相談、実機評価に向けた技術相談を承っています。
+  - link "この条件でアンテナ選定を相談する":
+    - /url: https://www.staf.co.jp/contact.html
+    - text: この条件でアンテナ選定を相談する
+  - paragraph:
+    - link "アンテナ・無線設計の詳しい解説コラムを読む":
+      - /url: https://www.staf.co.jp/media/
+- contentinfo:
+  - paragraph: スタッフ株式会社 / Staf Corporation
+  - paragraph: IoTアンテナ、LTE/LPWA/5G/Wi-Fi/BLE向けアンテナ、小型内蔵アンテナ、FPC/SMDアンテナ、宇宙用パッチアンテナ、ヒンジ・機構部品の技術支援を行います。
+  - link "お問い合わせ":
+    - /url: https://www.staf.co.jp/contact.html
+  - link "解説コラム":
+    - /url: https://www.staf.co.jp/media/
+  - navigation "ツール一覧（フッター）":
+    - paragraph: リンク設計
+    - list:
+      - link "リンクバジェット診断":
+        - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+      - link "かんたんリンク計算":
+        - /url: /rf-basic-link-calculator/tools/simple-link-budget/
+      - link "自由空間損失（FSPL）":
+        - /url: /rf-basic-link-calculator/tools/free-space-loss/
+      - link "ノイズフロア・受信感度":
+        - /url: /rf-basic-link-calculator/tools/noise-floor/
+      - link "EIRP法規チェック（920MHz帯）":
+        - /url: /rf-basic-link-calculator/tools/eirp-compliance/
+      - link "降雨・大気減衰":
+        - /url: /rf-basic-link-calculator/tools/rain-attenuation/
+      - link "シャドウイングマージン":
+        - /url: /rf-basic-link-calculator/tools/shadowing-margin/
+      - link "フレネルゾーン半径":
+        - /url: /rf-basic-link-calculator/tools/fresnel-zone/
+      - link "伝搬損失モデル比較":
+        - /url: /rf-basic-link-calculator/tools/propagation-loss/
+      - link "GL以下NCU・水道BOX診断":
+        - /url: /rf-basic-link-calculator/tools/ncu-below-ground/
+      - link "ナミゲート 室内受信電力シミュレーター":
+        - /url: /rf-basic-link-calculator/tools/nami-gate-window/
+      - link "ミスマッチと通信距離":
+        - /url: /rf-basic-link-calculator/tools/mismatch-range-impact/
+      - link "デセンス（感度劣化）":
+        - /url: /rf-basic-link-calculator/tools/desense/
+      - link "LTE電波指標の換算（RSSI/RSRP/RSRQ）":
+        - /url: /rf-basic-link-calculator/tools/lte-signal-metrics/
+      - link "壁・建材の透過損失":
+        - /url: /rf-basic-link-calculator/tools/wall-penetration/
+      - link "回折・回り込みの見える化":
+        - /url: /rf-basic-link-calculator/tools/diffraction-shadow/
+    - paragraph: アンテナ設計
+    - list:
+      - link "偏波不整合損失":
+        - /url: /rf-basic-link-calculator/tools/polarization-loss/
+      - link "有効開口面積":
+        - /url: /rf-basic-link-calculator/tools/effective-aperture/
+      - link "開口利得・ビーム幅":
+        - /url: /rf-basic-link-calculator/tools/aperture-gain-beamwidth/
+      - link "アンテナ間隔 λ換算":
+        - /url: /rf-basic-link-calculator/tools/antenna-spacing/
+      - link "パッチアンテナ寸法":
+        - /url: /rf-basic-link-calculator/tools/patch-antenna-dimensions/
+      - link "ダイバーシティ利得":
+        - /url: /rf-basic-link-calculator/tools/diversity-gain/
+      - link "2アンテナ間アイソレーション":
+        - /url: /rf-basic-link-calculator/tools/antenna-isolation/
+      - link "VSWR帯域幅とQ":
+        - /url: /rf-basic-link-calculator/tools/vswr-bandwidth-q/
+      - link "指向誤差マージン":
+        - /url: /rf-basic-link-calculator/tools/pointing-margin/
+      - link "金属面近接の利得変化":
+        - /url: /rf-basic-link-calculator/tools/metal-plane-effect/
+      - link "共振素子長（モノポール/ダイポール）":
+        - /url: /rf-basic-link-calculator/tools/resonant-element-length/
+      - link "遠方界距離（測定距離の目安）":
+        - /url: /rf-basic-link-calculator/tools/far-field-distance/
+      - link "実効利得・利得変換":
+        - /url: /rf-basic-link-calculator/tools/realized-gain/
+    - paragraph: 単位・基礎
+    - list:
+      - link "周波数の用途地図（非セルラー編）":
+        - /url: /rf-basic-link-calculator/tools/spectrum-use-atlas/
+      - link "周波数・波長":
+        - /url: /rf-basic-link-calculator/tools/frequency-wavelength/
+      - link "放射効率 dB⇔% 変換":
+        - /url: /rf-basic-link-calculator/tools/radiation-efficiency-converter/
+      - link "dBm 変換":
+        - /url: /rf-basic-link-calculator/tools/dbm-converter/
+      - link "dBを体感する":
+        - /url: /rf-basic-link-calculator/tools/db-feel/
+      - link "dB・dBm・dBi・dBdの違い":
+        - /url: /rf-basic-link-calculator/tools/db-family/
+      - link "周波数と4G/5G Band早わかり":
+        - /url: /rf-basic-link-calculator/tools/cellular-band-map/
+      - link "電界強度・電力密度":
+        - /url: /rf-basic-link-calculator/tools/field-strength/
+    - paragraph: 線路・整合
+    - list:
+      - link "VSWR・リターンロス":
+        - /url: /rf-basic-link-calculator/tools/vswr-return-loss/
+      - link "同軸ケーブル損失":
+        - /url: /rf-basic-link-calculator/tools/coaxial-cable-loss/
+      - link "マイクロストリップ線路":
+        - /url: /rf-basic-link-calculator/tools/microstrip-line/
+      - link "L型整合回路":
+        - /url: /rf-basic-link-calculator/tools/l-match/
+      - link "電気長・位相換算":
+        - /url: /rf-basic-link-calculator/tools/electrical-length/
+    - paragraph: 実装・筐体
+    - list:
+      - link "逆F・IFA初期寸法":
+        - /url: /rf-basic-link-calculator/tools/ifa-initial-dimensions/
+      - link "アンテナ・キープアウト領域チェック":
+        - /url: /rf-basic-link-calculator/tools/antenna-keepout/
+      - link "人体・手の影響ボディロス":
+        - /url: /rf-basic-link-calculator/tools/body-loss/
+      - link "筐体・近接物の離調推定":
+        - /url: /rf-basic-link-calculator/tools/detuning-estimator/
+      - link "GNDプレーン寸法と効率":
+        - /url: /rf-basic-link-calculator/tools/ground-plane-size/
+      - link "OTA実装損失・デセンス分析":
+        - /url: /rf-basic-link-calculator/tools/ota-implementation-loss/
+    - paragraph: 方式・運用設計
+    - list:
+      - link "LoRa送信時間・920MHz制限":
+        - /url: /rf-basic-link-calculator/tools/lora-airtime/
+      - link "無線端末の電池寿命":
+        - /url: /rf-basic-link-calculator/tools/battery-life/
+      - link "GNSS C/N0バジェット":
+        - /url: /rf-basic-link-calculator/tools/gnss-cn0/
+    - paragraph: 学習クエスト
+    - list:
+      - link "RF学習クエスト":
+        - /url: /rf-basic-link-calculator/tools/rf-learning-quest/
+      - link "アンテナ用語の直感ラボ":
+        - /url: /rf-basic-link-calculator/tools/antenna-term-lab/
+      - link "感覚でわかる電波":
+        - /url: /rf-basic-link-calculator/tools/radio-wave-intuition/
+      - link "パッチアンテナの半値角":
+        - /url: /rf-basic-link-calculator/tools/patch-hpbw-explorer/
+      - link "RFアンチパターン図鑑":
+        - /url: /rf-basic-link-calculator/tools/rf-antipatterns/
+    - paragraph: 発展・設計限界
+    - list:
+      - link "不要ビーム判定":
+        - /url: /rf-basic-link-calculator/tools/array-grating-lobe/
+      - link "小型ループ共振":
+        - /url: /rf-basic-link-calculator/tools/small-loop-resonance/
+      - link "放射抵抗・効率":
+        - /url: /rf-basic-link-calculator/tools/radiation-resistance/
+      - link "小型アンテナ限界":
+        - /url: /rf-basic-link-calculator/tools/small-antenna-limit/
+      - link "大型アレイ近傍界":
+        - /url: /rf-basic-link-calculator/tools/large-array-near-field/
+      - link "反射板・RISサイズ効果":
+        - /url: /rf-basic-link-calculator/tools/reflector-ris-size-effect/
+      - link "電測サンプリング設計":
+        - /url: /rf-basic-link-calculator/tools/measurement-sampling/
+  - paragraph: © スタッフ株式会社 アンテナ・無線 基礎計算ツール集
+  - list:
+    - link "会社概要":
+      - /url: https://www.staf.co.jp/
+    - link "お問い合わせ":
+      - /url: https://www.staf.co.jp/contact.html
+    - link "解説コラム":
+      - /url: https://www.staf.co.jp/media/
+  - paragraph: 本ツールの計算値は初期検討の目安です。

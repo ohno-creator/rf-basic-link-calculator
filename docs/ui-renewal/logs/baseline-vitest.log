@@ -1,0 +1,94 @@
+
+> rf-basic-link-calculator@0.1.0 test
+> vitest run
+
+[33mThe CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.[39m
+
+ RUN  v2.1.9 /Users/pc141/Documents/RF Basic Link Calculator/.ui-renewal-20260913/app
+
+ ✓ src/tests/uiKit.test.ts (13 tests) 3ms
+ ✓ src/tests/lMatch.test.ts (5 tests) 2ms
+ ✓ src/tests/loraAirtime.test.ts (17 tests) 2ms
+ ✓ src/tests/researchDistance.test.ts (13 tests) 3ms
+ ✓ src/tests/fresnel.test.ts (19 tests) 2ms
+ ✓ src/tests/detuning.test.ts (10 tests) 2ms
+ ✓ src/tests/diffractionShadow.test.ts (10 tests) 2ms
+ ✓ src/tests/batteryLifeExpert.test.ts (6 tests) 2ms
+ ✓ src/tests/electricalLength.test.ts (26 tests) 2ms
+ ✓ src/tests/signalMetrics.test.ts (23 tests) 3ms
+ ✓ src/tests/linkBudget.test.ts (16 tests) 3ms
+ ✓ src/tests/ncuBelowGround.test.ts (11 tests) 3ms
+ ✓ src/tests/rainAttenuation.test.ts (23 tests) 4ms
+ ✓ src/tests/propagationLossModels.test.ts (15 tests) 7ms
+ ✓ src/tests/share.test.ts (6 tests) 3ms
+ ✓ src/tests/linkBudgetAdvisor.test.ts (9 tests) 5ms
+ ✓ src/tests/comparison.test.ts (56 tests) 10ms
+ ✓ src/tests/pointingMargin.test.ts (18 tests) 3ms
+ ✓ src/tests/propagation.test.ts (9 tests) 2ms
+ ✓ src/tests/antennaKeepout.test.ts (10 tests) 3ms
+ ✓ src/tests/batteryLife.test.ts (5 tests) 2ms
+ ✓ src/tests/otaImplementationLoss.test.ts (7 tests) 2ms
+ ✓ src/tests/groundPlaneEffect.test.ts (11 tests) 2ms
+ ✓ src/tests/polarizationMismatch.test.ts (17 tests) 2ms
+ ✓ src/tests/wallPenetration.test.ts (8 tests) 3ms
+ ✓ src/tests/shadowingMargin.test.ts (17 tests) 2ms
+ ✓ src/tests/antenna.test.ts (11 tests) 2ms
+ ✓ src/tests/gnssCn0.test.ts (6 tests) 2ms
+ ✓ src/tests/cellularBandLookup.test.ts (16 tests) 3ms
+ ✓ src/tests/cellularCarrierCatalog.test.ts (9 tests) 12ms
+ ✓ src/tests/rfErrorMessages.test.ts (4 tests) 2ms
+ ✓ src/tests/chartData.test.ts (9 tests) 4ms
+ ✓ src/tests/namiGate.test.ts (9 tests) 3ms
+ ✓ src/tests/rfLearningQuestLessons.test.ts (7 tests) 34ms
+ ✓ src/tests/diversityGain.test.ts (12 tests) 3ms
+ ✓ src/tests/antennaIsolation.test.ts (5 tests) 2ms
+ ✓ src/tests/chartThemeV2.test.ts (8 tests) 5ms
+ ✓ src/tests/otaImportParser.test.ts (5 tests) 2ms
+ ✓ src/tests/microstrip.test.ts (11 tests) 3ms
+ ✓ src/tests/metalPlaneEffect.test.ts (7 tests) 2ms
+ ✓ src/tests/eirpCompliance.test.ts (13 tests) 2ms
+ ✓ src/tests/diagramTheme.test.ts (9 tests) 2ms
+ ✓ src/tests/aribT108PowerClasses.test.ts (8 tests) 2ms
+ ✓ src/tests/ifaDimensions.test.ts (4 tests) 1ms
+ ✓ src/tests/measurementSampling.test.ts (16 tests) 3ms
+ ✓ src/tests/coax.test.ts (11 tests) 3ms
+ ✓ src/tests/linkBudgetErrorMessages.test.ts (5 tests) 2ms
+ ✓ src/tests/desense.test.ts (9 tests) 2ms
+ ✓ src/tests/bodyLoss.test.ts (7 tests) 3ms
+ ✓ src/tests/toolSearch.test.ts (10 tests) 10ms
+ ✓ src/tests/colormap.test.ts (10 tests) 3ms
+ ✓ src/tests/noiseFloor.test.ts (9 tests) 2ms
+ ✓ src/tests/errors.test.ts (5 tests) 2ms
+ ✓ src/tests/judgement.test.ts (15 tests) 3ms
+ ✓ src/tests/realizedGain.test.ts (8 tests) 2ms
+ ✓ src/tests/vswr.test.ts (5 tests) 3ms
+ ✓ src/tests/vswrBandwidthQ.test.ts (7 tests) 2ms
+ ✓ src/tests/iso.test.ts (11 tests) 2ms
+ ✓ src/tests/resonantElementLength.test.ts (6 tests) 2ms
+ ✓ src/tests/fieldStrength.test.ts (5 tests) 2ms
+ ✓ src/tests/svgExport.test.ts (8 tests) 2ms
+ ✓ src/tests/simpleLinkBudget.test.ts (3 tests) 2ms
+ ✓ src/tests/mismatchRangeImpact.test.ts (5 tests) 2ms
+ ✓ src/tests/dbFamily.test.ts (5 tests) 2ms
+ ✓ src/tests/areaCoverage.test.ts (14 tests) 2ms
+ ✓ src/tests/toolsRegistry.test.ts (6 tests) 11ms
+ ✓ src/tests/farFieldDistance.test.ts (4 tests) 2ms
+ ✓ src/tests/harmonicHunter.test.ts (2 tests) 8ms
+ ✓ src/tests/radiationEfficiency.test.ts (7 tests) 2ms
+ ✓ src/tests/format.test.ts (4 tests) 1ms
+ ✓ src/tests/units.test.ts (6 tests) 1ms
+ ✓ src/tests/db.test.ts (4 tests) 1ms
+ ✓ src/tests/dielectric.test.ts (4 tests) 1ms
+ ✓ src/tests/otaExpert.test.ts (3 tests) 2ms
+ ✓ src/tests/frequency.test.ts (3 tests) 1ms
+ ✓ src/tests/scaffoldNormalize.test.ts (5 tests) 1ms
+ ✓ src/tests/fspl.test.ts (3 tests) 1ms
+ ✓ src/tests/spectrumAtlas.test.ts (4 tests) 2ms
+ ✓ src/tests/presets.test.ts (1 test) 1ms
+ ✓ src/tests/patchHpbw.test.ts (3 tests) 1ms
+
+ Test Files  80 passed (80)
+      Tests  766 passed (766)
+   Start at  21:39:52
+   Duration  1.15s (transform 1.61s, setup 0ms, collect 3.50s, tests 257ms, environment 7ms, prepare 4.35s)
+

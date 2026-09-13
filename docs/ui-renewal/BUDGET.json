@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-09-13T22:06:38.524781+09:00",
+  "weeklyRemaining": null,
+  "weeklyUserReportedBaselinePercent": 55,
+  "weeklyExpansionStopPercent": 40,
+  "weeklyResetAt": null,
+  "fiveHourRemaining": null,
+  "fiveHourResetAt": null,
+  "liveQuotaSource": "No available quota connector; VS Code UI access denied; CLI startup previously failed. Values not inferred.",
+  "cloudScopeExpansion": "stopped conservatively now",
+  "openaiModelSwitchForQuota": false,
+  "deadline": "2026-09-14T03:00:00+09:00",
+  "automaticUntilDeadlineGuaranteed": false,
+  "additionalAllowanceUserPercentPoints": 7,
+  "additionalAllowanceRecordedAt": "2026-09-13T22:18:42.268916+09:00",
+  "latestUserDirection": "Continue within the 03:00 deadline until quota becomes unavailable; live weekly and five-hour values remain unavailable and are not inferred.",
+  "scope": "final accessibility remediation, local review, verification and submission; no model switching for quota"
+}

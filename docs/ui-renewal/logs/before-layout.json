@@ -1,0 +1,146 @@
+[
+  {
+    "slug": "home",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "アンテナ・無線 基礎計算ツール｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "cable-position-comparison",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "ケーブル・位置変更の比較｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "rf-basic-link-calculator",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "通信距離・リンクバジェット簡易診断｜アンテナ・無線 基礎計算ツール｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "simple-link-budget",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "かんたんリンク計算ツール｜受信電力とリンクマージンを1行で確認｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "free-space-loss",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "自由空間損失 FSPL 計算ツール｜距離と周波数による損失｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "vswr-return-loss",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "VSWR・リターンロス変換ツール｜反射係数・反射電力も計算｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "coaxial-cable-loss",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "同軸ケーブル損失 計算ツール｜標準品の実測ロスを品番×周波数で｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "noise-floor",
+    "width": 1440,
+    "layout": {
+      "scroll": 1440,
+      "title": "ノイズフロア・受信感度 計算ツール｜帯域幅・NF・所要SNRから導出｜スタッフ株式会社",
+      "viewport": 1440
+    }
+  },
+  {
+    "slug": "home",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "アンテナ・無線 基礎計算ツール｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "cable-position-comparison",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "ケーブル・位置変更の比較｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "rf-basic-link-calculator",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "通信距離・リンクバジェット簡易診断｜アンテナ・無線 基礎計算ツール｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "simple-link-budget",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "かんたんリンク計算ツール｜受信電力とリンクマージンを1行で確認｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "free-space-loss",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "自由空間損失 FSPL 計算ツール｜距離と周波数による損失｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "vswr-return-loss",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "VSWR・リターンロス変換ツール｜反射係数・反射電力も計算｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "coaxial-cable-loss",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "同軸ケーブル損失 計算ツール｜標準品の実測ロスを品番×周波数で｜スタッフ株式会社",
+      "viewport": 390
+    }
+  },
+  {
+    "slug": "noise-floor",
+    "width": 390,
+    "layout": {
+      "scroll": 390,
+      "title": "ノイズフロア・受信感度 計算ツール｜帯域幅・NF・所要SNRから導出｜スタッフ株式会社",
+      "viewport": 390
+    }
+  }
+]

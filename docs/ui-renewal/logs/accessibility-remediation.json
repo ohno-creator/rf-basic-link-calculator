@@ -1,0 +1,39 @@
+{
+  "recordedAt": "2026-09-14T01:42:00+09:00",
+  "standard": "axe-core WCAG 2.1 A/AA tags, serious and critical impacts",
+  "initialDesktopFailures": {
+    "routes": 11,
+    "slugs": [
+      "shadowing-margin",
+      "propagation-loss",
+      "rf-learning-quest",
+      "antenna-term-lab",
+      "radiation-efficiency-converter",
+      "l-match",
+      "diversity-gain",
+      "lora-airtime",
+      "lte-signal-metrics",
+      "vswr-bandwidth-q",
+      "ground-plane-size"
+    ],
+    "violation": "color-contrast",
+    "impact": "serious"
+  },
+  "remediation": "Darkened muted text, unit, progress, badge and selected-state colors in common and page-local UI components. RF calculations and persistence were not changed.",
+  "desktopFinal": {
+    "registeredPages": 65,
+    "completedScans": 65,
+    "passed": 65,
+    "failed": 0,
+    "elapsed": "1.3 minutes"
+  },
+  "mobileAttempt": {
+    "viewport": "390x844",
+    "attempts": 2,
+    "completedScans": 0,
+    "failureStage": "chromium-launch",
+    "reason": "MachPort permission denied (1100)",
+    "applicationFailure": false
+  },
+  "claimBoundary": "This is not a full WCAG conformance claim. Keyboard and visual checks remain separately scoped."
+}

@@ -220,6 +220,16 @@ export function FsplPanel() {
   const [distanceUnit, setDistanceUnit] = useState<"m" | "km">("km");
   const distanceKm = distanceUnit === "m" ? distance / 1000 : distance;
 
+  const handleDistanceUnitChange = (nextUnit: "m" | "km") => {
+    if (nextUnit === distanceUnit) return;
+    setDistance((current) => {
+      if (!Number.isFinite(current)) return current;
+      const converted = nextUnit === "m" ? current * 1000 : current / 1000;
+      return Number.parseFloat(converted.toPrecision(15));
+    });
+    setDistanceUnit(nextUnit);
+  };
+
   const result = useMemo(() => {
     try {
       const fspl = calculateFsplDb(frequencyMHz, distanceKm);
@@ -282,7 +292,8 @@ export function FsplPanel() {
               value={frequencyMHz}
               min={1}
               step={1}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               onChange={setFrequencyMHz}
               help={glossary.fspl.description}
               example="920"
@@ -294,7 +305,8 @@ export function FsplPanel() {
               value={distance}
               min={distanceUnit === "m" ? 1 : 0.001}
               step={distanceUnit === "m" ? 1 : 0.01}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               onChange={setDistance}
               unitSelect={{
                 value: distanceUnit,
@@ -302,7 +314,7 @@ export function FsplPanel() {
                   { value: "m", label: "m" },
                   { value: "km", label: "km" }
                 ],
-                onChange: (value) => setDistanceUnit(value as "m" | "km"),
+                onChange: (value) => handleDistanceUnitChange(value as "m" | "km"),
                 ariaLabel: "距離の単位"
               }}
               help="送受信間の直線距離です。mは屋内・近距離、kmは屋外の見通し距離に使います。"
@@ -319,7 +331,7 @@ export function FsplPanel() {
 
         <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div id="fspl-primary-result">
-            <ResultBar primary={primary} />
+            <ResultBar primary={primary} assumption="遮蔽物のない自由空間・遠方界の基本損失です。壁・地面反射・ケーブル損失は含みません。" next={{ href: "/tools/simple-link-budget", label: "送信電力・感度を含めて余裕を見る" }} />
           </div>
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">距離ごとの損失比較</h2>

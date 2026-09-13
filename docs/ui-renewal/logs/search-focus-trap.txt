@@ -1,0 +1,215 @@
+- link "メインコンテンツへスキップ":
+  - /url: "#main-content"
+- banner:
+  - link "ホームへ":
+    - /url: /rf-basic-link-calculator/
+    - generic: RF Basic Link Calculator
+  - navigation "メインナビゲーション":
+    - link "ホーム":
+      - /url: /rf-basic-link-calculator/
+      - text: ホーム
+    - button "検索 ⌘K":
+      - text: 検索
+      - generic: ⌘K
+    - link "全ツール":
+      - /url: /rf-basic-link-calculator/#tools
+    - link "相談する":
+      - /url: https://www.staf.co.jp/contact.html
+  - dialog "ツール検索":
+    - combobox "ツールを検索" [expanded]
+    - button "検索を閉じる":
+    - listbox "検索結果":
+      - text: 最近使ったツール
+      - option "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 リンク設計" [selected]:
+        - link "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 リンク設計":
+          - /url: /rf-basic-link-calculator/tools/noise-floor/
+          - generic: ノイズフロア・受信感度
+          - generic: 「どこまで弱い電波を受けられるか」の物理限界
+          - generic: リンク設計
+      - option "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合":
+        - link "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合":
+          - /url: /rf-basic-link-calculator/tools/coaxial-cable-loss/
+          - generic: 同軸ケーブル損失
+          - generic: 標準品の実測ロスを品番×周波数で
+          - generic: 線路・整合
+      - option "VSWR・リターンロス 整合の良し悪しを見る 線路・整合":
+        - link "VSWR・リターンロス 整合の良し悪しを見る 線路・整合":
+          - /url: /rf-basic-link-calculator/tools/vswr-return-loss/
+          - generic: VSWR・リターンロス
+          - generic: 整合の良し悪しを見る
+          - generic: 線路・整合
+      - option "自由空間損失（FSPL） 距離と周波数による基本損失 リンク設計":
+        - link "自由空間損失（FSPL） 距離と周波数による基本損失 リンク設計":
+          - /url: /rf-basic-link-calculator/tools/free-space-loss/
+          - generic: 自由空間損失（FSPL）
+          - generic: 距離と周波数による基本損失
+          - generic: リンク設計
+      - option "かんたんリンク計算 受信電力と通信余裕だけを見る リンク設計":
+        - link "かんたんリンク計算 受信電力と通信余裕だけを見る リンク設計":
+          - /url: /rf-basic-link-calculator/tools/simple-link-budget/
+          - generic: かんたんリンク計算
+          - generic: 受信電力と通信余裕だけを見る
+          - generic: リンク設計
+      - text: まずはここから
+      - option "リンクバジェット診断 通信が届くかを総合的に判定 リンク設計":
+        - link "リンクバジェット診断 通信が届くかを総合的に判定 リンク設計":
+          - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+          - generic: リンクバジェット診断
+          - generic: 通信が届くかを総合的に判定
+          - generic: リンク設計
+      - option "周波数・波長 波長とアンテナのサイズ感 単位・基礎":
+        - link "周波数・波長 波長とアンテナのサイズ感 単位・基礎" [active]:
+          - /url: /rf-basic-link-calculator/tools/frequency-wavelength/
+          - generic: 周波数・波長
+          - generic: 波長とアンテナのサイズ感
+          - generic: 単位・基礎
+    - generic: ↑↓ で選択・Enter で開く・Esc で閉じる
+    - generic: 全64ツール
+- main:
+  - paragraph: アンテナ・無線 基礎計算ツール
+  - heading "いまの仕事から、使う計算を選ぶ。" [level=1]
+  - paragraph: 64のツールを、営業の初期確認と設計の概算に使えます。まず目的を選ぶか、一覧から名前やキーワードで探してください。
+  - link "全64ツールを検索する":
+    - /url: "#tools"
+    - text: 全64ツールを検索する
+  - paragraph: 5つの仕事から探す
+  - heading "まず知りたいことを選ぶ" [level=2]
+  - article:
+    - heading "届く距離を見積もる" [level=3]
+    - paragraph: 送信電力、感度、距離から通信余裕を確認します。見通しや障害物などの条件で結果は変わります。
+    - link "総合診断":
+      - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+      - text: 総合診断
+    - link "簡易計算":
+      - /url: /rf-basic-link-calculator/tools/simple-link-budget/
+      - text: 簡易計算
+  - article:
+    - heading "ケーブル・位置を比較する" [level=3]
+    - paragraph: ケーブル損失と測定で分かった差を分け、変更前後を同じ条件で比べます。
+    - link "比較を始める":
+      - /url: /rf-basic-link-calculator/tools/cable-position-comparison/
+      - text: 比較を始める
+  - article:
+    - heading "整合と損失を確かめる" [level=3]
+    - paragraph: 反射による不整合と、周波数・長さによるケーブル損失を個別に見積もります。
+    - link "VSWR・反射":
+      - /url: /rf-basic-link-calculator/tools/vswr-return-loss/
+      - text: VSWR・反射
+    - link "同軸損失":
+      - /url: /rf-basic-link-calculator/tools/coaxial-cable-loss/
+      - text: 同軸損失
+  - article:
+    - heading "アンテナ形状を決める" [level=3]
+    - paragraph: 周波数と基板条件から、共振素子やパッチの初期寸法を求めます。実機での調整が前提です。
+    - link "共振素子長":
+      - /url: /rf-basic-link-calculator/tools/resonant-element-length/
+      - text: 共振素子長
+    - link "パッチ寸法":
+      - /url: /rf-basic-link-calculator/tools/patch-antenna-dimensions/
+      - tex
+FORWARD
+- link "メインコンテンツへスキップ":
+  - /url: "#main-content"
+- banner:
+  - link "ホームへ":
+    - /url: /rf-basic-link-calculator/
+    - generic: RF Basic Link Calculator
+  - navigation "メインナビゲーション":
+    - link "ホーム":
+      - /url: /rf-basic-link-calculator/
+      - text: ホーム
+    - button "検索 ⌘K":
+      - text: 検索
+      - generic: ⌘K
+    - link "全ツール":
+      - /url: /rf-basic-link-calculator/#tools
+    - link "相談する":
+      - /url: https://www.staf.co.jp/contact.html
+  - dialog "ツール検索":
+    - combobox "ツールを検索" [expanded] [active]
+    - button "検索を閉じる":
+    - listbox "検索結果":
+      - text: 最近使ったツール
+      - option "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 リンク設計" [selected]:
+        - link "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 リンク設計":
+          - /url: /rf-basic-link-calculator/tools/noise-floor/
+          - generic: ノイズフロア・受信感度
+          - generic: 「どこまで弱い電波を受けられるか」の物理限界
+          - generic: リンク設計
+      - option "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合":
+        - link "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合":
+          - /url
+ARROW
+- link "メインコンテンツへスキップ":
+  - /url: "#main-content"
+- banner:
+  - link "ホームへ":
+    - /url: /rf-basic-link-calculator/
+    - generic: RF Basic Link Calculator
+  - navigation "メインナビゲーション":
+    - link "ホーム":
+      - /url: /rf-basic-link-calculator/
+      - text: ホーム
+    - button "検索 ⌘K":
+      - text: 検索
+      - generic: ⌘K
+    - link "全ツール":
+      - /url: /rf-basic-link-calculator/#tools
+    - link "相談する":
+      - /url: https://www.staf.co.jp/contact.html
+  - dialog "ツール検索":
+    - combobox "ツールを検索" [expanded] [active]: ケーブル
+    - button "検索を閉じる":
+    - listbox "検索結果":
+      - option "ケーブル・位置変更比較 配線損失と実測差を分けて比較 リンク設計":
+        - link "ケーブル・位置変更比較 配線損失と実測差を分けて比較 リンク設計":
+          - /url: /rf-basic-link-calculator/tools/cable-position-comparison/
+          - generic: ケーブル・位置変更比較
+          - generic: 配線損失と実測差を分けて比較
+          - generic: リンク設計
+      - option "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合" [selected]:
+        - link "同軸ケーブル損失 標準品の実測ロスを品番×周波数で 線路・整合":
+          - /url: /rf-basic-link-calculator/tools/coaxial-cable-loss/
+          - generic: 同軸ケーブル損失
+          - generic: 標準品の実測ロスを品番×周波数で
+          - generic: 線路・整合
+    - generic: ↑↓ で選択・Enter で開く・Esc で閉じる
+    - generic: 全64ツール
+- main:
+  - paragraph: アンテナ・無線 基礎計算ツール
+  - heading "いまの仕事から、使う計算を選ぶ。" [level=1]
+  - paragraph: 64のツールを、営業の初期確認と設計の概算に使えます。まず目的を選ぶか、一覧から名前やキーワードで探してください。
+  - link "全64ツールを検索する":
+    - /url: "#tools"
+    - text: 全64ツールを検索する
+  - paragraph: 5つの仕事から探す
+  - heading "まず知りたいことを選ぶ" [level=2]
+  - article:
+    - heading "届く距離を見積もる" [level=3]
+    - paragraph: 送信電力、感度、距離から通信余裕を確認します。見通しや障害物などの条件で結果は変わります。
+    - link "総合診断":
+      - /url: /rf-basic-link-calculator/tools/rf-basic-link-calculator/
+      - text: 総合診断
+    - link "簡易計算":
+      - /url: /rf-basic-link-calculator/tools/simple-link-budget/
+      - text: 簡易計算
+  - article:
+    - heading "ケーブル・位置を比較する" [level=3]
+    - paragraph: ケーブル損失と測定で分かった差を分け、変更前後を同じ条件で比べます。
+    - link "比較を始める":
+      - /url: /rf-basic-link-calculator/tools/cable-position-comparison/
+      - text: 比較を始める
+  - article:
+    - heading "整合と損失を確かめる" [level=3]
+    - paragraph: 反射による不整合と、周波数・長さによるケーブル損失を個別に見積もります。
+    - link "VSWR・反射":
+      - /url: /rf-basic-link-calculator/tools/vswr-return-loss/
+      - text: VSWR・反射
+    - link "同軸損失":
+      - /url: /rf-basic-link-calculator/tools/coaxial-cable-loss/
+      - text: 同軸損失
+  - article:
+    - heading "アンテナ形状を決める" [level=3]
+    - paragraph: 周波数と基板条件から、共振素子やパッチの初期寸法を求めます。実機での調整が前提です。
+    - link "共振素子長":
+      - /url: /rf-basic-link-calculator/t

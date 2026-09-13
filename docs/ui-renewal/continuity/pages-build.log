@@ -1,0 +1,103 @@
+
+> rf-basic-link-calculator@0.1.0 build
+> node scripts/check-comparison-data.mjs && next build
+
+比較機能の公開データ検査：承認データ0件、手入力・不明・説明例のみ
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /Users/pc141/Documents/RF Basic Link Calculator/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /Users/pc141/Documents/RF Basic Link Calculator/.ui-renewal-20260913/app/package-lock.json
+
+   ▲ Next.js 15.5.19
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully in 3.4s
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/68) ...
+   Generating static pages (17/68) 
+   Generating static pages (34/68) 
+   Generating static pages (51/68) 
+ ✓ Generating static pages (68/68)
+   Finalizing page optimization ...
+   Collecting build traces ...
+   Exporting (0/2) ...
+ ✓ Exporting (2/2)
+
+Route (app)                                   Size  First Load JS
+┌ ○ /                                      4.53 kB         153 kB
+├ ○ /_not-found                            1.01 kB         103 kB
+├ ○ /tools/antenna-isolation               10.5 kB         169 kB
+├ ○ /tools/antenna-keepout                 13.5 kB         172 kB
+├ ○ /tools/antenna-spacing                   147 B         307 kB
+├ ○ /tools/antenna-term-lab                30.7 kB         179 kB
+├ ○ /tools/aperture-gain-beamwidth           147 B         307 kB
+├ ○ /tools/array-grating-lobe                147 B         307 kB
+├ ○ /tools/battery-life                    16.7 kB         180 kB
+├ ○ /tools/body-loss                       11.9 kB         171 kB
+├ ○ /tools/cable-position-comparison       14.9 kB         121 kB
+├ ○ /tools/cellular-band-map               14.4 kB         191 kB
+├ ○ /tools/coaxial-cable-loss              15.6 kB         287 kB
+├ ○ /tools/db-family                       7.65 kB         174 kB
+├ ○ /tools/db-feel                         9.22 kB         168 kB
+├ ○ /tools/dbm-converter                   9.15 kB         176 kB
+├ ○ /tools/desense                         8.98 kB         174 kB
+├ ○ /tools/detuning-estimator              13.8 kB         173 kB
+├ ○ /tools/diffraction-shadow              10.7 kB         175 kB
+├ ○ /tools/diversity-gain                  10.4 kB         169 kB
+├ ○ /tools/effective-aperture                147 B         307 kB
+├ ○ /tools/eirp-compliance                 7.92 kB         175 kB
+├ ○ /tools/electrical-length               13.1 kB         172 kB
+├ ○ /tools/far-field-distance              2.64 kB         166 kB
+├ ○ /tools/field-strength                  3.03 kB         166 kB
+├ ○ /tools/free-space-loss                 9.93 kB         173 kB
+├ ○ /tools/frequency-wavelength            15.9 kB         179 kB
+├ ○ /tools/fresnel-zone                    10.1 kB         175 kB
+├ ○ /tools/gnss-cn0                         6.6 kB         172 kB
+├ ○ /tools/ground-plane-size               14.8 kB         174 kB
+├ ○ /tools/ifa-initial-dimensions            10 kB         169 kB
+├ ○ /tools/l-match                         10.8 kB         170 kB
+├ ○ /tools/large-array-near-field            148 B         307 kB
+├ ○ /tools/lora-airtime                    6.51 kB         173 kB
+├ ○ /tools/lte-signal-metrics              15.2 kB         174 kB
+├ ○ /tools/measurement-sampling            7.68 kB         174 kB
+├ ○ /tools/metal-plane-effect              13.9 kB         173 kB
+├ ○ /tools/microstrip-line                 14.4 kB         173 kB
+├ ○ /tools/mismatch-range-impact           12.9 kB         172 kB
+├ ○ /tools/nami-gate-window                12.7 kB         172 kB
+├ ○ /tools/ncu-below-ground                38.3 kB         202 kB
+├ ○ /tools/noise-floor                     8.63 kB         174 kB
+├ ○ /tools/ota-implementation-loss         11.6 kB         188 kB
+├ ○ /tools/patch-antenna-dimensions          147 B         307 kB
+├ ○ /tools/patch-hpbw-explorer              4.1 kB         167 kB
+├ ○ /tools/pointing-margin                 11.7 kB         174 kB
+├ ○ /tools/polarization-loss                 14 kB         173 kB
+├ ○ /tools/propagation-loss                18.6 kB         296 kB
+├ ○ /tools/radiation-efficiency-converter  7.24 kB         166 kB
+├ ○ /tools/radiation-resistance              147 B         307 kB
+├ ○ /tools/radio-wave-intuition            27.2 kB         175 kB
+├ ○ /tools/rain-attenuation                18.9 kB         178 kB
+├ ○ /tools/realized-gain                   5.99 kB         165 kB
+├ ○ /tools/reflector-ris-size-effect         146 B         307 kB
+├ ○ /tools/resonant-element-length         2.63 kB         166 kB
+├ ○ /tools/rf-antipatterns                 10.7 kB         159 kB
+├ ○ /tools/rf-basic-link-calculator        60.5 kB         341 kB
+├ ○ /tools/rf-learning-quest                359 kB         507 kB
+├ ○ /tools/shadowing-margin                10.7 kB         177 kB
+├ ○ /tools/simple-link-budget              13.6 kB         172 kB
+├ ○ /tools/small-antenna-limit               147 B         307 kB
+├ ○ /tools/small-loop-resonance              147 B         307 kB
+├ ○ /tools/spectrum-use-atlas              15.7 kB         164 kB
+├ ○ /tools/vswr-bandwidth-q                13.5 kB         172 kB
+├ ○ /tools/vswr-return-loss                  13 kB         176 kB
+└ ○ /tools/wall-penetration                  13 kB         172 kB
++ First Load JS shared by all               102 kB
+  ├ chunks/1255-ece7d574b4861f88.js        46.2 kB
+  ├ chunks/4bd1b696-100b9d70ed4e49c1.js    54.2 kB
+  └ other shared chunks (total)            1.98 kB
+
+
+○  (Static)  prerendered as static content
+

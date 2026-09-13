@@ -461,7 +461,7 @@ export function GroundPlaneSizePanel() {
                     <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                       Lg/λ={formatNumber(row.lgOverLambda, 2)}
                     </span>
-                    <span className="text-xs tabular-nums text-slate-500">
+                    <span className="text-xs tabular-nums text-slate-600">
                       {Number.isFinite(row.lengthMm) ? `≈${formatNumber(row.lengthMm, 1)}mm` : "—"}
                       {row.lgOverLambda === GROUND_PLANE_RECOMMENDED_FRACTION ? "（λ/4・推奨）" : ""}
                     </span>

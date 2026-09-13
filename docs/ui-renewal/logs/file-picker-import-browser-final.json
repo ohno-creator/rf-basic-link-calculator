@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-09-14T01:14:00+09:00",
+  "target": "GitHub Pages basePath static preview",
+  "route": "tools/cable-position-comparison/",
+  "sourceFile": "/Users/pc141/Downloads/staf-comparison-v2.json",
+  "sourceFileClassification": "comparison JSON exported earlier from the same local preview; no credentials or private account data",
+  "checks": [
+    {
+      "action": "open the visible JSON file input and choose the exported file",
+      "observed": "single-file chooser accepted the JSON and the in-page restore confirmation appeared",
+      "passed": true
+    },
+    {
+      "action": "confirm replacement",
+      "observed": "2400 MHz, current 1 m, changed 3 m, 0.6 dB/m and the 1.2 dB cable-loss difference were restored",
+      "passed": true
+    },
+    {
+      "action": "inspect restored result provenance",
+      "observed": "the saved timestamp and current-model re-evaluation notice were displayed",
+      "passed": true
+    },
+    {
+      "action": "open the consultation and print summary",
+      "observed": "the in-page print target contained model/schema, conditions, unknown placement effect, next check and the no-double-subtraction result; clicking print blocked CDP and Escape returned to the page",
+      "passed": false,
+      "limitation": "native print dialog visibility and completed print output were not independently confirmed"
+    }
+  ]
+}

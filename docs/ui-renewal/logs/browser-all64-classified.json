@@ -1,0 +1,396 @@
+[
+  {
+    "slug": "antenna-isolation",
+    "newObservedErrors": [
+      {
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received"
+      }
+    ],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "antenna-keepout",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "antenna-spacing",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "antenna-term-lab",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 2
+  },
+  {
+    "slug": "aperture-gain-beamwidth",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "array-grating-lobe",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "battery-life",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "body-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "cable-position-comparison",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "cellular-band-map",
+    "newObservedErrors": [],
+    "initialOverflow": true,
+    "h1Count": 1
+  },
+  {
+    "slug": "coaxial-cable-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "db-family",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "db-feel",
+    "newObservedErrors": [],
+    "initialOverflow": true,
+    "h1Count": 1
+  },
+  {
+    "slug": "dbm-converter",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "desense",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "detuning-estimator",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "diffraction-shadow",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "diversity-gain",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "effective-aperture",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "eirp-compliance",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "electrical-length",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "far-field-distance",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "field-strength",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "free-space-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "frequency-wavelength",
+    "newObservedErrors": [],
+    "initialOverflow": true,
+    "h1Count": 1
+  },
+  {
+    "slug": "fresnel-zone",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "gnss-cn0",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "ground-plane-size",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "ifa-initial-dimensions",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "l-match",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "large-array-near-field",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "lora-airtime",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "lte-signal-metrics",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "measurement-sampling",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "metal-plane-effect",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "microstrip-line",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "mismatch-range-impact",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "nami-gate-window",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "ncu-below-ground",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "noise-floor",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "ota-implementation-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "patch-antenna-dimensions",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "patch-hpbw-explorer",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "pointing-margin",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "polarization-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "propagation-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "radiation-efficiency-converter",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "radiation-resistance",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "radio-wave-intuition",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 2
+  },
+  {
+    "slug": "rain-attenuation",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "realized-gain",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "reflector-ris-size-effect",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "resonant-element-length",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "rf-antipatterns",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "rf-basic-link-calculator",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "rf-learning-quest",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "shadowing-margin",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "simple-link-budget",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "small-antenna-limit",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "small-loop-resonance",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "spectrum-use-atlas",
+    "newObservedErrors": [
+      {
+        "timestamp": "2026-09-13T13:19:17.648Z",
+        "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)"
+      }
+    ],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "vswr-bandwidth-q",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "vswr-return-loss",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  },
+  {
+    "slug": "wall-penetration",
+    "newObservedErrors": [],
+    "initialOverflow": false,
+    "h1Count": 1
+  }
+]

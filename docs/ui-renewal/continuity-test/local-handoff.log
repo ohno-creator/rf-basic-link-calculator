@@ -1,0 +1,22 @@
+{
+  "id": "20260913-220712-ollama",
+  "backend": "ollama",
+  "model": "qwen3-coder:30b",
+  "mode": "chat",
+  "ok": true,
+  "elapsedMs": 3346,
+  "queuedMs": 0,
+  "exitCode": 0,
+  "priority": "night",
+  "timedOut": false,
+  "changedFiles": [],
+  "warnings": [],
+  "task": "GPT司令塔が利用不可の模擬試験。ツール呼出し禁止。次の引き継ぎを読み、提出判定を日本語2文で返してください。UI改修は編集中、単体テスト成功、ブラウザ操作未検証。公開禁止。残量不明。未検証の版を完成と呼ばず、次の検証を示してください。",
+  "result": "このツールは現在、UI改修が編集中であり、単体テストは成功していますが、ブラウザ操作の検証は行っていません。未検証の版を「完成」とは言わず、次の検証段階を示す必要があります。\n\n提出判定：検証未完了。次の検証を実施してください。",
+  "stats": {
+    "eval_count": 84,
+    "prompt_eval_count": 329,
+    "load_ms": 2146
+  },
+  "runFile": "/Users/pc141/Documents/RF Basic Link Calculator/.claude/delegate/runs/20260913-220712-ollama.md"
+}

@@ -246,8 +246,8 @@ export function FrequencyWavelengthPanel() {
 
   return (
     <>
-    <section className="grid gap-6 lg:grid-cols-[5fr_4fr]">
-      <div className="<Card>">
+    <section className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[5fr_4fr]">
+      <div className="min-w-0 rounded-lg border border-slate-200 bg-white p-5 shadow-card">
         <h2 className="text-base font-bold text-slate-950">入力条件</h2>
 
         <div className="mt-5">

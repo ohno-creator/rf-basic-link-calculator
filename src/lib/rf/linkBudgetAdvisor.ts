@@ -32,15 +32,16 @@ function marginAtDistanceM(input: LinkBudgetInput, distanceM: number): number | 
 }
 
 /**
- * linkMargin=0 となる最大距離[m]を返す。
- * 全範囲で届かないなら null、探索上限でも届くなら上限値を返す。
+ * linkMargin=targetMarginDb となる最大距離[m]を返す。
+ * targetMarginDb は「到達地点に残したい余裕」（既定0=ちょうど届く限界）。
+ * 全範囲で目標未達なら null、探索上限でも目標を満たすなら上限値を返す。
  */
-export function solveMaxDistanceM(input: LinkBudgetInput): number | null {
+export function solveMaxDistanceM(input: LinkBudgetInput, targetMarginDb = 0): number | null {
   const logMin = Math.log10(SEARCH_MIN_M);
   const logMax = Math.log10(SEARCH_MAX_M);
   const steps = 240;
 
-  // 対数グリッドを走査し、margin>=0 の最遠点と、その直後の margin<0 点を探す。
+  // 対数グリッドを走査し、margin>=target の最遠点と、その直後の margin<target 点を探す。
   let lastReachable: number | null = null;
   let firstUnreachableAfter: number | null = null;
   for (let i = 0; i <= steps; i += 1) {
@@ -49,7 +50,7 @@ export function solveMaxDistanceM(input: LinkBudgetInput): number | null {
     if (margin === null) {
       continue;
     }
-    if (margin >= 0) {
+    if (margin >= targetMarginDb) {
       lastReachable = distanceM;
       firstUnreachableAfter = null;
     } else if (lastReachable !== null && firstUnreachableAfter === null) {
@@ -61,7 +62,7 @@ export function solveMaxDistanceM(input: LinkBudgetInput): number | null {
     return null;
   }
   if (firstUnreachableAfter === null) {
-    return lastReachable; // 上限まで届く
+    return lastReachable; // 上限まで目標を満たす
   }
 
   // 境界を二分探索で精緻化（対数空間）。
@@ -73,7 +74,7 @@ export function solveMaxDistanceM(input: LinkBudgetInput): number | null {
     if (margin === null) {
       break;
     }
-    if (margin >= 0) {
+    if (margin >= targetMarginDb) {
       lo = mid;
     } else {
       hi = mid;

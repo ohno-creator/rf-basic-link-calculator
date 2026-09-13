@@ -1,0 +1,30 @@
+コードの独立レビュー。ツール・再委任禁止。画面未確認と明記。目的: 検索入力は矢印とEnterで選択、他のボタンやリンクは通常Enterで操作、Tabはdialog内に保持。場所/再現条件/影響/修正案を具体的に。以下がハンドラ:
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === "Tab") {
+      const focusable = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]') ?? []);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    } else if (event.key === "Escape") {
+      event.preventDefault(); onClose();
+    } else if (event.target !== inputRef.current || event.nativeEvent.isComposing) {
+      return;
+    } else if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((index) => clampIndex(index + 1));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((index) => clampIndex(index - 1));
+    } else if (event.key === "Enter") {
+      event.preventDefault();
+      const item = items[activeIndex];
+      if (item) {
+        onClose();
+        router.push(item.tool.href);
+      }
+    }
+  };
+
+  
+構造: dialogRef配下にinputRefの検索input、close button、検索結果のa複数。dialogがonKeyDownを受け取る。

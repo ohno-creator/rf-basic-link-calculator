@@ -25,16 +25,25 @@ export function CoaxCableLossPanel() {
   const [antennaGainDbi, setAntennaGainDbi] = useState(2.15);
 
   const cable = cableAssemblies[cableIndex] ?? cableAssemblies[0];
+  const frequencyError =
+    !Number.isFinite(frequencyMHz) || frequencyMHz <= 0
+      ? "周波数は0より大きい値で入力してください。"
+      : undefined;
+  const quantityError =
+    !Number.isFinite(quantity) || quantity < 1 || !Number.isInteger(quantity)
+      ? "本数は1以上の整数で入力してください。"
+      : undefined;
 
   const result = useMemo(() => {
+    if (frequencyError || quantityError) return null;
     try {
       return cableAssemblyLoss(cable.points, frequencyMHz, quantity);
     } catch {
       return null;
     }
-  }, [cable.points, frequencyMHz, quantity]);
+  }, [cable.points, frequencyMHz, quantity, frequencyError, quantityError]);
 
-  const eirp = result
+  const eirp = result && Number.isFinite(txPowerDbm) && Number.isFinite(antennaGainDbi)
     ? calculateEirp({
         txPowerDbm,
         antennaGainDbi,
@@ -86,8 +95,9 @@ export function CoaxCableLossPanel() {
           step={10}
           value={frequencyMHz}
           onChange={setFrequencyMHz}
-          error={result ? undefined : "周波数は0より大きい値で入力してください。"}
-          emptyBehavior="preserve"
+          error={frequencyError}
+          emptyBehavior="invalid"
+              clampOnBlur={false}
         />
         <Field
           id="cableQty"
@@ -97,8 +107,9 @@ export function CoaxCableLossPanel() {
           step={1}
           value={quantity}
           onChange={setQuantity}
-          error={result ? undefined : "本数は1以上で入力してください。"}
-          emptyBehavior="preserve"
+          error={quantityError}
+          emptyBehavior="invalid"
+              clampOnBlur={false}
         />
       </div>
 
@@ -125,7 +136,7 @@ export function CoaxCableLossPanel() {
             </Callout>
           ) : null}
 
-          {eirp ? (
+          {result ? (
             <div className="mt-5 rounded-lg border border-staf/20 bg-staf-light p-4">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
@@ -146,8 +157,10 @@ export function CoaxCableLossPanel() {
                   label="送信機出力"
                   unit="dBm"
                   value={txPowerDbm}
+                  error={!Number.isFinite(txPowerDbm) ? "送信機出力を入力してください。" : undefined}
                   step={0.5}
-                  emptyBehavior="preserve"
+                  emptyBehavior="invalid"
+              clampOnBlur={false}
                   onChange={setTxPowerDbm}
                 />
                 <Field
@@ -155,32 +168,34 @@ export function CoaxCableLossPanel() {
                   label="アンテナ利得"
                   unit="dBi"
                   value={antennaGainDbi}
+                  error={!Number.isFinite(antennaGainDbi) ? "アンテナ利得を入力してください。" : undefined}
                   step={0.1}
-                  emptyBehavior="preserve"
+                  emptyBehavior="invalid"
+              clampOnBlur={false}
                   onChange={setAntennaGainDbi}
                 />
               </div>
               <div className="mt-4 grid gap-3 sm:grid-cols-3">
                 <MetricCard
                   label="アンテナ端子電力"
-                  value={formatNumber(eirp.antennaInputDbm, 1)}
+                  value={formatNumber(eirp?.antennaInputDbm ?? Number.NaN, 1)}
                   unit="dBm"
                   size="sm"
                   sub={`送信機から ${formatNumber(result.totalDb, 2)} dB 減`}
                 />
                 <MetricCard
                   label="EIRP"
-                  value={formatNumber(eirp.eirpDbm, 1)}
+                  value={formatNumber(eirp?.eirpDbm ?? Number.NaN, 1)}
                   unit="dBm"
                   size="sm"
-                  sub={`${formatNumber(eirp.eirpW, 3)} W`}
+                  sub={`${formatNumber(eirp?.eirpW ?? Number.NaN, 3)} W`}
                 />
                 <MetricCard
                   label="ERP"
-                  value={formatNumber(eirp.erpDbm, 1)}
+                  value={formatNumber(eirp?.erpDbm ?? Number.NaN, 1)}
                   unit="dBm"
                   size="sm"
-                  sub={`${formatNumber(eirp.erpW, 3)} W`}
+                  sub={`${formatNumber(eirp?.erpW ?? Number.NaN, 3)} W`}
                 />
               </div>
             </div>
@@ -232,7 +247,7 @@ export function CoaxCableLossPanel() {
       </div>
       </Card>
       <div id="coax-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-        <ResultBar primary={primary} />
+        <ResultBar primary={primary} assumption="選んだ品番の測定点に基づく損失です。周波数の外挿表示・構成・本数を確認してください。比較ツールの承認カタログとは別データです。" next={{ href: "/tools/cable-position-comparison", label: "ケーブル・位置の変更を比較" }} />
         {result ? (
           <CableLossCurveDiagram
             partNumber={cable.partNumber}

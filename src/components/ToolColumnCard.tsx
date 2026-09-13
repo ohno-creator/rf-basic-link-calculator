@@ -112,7 +112,7 @@ export function ToolColumnCard({ column, live }: ToolColumnCardProps) {
               ) : (
                 <span className="font-semibold">{source.label}</span>
               )}
-              <span className="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500">
+              <span className="ml-1.5 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700">
                 {columnSourceKindLabel[source.kind]}
               </span>
               {source.locator ? <span className="ml-1 text-slate-500">{source.locator}</span> : null}
@@ -120,7 +120,7 @@ export function ToolColumnCard({ column, live }: ToolColumnCardProps) {
             </li>
           ))}
         </ul>
-        <p className="mt-2 text-[11px] text-slate-400">最終確認: {column.lastReviewed}</p>
+        <p className="mt-2 text-[11px] text-slate-600">最終確認: {column.lastReviewed}</p>
       </div>
     </Card>
   );

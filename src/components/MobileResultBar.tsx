@@ -36,7 +36,12 @@ export function MobileResultBar({ primary, judgement, targetId, extra }: MobileR
   }, [targetId]);
 
   const scrollToResult = () => {
-    document.getElementById(targetId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    const target = document.getElementById(targetId);
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true;
+      target.querySelector<HTMLElement>("summary")?.focus();
+    }
+    target?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (

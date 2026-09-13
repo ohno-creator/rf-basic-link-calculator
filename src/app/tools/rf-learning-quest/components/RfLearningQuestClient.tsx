@@ -723,7 +723,7 @@ function ManufacturerWorkflowPanel() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-md bg-white text-staf-dark">
                   <Icon aria-hidden="true" className="h-4 w-4" />
                 </span>
-                <span className="text-xs font-bold text-slate-400">STEP {index + 1}</span>
+                <span className="text-xs font-bold text-slate-600">STEP {index + 1}</span>
               </div>
               <h3 className="mt-3 text-base font-bold text-slate-950">{step.title}</h3>
               <p className="mt-1 text-xs font-bold text-staf-dark">{step.caption}</p>
@@ -771,11 +771,11 @@ function ModeSelector({
                 <Icon aria-hidden="true" className="h-4 w-4" />
                 {mode.label}
               </span>
-              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${selected ? "bg-white/20" : "bg-slate-100"}`}>
+              <span className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${selected ? "bg-white text-staf-dark" : "bg-slate-100"}`}>
                 {mode.badge}
               </span>
             </span>
-            <span className={`mt-2 block text-xs leading-relaxed ${selected ? "text-white/85" : "text-slate-500"}`}>
+            <span className={`mt-2 block text-xs leading-relaxed ${selected ? "text-white" : "text-slate-600"}`}>
               {mode.description}
             </span>
             <span className={`mt-3 flex items-center gap-1 text-[11px] font-bold ${selected ? "text-white" : "text-staf-dark"}`}>
@@ -785,7 +785,7 @@ function ModeSelector({
             <span className="mt-3 block">
               <ProgressBar value={completed} max={lessons.length} />
             </span>
-            <span className={`mt-1 block text-xs font-bold ${selected ? "text-white" : "text-slate-500"}`}>
+            <span className={`mt-1 block text-xs font-bold ${selected ? "text-white" : "text-slate-600"}`}>
               {completed}/{lessons.length} 問クリア
             </span>
           </button>
@@ -829,7 +829,7 @@ function ModeReviewPanel({
           { label: "到達点", value: guide.output }
         ].map((item) => (
           <Card key={item.label} variant="slate" padding="sm" radius="md" shadow={false}>
-            <p className="text-[11px] font-bold text-slate-400">{item.label}</p>
+            <p className="text-[11px] font-bold text-slate-600">{item.label}</p>
             <p className="mt-1 text-xs leading-relaxed text-slate-600">{item.value}</p>
           </Card>
         ))}
@@ -867,7 +867,7 @@ function StageMap({
     <Card as="section" padding="md">
       <div className="flex items-center justify-between gap-3">
         <h2 className="text-sm font-bold text-slate-950">ステージ選択</h2>
-        <span className="text-xs font-semibold text-slate-400">{chapterCount}章×10問</span>
+        <span className="text-xs font-semibold text-slate-600">{chapterCount}章×10問</span>
       </div>
       <div className="mt-3 max-h-[68vh] space-y-3 overflow-y-auto pr-1">
         {chapters.map((chapter) => {
@@ -879,7 +879,7 @@ function StageMap({
                 <p className="text-[11px] font-bold text-slate-600">
                   第{chapter.chapter}章 STAGE {chapter.from}-{chapter.to}
                 </p>
-                <p className="text-[11px] font-bold text-slate-400">{completed}/10</p>
+                <p className="text-[11px] font-bold text-slate-600">{completed}/10</p>
               </div>
               <p className="mt-0.5 px-1 text-[11px] font-semibold text-staf-dark">
                 {chapterTitleFor(modeId, chapter.chapter)}
@@ -989,7 +989,7 @@ function CardCollectionPanel({
             >
               <Icon aria-hidden="true" className="h-3.5 w-3.5" />
               {mode.label}
-              <span className={active ? "text-white/90" : "text-slate-400"}>
+              <span className={active ? "text-white" : "text-slate-600"}>
                 {done}/{lessonsForMode.length}
               </span>
               {complete ? <Trophy aria-hidden="true" className="h-3.5 w-3.5 text-amber-300" /> : null}
@@ -1027,7 +1027,7 @@ function CardCollectionPanel({
                 <p className="text-xs font-bold text-staf-dark">
                   第{chapter}章 {chapterTitleFor(viewMode, chapter)}
                 </p>
-                <p className="text-[11px] font-bold text-slate-400">
+                <p className="text-[11px] font-bold text-slate-600">
                   {chapterDone}/{lessons.length}
                 </p>
               </div>
@@ -1039,7 +1039,7 @@ function CardCollectionPanel({
                     ? rare
                       ? "border-amber-300 bg-amber-50 text-amber-900"
                       : "border-emerald-200 bg-emerald-50 text-emerald-800"
-                    : "border-dashed border-slate-200 bg-slate-50 text-slate-400 hover:border-staf/40 hover:text-staf-dark";
+                    : "border-dashed border-slate-300 bg-slate-50 text-slate-600 hover:border-staf/40 hover:text-staf-dark";
 
                   return (
                     <button
@@ -1158,7 +1158,7 @@ function AntennaGuildPanel({
                   className={`rounded-full border px-2.5 py-1 text-xs font-bold ${
                     earned
                       ? "border-staf/30 bg-white text-staf-dark"
-                      : "border-slate-200 bg-white text-slate-400"
+                      : "border-slate-300 bg-white text-slate-600"
                   }`}
                 >
                   {earned ? "獲得 " : "未解放 "}
@@ -1253,7 +1253,7 @@ function LessonBattle({
     <Card as="article" padding="lg">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-bold text-slate-400">
+          <p className="text-xs font-bold text-slate-600">
             第{chapter}章 {chapterTitleFor(lesson.mode, chapter)} / STAGE {lesson.stage} {isBossStage ? "・ボス戦" : "・通常戦"}
           </p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">{lesson.title}</h2>

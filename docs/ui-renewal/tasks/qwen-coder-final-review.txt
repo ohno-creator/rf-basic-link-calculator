@@ -1,0 +1,18 @@
+RF Basic Link Calculator UI刷新の最終差分を読み取り専用でレビューしてください。ファイルを変更せず、別モデルを呼ばないでください。
+
+対象:
+- .ui-renewal-20260913/app/src/app/tools/_components/FsplPanel.tsx
+- .ui-renewal-20260913/app/src/app/tools/_components/NoiseFloorPanel.tsx
+- .ui-renewal-20260913/app/src/app/tools/rf-basic-link-calculator/components/RfBasicLinkCalculatorClient.tsx
+- .ui-renewal-20260913/app/src/app/tools/rf-basic-link-calculator/components/GuidedLinkBudget.tsx
+- .ui-renewal-20260913/app/src/components/MobileResultBar.tsx
+- .ui-renewal-20260913/app/src/app/tools/spectrum-use-atlas/components/SpectrumAtlasClient.tsx
+- .ui-renewal-20260913/app/e2e/ui-renewal.spec.ts
+
+確認事項:
+1. FSPLの1 km→1000 m、雑音電力の125 kHz→125000 Hzで物理量と結果を維持する処理に欠陥がないか。
+2. 総合リンク設計で、重い結果詳細を初期折りたたみにし、STEP 4またはモバイル結果バーから開いてフォーカスする処理に操作不能・フォーカス・SSR上の問題がないか。
+3. SVGの各帯域をg要素で囲み、titleを単一テンプレート文字列にし、aria-labelを付けた修正にハイドレーション・SVG・アクセシビリティ上の問題がないか。
+4. E2Eが上記の回帰を実際に検出できるか。実装の写経だけのテストや不安定な待機があれば指摘する。
+
+出力は指摘ごとに「重要度P0-P3／確度／対象file:line／再現条件／根拠／影響／修正案」。問題がなければ確認した観点と残る検証限界を明示してください。多数決や点数付けは不要です。

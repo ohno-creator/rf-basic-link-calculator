@@ -4,7 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/check-comparison-data.mjs && next build",
+    "preview": "node scripts/preview-static.mjs",
+    "test:comparison:e2e": "COMPARISON_BASE_PATH=true playwright test --config playwright.comparison.config.ts",
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest run",

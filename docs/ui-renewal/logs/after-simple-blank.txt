@@ -1,0 +1,129 @@
+- link "メインコンテンツへスキップ":
+  - /url: "#main-content"
+- banner:
+  - link "ホームへ":
+    - /url: /rf-basic-link-calculator/
+    - generic: RF Basic Link Calculator
+  - button "ツールを検索":
+  - button "メニューを開く":
+- navigation "パンくず":
+  - list:
+    - link "ホーム":
+      - /url: /rf-basic-link-calculator/
+    - link "リンク設計":
+      - /url: /rf-basic-link-calculator/?category=link#tools
+    - listitem: かんたんリンク計算
+- main:
+  - heading "かんたんリンク計算" [level=1]
+  - button "説明を表示": "?"
+  - paragraph:
+    - generic: わかること
+    - generic: dBmとdBは足し引きでき、受信電力が受信感度を何dB上回るかが通信余裕です。
+  - paragraph: 送信電力、アンテナ利得、自由空間損失、追加損失、受信感度だけで、受信電力とリンクマージンを計算します。RFリンクバジェットの足し引きを最小構成で確認できます。
+  - button "使い方・適用条件を確認":
+    - text: 使い方・適用条件を確認
+  - paragraph: 1 · 条件を入力
+  - heading "かんたんリンク計算" [level=2]
+  - paragraph: 送信電力から距離損失と追加損失を引き、受信感度に対して何dB余裕があるかだけを見ます。
+  - paragraph: 説明用の条件で試す（入力を置換）。実測・推奨値ではありません。
+  - button "LPWA 920MHz / 1km":
+    - text: LPWA 920MHz / 1km
+  - button "Wi-Fi 2.4GHz / 20m":
+    - text: Wi-Fi 2.4GHz / 20m
+  - button "BLE 2.4GHz / 10m":
+    - text: BLE 2.4GHz / 10m
+  - text: 周波数
+  - button "説明を表示": "?"
+  - textbox "周波数 説明を表示 MHz" [active]
+  - generic: MHz
+  - text: 通信距離
+  - button "説明を表示": "?"
+  - textbox "通信距離 説明を表示 km": "1"
+  - combobox "距離の単位":
+    - option "m"
+    - option "km" [selected]
+  - text: 送信電力
+  - button "説明を表示": "?"
+  - textbox "送信電力 説明を表示 dBm": "13"
+  - generic: dBm
+  - text: 受信感度
+  - button "説明を表示": "?"
+  - textbox "受信感度 説明を表示 dBm": "-120"
+  - generic: dBm
+  - heading "利得と追加損失の仮定" [level=3]
+  - button "補正":
+    - text: 補正
+    - generic: "?"
+  - generic: アンテナ利得（送受信合計）
+  - textbox "アンテナ利得（送受信合計） dBi": "0"
+  - generic: dBi
+  - generic: 追加損失
+  - textbox "追加損失 dB": "10"
+  - generic: dB
+  - heading "2 · 計算結果" [level=3]
+  - paragraph: 入力した追加損失を含む概算です。見通し・遠方界を前提とし、通信成功や到達距離を保証しません。
+  - paragraph: 未入力・入力エラーのため未算出です。周波数・距離は0より大きく、追加損失は0以上、他の項目は数値で入力してください。
+  - figure "入力値を確認してください。":
+    - paragraph: 滝グラフ
+    - paragraph: 送信電力から受信電力への積み上げ引き
+    - paragraph: 送信電力から出発し、＋アンテナ利得／−自由空間損失／−追加損失と足し引きして受信電力に到達します。受信感度の基準線との差が「リンク余裕」です。入力に連動して動きます。
+    - text: 図を保存
+    - button "SVG"
+    - button "PNG"
+    - paragraph: 入力値を確認すると積み上げグラフが表示されます。
+    - generic: 入力値を確認してください。
+  - generic "考え方と詳しい解説を読む"
+  - heading "ほかのツール" [level=2]
+  - link "ケーブル・位置変更比較 配線損失と実測差を分けて比較 開く":
+    - /url: /rf-basic-link-calculator/tools/cable-position-comparison/
+    - paragraph: ケーブル・位置変更比較
+    - paragraph: 配線損失と実測差を分けて比較
+    - text: 開く
+  - link "自由空間損失（FSPL） 距離と周波数による基本損失 開く":
+    - /url: /rf-basic-link-calculator/tools/free-space-loss/
+    - paragraph: 自由空間損失（FSPL）
+    - paragraph: 距離と周波数による基本損失
+    - text: 開く
+  - link "ノイズフロア・受信感度 「どこまで弱い電波を受けられるか」の物理限界 開く":
+    - /url: /rf-basic-link-calculator/tools/noise-floor/
+    - paragraph: ノイズフロア・受信感度
+    - paragraph: 「どこまで弱い電波を受けられるか」の物理限界
+    - text: 開く
+  - link "EIRP法規チェック（920MHz帯） 空中線電力＋利得が法規上限内かを判定 開く":
+    - /url: /rf-basic-link-calculator/tools/eirp-compliance/
+    - paragraph: EIRP法規チェック（920MHz帯）
+    - paragraph: 空中線電力＋利得が法規上限内かを判定
+    - text: 開く
+  - link "降雨・大気減衰 雨と空気はどの周波数から電波を食うか 開く":
+    - /url: /rf-basic-link-calculator/tools/rain-attenuation/
+    - paragraph: 降雨・大気減衰
+    - paragraph: 雨と空気はどの周波数から電波を食うか
+    - text: 開く
+  - link "シャドウイングマージン 場所ごとのばらつきに何dB積むか 開く":
+    - /url: /rf-basic-link-calculator/tools/shadowing-margin/
+    - paragraph: シャドウイングマージン
+    - paragraph: 場所ごとのばらつきに何dB積むか
+    - text: 開く
+  - heading "アンテナ選定・実機評価でお困りの場合" [level=3]
+  - paragraph: リンクバジェット上は通信可能に見えても、実際のIoT機器では筐体、基板GND、金属部品、アンテナ配置、ケーブル、設置姿勢により通信性能が大きく変わります。スタッフ株式会社では、IoTアンテナの選定、内蔵アンテナの配置相談、実機評価に向けた技術相談を承っています。
+  - link "この条件でアンテナ選定を相談する":
+    - /url: https://www.staf.co.jp/contact.html
+    - text: この条件でアンテナ選定を相談する
+  - paragraph:
+    - link "アンテナ・無線設計の詳しい解説コラムを読む":
+      - /url: https://www.staf.co.jp/media/
+- contentinfo:
+  - paragraph: スタッフ株式会社 / Staf Corporation
+  - paragraph: IoT、LTE/LPWA/5G/Wi-Fi/BLE向けアンテナと機構部品の技術支援を行います。
+  - link "お問い合わせ":
+    - /url: https://www.staf.co.jp/contact.html
+  - link "解説コラム":
+    - /url: https://www.staf.co.jp/media/
+  - navigation "フッターナビゲーション":
+    - link "全64ツールを見る":
+      - /url: /rf-basic-link-calculator/#tools
+    - link "会社概要":
+      - /url: https://www.staf.co.jp/
+  - paragraph: © スタッフ株式会社 アンテナ・無線 基礎計算ツール集
+  - paragraph: 本ツールの計算値は初期検討の目安です。
+- alert

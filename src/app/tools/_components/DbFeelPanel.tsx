@@ -47,12 +47,12 @@ export function DbFeelPanel() {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 lg:grid-cols-[5fr_4fr]">
-      <Card as="section" padding="lg" className="flex flex-col">
+      <div className="grid min-w-0 grid-cols-1 gap-6 lg:grid-cols-[5fr_4fr]">
+      <Card as="section" padding="lg" className="min-w-0 flex flex-col">
       <h2 className="text-base font-bold text-slate-950">入力条件</h2>
 
       <div className="mt-4">
-        <div className="flex items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <label htmlFor="dbValue" className="text-sm font-semibold text-slate-950">
               dB（プラスで強く・遠く）

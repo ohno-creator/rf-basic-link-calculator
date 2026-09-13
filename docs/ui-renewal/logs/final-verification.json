@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-09-14T01:49:00+09:00",
+  "continuationCommandExit": 0,
+  "checks": [
+    {"name": "lint", "exit": 0, "elapsedSeconds": 2.421},
+    {"name": "typecheck", "exit": 0, "elapsedSeconds": 1.796},
+    {"name": "vitest", "exit": 0, "elapsedSeconds": 1.425, "files": 80, "tests": 768},
+    {"name": "pages-build", "exit": 0, "elapsedSeconds": 13.163},
+    {"name": "pages-basePath-route-http", "exit": 0, "routes": 64, "non200": []},
+    {"name": "base-source-diff", "modifiedTracked": 53, "newCode": ["e2e/ui-renewal.spec.ts"], "missingBaseFiles": []},
+    {"name": "playwright-list", "exit": 0, "files": 3, "tests": 125, "uiRenewalTests": 13, "comparisonTests": 9},
+    {"name": "playwright-main", "exit": 0, "files": 3, "tests": 125, "passed": 125, "failed": 0, "workers": 4, "elapsed": "1.3 minutes"},
+    {"name": "axe-desktop", "exit": 0, "registeredPages": 65, "completedScans": 65, "passed": 65, "failed": 0, "elapsed": "1.3 minutes", "scope": "WCAG 2.1 A/AA serious and critical"},
+    {"name": "axe-mobile-390x844", "exit": 1, "attempts": 2, "registeredPages": 65, "completedScans": 0, "testElapsedMilliseconds": 0, "failureStage": "chromium-launch", "reason": "MachPort permission denied (1100)"},
+    {"name": "playwright-b37-static", "exit": 1, "selected": 1, "testElapsedMilliseconds": 0, "failureStage": "chromium-launch", "reason": "MachPort permission denied (1100)"},
+    {"name": "original-protection", "checked": 23, "changed": []},
+    {"name": "rf-pure-functions", "checked": 66, "changed": []},
+    {"name": "pages-comparison", "exit": 1, "attempts": 2, "selected": 9, "testElapsedMilliseconds": 0, "failureStage": "chromium-launch", "reason": "MachPort permission denied (1100)"},
+    {"name": "json-artifacts", "valid": 54},
+    {"name": "continuation-lock", "present": false},
+    {"name": "static-preview", "pid": 19302, "listen": "127.0.0.1:4173", "http": 200}
+  ],
+  "playwrightExecution": "The final main run passed all 125 tests with four workers. The separate Pages comparison configuration failed before each test body on both attempts because Chromium could not register its MachPort.",
+  "accessibilityExecution": "Desktop axe scanning passed all 65 pages for WCAG 2.1 A/AA serious and critical impacts after remediating 11 color-contrast routes. The 390x844 run did not enter any test body on either attempt because Chromium launch was denied; it is not reported as an application failure or a pass.",
+  "comparisonPersistenceBrowserCheck": "Save and restore verified in Chrome. JSON export was downloaded and validated; malformed pasted JSON preserved current input, and valid schemaVersion 2 JSON restored 2400 MHz, 1 m to 3 m, and the 1.2 dB difference after confirmation. The exported file was also restored through the OS file chooser on the Pages preview. Printable content was visible in-page. Delete and system print completion remain unverified.",
+  "unitConversionBrowserCheck": "Chrome verified result-preserving conversions on field-strength, far-field-distance, battery-life, rf-basic-link-calculator IoT calibration, and ncu-below-ground. Battery-life was also operated at 390x844."
+}

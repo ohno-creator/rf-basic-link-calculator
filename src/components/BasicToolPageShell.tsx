@@ -13,20 +13,30 @@ type BasicToolPageShellProps = {
   children: ReactNode;
 };
 
-// 看板ツール（リンクバジェット診断・RF学習クエスト）は必ず関連導線に含める。
+// 看板ツール（リンクバジェット診断・RF学習クエスト）は関連導線の末尾で常設する。
 const flagshipHrefs = ["/tools/rf-basic-link-calculator", "/tools/rf-learning-quest"];
 
 export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) {
   const currentHref = `/tools/${tool.slug}`;
   const others = toolDirectory.filter((item) => item.href !== currentHref);
-  // 回遊の関連度を上げる: 看板ツール → 同カテゴリ → その他 の優先順（v4 R3）。
-  const currentCategory = toolDirectory.find((item) => item.href === currentHref)?.category;
+  // 回遊の関連度順: 同サブカテゴリ → 同カテゴリ → 看板 → その他。
+  // 以前は看板2枠が先頭固定で「いま見ている計算の隣のツール」が押し出されていたため、
+  // 近い順を先に出し、看板は入口として末尾側に残す（6枠）。
+  const current = toolDirectory.find((item) => item.href === currentHref);
   const nonFlagship = others.filter((item) => !flagshipHrefs.includes(item.href));
-  const related = [
-    ...others.filter((item) => flagshipHrefs.includes(item.href)),
-    ...nonFlagship.filter((item) => item.category === currentCategory),
-    ...nonFlagship.filter((item) => item.category !== currentCategory)
-  ].slice(0, 6);
+  const sameSubcategory = current?.subcategory
+    ? nonFlagship.filter(
+        (item) => item.subcategory === current.subcategory && item.category === current.category
+      )
+    : [];
+  const sameCategory = nonFlagship.filter(
+    (item) => item.category === current?.category && !sameSubcategory.includes(item)
+  );
+  const flagships = others.filter((item) => flagshipHrefs.includes(item.href));
+  const rest = nonFlagship.filter(
+    (item) => !sameSubcategory.includes(item) && !sameCategory.includes(item)
+  );
+  const related = [...sameSubcategory, ...sameCategory, ...flagships, ...rest].slice(0, 6);
   const beginnerItems = [
     {
       title: "何を決める？",
@@ -77,26 +87,27 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-5xl px-4 pb-8 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 pb-8 pt-4 sm:px-6 lg:px-8">
         <header>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-3xl font-bold tracking-tight text-slate-950">{tool.title}</h1>
             {tool.scopeNote ? <HelpHint text={tool.scopeNote} /> : null}
           </div>
           {/* v4 R3: 各ツールの一文の本質（essenceLead）を「わかること」として見出し直下に昇格 */}
-          <p className="mt-3 flex max-w-prose items-start gap-2 text-sm leading-relaxed">
+          <p className="mt-3 flex max-w-3xl items-start gap-2 text-sm leading-relaxed">
             <span className="mt-0.5 inline-flex shrink-0 items-center rounded-full bg-staf-light px-2 py-0.5 text-xs font-semibold text-staf-dark">
               わかること
             </span>
             <span className="font-medium text-slate-900">{tool.essenceLead}</span>
           </p>
-          <p className="mt-2 line-clamp-2 max-w-prose text-sm leading-relaxed text-slate-600">
+          <p className="mt-2 max-w-3xl break-words text-sm leading-relaxed text-slate-600">
             {tool.description}
           </p>
         </header>
 
         <div className="mt-4">
-          <CollapsibleSection title="はじめての見方" defaultOpen={false} storageKey="beginner-guide">
+          <CollapsibleSection title="使い方・適用条件を確認" defaultOpen={false} storageKey="beginner-guide">
+            {tool.scopeNote ? <p className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-950">{tool.scopeNote}</p> : null}
             <div className="grid gap-4 md:grid-cols-3 md:divide-x md:divide-slate-200">
               {beginnerItems.map((item) => {
                 const Icon = item.icon;
@@ -114,7 +125,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
           </CollapsibleSection>
         </div>
 
-        <div data-testid="tool-calculator" className="mt-6 space-y-6">{children}</div>
+        <div data-testid="tool-calculator" className="mt-4 space-y-6">{children}</div>
 
         <section className="mt-8">
           <h2 className="text-base font-bold text-slate-950">ほかのツール</h2>

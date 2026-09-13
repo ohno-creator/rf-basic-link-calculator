@@ -1,0 +1,1500 @@
+[
+  {
+    "slug": "antenna-isolation",
+    "scroll": 390,
+    "title": "2アンテナ間アイソレーション計算｜周波数・間隔からS21概算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"2アンテナ間アイソレーション\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "antenna-keepout",
+    "scroll": 390,
+    "title": "アンテナ・キープアウト領域チェック｜チップ/PCB/FPC/スプリングの必要空き地W×H判定｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"アンテナ・キープアウト領域チェック\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "antenna-spacing",
+    "scroll": 390,
+    "title": "アンテナ間隔 λ換算ツール｜MIMO・複数アンテナ配置の基準｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"アンテナ間隔 λ換算\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "antenna-term-lab",
+    "scroll": 390,
+    "title": "アンテナ用語の直感ラボ｜触って体感するアンテナ基礎用語21｜スタッフ株式会社｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"アンテナ用語の直感ラボ——アンテナ・電波シリーズ\" [level=1]",
+      "  - heading \"アンテナ用語の直感ラボ\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "aperture-gain-beamwidth",
+    "scroll": 390,
+    "title": "開口アンテナ利得・ビーム幅 計算ツール｜ホーン・レンズ・パラボラの概算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"開口アンテナ利得・ビーム幅\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "array-grating-lobe",
+    "scroll": 390,
+    "title": "不要ビーム判定ツール｜アレイアンテナの間隔と走査角｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"不要ビーム判定（アレイ間隔）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "battery-life",
+    "scroll": 390,
+    "title": "無線端末の電池寿命計算｜送信時間・周期・スリープ電流｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"無線端末の電池寿命\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "body-loss",
+    "scroll": 390,
+    "title": "人体・手の影響ボディロス 目安ツール｜手持ち・手首・体表・遮蔽で何dB消えるか｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"人体・手の影響ボディロス（装着シナリオ別）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "cable-position-comparison",
+    "scroll": 390,
+    "title": "ケーブル・位置変更の比較｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"ケーブルを延ばすと、 アンテナを移した効果はどう変わる？\" [level=1]:"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "cellular-band-map",
+    "scroll": 405,
+    "title": "周波数と4G/5G Band早わかり｜バンド地図・プラチナバンド・UL/DLとλ/2目安｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"周波数と4G/5G Band早わかり（バンド地図）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "coaxial-cable-loss",
+    "scroll": 390,
+    "title": "同軸ケーブル損失 計算ツール｜標準品の実測ロスを品番×周波数で｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"同軸ケーブル損失\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "db-family",
+    "scroll": 390,
+    "title": "dB・dBm・dBi・dBdの違い｜比率と絶対値・2.15dBの基準差を体感｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"dB・dBm・dBi・dBdの違い\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "db-feel",
+    "scroll": 418,
+    "title": "dBを体感する｜+3dBで2倍・+6dBで距離2倍を直感理解｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"dBを体感する\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "dbm-converter",
+    "scroll": 390,
+    "title": "dBm / mW / W 変換ツール｜電力単位の相互変換｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"dBm 変換\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "desense",
+    "scroll": 390,
+    "title": "デセンス計算ツール｜干渉でノイズフロアが何dB持ち上がるか（電力加算）｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"デセンス（ノイズ干渉による感度劣化）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "detuning-estimator",
+    "scroll": 390,
+    "title": "アンテナ離調推定ツール｜樹脂カバー・手把持・金属近接で共振はどれだけ下がるか｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"筐体・近接物による離調推定\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "diffraction-shadow",
+    "scroll": 390,
+    "title": "回折・回り込み計算ツール｜ビル・山の影に電波はどれだけ届くか（ITU-R P.526）｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"回折・回り込みの見える化（ナイフエッジ回折）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "diversity-gain",
+    "scroll": 390,
+    "title": "ダイバーシティ利得計算｜アンテナ間隔・相関・アウテージ｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"ダイバーシティ利得推定\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "effective-aperture",
+    "scroll": 390,
+    "title": "有効開口面積 計算ツール｜アンテナ利得dBiを受信面積へ換算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"有効開口面積・受信面積\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "eirp-compliance",
+    "scroll": 390,
+    "title": "EIRP計算・920MHz帯法規チェックツール｜ARIB STD-T108の上限と余裕｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"EIRP法規チェック（920MHz帯）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "electrical-length",
+    "scroll": 390,
+    "title": "電気長・位相換算 計算ツール｜VF・管内波長λgから位相[°]を求める｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"電気長・位相換算\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "far-field-distance",
+    "scroll": 390,
+    "title": "遠方界距離 計算ツール｜フラウンホーファ 2D²/λ と近傍界の境界｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"遠方界距離（測定距離の目安）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "field-strength",
+    "scroll": 390,
+    "title": "電界強度・電力密度 計算ツール｜EIRPと距離からV/m・dBµV/m・W/m²｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"電界強度・電力密度（EIRPと距離から）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "free-space-loss",
+    "scroll": 390,
+    "title": "自由空間損失 FSPL 計算ツール｜距離と周波数による損失｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"自由空間損失（FSPL）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "frequency-wavelength",
+    "scroll": 648,
+    "title": "周波数・波長 計算ツール｜λ・λ/2・λ/4 とアンテナサイズ｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"周波数・波長\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "fresnel-zone",
+    "scroll": 390,
+    "title": "フレネルゾーン半径計算ツール｜見通し・クリアランスの目安｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"フレネルゾーン半径\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "gnss-cn0",
+    "scroll": 390,
+    "title": "GNSS C/N0バジェット計算｜パッシブ・アクティブアンテナ比較｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"GNSS受信 C/N0バジェット\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "ground-plane-size",
+    "scroll": 390,
+    "title": "GNDプレーン寸法と効率 計算ツール｜Lg/λで決まる効率低下・GND最長辺はλ/4推奨｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"GNDプレーン寸法と効率（λ/4モノポール系）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "ifa-initial-dimensions",
+    "scroll": 390,
+    "title": "逆F・IFAアンテナ初期寸法計算｜周波数と基板εrから概算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"逆F・IFAアンテナ初期寸法\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "l-match",
+    "scroll": 390,
+    "title": "L型整合回路計算｜複素インピーダンスを50Ωへ整合｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"L型整合回路計算\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "large-array-near-field",
+    "scroll": 390,
+    "title": "大型アレイ近傍界判定ツール｜Fraunhofer距離とFresnel数｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"大型アレイ近傍界・遠方界判定\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "lora-airtime",
+    "scroll": 390,
+    "title": "LoRa Time-on-Air計算｜SF・ペイロードと920MHz送信制限｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"LoRa Time-on-Air・920MHz送信制限\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "lte-signal-metrics",
+    "scroll": 390,
+    "title": "LTE電波指標 換算ツール｜RSSI⇔RSRP・RSRQをフルロード仮定で計算（3GPP準拠）｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"LTE電波指標の換算（RSSI・RSRP・RSRQ）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "measurement-sampling",
+    "scroll": 390,
+    "title": "電測サンプリング設計ツール｜必要サンプル数 n=(zσ/E)² と Lee窓40λ・50点｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"電測サンプリング設計（必要サンプル数・Lee窓）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "metal-plane-effect",
+    "scroll": 390,
+    "title": "金属面近接の利得変化 計算ツール｜イメージ理論・λ/4で+6dB・密着で消える｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"金属面近接の利得変化（イメージ理論）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "microstrip-line",
+    "scroll": 390,
+    "title": "マイクロストリップ線路シミュレーション｜特性インピーダンス・マイター曲げ設計｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"マイクロストリップ線路\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "mismatch-range-impact",
+    "scroll": 390,
+    "title": "ミスマッチ損失と通信距離 計算ツール｜VSWRから距離への影響を算出｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"ミスマッチと通信距離\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "nami-gate-window",
+    "scroll": 390,
+    "title": "ナミゲート室内受信電力シミュレーター｜窓設置30cm角・OFF/ON/差分ヒートマップ｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"ナミゲート 室内受信電力シミュレーター\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "ncu-below-ground",
+    "scroll": 390,
+    "title": "GL以下NCU・水道BOX通信診断｜地下・メーターボックス内端末の追加損失を評価｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"GL以下NCU・水道BOX診断\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "noise-floor",
+    "scroll": 390,
+    "title": "ノイズフロア・受信感度 計算ツール｜帯域幅・NF・所要SNRから導出｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"ノイズフロアと受信感度\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "ota-implementation-loss",
+    "scroll": 390,
+    "title": "OTA実装損失・デセンス分析ツール｜TRP/TISギャップの差で自己ノイズを推定｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"OTA実装損失・デセンス分析（TRP/TISギャップ分離）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "patch-antenna-dimensions",
+    "scroll": 390,
+    "title": "矩形パッチアンテナ寸法計算ツール｜周波数・基板εr・厚みから概算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"矩形パッチアンテナ寸法\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "patch-hpbw-explorer",
+    "scroll": 390,
+    "title": "パッチアンテナ半値角体感ツール｜HPBW・利得・床面カバー｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"パッチアンテナの半値角\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "pointing-margin",
+    "scroll": 390,
+    "title": "アンテナ指向誤差マージン計算ツール｜HPBWとずれ角から利得低下を算出｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"アンテナ指向誤差マージン\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "polarization-loss",
+    "scroll": 390,
+    "title": "偏波不整合損失 計算ツール｜直線・円偏波の組み合わせと傾き角θ｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"偏波不整合損失\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "propagation-loss",
+    "scroll": 390,
+    "title": "伝搬損失モデル比較ツール｜自由空間・2波・Log-distance・奥村-秦/COST231-Hata｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"伝搬損失モデル比較\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "radiation-efficiency-converter",
+    "scroll": 390,
+    "title": "放射効率 dB・%変換ツール｜距離影響とアンテナ効率の実務目安｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"放射効率 dB⇔% 変換\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "radiation-resistance",
+    "scroll": 390,
+    "title": "短縮アンテナ放射抵抗・効率計算ツール｜短いモノポール/ダイポールの厳しさ｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"短縮アンテナ放射抵抗・効率\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "radio-wave-intuition",
+    "scroll": 390,
+    "title": "感覚でわかる電波｜触って学ぶアンテナ・電波の直感6章｜スタッフ株式会社｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"感覚でわかる電波——アンテナ・電波シリーズ\" [level=1]",
+      "  - heading \"感覚でわかる電波\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "rain-attenuation",
+    "scroll": 390,
+    "title": "降雨・大気減衰 計算ツール｜ITU-R P.838-3/P.676-13準拠｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"降雨・大気減衰\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "realized-gain",
+    "scroll": 390,
+    "title": "実効利得 計算ツール｜指向性×放射効率×整合損とdBi/dBd変換｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"実効（実現）利得と利得変換\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "reflector-ris-size-effect",
+    "scroll": 390,
+    "title": "反射板・RISサイズ効果計算ツール｜面積・距離・波長による概算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"反射板・RISサイズ効果\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "resonant-element-length",
+    "scroll": 390,
+    "title": "共振素子長 計算ツール｜λ/4モノポール・λ/2ダイポールの物理長｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"共振素子長（モノポール/ダイポール）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "rf-antipatterns",
+    "scroll": 390,
+    "title": "RFアンチパターン図鑑｜無線設計で繰り返される間違い10選を数字で学ぶ｜スタッフ株式会社｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"RFアンチパターン図鑑\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "rf-basic-link-calculator",
+    "scroll": 390,
+    "title": "通信距離・リンクバジェット簡易診断｜アンテナ・無線 基礎計算ツール｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"通信距離・リンクバジェット簡易診断\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "rf-learning-quest",
+    "scroll": 390,
+    "title": "アンテナ設計RPG学習クエスト｜VSWR・放射効率・実装レビューを学ぶ｜スタッフ株式会社｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "    - heading \"クエストで、アンテナ設計の判断を一つずつ固める\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "shadowing-margin",
+    "scroll": 390,
+    "title": "シャドウイングマージン計算ツール｜σ×Φ⁻¹(信頼率)で必要マージンを算出｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"シャドウイングマージン\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "simple-link-budget",
+    "scroll": 390,
+    "title": "かんたんリンク計算ツール｜受信電力とリンクマージンを1行で確認｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"かんたんリンク計算\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "small-antenna-limit",
+    "scroll": 390,
+    "title": "小型アンテナ限界計算ツール｜ka・Chu限界Q・比帯域｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"小型アンテナ限界（ka・Q・帯域）\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "small-loop-resonance",
+    "scroll": 390,
+    "title": "小型ループアンテナ共振計算ツール｜インダクタンスと必要容量｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"小型ループアンテナ共振\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      }
+    ]
+  },
+  {
+    "slug": "spectrum-use-atlas",
+    "scroll": 390,
+    "title": "周波数の用途地図（非セルラー編）｜スタッフ株式会社｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"周波数の用途地図\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)",
+        "timestamp": "2026-09-13T13:19:17.648Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js"
+      }
+    ]
+  },
+  {
+    "slug": "vswr-bandwidth-q",
+    "scroll": 390,
+    "title": "VSWR帯域幅・Q 計算ツール｜比帯域とQの相互変換（単一共振近似）｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"VSWR帯域幅とQ\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)",
+        "timestamp": "2026-09-13T13:19:17.648Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js"
+      }
+    ]
+  },
+  {
+    "slug": "vswr-return-loss",
+    "scroll": 390,
+    "title": "VSWR・リターンロス変換ツール｜反射係数・反射電力も計算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"VSWR・リターンロス変換\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)",
+        "timestamp": "2026-09-13T13:19:17.648Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js"
+      }
+    ]
+  },
+  {
+    "slug": "wall-penetration",
+    "scroll": 390,
+    "title": "壁・建材の透過損失 計算ツール｜石膏・コンクリート・Low-Eガラスの枚数でdBを積算｜スタッフ株式会社",
+    "width": 390,
+    "headings": [
+      "  - heading \"壁・建材の透過損失バジェット\" [level=1]"
+    ],
+    "errors": [
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: A listener indicated an asynchronous response by returning true, but the message channel closed before a response was received",
+        "timestamp": "2026-09-13T13:18:01.537Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/#comparison-result"
+      },
+      {
+        "level": "error",
+        "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)",
+        "timestamp": "2026-09-13T13:19:17.648Z",
+        "url": "http://127.0.0.1:4173/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js"
+      }
+    ]
+  }
+]

@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-09-13T23:07:00+09:00",
+  "surface": "Chrome against the GitHub Pages basePath static preview",
+  "baseUrl": "http://127.0.0.1:4173/rf-basic-link-calculator/",
+  "checks": [
+    {
+      "route": "tools/free-space-loss",
+      "inputs": ["blank distance", "0 km", "-1 km", "abc", "restore 1 km"],
+      "observed": "Blank, zero, negative, and nonnumeric input remain visible as entered and keep the primary result uncomputed. Restoring 1 km returns 91.7 dB. The separately recorded 1 km to 1000 m unit switch preserves the result."
+    },
+    {
+      "route": "tools/noise-floor",
+      "inputs": ["blank bandwidth", "0 kHz", "abc", "LoRa 125 kHz preset"],
+      "observed": "Invalid bandwidth keeps the primary result and graph uncomputed. The preset restores 125 kHz and -137.0 dBm. The separately recorded 125 kHz to 125000 Hz unit switch preserves sensitivity."
+    },
+    {
+      "route": "tools/vswr-return-loss",
+      "inputs": ["blank VSWR", "VSWR 0", "return loss 0 dB", "return loss -1 dB"],
+      "observed": "Blank and VSWR below 1 are uncomputed with field-specific errors. Return loss 0 dB is a valid boundary and shows reflection coefficient 1, reflected power 100%, VSWR infinity, and mismatch loss infinity. Negative return loss is rejected."
+    },
+    {
+      "route": "tools/coaxial-cable-loss",
+      "inputs": ["blank frequency with quantity 1", "quantity 1.5", "10000 MHz", "restore 2400 MHz and quantity 1"],
+      "observed": "Blank frequency reports only the frequency error and leaves quantity valid. Fractional quantity reports the integer error and leaves the primary result uncomputed. 10000 MHz calculates 0.98 dB and explicitly shows the out-of-range square-root-frequency extrapolation warning. Restoring 2400 MHz and quantity 1 returns 0.38 dB."
+    }
+  ],
+  "limits": "These are representative boundary checks, not exhaustive acceptance of every tool or every input combination."
+}

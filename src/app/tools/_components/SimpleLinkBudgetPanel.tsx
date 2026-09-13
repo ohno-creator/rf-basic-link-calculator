@@ -372,6 +372,28 @@ function LinkBudgetWaterfall({
 
 export function SimpleLinkBudgetPanel() {
   const [input, setInput] = useState<SimpleLinkBudgetInput>(presets[0].input);
+  const [resetKey, setResetKey] = useState(0);
+  const frequencyError =
+    !Number.isFinite(input.frequencyMHz) || input.frequencyMHz <= 0
+      ? "周波数は0より大きい数値で入力してください。"
+      : undefined;
+  const distanceError =
+    !Number.isFinite(input.distance) || input.distance <= 0
+      ? "通信距離は0より大きい数値で入力してください。"
+      : undefined;
+  const txPowerError = !Number.isFinite(input.txPowerDbm)
+    ? "送信電力を数値で入力してください。"
+    : undefined;
+  const sensitivityError = !Number.isFinite(input.receiverSensitivityDbm)
+    ? "受信感度を数値で入力してください。"
+    : undefined;
+  const gainError = !Number.isFinite(input.antennaGainTotalDbi)
+    ? "アンテナ利得を数値で入力してください。"
+    : undefined;
+  const extraLossError =
+    !Number.isFinite(input.extraLossDb) || input.extraLossDb < 0
+      ? "追加損失は0以上の数値で入力してください。"
+      : undefined;
 
   const result = useMemo(() => {
     try {
@@ -395,13 +417,14 @@ export function SimpleLinkBudgetPanel() {
       return {
         ...current,
         distanceUnit: nextUnit,
-        distance: Number.parseFloat(nextDistance.toPrecision(6))
+        distance: Number.parseFloat(nextDistance.toPrecision(15))
       };
     });
   };
 
   const applyPreset = (presetInput: SimpleLinkBudgetInput) => {
     setInput(presetInput);
+    setResetKey(key => key + 1);
   };
 
   const marginPercent = result ? clampPercent(((result.linkMarginDb + 30) / 60) * 100) : 0;
@@ -411,12 +434,14 @@ export function SimpleLinkBudgetPanel() {
     <>
       <section className="grid gap-5 lg:grid-cols-[0.85fr_1.15fr]">
       <Card as="section" padding="lg">
+        <p className="mb-2 text-xs font-bold text-staf-dark">1 · 条件を入力</p>
         <h2 className="text-xl font-bold text-slate-950">かんたんリンク計算</h2>
         <p className="mt-2 text-sm leading-relaxed text-slate-600">
           送信電力から距離損失と追加損失を引き、受信感度に対して何dB余裕があるかだけを見ます。
         </p>
 
-        <div className="mt-5 flex flex-wrap gap-2">
+        <p className="mt-4 text-xs text-slate-600">説明用の条件で試す（入力を置換）。実測・推奨値ではありません。</p>
+        <div className="mt-2 flex flex-wrap gap-2">
           {presets.map((preset) => (
             <Button
               key={preset.label}
@@ -433,6 +458,9 @@ export function SimpleLinkBudgetPanel() {
 
         <div className="mt-5 space-y-4">
           <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
             id="simpleFrequencyMHz"
             label="周波数"
             help="使う無線の中心周波数です。920MHz帯、2.4GHz帯なら、それぞれ 920 / 2400 のように入力します。"
@@ -441,9 +469,13 @@ export function SimpleLinkBudgetPanel() {
             min={1}
             step={1}
             onChange={updateNumber("frequencyMHz")}
+            error={frequencyError}
           />
 
           <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
             id="simpleDistance"
             label="通信距離"
             help="送信側と受信側の距離です。屋内や机上の確認は m、屋外の見通し確認は km が扱いやすいです。"
@@ -460,9 +492,13 @@ export function SimpleLinkBudgetPanel() {
             min={input.distanceUnit === "m" ? 0.1 : 0.001}
             step={input.distanceUnit === "m" ? 1 : 0.01}
             onChange={updateNumber("distance")}
+            error={distanceError}
           />
 
           <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
             id="simpleTxPowerDbm"
             label="送信電力"
             help="無線機の送信出力です。0dBm=1mW、10dBm=10mW、20dBm=100mWです。"
@@ -470,9 +506,13 @@ export function SimpleLinkBudgetPanel() {
             value={input.txPowerDbm}
             step={1}
             onChange={updateNumber("txPowerDbm")}
+            error={txPowerError}
           />
 
           <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
             id="simpleSensitivityDbm"
             label="受信感度"
             help="受信機が復調できる最小レベルです。仕様書の -120dBm などの値を入れます。"
@@ -480,26 +520,34 @@ export function SimpleLinkBudgetPanel() {
             value={input.receiverSensitivityDbm}
             step={1}
             onChange={updateNumber("receiverSensitivityDbm")}
+            error={sensitivityError}
           />
         </div>
 
         <div className="mt-6 border-t border-slate-200 pt-5">
           <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold text-slate-950">必要なら少しだけ補正</h3>
+            <h3 className="text-sm font-semibold text-slate-950">利得と追加損失の仮定</h3>
             <Tooltip term="補正">
-              まずは0のままで構いません。アンテナ利得が分かる、壁や筐体の追加損失を仮置きしたい、という時だけ入れます。
+              0は影響なしという仮定です。未確認とは区別してください。アンテナ利得が分かる、壁や筐体の追加損失を仮置きしたい、という時だけ入れます。
             </Tooltip>
           </div>
           <div className="mt-3 grid gap-4 sm:grid-cols-2">
             <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
               id="simpleGainTotal"
               label="アンテナ利得（送受信合計）"
               unit="dBi"
               value={input.antennaGainTotalDbi}
               step={0.5}
               onChange={updateNumber("antennaGainTotalDbi")}
+              error={gainError}
             />
             <Field
+            resetKey={resetKey}
+            emptyBehavior="invalid"
+            clampOnBlur={false}
               id="simpleExtraLoss"
               label="追加損失"
               unit="dB"
@@ -507,6 +555,7 @@ export function SimpleLinkBudgetPanel() {
               min={0}
               step={0.5}
               onChange={updateNumber("extraLossDb")}
+              error={extraLossError}
             />
           </div>
         </div>
@@ -515,9 +564,9 @@ export function SimpleLinkBudgetPanel() {
       <Card as="section" padding="lg">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h3 className="text-base font-semibold text-slate-950">結果</h3>
+            <h3 id="simple-result" className="scroll-mt-24 text-base font-semibold text-slate-950">2 · 計算結果</h3>
             <p className="mt-1 text-sm leading-relaxed text-slate-600">
-              自由空間損失だけで見る、最小構成のリンク余裕です。
+              入力した追加損失を含む概算です。見通し・遠方界を前提とし、通信成功や到達距離を保証しません。
             </p>
           </div>
           {result ? (
@@ -616,7 +665,7 @@ export function SimpleLinkBudgetPanel() {
                 href="/tools/rf-basic-link-calculator"
                 className="inline-flex items-center gap-2 rounded-full bg-staf px-4 py-2 text-sm font-semibold text-white shadow-card transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
               >
-                詳細版で見る
+                次の確認：環境・実装条件を総合版で確認
                 <ArrowRight aria-hidden="true" className="h-4 w-4" />
               </Link>
               <Link
@@ -630,7 +679,7 @@ export function SimpleLinkBudgetPanel() {
           </>
         ) : (
           <p className="mt-5 rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-800">
-            周波数・距離は0より大きい値、追加損失は0以上で入力してください。
+            未入力・入力エラーのため未算出です。各入力欄のメッセージを確認してください。
           </p>
         )}
       </Card>
@@ -669,7 +718,7 @@ export function SimpleLinkBudgetPanel() {
       </div>
 
       <div className="mt-6">
-        <SimpleLinkBudgetColumn />
+        <details className="rounded-xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer font-semibold">考え方と詳しい解説を読む</summary><SimpleLinkBudgetColumn /></details>
       </div>
     </>
   );
