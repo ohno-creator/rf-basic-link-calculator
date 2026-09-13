@@ -7,15 +7,15 @@ test.describe("tool hub", () => {
   test("home lists every tool and links to its page", async ({ page }) => {
     await page.goto("/");
     await expect(
-      page.getByRole("heading", { level: 1, name: "ケーブルと位置の変更を、条件から比較。" })
+      page.getByRole("heading", { level: 1, name: "いまの仕事から、使う計算を選ぶ。" })
     ).toBeVisible();
-    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "知りたいことに近いカードを選ぶ" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まず知りたいことを選ぶ" })).toBeVisible();
     await expect(page.getByRole("heading", { name: "すべての計算ツールから探す" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "アンテナを実装したい" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "ケーブル・整合を検討したい" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "基礎から理解したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "届く距離を見積もる" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ケーブル・位置を比較する" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "整合と損失を確かめる" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "アンテナ形状を決める" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "基礎から理解する" })).toBeVisible();
 
     for (const tool of toolDirectory) {
       await expect(page.locator(`a[href*="${tool.href}"]`).first()).toBeVisible();
@@ -26,11 +26,11 @@ test.describe("tool hub", () => {
     await page.setViewportSize({ width: 375, height: 812 });
     await page.goto("/");
 
-    await expect(page.getByRole("heading", { level: 1, name: "ケーブルと位置の変更を、条件から比較。" })).toBeVisible();
-    await expect(page.getByRole("heading", { name: "まずは総合診断" })).toBeVisible();
-    await expect(page.getByRole("link", { name: /リンクバジェット診断を開く/ })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "いまの仕事から、使う計算を選ぶ。" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "まず知りたいことを選ぶ" })).toBeVisible();
+    await expect(page.getByRole("link", { name: /総合診断/ })).toBeVisible();
     await page.locator("#purpose-routes").scrollIntoViewIfNeeded();
-    await expect(page.getByRole("heading", { name: "電波が届くか確認したい" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "届く距離を見積もる" })).toBeVisible();
     await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   });
 });
@@ -428,6 +428,8 @@ test("RF calculator opens in guided mode with advice chips that apply on click",
   const guided = page.getByTestId("guided-link-budget");
   await expect(guided).toBeVisible();
   await expect(guided.getByText("どんな通信ですか？")).toBeVisible();
+  await expect(page.getByTestId("guided-advice")).toBeHidden();
+  await page.getByRole("button", { name: "STEP 4 · 計算結果と次の行動を確認する" }).click();
   await expect(page.getByTestId("guided-advice")).toBeVisible();
 
   // シナリオカードで前提を一括セット→距離スライダー表示が連動

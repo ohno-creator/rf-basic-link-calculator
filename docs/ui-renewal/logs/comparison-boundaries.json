@@ -1,0 +1,22 @@
+[
+  {
+    "after": "-80",
+    "region": "  - region \"入力されたRSSIの差：0 dB\":"
+  },
+  {
+    "after": "-86",
+    "region": "  - region \"入力されたRSSIの差：-6 dB\":"
+  },
+  {
+    "after": "0",
+    "region": "  - region \"入力されたRSSIの差：＋80 dB\":"
+  },
+  {
+    "after": "abc",
+    "region": "  - region \"入力未完了・不正：現在の数値結論は保留しています\":"
+  },
+  {
+    "after": "",
+    "region": "  - region \"入力未完了・不正：現在の数値結論は保留しています\":"
+  }
+]

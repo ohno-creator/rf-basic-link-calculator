@@ -1,0 +1,19 @@
+[
+  {
+    "case": "simple default",
+    "result": "リンク余裕\n\n+31.3 dB\n\n0dBを上回るほど余裕あり\n\n受信電力\n\n-88.7dBm\n\n感度 -120.0 dBm\n\n自由空間損失\n\n91.7dB\n\n1.000 km"
+  },
+  {
+    "case": "simple 0dBm valid",
+    "result": "リンク余裕\n\n+18.3 dB\n\n0dBを上回るほど余裕あり\n\n受信電力\n\n-101.7dBm\n\n感度 -120.0 dBm\n\n自由空間損失\n\n91.7dB\n\n1.000 km"
+  },
+  {
+    "case": "simple keyboard clear",
+    "inputSnapshot": "textbox \"周波数 説明を表示 MHz\" [active]",
+    "result": "リンク余裕\n\n+18.3 dB\n\n0dBを上回るほど余裕あり\n\n受信電力\n\n-101.7dBm\n\n感度 -120.0 dBm\n\n自由空間損失\n\n91.7dB\n\n1.000 km"
+  },
+  {
+    "case": "simple keyboard clear then blur",
+    "inputSnapshot": "textbox \"周波数 説明を表示 MHz\": \"920\""
+  }
+]

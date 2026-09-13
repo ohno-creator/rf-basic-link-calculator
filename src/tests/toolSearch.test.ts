@@ -34,6 +34,15 @@ describe("toolKeywords 辞書の整合性", () => {
 });
 
 describe("searchTools", () => {
+  it("全64ツールを検索対象として保持する", () => {
+    expect(toolDirectory).toHaveLength(64);
+    expect(toolDirectory.some((tool) => tool.href === "/tools/cable-position-comparison")).toBe(true);
+  });
+
+  it("ケーブル・位置変更比較を困りごと語で見つけられる", () => {
+    expect(searchTools("配線変更").map((result) => result.tool.slug)).toContain("cable-position-comparison");
+  });
+
   it("空クエリは空配列", () => {
     expect(searchTools("")).toEqual([]);
     expect(searchTools("   ")).toEqual([]);

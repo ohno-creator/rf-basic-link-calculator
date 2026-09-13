@@ -893,6 +893,14 @@ exports[`tool registries > toolDirectory snapshot 1`] = `
   },
   {
     "category": "link",
+    "href": "/tools/cable-position-comparison",
+    "icon": "cable",
+    "name": "ケーブル・位置変更比較",
+    "subcategory": "link-overview",
+    "tagline": "配線損失と実測差を分けて比較",
+  },
+  {
+    "category": "link",
     "href": "/tools/simple-link-budget",
     "icon": "calculator",
     "name": "かんたんリンク計算",

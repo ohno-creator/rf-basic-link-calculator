@@ -1,0 +1,13 @@
+{
+  "recordedAt": "2026-09-14T00:18:13+09:00",
+  "command": "COMPARISON_BASE_PATH=1 npx playwright test --config docs/ui-renewal/logs/playwright-static.config.ts --grep B37",
+  "existingStaticPreviewReused": true,
+  "testsSelected": 1,
+  "exit": 1,
+  "testElapsedMilliseconds": 0,
+  "applicationTestBodyStarted": false,
+  "failureStage": "chromium launch",
+  "failureEvidence": "bootstrap_check_in org.chromium.Chromium.MachPortRendezvousServer: Permission denied (1100)",
+  "classification": "environment limitation; no application assertion ran",
+  "browserEquivalent": "The malformed and valid pasted JSON flow was completed separately through Chrome computer use on the same static Pages build."
+}

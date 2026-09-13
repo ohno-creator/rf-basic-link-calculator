@@ -1,0 +1,17 @@
+{
+  "recordedAt": "2026-09-13T22:50:00+09:00",
+  "route": "/tools/spectrum-use-atlas/",
+  "before": {
+    "developmentError": "React hydration mismatch at the SVG title children",
+    "pagesBuildError": "Minified React error #418",
+    "publicSiteSameErrorConfirmed": true
+  },
+  "rootCause": "The SVG title received six JSX text/value children. React 19 requires title children to resolve as one string during hydration.",
+  "change": "Each spectrum band is a labelled SVG group. Its title is one template-string child and the group keeps an aria-label.",
+  "after": {
+    "developmentConsoleErrorsOrWarnings": 0,
+    "pagesBasePathConsoleErrorsOrWarnings": 0,
+    "headingAndFrequencySliderVisible": true
+  },
+  "method": "Fresh Chrome tabs for Next development and GITHUB_PAGES=true static output"
+}

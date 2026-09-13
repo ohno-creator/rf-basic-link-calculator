@@ -133,6 +133,14 @@ export const tools: ToolEntry[] = [
     "subcategory": "link-overview",
   },
   {
+    "slug": "cable-position-comparison",
+    "name": "ケーブル・位置変更比較",
+    "tagline": "配線損失と実測差を分けて比較",
+    "icon": "cable",
+    "category": "link",
+    "subcategory": "link-overview",
+  },
+  {
     "slug": "simple-link-budget",
     "name": "かんたんリンク計算",
     "tagline": "受信電力と通信余裕だけを見る",

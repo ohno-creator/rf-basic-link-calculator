@@ -61,7 +61,7 @@ export function VswrConverterPanel() {
   };
 
   const powerFlow = useMemo(() => {
-    if (!result) return null;
+    if (!result || !Number.isFinite(inputPowerDbm) || !Number.isFinite(10 ** (inputPowerDbm / 10))) return null;
     const inputPowerW = dbmToW(inputPowerDbm);
     const reflectedRatio = result.reflectionCoefficient ** 2;
     const acceptedRatio = Math.max(0, 1 - reflectedRatio);
@@ -124,9 +124,11 @@ export function VswrConverterPanel() {
               label={activeMode.label}
               help="VSWRは1以上、リターンロスは0以上、反射係数Γは0以上1未満で入力します。"
               unit={activeMode.unit || undefined}
+              key={mode}
               value={value}
               step={mode === "reflection" ? 0.01 : 0.1}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
+              clampOnBlur={false}
               error={computation.error ?? undefined}
               onChange={setValue}
             />
@@ -138,7 +140,7 @@ export function VswrConverterPanel() {
         </Card>
 
         <div id="vswr-primary-result" className="space-y-4 lg:sticky lg:top-24 lg:self-start">
-          <ResultBar primary={primary} />
+          <ResultBar primary={primary} assumption="反射による不整合だけを扱います。ケーブル損失や放射効率、設置環境の影響は別途確認します。" next={{ href: "/tools/mismatch-range-impact", label: "整合による距離への影響を確認" }} />
           {result ? (
             <>
               <div className="grid gap-3 sm:grid-cols-2">
@@ -181,8 +183,10 @@ export function VswrConverterPanel() {
             label="入力電力"
             unit="dBm"
             value={inputPowerDbm}
+            error={!Number.isFinite(inputPowerDbm) ? "入力電力を数値で入力してください。" : undefined}
             step={0.5}
-            emptyBehavior="preserve"
+            emptyBehavior="invalid"
+              clampOnBlur={false}
             help="アンテナ端子への入力電力です。受け入れ電力は入力電力×(1-Γ²)で計算します。"
             onChange={setInputPowerDbm}
           />

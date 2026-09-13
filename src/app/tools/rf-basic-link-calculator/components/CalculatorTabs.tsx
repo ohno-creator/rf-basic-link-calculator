@@ -114,7 +114,7 @@ export function CalculatorTabs({
 
       {/* 第一階層: 何を計算するか（シート選択） */}
       <div className="mb-4 rounded-lg border border-slate-200 bg-white p-2 shadow-card">
-        <p className="px-1 pb-1 pt-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+        <p className="px-1 pb-1 pt-0.5 text-[11px] font-bold uppercase tracking-wide text-slate-600">
           STEP 0・何を求めますか？
         </p>
         <div role="tablist" aria-label="計算シート" className="grid gap-2 sm:grid-cols-2">
@@ -132,7 +132,7 @@ export function CalculatorTabs({
                 onClick={() => setActiveSheet(sheet.id)}
               >
                 <span className="block text-sm font-bold">{sheet.label}</span>
-                <span className={`mt-1 block text-xs ${selected ? "text-white/85" : "text-slate-500"}`}>
+                <span className={`mt-1 block text-xs ${selected ? "text-white" : "text-slate-600"}`}>
                   {sheet.description}
                 </span>
               </button>

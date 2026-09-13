@@ -87,7 +87,9 @@ export function IotHataCalibrationPanel({
                 onChange({
                   ...input,
                   iotCalibrationDistanceUnit: nextUnit,
-                  iotCalibrationDistance: Number(converted.toFixed(3))
+                  iotCalibrationDistance: Number.isFinite(converted)
+                    ? Number.parseFloat(converted.toPrecision(15))
+                    : converted
                 });
               }}
             >

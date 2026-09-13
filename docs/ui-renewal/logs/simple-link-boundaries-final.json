@@ -1,0 +1,30 @@
+{
+  "recordedAt": "2026-09-13T23:50:00+09:00",
+  "target": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/simple-link-budget/",
+  "viewport": "Chrome static Pages build",
+  "checks": [
+    {
+      "case": "frequency blank",
+      "result": "The frequency field alone showed a field-specific error and the result became uncomputed."
+    },
+    {
+      "case": "valid zeros",
+      "input": "tx power 0 dBm, antenna gain 0 dBi, extra loss 0 dB",
+      "result": "Accepted as known zero values and calculated a +31.3 dB margin."
+    },
+    {
+      "case": "extra loss -1 dB",
+      "result": "Only the extra-loss field showed an error and the result became uncomputed."
+    },
+    {
+      "case": "distance unit equivalence",
+      "input": "1 km then 1000 m",
+      "result": "The physical condition and +31.3 dB result were preserved."
+    },
+    {
+      "case": "distance 0",
+      "result": "The distance field showed its own greater-than-zero error."
+    }
+  ],
+  "rfPureFunctionChanged": false
+}

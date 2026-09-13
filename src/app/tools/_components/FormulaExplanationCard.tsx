@@ -20,7 +20,7 @@ export function FormulaExplanationCard({
     <div className="space-y-3">
       <Accordion title={title}>
         <pre className="overflow-x-auto rounded-lg bg-slate-950 p-4 text-xs leading-relaxed text-white">
-          <code>{formula}</code>
+          <code className="whitespace-normal break-words">{formula}</code>
         </pre>
         <div className="mt-3">{children}</div>
       </Accordion>

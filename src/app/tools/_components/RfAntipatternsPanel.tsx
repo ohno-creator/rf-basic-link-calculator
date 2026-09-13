@@ -181,7 +181,7 @@ export function RfAntipatternsPanel() {
             >
               {filterLabel(option)}
               <span
-                className={`text-xs ${isSelected ? "text-white/80" : "text-slate-400"}`}
+                className={`text-xs ${isSelected ? "text-white" : "text-slate-600"}`}
                 style={{ fontVariantNumeric: "tabular-nums" }}
               >
                 {countOf(option)}

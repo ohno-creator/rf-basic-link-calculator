@@ -29,6 +29,16 @@ export function FarFieldDistancePanel() {
   const [dimensionUnit, setDimensionUnit] = useState<"mm" | "m">("mm");
   const dimensionM = dimensionUnit === "mm" ? dimension / 1000 : dimension;
 
+  const handleDimensionUnitChange = (nextUnit: "mm" | "m") => {
+    if (nextUnit === dimensionUnit) return;
+    setDimension((current) => {
+      if (!Number.isFinite(current)) return current;
+      const converted = nextUnit === "m" ? current / 1000 : current * 1000;
+      return Number.parseFloat(converted.toPrecision(15));
+    });
+    setDimensionUnit(nextUnit);
+  };
+
   const result = useMemo(() => {
     try {
       return farFieldDistance({ frequencyMHz, dimensionM });
@@ -73,7 +83,7 @@ export function FarFieldDistancePanel() {
               value={frequencyMHz}
               min={1}
               step={1}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
               onChange={setFrequencyMHz}
               help="測定・評価する周波数です。"
               example="2400"
@@ -85,7 +95,7 @@ export function FarFieldDistancePanel() {
               value={dimension}
               min={dimensionUnit === "mm" ? 1 : 0.001}
               step={dimensionUnit === "mm" ? 1 : 0.01}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
               onChange={setDimension}
               unitSelect={{
                 value: dimensionUnit,
@@ -93,10 +103,10 @@ export function FarFieldDistancePanel() {
                   { value: "mm", label: "mm" },
                   { value: "m", label: "m" }
                 ],
-                onChange: (value) => setDimensionUnit(value as "mm" | "m"),
+                onChange: (value) => handleDimensionUnitChange(value as "mm" | "m"),
                 ariaLabel: "寸法の単位"
               }}
-              help="放射開口の最大差し渡し寸法です。パッチなら対角、ダイポールなら全長、アレイなら全体の外形をとります。"
+              help="放射開口の最大差し渡し寸法です。単位を切り替えても実寸法は変わりません。パッチなら対角、ダイポールなら全長、アレイなら全体の外形をとります。"
               example={dimensionUnit === "mm" ? "100" : "0.1"}
               error={dimensionError}
             />
@@ -105,7 +115,11 @@ export function FarFieldDistancePanel() {
 
         <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div id="ff-primary-result">
-            <ResultBar primary={primary} />
+            <ResultBar
+              primary={primary}
+              assumption="周波数とアンテナ最大寸法から求める理論上の目安です。周囲の反射物や測定設備の条件は別に確認してください。"
+              next={result ? { href: "/tools/field-strength", label: "離隔距離で電界強度を確認" } : undefined}
+            />
           </div>
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">3領域の境界</h2>

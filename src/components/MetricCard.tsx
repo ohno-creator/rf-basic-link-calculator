@@ -26,11 +26,11 @@ export function MetricCard({ label, value, unit, sub, tone = "neutral", size = "
   return (
     <div className={`rounded-lg border p-4 ${calloutToneClass[metricSurfaceTone[tone]]}`}>
       <div className="flex items-center gap-1.5">
-        <p className="text-xs font-semibold text-slate-500">{label}</p>
+        <p className="text-xs font-semibold text-slate-600">{label}</p>
         {hint ? <HelpHint text={hint} /> : null}
       </div>
       <Stat value={value} unit={unit} tone={metricStatTone[tone]} size={size} className="mt-1" />
-      {sub ? <p className="mt-1 text-xs leading-relaxed text-slate-500">{sub}</p> : null}
+      {sub ? <p className="mt-1 text-xs leading-relaxed text-slate-600">{sub}</p> : null}
     </div>
   );
 }

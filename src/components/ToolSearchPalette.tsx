@@ -82,6 +82,7 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [recentSlugs, setRecentSlugs] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
   // 開くたびに初期化し、入力へフォーカス。履歴もこのタイミングで読む（SSR安全）。
@@ -93,7 +94,9 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
     setActiveIndex(0);
     setRecentSlugs(loadRecentToolSlugs());
     const timer = window.setTimeout(() => inputRef.current?.focus(), 0);
-    return () => window.clearTimeout(timer);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { window.clearTimeout(timer); document.body.style.overflow = previousOverflow; };
   }, [open]);
 
   const items = useMemo<PaletteItem[]>(() => {
@@ -140,7 +143,17 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
   const clampIndex = (index: number) => Math.min(Math.max(index, 0), Math.max(items.length - 1, 0));
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === "ArrowDown") {
+    if (event.key === "Tab") {
+      const focusable = Array.from(dialogRef.current?.querySelectorAll<HTMLElement>('a[href], button:not([disabled]), input:not([disabled]), [tabindex="0"]') ?? []);
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus(); }
+    } else if (event.key === "Escape") {
+      event.preventDefault(); onClose();
+    } else if (event.target !== inputRef.current || event.nativeEvent.isComposing) {
+      return;
+    } else if (event.key === "ArrowDown") {
       event.preventDefault();
       setActiveIndex((index) => clampIndex(index + 1));
     } else if (event.key === "ArrowUp") {
@@ -153,9 +166,6 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
         onClose();
         router.push(item.tool.href);
       }
-    } else if (event.key === "Escape") {
-      event.preventDefault();
-      onClose();
     }
   };
 
@@ -191,6 +201,7 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
       }}
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-label="ツール検索"
@@ -217,7 +228,7 @@ export function ToolSearchPalette({ open, onClose }: ToolSearchPaletteProps) {
             type="button"
             onClick={onClose}
             aria-label="検索を閉じる"
-            className="absolute right-3 top-1/2 flex h-7 w-7 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
+            className="absolute right-3 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
           >
             <X aria-hidden="true" className="h-4 w-4" />
           </button>

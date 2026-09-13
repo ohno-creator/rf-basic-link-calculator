@@ -1,0 +1,26 @@
+[
+  {
+    "check": "lint",
+    "exit": 0,
+    "elapsedSeconds": 2.421,
+    "passed": true
+  },
+  {
+    "check": "typecheck",
+    "exit": 0,
+    "elapsedSeconds": 1.796,
+    "passed": true
+  },
+  {
+    "check": "vitest",
+    "exit": 0,
+    "elapsedSeconds": 1.425,
+    "passed": true
+  },
+  {
+    "check": "pages-build",
+    "exit": 0,
+    "elapsedSeconds": 13.163,
+    "passed": true
+  }
+]

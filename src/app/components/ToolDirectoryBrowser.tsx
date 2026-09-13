@@ -76,14 +76,36 @@ export function ToolDirectoryBrowser() {
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
-  // パンくず等から `/?category=<id>#tools` で来たとき、そのカテゴリを初期選択する（回遊）。
-  // 静的export互換のためクライアントマウント後にURLを読む（useSearchParamsのSuspense不要）。
   useEffect(() => {
-    const requested = new URLSearchParams(window.location.search).get("category");
-    if (requested && toolCategories.some((category) => category.id === requested)) {
-      setActiveCategory(requested);
-    }
+    const restoreFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const requested = params.get("category");
+      setActiveCategory(requested && toolCategories.some((category) => category.id === requested) ? requested : "all");
+      setQuery(params.get("q") ?? "");
+    };
+    restoreFromUrl();
+    window.addEventListener("popstate", restoreFromUrl);
+    return () => window.removeEventListener("popstate", restoreFromUrl);
   }, []);
+
+  const updateUrl = (nextQuery: string, nextCategory: string, mode: "push" | "replace") => {
+    const url = new URL(window.location.href);
+    if (nextQuery.trim()) url.searchParams.set("q", nextQuery);
+    else url.searchParams.delete("q");
+    if (nextCategory !== "all") url.searchParams.set("category", nextCategory);
+    else url.searchParams.delete("category");
+    window.history[mode === "push" ? "pushState" : "replaceState"]({}, "", `${url.pathname}${url.search}${url.hash}`);
+  };
+
+  const changeQuery = (next: string) => {
+    setQuery(next);
+    updateUrl(next, activeCategory, "replace");
+  };
+
+  const changeCategory = (next: string) => {
+    setActiveCategory(next);
+    updateUrl(query, next, "push");
+  };
 
   const trimmedQuery = query.trim();
 
@@ -114,11 +136,12 @@ export function ToolDirectoryBrowser() {
   const resetFilters = () => {
     setQuery("");
     setActiveCategory("all");
+    updateUrl("", "all", "push");
   };
 
   return (
     <section id="tools" aria-labelledby="all-tools-title" className="scroll-mt-24">
-      <div className="mx-auto max-w-6xl px-6 pb-4">
+      <div className="mx-auto max-w-6xl px-4 pb-4 sm:px-6">
         <p className="text-sm font-semibold text-staf-dark">ツール一覧</p>
         <div className="mt-2 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
           <h2 id="all-tools-title" className="text-2xl font-bold tracking-tight text-slate-950">
@@ -130,15 +153,15 @@ export function ToolDirectoryBrowser() {
         </div>
       </div>
       {/* 検索＋カテゴリ絞り込みバー: スクロール中も操作できるよう sticky（ヘッダー直下に吸着） */}
-      <div className="sticky top-[57px] z-30 border-y border-slate-200/70 bg-slate-50/85 backdrop-blur supports-[backdrop-filter]:bg-slate-50/70">
-      <div className="mx-auto max-w-6xl px-6 py-3">
+      <div className="sticky top-[65px] z-30 border-y border-slate-200/70 bg-slate-50/95 shadow-sm backdrop-blur supports-[backdrop-filter]:bg-slate-50/85">
+      <div className="mx-auto max-w-6xl px-4 py-3 sm:px-6">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <div className="relative w-full lg:max-w-sm">
             <Search aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
             <input
               type="search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => changeQuery(event.target.value)}
               placeholder="知りたいことを検索（例：届く、損失、アンテナ）"
               aria-label="ツールを検索"
               className="w-full rounded-full border border-slate-200 bg-white py-2.5 pl-9 pr-9 text-sm text-slate-900 outline-none transition focus:border-staf/50 focus:ring-2 focus:ring-staf/40"
@@ -146,7 +169,7 @@ export function ToolDirectoryBrowser() {
             {query ? (
               <button
                 type="button"
-                onClick={() => setQuery("")}
+                onClick={() => changeQuery("")}
                 aria-label="検索をクリア"
                 className="absolute right-2 top-1/2 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition hover:bg-slate-100 hover:text-slate-700"
               >
@@ -155,19 +178,19 @@ export function ToolDirectoryBrowser() {
             ) : null}
           </div>
 
-          <div role="group" aria-label="カテゴリで絞り込み" className="flex flex-wrap gap-2">
+          <div role="group" aria-label="カテゴリで絞り込み" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1 lg:flex-wrap lg:overflow-visible">
             <button
               type="button"
               aria-pressed={activeCategory === "all"}
-              onClick={() => setActiveCategory("all")}
-              className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
+              onClick={() => changeCategory("all")}
+              className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
                 activeCategory === "all"
                   ? "border-staf bg-staf text-white"
                   : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
               }`}
             >
               すべて
-              <span className={activeCategory === "all" ? "text-white/80" : "text-slate-400"}>{toolDirectory.length}</span>
+              <span className={activeCategory === "all" ? "text-white" : "text-slate-600"}>{toolDirectory.length}</span>
             </button>
             {toolCategories.map((category) => {
               const count = toolDirectory.filter((tool) => tool.category === category.id).length;
@@ -177,15 +200,15 @@ export function ToolDirectoryBrowser() {
                   key={category.id}
                   type="button"
                   aria-pressed={active}
-                  onClick={() => setActiveCategory(active ? "all" : category.id)}
-                  className={`inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
+                  onClick={() => changeCategory(active ? "all" : category.id)}
+                  className={`inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border px-3 py-2 text-sm font-semibold transition ${
                     active
                       ? "border-staf bg-staf text-white"
                       : "border-slate-200 bg-white text-slate-600 hover:border-staf/40 hover:text-staf-dark"
                   }`}
                 >
                   {category.label}
-                  <span className={active ? "text-white/80" : "text-slate-400"}>{count}</span>
+                  <span className={active ? "text-white" : "text-slate-600"}>{count}</span>
                 </button>
               );
             })}
@@ -194,8 +217,13 @@ export function ToolDirectoryBrowser() {
       </div>
       </div>
 
+      <div className="mx-auto max-w-6xl px-4 pt-4 text-sm text-slate-600 sm:px-6" aria-live="polite">
+        <span className="font-semibold text-slate-900">{activeCategory === "all" ? "すべて" : toolCategories.find((category) => category.id === activeCategory)?.label}</span>
+        {trimmedQuery ? `で「${trimmedQuery}」を検索` : "を表示"}：{filtered.length}件
+      </div>
+
       {filtered.length === 0 ? (
-        <div className="mx-auto mt-10 max-w-6xl px-6">
+        <div className="mx-auto mt-10 max-w-6xl px-4 sm:px-6">
           <div className="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-12 text-center">
             <p className="text-sm font-semibold text-slate-700">「{query}」に一致するツールは見つかりませんでした。</p>
             <button
@@ -225,7 +253,7 @@ export function ToolDirectoryBrowser() {
                 <div className="min-w-0 flex-1">
                   <h2 className="flex items-baseline gap-2 text-xl font-bold tracking-tight text-slate-950">
                     {group.label}
-                    <span className="text-xs font-semibold text-slate-400">{group.tools.length}件</span>
+                    <span className="text-xs font-semibold text-slate-600">{group.tools.length}件</span>
                   </h2>
                   <p className="mt-1 max-w-3xl text-sm leading-relaxed text-slate-500">{group.description}</p>
                   {isResearch ? (
@@ -257,7 +285,7 @@ export function ToolDirectoryBrowser() {
                     <div key={sub.id}>
                       <h3 className="flex items-baseline gap-2 text-sm font-bold text-slate-700">
                         {sub.label}
-                        <span className="text-xs font-semibold text-slate-400">{sub.tools.length}件</span>
+                        <span className="text-xs font-semibold text-slate-600">{sub.tools.length}件</span>
                       </h3>
                       <div className="mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                         {sub.tools.map((tool) => (

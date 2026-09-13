@@ -10,6 +10,7 @@
 export const toolKeywords: Record<string, string[]> = {
   // ── link ──
   "rf-basic-link-calculator": ["link budget", "回線設計", "リンク設計", "通信距離", "飛距離", "受信電力", "マージン", "エリア設計", "届かない", "飛ばない", "でんぱ"],
+  "cable-position-comparison": ["ケーブル比較", "位置比較", "配線変更", "設置場所", "同軸損失", "実測差", "before after", "アンテナ移動"],
   "simple-link-budget": ["リンクバジェット", "link budget", "リンクマージン", "link margin", "受信感度", "簡易計算", "入門", "初心者", "届かない", "りんく"],
   "free-space-loss": ["伝搬損失", "パスロス", "経路損失", "距離減衰", "path loss", "free space", "通信距離", "飛距離", "届かない", "そんしつ", "じゆうくうかん"],
   "noise-floor": ["noise floor", "sensitivity", "NF", "雑音指数", "SNR", "熱雑音", "kTB", "LoRa", "最小受信電力", "届かない", "かんど", "ざつおん"],

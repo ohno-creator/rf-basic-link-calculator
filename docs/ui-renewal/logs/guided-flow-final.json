@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-09-13T22:43:00+09:00",
+  "url": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/rf-basic-link-calculator/",
+  "desktop": {
+    "initialResultDetailsOpen": false,
+    "stepsVisible": ["STEP 1", "STEP 2", "STEP 3", "STEP 4"],
+    "step4SingleActionOpenedDetails": true,
+    "focusAfterOpen": "現在の結果：条件付き／リンク余裕 +3.3 dB　詳細を確認"
+  },
+  "mobile390": {
+    "clientWidth": 390,
+    "scrollWidth": 390,
+    "horizontalOverflow": false,
+    "resultDetailsOpen": true
+  },
+  "method": "Chrome accessibility tree, screenshot and read-only DOM measurement through CUA",
+  "limitations": "Saved screenshot files predate the final fold change; this final check is recorded as DOM and accessibility evidence."
+}

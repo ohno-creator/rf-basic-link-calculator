@@ -1,0 +1,450 @@
+[
+  {
+    "slug": "rf-basic-link-calculator",
+    "name": "リンクバジェット診断",
+    "category": "link",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "cable-position-comparison",
+    "name": "ケーブル・位置変更比較",
+    "category": "link",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "simple-link-budget",
+    "name": "かんたんリンク計算",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "free-space-loss",
+    "name": "自由空間損失（FSPL）",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "noise-floor",
+    "name": "ノイズフロア・受信感度",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "eirp-compliance",
+    "name": "EIRP法規チェック（920MHz帯）",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "rain-attenuation",
+    "name": "降雨・大気減衰",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "shadowing-margin",
+    "name": "シャドウイングマージン",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "polarization-loss",
+    "name": "偏波不整合損失",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "fresnel-zone",
+    "name": "フレネルゾーン半径",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "propagation-loss",
+    "name": "伝搬損失モデル比較",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "ncu-below-ground",
+    "name": "GL以下NCU・水道BOX診断",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "nami-gate-window",
+    "name": "ナミゲート 室内受信電力シミュレーター",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "rf-learning-quest",
+    "name": "RF学習クエスト",
+    "category": "learning",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "antenna-term-lab",
+    "name": "アンテナ用語の直感ラボ",
+    "category": "learning",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "spectrum-use-atlas",
+    "name": "周波数の用途地図（非セルラー編）",
+    "category": "basics",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "radio-wave-intuition",
+    "name": "感覚でわかる電波",
+    "category": "learning",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "patch-hpbw-explorer",
+    "name": "パッチアンテナの半値角",
+    "category": "learning",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "rf-antipatterns",
+    "name": "RFアンチパターン図鑑",
+    "category": "learning",
+    "panel": null,
+    "basic": false
+  },
+  {
+    "slug": "frequency-wavelength",
+    "name": "周波数・波長",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "radiation-efficiency-converter",
+    "name": "放射効率 dB⇔% 変換",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "dbm-converter",
+    "name": "dBm 変換",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "db-feel",
+    "name": "dBを体感する",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "vswr-return-loss",
+    "name": "VSWR・リターンロス",
+    "category": "line",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "coaxial-cable-loss",
+    "name": "同軸ケーブル損失",
+    "category": "line",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "microstrip-line",
+    "name": "マイクロストリップ線路",
+    "category": "line",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "effective-aperture",
+    "name": "有効開口面積",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "aperture-gain-beamwidth",
+    "name": "開口利得・ビーム幅",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "antenna-spacing",
+    "name": "アンテナ間隔 λ換算",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "array-grating-lobe",
+    "name": "不要ビーム判定",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "patch-antenna-dimensions",
+    "name": "パッチアンテナ寸法",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "small-loop-resonance",
+    "name": "小型ループ共振",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "radiation-resistance",
+    "name": "放射抵抗・効率",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "small-antenna-limit",
+    "name": "小型アンテナ限界",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "large-array-near-field",
+    "name": "大型アレイ近傍界",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "reflector-ris-size-effect",
+    "name": "反射板・RISサイズ効果",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "ifa-initial-dimensions",
+    "name": "逆F・IFA初期寸法",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "l-match",
+    "name": "L型整合回路",
+    "category": "line",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "diversity-gain",
+    "name": "ダイバーシティ利得",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "antenna-isolation",
+    "name": "2アンテナ間アイソレーション",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "lora-airtime",
+    "name": "LoRa送信時間・920MHz制限",
+    "category": "system",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "battery-life",
+    "name": "無線端末の電池寿命",
+    "category": "system",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "gnss-cn0",
+    "name": "GNSS C/N0バジェット",
+    "category": "system",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "mismatch-range-impact",
+    "name": "ミスマッチと通信距離",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "desense",
+    "name": "デセンス（感度劣化）",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "measurement-sampling",
+    "name": "電測サンプリング設計",
+    "category": "research",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "electrical-length",
+    "name": "電気長・位相換算",
+    "category": "line",
+    "panel": "ElectricalLengthPanel",
+    "basic": true
+  },
+  {
+    "slug": "lte-signal-metrics",
+    "name": "LTE電波指標の換算（RSSI/RSRP/RSRQ）",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "vswr-bandwidth-q",
+    "name": "VSWR帯域幅とQ",
+    "category": "antenna",
+    "panel": "VswrBandwidthQPanel",
+    "basic": true
+  },
+  {
+    "slug": "pointing-margin",
+    "name": "指向誤差マージン",
+    "category": "antenna",
+    "panel": "PointingMarginPanel",
+    "basic": true
+  },
+  {
+    "slug": "metal-plane-effect",
+    "name": "金属面近接の利得変化",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "antenna-keepout",
+    "name": "アンテナ・キープアウト領域チェック",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "wall-penetration",
+    "name": "壁・建材の透過損失",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "body-loss",
+    "name": "人体・手の影響ボディロス",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "detuning-estimator",
+    "name": "筐体・近接物の離調推定",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "ground-plane-size",
+    "name": "GNDプレーン寸法と効率",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "db-family",
+    "name": "dB・dBm・dBi・dBdの違い",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "cellular-band-map",
+    "name": "周波数と4G/5G Band早わかり",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "ota-implementation-loss",
+    "name": "OTA実装損失・デセンス分析",
+    "category": "implementation",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "diffraction-shadow",
+    "name": "回折・回り込みの見える化",
+    "category": "link",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "resonant-element-length",
+    "name": "共振素子長（モノポール/ダイポール）",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "far-field-distance",
+    "name": "遠方界距離（測定距離の目安）",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "realized-gain",
+    "name": "実効利得・利得変換",
+    "category": "antenna",
+    "panel": null,
+    "basic": true
+  },
+  {
+    "slug": "field-strength",
+    "name": "電界強度・電力密度",
+    "category": "basics",
+    "panel": null,
+    "basic": true
+  }
+]

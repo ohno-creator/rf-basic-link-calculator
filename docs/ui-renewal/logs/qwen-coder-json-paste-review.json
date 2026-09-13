@@ -1,0 +1,43 @@
+{
+  "recordedAt": "2026-09-14T00:17:00+09:00",
+  "model": "qwen3-coder:30b",
+  "mode": "read-only review",
+  "firstAttempt": {
+    "id": "20260914-001305-ollama",
+    "elapsedSeconds": 180.005,
+    "result": "timeout",
+    "responseItems": 0,
+    "changedFiles": []
+  },
+  "retry": {
+    "id": "20260914-001637-ollama",
+    "elapsedSeconds": 4.360,
+    "promptEvalCount": 999,
+    "evalCount": 319,
+    "changedFiles": [],
+    "input": "A minimal snippet containing load, importJsonText, the paste UI, six acceptance conditions, and the registered E2E behavior.",
+    "findings": [
+      {
+        "claim": "Expose a stack trace for malformed JSON",
+        "verdict": "rejected",
+        "reason": "The current user-facing parser message and input-preservation behavior are sufficient; a stack trace would expose implementation detail and was mislabeled P0."
+      },
+      {
+        "claim": "Add an early return for blank trimmed input",
+        "verdict": "rejected",
+        "reason": "The reviewed snippet already contains that exact early return and the action button is disabled for blank input."
+      },
+      {
+        "claim": "Automatically restore legacy records",
+        "verdict": "rejected",
+        "reason": "Legacy records intentionally remain archived and are not adopted as current numeric conclusions without a separate explicit recalculation action."
+      },
+      {
+        "claim": "Show the byte limit in the error",
+        "verdict": "rejected",
+        "reason": "The UI and error already state 1 MB; MAX_BYTES is 1024 * 1024 and readCase repeats the byte-length guard."
+      }
+    ]
+  },
+  "acceptedChanges": []
+}

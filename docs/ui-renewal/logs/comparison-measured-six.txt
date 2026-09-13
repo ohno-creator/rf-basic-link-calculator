@@ -1,0 +1,153 @@
+- main:
+  - link "スタッフ株式会社｜計算ツール一覧":
+    - /url: /rf-basic-link-calculator/
+  - generic: 社内・営業伴走β
+  - paragraph: 条件整理とケーブル比較
+  - heading "ケーブルを延ばすと、 アンテナを移した効果はどう変わる？" [level=1]:
+    - text: ケーブルを延ばすと、
+    - text: アンテナを移した効果はどう変わる？
+  - paragraph: ケーブルで失う分と、移動して変わる分を整理します。分からない条件を残したまま、次の評価へ進めます。
+  - navigation "比較の作業手順":
+    - link "1 条件を入力":
+      - /url: "#comparison-input"
+    - link "2 結果を確認":
+      - /url: "#comparison-result"
+    - link "3 保存・説明":
+      - /url: "#comparison-save"
+  - navigation "測定状況":
+    - button "まだ測っていない"
+    - button "変更前後を測った" [pressed]
+  - button "説明例を試す（編集を置換）"
+  - button "自分の条件で始める（編集を置換）"
+  - heading "1 · 使用する条件" [level=2]
+  - text: 周波数の単位
+  - combobox "周波数の単位":
+    - option "MHz" [selected]
+    - option "GHz"
+  - generic: 使用周波数（MHz）
+  - checkbox "まだ分からない" [checked]
+  - text: まだ分からない
+  - text: 対象の構成
+  - combobox "対象の構成":
+    - option "まだ確認していない" [selected]
+    - option "一つの受動給電経路（アンプ等を含まない）"
+    - option "LNA・アンプ・分配器・MIMO全体・両側の同時変更等"
+  - paragraph: 品番からの自動入力は、公開承認データの確認後に提供します。このβ版は手入力・未確認・説明例で条件を整理します。
+  - heading "同じ指標の表示値を記録" [level=2]
+  - text: 入力方法
+  - combobox "入力方法":
+    - option "変更前と変更後のdBm" [selected]
+    - option "測定差を直接入れる（切替時に測定欄をクリア）"
+  - group "現在":
+    - generic: 現在
+    - text: 測定指標
+    - combobox "測定指標":
+      - option "RSSI" [selected]
+      - option "RSRP"
+    - generic: 現在の表示（dBm）
+    - checkbox "まだ分からない"
+    - text: まだ分からない
+    - textbox "現在の表示（dBm）": "-80"
+    - paragraph
+    - generic "根拠・適用条件"
+  - group "変更後":
+    - generic: 変更後
+    - text: 測定指標
+    - combobox "測定指標":
+      - option "RSSI" [selected]
+      - option "RSRP"
+    - generic: 変更後の表示（dBm）
+    - checkbox "まだ分からない"
+    - text: まだ分からない
+    - textbox "変更後の表示（dBm）": "-74"
+    - paragraph
+    - generic "根拠・適用条件"
+  - paragraph: ＋は変更後の表示レベルが高い、−は低いことを示します。RSSI／RSRP以外のバー表示・速度等は入力しないでください。
+  - text: 記録の種類
+  - combobox "記録の種類":
+    - option "各構成1回の記録" [selected]
+    - option "利用者が集計した値（方法をメモ）"
+  - text: 変更前後のケーブル・位置・測定方法のメモ
+  - textbox "変更前後のケーブル・位置・測定方法のメモ"
+  - heading "その他の条件はそろっていますか？" [level=2]
+  - paragraph: 利用者による確認・仮定の申告です。アプリが実験を認証するものではありません。
+  - text: 無線機・送信設定
+  - combobox "無線機・送信設定":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 相手機器
+  - combobox "相手機器":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: ケーブル・位置以外の構成
+  - combobox "ケーブル・位置以外の構成":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 測り方・平均化・時間
+  - combobox "測り方・平均化・時間":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 姿勢・筐体・周囲の環境
+  - combobox "姿勢・筐体・周囲の環境":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 目的・品番・位置・構成と未確認事項（任意）
+  - textbox "目的・品番・位置・構成と未確認事項（任意）"
+  - region "入力されたRSSIの差：＋6 dB":
+    - paragraph: 2 · 今回分かること
+    - heading "入力されたRSSIの差：＋6 dB" [level=2]
+    - paragraph: 条件未確認：変更の効果は判断していません
+    - list:
+      - listitem: 入力されたRSSIの差：＋6 dB
+    - heading "分からないこと・制約" [level=3]
+    - list:
+      - listitem: 通信成功、到達距離、認証適合、量産採用を保証する計算ではありません。
+      - listitem: 表示レベルの記録です。原因の内訳は未分離です。ケーブル損失を再び引いていません。
+      - listitem: 各構成1回の記録。ばらつき未評価。
+      - listitem: RSSIには干渉・雑音が含まれる場合があります。指標の機器定義を確認し、通信品質は別に評価してください。
+      - listitem: 使用周波数が未確認です
+      - listitem: 単一の受動給電経路のモデルに適用できるか未確認、または対象外です
+      - listitem: 比較条件 無線機・送信設定：未確認
+      - listitem: 比較条件 相手機器：未確認
+      - listitem: 比較条件 ケーブル・位置以外の構成：未確認
+      - listitem: 比較条件 測り方・平均化・時間：未確認
+      - listitem: 比較条件 姿勢・筐体・周囲の環境：未確認
+    - link "周波数・チャネルを確認する":
+      - /url: "#next-check"
+    - link "条件を見直す":
+      - /url: "#comparison-input"
+    - generic "条件・根拠・数式を詳しく見る"
+  - heading "次の確認：周波数・チャネルを確認する" [level=2]
+  - paragraph: 周波数・チャネル、相手機器、送信設定、ケーブル・位置、端末の姿勢、筐体、周囲の人や金属、読み方・時間条件をそろえます。可能ならA→B→Aや繰り返し測定を行い、切断・再送等も別途確認してください。
+  - paragraph: 回数や時間は機器・現場条件に応じて決めます。配置だけの切り分け値を完成構成へ使う場合は、適用条件の確認が必要です。
+  - heading "3 · 保存・説明" [level=2]
+  - paragraph: 比較入力・メモをアプリから送信しません。保存はこの端末・ブラウザーに残ります。共有端末では機密情報を保存しないでください。
+  - button "相談用まとめを作る" [active]
+  - button "このブラウザーに1件保存"
+  - button "保存した1件を復元"
+  - button "保存した1件を削除"
+  - button "別ファイルへJSON書き出し"
+  - text: JSON読込（1MBまで・確認後に編集を置換）
+  - button "JSON読込（1MBまで・確認後に編集を置換）"
+  - status
+  - heading "相談用まとめの内容確認" [level=2]
+  - paragraph: 内容を確認してコピーし、必要に応じて既存窓口へ貼り付けてください。自動送信・自動入力は行いません。
+  - button "内容をコピー"
+  - button "比較シートを印刷"
+  - link "既存問い合わせ窓口を開く":
+    - /url: https://www.staf.co.jp/contact.html
+  - link "サービス・認証の確認先（FAQ）":
+    - /url: https://www.staf.co.jp/faq.html
+  - generic: スタッフ株式会社｜comparison-v2｜条件未確認：変更の効果は判断していません
+  - generic: スタッフ株式会社｜ケーブル・位置変更 比較シート 相談したいこと：ケーブル・アンテナ位置を変える際の条件を整理したい comparison-v2／schemaVersion 2／作成日時：2026-09-13T13:17:26.630Z 条件未確認：変更の効果は判断していません 入力されたRSSIの差：＋6 dB 入力されたRSSIの差：＋6 dB 未確認・制約： 通信成功、到達距離、認証適合、量産採用を保証する計算ではありません。 表示レベルの記録です。原因の内訳は未分離です。ケーブル損失を再び引いていません。 各構成1回の記録。ばらつき未評価。 RSSIには干渉・雑音が含まれる場合があります。指標の機器定義を確認し、通信品質は別に評価してください。 使用周波数が未確認です 単一の受動給電経路のモデルに適用できるか未確認、または対象外です 比較条件 無線機・送信設定：未確認 比較条件 相手機器：未確認 比較条件 ケーブル・位置以外の構成：未確認 比較条件 測り方・平均化・時間：未確認 比較条件 姿勢・筐体・周囲の環境：未確認 次の確認：周波数・チャネルを確認する 最終構成のA→B→Aや繰り返し測定を検討。回数・時間は機器と現場に応じて決め、切断・再送なども別途確認。 使用周波数：未確認（まだ分からない） 現在 RSSI：-80 dBm［測定記録（利用者入力）／利用者入力／出典名未記入／周波数に依存しない項目］ 変更後 RSSI：-74 dBm［測定記録（利用者入力）／利用者入力／出典名未記入／周波数に依存しない項目］ 測定・構成メモ： 無線機・送信設定：まだ不明 相手機器：まだ不明 ケーブル・位置以外の構成：まだ不明 測り方・平均化・時間：まだ不明 姿勢・筐体・周囲の環境：まだ不明 構成・目的・未確認事項メモ： 相談対象は当社アンテナの検討です。他社品の測定のみの受託案内ではありません。認証への影響は認証会社へ確認してください。
+- alert

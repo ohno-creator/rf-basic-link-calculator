@@ -242,7 +242,7 @@ export function PropagationExplorer() {
                 className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm font-semibold transition ${
                   isOn
                     ? "border-staf bg-white text-slate-900 shadow-card"
-                    : "border-slate-200 bg-white text-slate-400 hover:border-slate-300 hover:text-slate-600"
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-slate-800"
                 }`}
               >
                 <span
@@ -479,7 +479,7 @@ export function PropagationExplorer() {
         <div className="mt-3 grid gap-2">
           {measuredPoints.map((point, index) => (
             <div key={point.id} className="flex items-center gap-2">
-              <span className="w-6 shrink-0 text-xs font-semibold text-slate-400">#{index + 1}</span>
+              <span className="w-6 shrink-0 text-xs font-semibold text-slate-600">#{index + 1}</span>
               <input
                 type="number"
                 inputMode="decimal"

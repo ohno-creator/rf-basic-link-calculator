@@ -1,0 +1,35 @@
+RF Basic Link Calculatorの最終アクセシビリティ差分を読み取り専用でレビューしてください。
+
+目的:
+- axe-coreのWCAG 2.1 A/AA serious/criticalで検出されたcolor-contrastだけを直す。
+- RF計算、入力値、保存形式、URL、状態遷移を変えない。
+
+対象:
+- src/components/MetricCard.tsx
+- src/components/Stat.tsx
+- src/components/ResultBar.tsx
+- src/components/ToolColumnCard.tsx
+- src/components/DiagramExportButton.tsx
+- src/app/components/ToolDirectoryBrowser.tsx
+- src/app/tools/_components/PropagationExplorer.tsx
+- src/app/tools/_components/ShadowingMarginPanel.tsx
+- src/app/tools/_components/LteSignalMetricsPanel.tsx
+- src/app/tools/_components/VswrBandwidthQPanel.tsx
+- src/app/tools/_components/GroundPlaneSizePanel.tsx
+- src/app/tools/_components/LMatchColumn.tsx
+- src/app/tools/_components/RfAntipatternsPanel.tsx
+- src/app/tools/antenna-term-lab/components/AntennaTermLabClient.tsx
+- src/app/tools/ncu-below-ground/components/NcuFieldAnalysisPanel.tsx
+- src/app/tools/rf-basic-link-calculator/components/CalculatorTabs.tsx
+- src/app/tools/rf-learning-quest/components/RfLearningQuestClient.tsx
+
+確認事項:
+1. 文字色・背景色以外のロジック変更が混ざっていないか。
+2. 選択中・未選択、完了・未完了の区別を色以外でも維持しているか。
+3. Tailwindの競合により選択中の文字が意図と逆にならないか。
+4. 指摘があれば「重要度P0〜P3／確度／file:line／再現条件／影響／最小修正」で列挙。
+
+制約:
+- ファイルを書き換えない。
+- ブラウザやテストを実行したと主張しない。
+- 根拠のない問題を作らない。問題がなければ、その確認範囲を明記して問題なしと回答する。

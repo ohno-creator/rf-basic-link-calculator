@@ -17,6 +17,8 @@ type NumberInputProps = {
   inputMode?: "decimal" | "text";
   className?: string;
   ariaInvalid?: boolean;
+  ariaDescribedBy?: string;
+  clampOnBlur?: boolean;
 };
 
 function formatDraft(value: number): string {
@@ -38,7 +40,9 @@ export function NumberInput({
   type = "text",
   inputMode = typeof min === "number" && min >= 0 ? "decimal" : "text",
   className,
-  ariaInvalid
+  ariaInvalid,
+  ariaDescribedBy,
+  clampOnBlur = true
 }: NumberInputProps) {
   const [draft, setDraft] = useState(() => formatDraft(value));
   const committedRef = useRef(value);
@@ -68,6 +72,8 @@ export function NumberInput({
     if (Number.isFinite(parsed)) {
       committedRef.current = parsed;
       onChange(parsed);
+    } else if (emptyBehavior === "invalid") {
+      commitInvalid();
     }
   };
 
@@ -78,7 +84,7 @@ export function NumberInput({
     if (raw === "" || !Number.isFinite(parsed)) {
       if (emptyBehavior === "invalid") {
         commitInvalid();
-        setDraft("");
+        // 入力途中の文字列を消さず、エラーを見ながら修正できるようにする。
       } else {
         setDraft(formatDraft(committedRef.current));
       }
@@ -86,8 +92,8 @@ export function NumberInput({
     }
 
     let next = parsed;
-    if (typeof min === "number" && next < min) next = min;
-    if (typeof max === "number" && next > max) next = max;
+    if (clampOnBlur && typeof min === "number" && next < min) next = min;
+    if (clampOnBlur && typeof max === "number" && next > max) next = max;
     if (!Object.is(next, committedRef.current)) {
       committedRef.current = next;
       onChange(next);
@@ -108,6 +114,7 @@ export function NumberInput({
       onChange={(event) => handleChange(event.target.value)}
       onBlur={handleBlur}
       aria-invalid={ariaInvalid}
+      aria-describedby={ariaDescribedBy}
     />
   );
 }

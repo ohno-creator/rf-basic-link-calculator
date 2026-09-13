@@ -341,7 +341,7 @@ export function LteSignalMetricsPanel() {
                   onClick={() => setBandwidthMhz(entry.bandwidthMhz)}
                 >
                   {entry.bandwidthMhz}MHz
-                  <span className="ml-1 text-xs font-normal opacity-80">{entry.resourceBlocks}RB</span>
+                  <span className="ml-1 text-xs font-normal">{entry.resourceBlocks}RB</span>
                 </button>
               ))}
             </div>
@@ -535,7 +535,7 @@ export function LteSignalMetricsPanel() {
                     <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                       {entry.bandwidthMhz}MHz
                     </span>
-                    <span className="text-xs tabular-nums text-slate-500">
+                    <span className="text-xs tabular-nums text-slate-600">
                       {entry.resourceBlocks}RB ／ {SUBCARRIERS_PER_RESOURCE_BLOCK * entry.resourceBlocks}本
                     </span>
                     <span className="text-right font-semibold tabular-nums text-slate-900">

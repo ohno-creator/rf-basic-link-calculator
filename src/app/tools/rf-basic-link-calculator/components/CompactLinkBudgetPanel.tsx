@@ -56,7 +56,7 @@ function SelectField({ id, label, value, onChange, children, wide = false }: {
 }) {
   return (
     <label className={wide ? "col-span-2 min-w-0" : "min-w-0"} htmlFor={id}>
-      <span className="block truncate text-[11px] font-semibold text-slate-600">{label}</span>
+      <span className="block text-xs font-semibold text-slate-600">{label}</span>
       <select id={id} value={value} className={selectClass} onChange={(event) => onChange(event.target.value)}>{children}</select>
     </label>
   );
@@ -95,8 +95,8 @@ function LiveSlider({ id, label, valueLabel, value, min, max, step, onChange }: 
 function CompactNumberField({ id, label, unit, value, min, max, step, error, onChange, unitSelect }: NumberFieldProps) {
   return (
     <label className="min-w-0" htmlFor={id}>
-      <span className="block truncate text-[11px] font-semibold text-slate-600" title={label}>{label}</span>
-      <span className={`mt-1 flex h-9 overflow-hidden rounded-md border bg-white focus-within:border-staf focus-within:ring-2 focus-within:ring-staf/30 ${error ? "border-rose-400" : "border-slate-300"}`}>
+      <span className="block text-xs font-semibold text-slate-600" title={label}>{label}</span>
+      <span className={`mt-1 flex min-h-11 overflow-hidden rounded-md border bg-white focus-within:border-staf focus-within:ring-2 focus-within:ring-staf/30 ${error ? "border-rose-400" : "border-slate-300"}`}>
         <NumberInput
           id={id}
           value={value}
@@ -104,6 +104,7 @@ function CompactNumberField({ id, label, unit, value, min, max, step, error, onC
           max={max}
           step={step}
           emptyBehavior="invalid"
+          clampOnBlur={false}
           ariaInvalid={Boolean(error)}
           onChange={onChange}
           className="min-w-0 flex-1 px-2 text-sm font-bold tabular-nums text-slate-950 outline-none"
@@ -122,7 +123,7 @@ function CompactNumberField({ id, label, unit, value, min, max, step, error, onC
           <span className="flex min-w-12 items-center justify-center border-l border-slate-200 bg-slate-50 px-1.5 text-[11px] font-semibold text-slate-500">{unit}</span>
         )}
       </span>
-      {error ? <span className="mt-0.5 block truncate text-[10px] font-medium text-rose-700">{error}</span> : null}
+      {error ? <span className="mt-0.5 block text-xs font-medium text-rose-700">{error}</span> : null}
     </label>
   );
 }
@@ -134,8 +135,25 @@ export function CompactLinkBudgetPanel({ input, errors, onChange }: Props) {
   const distanceMax = input.distanceUnit === "m" ? 10000 : 20;
 
   function changeDistanceUnit(nextUnit: DistanceUnit) {
-    const converted = input.distanceUnit === nextUnit ? input.distance : nextUnit === "km" ? input.distance / 1000 : input.distance * 1000;
-    onChange({ ...input, distanceUnit: nextUnit, distance: Number(converted.toFixed(3)) });
+    if (input.distanceUnit === nextUnit) return;
+    const converted = nextUnit === "km" ? input.distance / 1000 : input.distance * 1000;
+    onChange({
+      ...input,
+      distanceUnit: nextUnit,
+      distance: Number.isFinite(converted) ? Number.parseFloat(converted.toPrecision(15)) : converted
+    });
+  }
+
+  function changeIotCalibrationDistanceUnit(nextUnit: DistanceUnit) {
+    if (input.iotCalibrationDistanceUnit === nextUnit) return;
+    const converted = nextUnit === "km" ? input.iotCalibrationDistance / 1000 : input.iotCalibrationDistance * 1000;
+    onChange({
+      ...input,
+      iotCalibrationDistanceUnit: nextUnit,
+      iotCalibrationDistance: Number.isFinite(converted)
+        ? Number.parseFloat(converted.toPrecision(15))
+        : converted
+    });
   }
 
   return (
@@ -245,7 +263,7 @@ export function CompactLinkBudgetPanel({ input, errors, onChange }: Props) {
 
       {input.propagationModel === "iot_hata_calibrated" ? (
         <Group title="IoT実測校正" summary={`${getPropagationAreaOption(input.propagationArea).label} / 実測 ${input.iotMeasuredReceivedPowerDbm} dBm`}>
-          <CompactNumberField id="iotCalibrationDistance" label="実測アンカー距離" unit={input.iotCalibrationDistanceUnit} value={input.iotCalibrationDistance} min={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.001} max={10000} step={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.01} error={errors.iotCalibrationDistance} onChange={(value) => update("iotCalibrationDistance", value)} unitSelect={{ value: input.iotCalibrationDistanceUnit, onChange: (value) => update("iotCalibrationDistanceUnit", value) }} />
+          <CompactNumberField id="iotCalibrationDistance" label="実測アンカー距離" unit={input.iotCalibrationDistanceUnit} value={input.iotCalibrationDistance} min={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.001} max={10000} step={input.iotCalibrationDistanceUnit === "m" ? 1 : 0.01} error={errors.iotCalibrationDistance} onChange={(value) => update("iotCalibrationDistance", value)} unitSelect={{ value: input.iotCalibrationDistanceUnit, onChange: changeIotCalibrationDistanceUnit }} />
           <CompactNumberField id="iotMeasuredReceivedPowerDbm" label="実測受信電力" unit="dBm" value={input.iotMeasuredReceivedPowerDbm} min={-180} max={0} step={0.5} error={errors.iotMeasuredReceivedPowerDbm} onChange={(value) => update("iotMeasuredReceivedPowerDbm", value)} />
           <CompactNumberField id="iotSlopeCorrectionDbPerDecade" label="距離勾配補正" unit="dB/dec" value={input.iotSlopeCorrectionDbPerDecade} min={-40} max={40} step={0.5} error={errors.iotSlopeCorrectionDbPerDecade} onChange={(value) => update("iotSlopeCorrectionDbPerDecade", value)} />
         </Group>

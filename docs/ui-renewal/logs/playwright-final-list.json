@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-09-14T01:07:50+09:00",
+  "command": "npx playwright test --list",
+  "exit": 0,
+  "total": 125,
+  "files": 3,
+  "uiRenewalTests": 13,
+  "comparisonTests": 9,
+  "latestRegistered": [
+    "単位変更は同じ物理条件と計算結果を保つ",
+    "電池寿命は無効な項目と周期超過の原因を入力欄ごとに示す",
+    "電池寿命エキスパートは適用範囲外を結果に使わない",
+    "電界強度と遠方界は空欄と受信条件の無効理由を項目別に示す",
+    "総合診断は条件入力を先に見せ、結果詳細を必要時に開く",
+    "周波数用途地図はSVGをハイドレーションエラーなく表示する",
+    "ケーブル損失は無効な項目だけにエラーを表示する",
+    "簡易計算は項目ごとの有効な0と無効値を区別する",
+    "B36 画面内確認はキーボードを閉じ込めず元の操作へ戻る",
+    "B37 ファイル選択なしでも保存JSONを確認後に復元する"
+  ],
+  "scope": "Collection inventory. The same 125 tests passed in the final main Chromium run; Pages comparison uses a separate recorded result."
+}

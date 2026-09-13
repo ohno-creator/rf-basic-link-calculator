@@ -1,0 +1,36 @@
+{
+  "recordedAt": "2026-09-14T00:10:00+09:00",
+  "target": "http://127.0.0.1:4173/rf-basic-link-calculator/tools/cable-position-comparison/",
+  "browserChecks": [
+    {
+      "case": "in-page confirmation keyboard loop",
+      "result": "The alertdialog opened with focus on Cancel; Shift+Tab moved to Confirm and Tab returned to Cancel."
+    },
+    {
+      "case": "confirmation cancellation",
+      "result": "Escape closed the alertdialog and returned focus to the original example trigger."
+    },
+    {
+      "case": "save and restore",
+      "result": "Saved the explanatory example, changed current length from 1 m to 2 m, then restored 1 m and the +1.2 dB result. The UI reported one saved case and current-model reevaluation."
+    },
+    {
+      "case": "JSON export",
+      "result": "Downloaded staf-comparison-v2.json and validated a 5293-byte schemaVersion 2 comparison-v2 explanatory case."
+    },
+    {
+      "case": "pasted JSON rejection and restore",
+      "result": "Malformed JSON was rejected while current input remained. The exported JSON then opened the in-page confirmation and restored 2400 MHz, 1 m to 3 m, and the 1.2 dB difference. The pasted text cleared after confirmation."
+    },
+    {
+      "case": "printable content",
+      "result": "The in-page consultation and print summary visibly included the conditions, unknowns, result, and next action."
+    }
+  ],
+  "notBrowserVerified": [
+    "delete saved case",
+    "system print preview or printed output",
+    "file-picker based JSON import"
+  ],
+  "notes": "The test case remains in this local browser storage. The OS file picker was not controllable through this browser path, so an in-page JSON paste fallback using the same readCase validation and 1 MB limit was added. The persistence schema, storage key, and comparison formulas were not changed. Clicking print stopped browser control before system preview could be observed."
+}

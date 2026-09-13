@@ -113,7 +113,7 @@ export function DiagramExportButton({ filenameBase, children, scale = 2 }: Diagr
   return (
     <div ref={wrapRef}>
       <div className="mb-2 flex items-center justify-end gap-2">
-        <span className="mr-auto inline-flex items-center gap-1 text-xs text-slate-400">
+        <span className="mr-auto inline-flex items-center gap-1 text-xs text-slate-600">
           <Download aria-hidden className="h-3 w-3" />
           図を保存
         </span>

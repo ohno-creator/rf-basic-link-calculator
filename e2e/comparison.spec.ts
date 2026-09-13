@@ -1,8 +1,12 @@
 import { expect, test } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 const route=process.env.COMPARISON_BASE_PATH ? '/rf-basic-link-calculator/tools/cable-position-comparison/' : '/tools/cable-position-comparison/';
-test.beforeEach(async({page})=>{page.on('dialog',d=>d.accept());await page.goto(route);});
-async function example(page:import('@playwright/test').Page){await page.getByRole('button',{name:'説明例を試す（編集を置換）'}).click();}
+test.beforeEach(async({page})=>{await page.goto(route);});
+async function confirm(page:import('@playwright/test').Page,label:string){const dialog=page.getByRole('alertdialog');await expect(dialog).toBeVisible();await dialog.getByRole('button',{name:label,exact:true}).click();await expect(dialog).toHaveCount(0);}
+async function example(page:import('@playwright/test').Page){await page.getByRole('button',{name:'説明例を試す（編集を置換）'}).click();await confirm(page,'置き換える');}
+test('B36 画面内確認はキーボードを閉じ込めず元の操作へ戻る',async({page})=>{
+ const trigger=page.getByRole('button',{name:'説明例を試す（編集を置換）'});await trigger.click();const dialog=page.getByRole('alertdialog');const cancel=dialog.getByRole('button',{name:'キャンセル'});const proceed=dialog.getByRole('button',{name:'置き換える'});await expect(cancel).toBeFocused();await page.keyboard.press('Shift+Tab');await expect(proceed).toBeFocused();await page.keyboard.press('Tab');await expect(cancel).toBeFocused();await page.keyboard.press('Escape');await expect(dialog).toHaveCount(0);await expect(trigger).toBeFocused();
+});
 test('A01/A02/A03/A04/A14 入力と未知・0の往復',async({page})=>{
  await example(page);await expect(page.locator('.result')).toContainText('1.2 dB');await expect(page.locator('.result')).toContainText('未算出');
  await page.getByText('配置の効果も仮定してみる',{exact:true}).click();
@@ -26,7 +30,7 @@ test('B09/B10/B11 単位と連動を保存・復元',async({page})=>{
  await example(page);const unitSelects=page.locator('.units select');await unitSelects.nth(1).selectOption('mm');await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');
  await unitSelects.nth(0).selectOption('GHz');await expect(page.getByLabel('使用周波数（GHz）',{exact:true})).toHaveValue('2.4');
  await page.getByLabel('現在の損失係数（dB/m）',{exact:true}).fill('0.5');await expect(page.locator('.result')).toContainText('1 dB');
- await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await page.getByRole('button',{name:'自分の条件で始める（編集を置換）'}).click();await page.getByRole('button',{name:'保存した1件を復元'}).click();await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');await expect(page.locator('.result')).toContainText('1 dB');
+ await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await confirm(page,'保存する');await page.getByRole('button',{name:'自分の条件で始める（編集を置換）'}).click();await confirm(page,'置き換える');await page.getByRole('button',{name:'保存した1件を復元'}).click();await confirm(page,'復元する');await expect(page.getByLabel('現在の長さ（mm）',{exact:true})).toHaveValue('1000');await expect(page.locator('.result')).toContainText('1 dB');
 });
 test('B20/B27/B28/B29 出力・印刷・相談の非送信',async({page,context})=>{
  const marker='COMPARISON_SENTINEL_20260912_<script>alert(1)</script>';const requests:string[]=[];context.on('request',r=>requests.push(r.url()+' '+(r.postData()||'')));
@@ -39,8 +43,13 @@ test('B20/B27/B28/B29 出力・印刷・相談の非送信',async({page,context}
 });
 test('B21/B24/B35 失敗時の保護と対象キーのみ削除',async({page})=>{
  await example(page);await page.getByLabel('JSON読込（1MBまで・確認後に編集を置換）').setInputFiles({name:'broken.json',mimeType:'application/json',buffer:Buffer.from('{')});await expect(page.getByRole('status')).toContainText('現在の入力は保持');await expect(page.locator('.result')).toContainText('1.2 dB');
- await page.evaluate(()=>localStorage.setItem('other-app','keep'));await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await page.getByRole('button',{name:'保存した1件を削除'}).click();expect(await page.evaluate(()=>localStorage.getItem('other-app'))).toBe('keep');
- await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('blocked');};});await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await expect(page.getByRole('status')).toContainText('保存できません');await expect(page.locator('.result')).toContainText('1.2 dB');
+ await page.evaluate(()=>localStorage.setItem('other-app','keep'));await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await confirm(page,'保存する');await page.getByRole('button',{name:'保存した1件を削除'}).click();await confirm(page,'削除する');expect(await page.evaluate(()=>localStorage.getItem('other-app'))).toBe('keep');
+ await page.evaluate(()=>{Storage.prototype.setItem=()=>{throw new Error('blocked');};});await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await confirm(page,'保存する');await expect(page.getByRole('status')).toContainText('保存できません');await expect(page.locator('.result')).toContainText('1.2 dB');
+});
+test('B37 ファイル選択なしでも保存JSONを確認後に復元する',async({page})=>{
+ await example(page);await page.getByRole('button',{name:'このブラウザーに1件保存',exact:true}).click();await confirm(page,'保存する');const raw=await page.evaluate(()=>localStorage.getItem('staf.cable-position-comparison.v2'));expect(raw).not.toBeNull();
+ await page.getByText('ファイルを選べない場合：JSON内容を貼り付ける',{exact:true}).click();const text=page.locator('#comparison-json-text');await expect(text).toBeVisible();await text.fill('{');await page.getByRole('button',{name:'貼り付けたJSONを読み込む'}).click();await expect(page.getByRole('status')).toContainText('現在の入力は保持');await expect(page.locator('.result')).toContainText('1.2 dB');
+ await text.fill(raw!);await page.getByRole('button',{name:'貼り付けたJSONを読み込む'}).click();await confirm(page,'復元する');await expect(page.getByLabel('現在の長さ（m）',{exact:true})).toHaveValue('1');await expect(page.locator('.result')).toContainText('1.2 dB');await expect(text).toHaveValue('');
 });
 test('B25/B26 画面幅・200%相当・キーボード・axe',async({page})=>{
  await example(page);for(const width of [320,375,768,1280]){await page.setViewportSize({width,height:800});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);}

@@ -363,7 +363,7 @@ export function PurposeSwitch({
               onClick={() => onChange(card.id)}
             >
               <span className="block text-base font-bold">{card.label}</span>
-              <span className={`mt-1 block text-sm leading-relaxed ${selected ? "text-white/85" : "text-slate-500"}`}>
+              <span className={`mt-1 block text-sm leading-relaxed ${selected ? "text-white" : "text-slate-600"}`}>
                 {card.description}
               </span>
             </button>
@@ -661,4 +661,3 @@ export function FieldAnalysisPanel({
     </section>
   );
 }
-

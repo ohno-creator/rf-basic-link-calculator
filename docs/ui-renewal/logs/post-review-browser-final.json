@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-09-14T01:02:00+09:00",
+  "target": "GitHub Pages basePath static preview",
+  "checks": [
+    {
+      "route": "tools/battery-life/",
+      "condition": "expert mode, temperature 61 C",
+      "observed": "temperature field showed the -20 to 60 C error; primary result changed to —; next link, result metrics, and chart were removed",
+      "passed": true
+    },
+    {
+      "route": "tools/field-strength/",
+      "condition": "EIRP cleared",
+      "observed": "EIRP field showed its numeric error; primary result changed to —; next link was removed",
+      "passed": true
+    },
+    {
+      "route": "tools/field-strength/",
+      "condition": "receiver calculation enabled, frequency 0 MHz",
+      "observed": "frequency field showed its positive-value error; the valid 0.548 V/m field-strength result remained; receiver power showed 未算出（周波数・利得を確認）",
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "recordedAt": "2026-09-14T01:37:00+09:00",
+  "finalMainRun": {
+    "command": "npm run test:e2e -- --workers=4",
+    "result": "passed",
+    "files": 3,
+    "tests": 125,
+    "passed": 125,
+    "failed": 0,
+    "elapsed": "1.3 minutes",
+    "coverageNotes": [
+      "comparison.spec.ts 9 tests passed in the same run",
+      "ui-renewal.spec.ts 13 tests passed in the same run",
+      "tools.spec.ts including the basic-tool first-viewport scan passed"
+    ]
+  },
+  "diagnosticFirstRun": {
+    "command": "npm run test:e2e",
+    "passed": 120,
+    "failed": 5,
+    "resolution": "three stale expectations were updated to the accepted UI, the common tool shell was tightened without removing content, and the JSON textarea locator was stabilized; every affected test then passed"
+  },
+  "pagesComparisonScript": {
+    "command": "npm run test:comparison:e2e",
+    "result": "environment launch failure",
+    "selected": 9,
+    "testBodyElapsedMilliseconds": 0,
+    "reason": "Chromium MachPort permission denied (1100) before each test body",
+    "applicationFailure": false,
+    "attempts": 2,
+    "retryPolicy": "the single allowed transient retry was used and reproduced the same launch failure; no further retry or permission bypass"
+  },
+  "pagesStaticEvidence": "The 64 basePath routes returned HTTP 200 and priority Pages routes were operated in Chrome. The same nine comparison tests passed against the development server in the final main run.",
+  "desktopAccessibility": {
+    "command": "npx playwright test --config docs/ui-renewal/audit/accessibility.config.mjs",
+    "result": "passed",
+    "registeredPages": 65,
+    "passed": 65,
+    "failed": 0,
+    "elapsed": "1.3 minutes",
+    "scope": "axe WCAG 2.1 A/AA tags, serious and critical impacts"
+  },
+  "mobileAccessibility": {
+    "command": "RF_A11Y_STATIC=1 RF_A11Y_VIEWPORT=mobile npx playwright test --config docs/ui-renewal/audit/accessibility.config.mjs",
+    "result": "environment launch failure",
+    "attempts": 2,
+    "registeredPages": 65,
+    "completedScans": 0,
+    "testBodyElapsedMilliseconds": 0,
+    "reason": "Chromium MachPort permission denied (1100); first attempt also reported EMFILE from the temporary development server"
+  }
+}

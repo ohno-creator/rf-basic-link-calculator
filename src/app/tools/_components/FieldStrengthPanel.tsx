@@ -32,6 +32,16 @@ export function FieldStrengthPanel() {
   const [rxGainDbi, setRxGainDbi] = useState(2);
   const distanceM = distanceUnit === "km" ? distance * 1000 : distance;
 
+  const handleDistanceUnitChange = (nextUnit: "m" | "km") => {
+    if (nextUnit === distanceUnit) return;
+    setDistance((current) => {
+      if (!Number.isFinite(current)) return current;
+      const converted = nextUnit === "km" ? current / 1000 : current * 1000;
+      return Number.parseFloat(converted.toPrecision(15));
+    });
+    setDistanceUnit(nextUnit);
+  };
+
   const result = useMemo(() => {
     try {
       return fieldStrengthAtDistance({
@@ -48,6 +58,14 @@ export function FieldStrengthPanel() {
   const eirpError = !Number.isFinite(eirpDbm) ? "EIRPを数値（dBm）で入力してください。" : undefined;
   const distanceError =
     !Number.isFinite(distance) || distance <= 0 ? "距離は0より大きい値を入力してください。" : undefined;
+  const frequencyError =
+    useReceiver && (!Number.isFinite(frequencyMHz) || frequencyMHz <= 0)
+      ? "周波数は0より大きい値を入力してください。"
+      : undefined;
+  const rxGainError =
+    useReceiver && !Number.isFinite(rxGainDbi)
+      ? "受信アンテナ利得を数値（dBi）で入力してください。"
+      : undefined;
 
   const primary = {
     label: "電界強度 E",
@@ -67,7 +85,7 @@ export function FieldStrengthPanel() {
               unit="dBm"
               value={eirpDbm}
               step={0.5}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
               onChange={setEirpDbm}
               help="等価等方輻射電力。送信電力＋アンテナ利得−給電損失です。30dBm=1W。"
               example="30"
@@ -79,7 +97,7 @@ export function FieldStrengthPanel() {
               value={distance}
               min={distanceUnit === "km" ? 0.001 : 0.1}
               step={distanceUnit === "km" ? 0.01 : 0.1}
-              emptyBehavior="preserve"
+              emptyBehavior="invalid"
               onChange={setDistance}
               unitSelect={{
                 value: distanceUnit,
@@ -87,10 +105,10 @@ export function FieldStrengthPanel() {
                   { value: "m", label: "m" },
                   { value: "km", label: "km" }
                 ],
-                onChange: (value) => setDistanceUnit(value as "m" | "km"),
+                onChange: (value) => handleDistanceUnitChange(value as "m" | "km"),
                 ariaLabel: "距離の単位"
               }}
-              help="送信源からの離隔距離です。遠方界・自由空間を仮定します。"
+              help="送信源からの離隔距離です。単位を切り替えても実距離は変わりません。遠方界・自由空間を仮定します。"
               example={distanceUnit === "km" ? "0.1" : "10"}
               error={distanceError}
             />
@@ -114,10 +132,11 @@ export function FieldStrengthPanel() {
                   value={frequencyMHz}
                   min={1}
                   step={1}
-                  emptyBehavior="preserve"
+                  emptyBehavior="invalid"
                   onChange={setFrequencyMHz}
                   help="実効開口 Aeff=Gλ²/4π の計算に使います。"
                   example="920"
+                  error={frequencyError}
                 />
                 <Field
                   id="fsRxGain"
@@ -125,10 +144,11 @@ export function FieldStrengthPanel() {
                   unit="dBi"
                   value={rxGainDbi}
                   step={0.5}
-                  emptyBehavior="preserve"
+                  emptyBehavior="invalid"
                   onChange={setRxGainDbi}
                   help="受信側アンテナの利得です。"
                   example="2"
+                  error={rxGainError}
                 />
               </div>
             ) : null}
@@ -137,7 +157,11 @@ export function FieldStrengthPanel() {
 
         <div className="space-y-4 lg:sticky lg:top-20 lg:self-start">
           <div id="fs-primary-result">
-            <ResultBar primary={primary} />
+            <ResultBar
+              primary={primary}
+              assumption="自由空間かつ遠方界で、EIRPが距離方向へ等方的に広がる理想条件の目安です。"
+              next={result ? { href: "/tools/far-field-distance", label: "測定距離が遠方界か確認" } : undefined}
+            />
           </div>
           <Card as="section" padding="lg">
             <h2 className="text-base font-bold text-slate-950">換算</h2>
@@ -173,6 +197,11 @@ export function FieldStrengthPanel() {
                     <dd className="font-semibold text-slate-900" style={{ fontVariantNumeric: "tabular-nums" }}>
                       {formatNumber(result.receivedPowerDbm, 1)} dBm
                     </dd>
+                  </div>
+                ) : useReceiver ? (
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-slate-600">受信電力（Aeff経由）</dt>
+                    <dd className="text-right font-semibold text-rose-700">未算出（周波数・利得を確認）</dd>
                   </div>
                 ) : null}
               </dl>

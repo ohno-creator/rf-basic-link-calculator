@@ -335,7 +335,7 @@ export function AntennaTermLabClient() {
                     className="flex h-full w-full flex-col justify-between rounded-lg p-4 pr-12 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
+                      <span className="rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-700">
                         {CATEGORY_LABELS[term.category]}
                       </span>
                     </div>

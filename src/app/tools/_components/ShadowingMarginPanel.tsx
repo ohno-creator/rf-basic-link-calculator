@@ -394,7 +394,7 @@ export function ShadowingMarginPanel() {
                     <span className={isCurrent ? "font-semibold text-staf-dark" : "text-slate-600"}>
                       {row.reliabilityPercent}%
                     </span>
-                    <span className="text-xs tabular-nums text-slate-500">
+                    <span className="text-xs tabular-nums text-slate-600">
                       z = {formatNumber(row.z, 2)}
                     </span>
                     <span className="text-right font-semibold tabular-nums text-slate-900">

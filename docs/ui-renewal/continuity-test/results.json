@@ -1,0 +1,13 @@
+[
+  {
+    "check": "duplicate-start-refused",
+    "exit": 73,
+    "passed": true
+  },
+  {
+    "check": "local-handoff",
+    "exit": 0,
+    "elapsedSeconds": 3.408,
+    "passed": true
+  }
+]

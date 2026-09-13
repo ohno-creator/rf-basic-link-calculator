@@ -1,0 +1,138 @@
+
+> rf-basic-link-calculator@0.1.0 test:e2e
+> playwright test e2e/ui-renewal.spec.ts --workers=1 --max-failures=1
+
+(node:23643) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[2m[WebServer] [22m(node:23668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22m ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+[2m[WebServer] [22m We detected multiple lockfiles and selected the directory of /Users/pc141/Documents/RF Basic Link Calculator/package-lock.json as the root directory.
+[2m[WebServer] [22m To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+[2m[WebServer] [22m   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+[2m[WebServer] [22m Detected additional lockfiles: 
+[2m[WebServer] [22m   * /Users/pc141/Documents/RF Basic Link Calculator/.ui-renewal-20260913/app/package-lock.json
+[2m[WebServer] [22m
+[2m[WebServer] [22m(node:23669) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+[2m[WebServer] [22mWatchpack Error (watcher): Error: EMFILE: too many open files, watch
+Error: Timed out waiting 120000ms from config.webServer.
+

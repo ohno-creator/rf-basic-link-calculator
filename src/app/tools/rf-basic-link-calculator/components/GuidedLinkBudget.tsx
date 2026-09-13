@@ -216,11 +216,24 @@ export function GuidedLinkBudget({
 
   const environmentActive = (lossDb: number) => input.environmentLossDb === lossDb;
 
+  const openResultDetails = () => {
+    const target = document.getElementById("guided-result-anchor");
+    if (target instanceof HTMLDetailsElement) {
+      target.open = true;
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+      target.querySelector<HTMLElement>("summary")?.focus();
+    }
+  };
+
   return (
     <section data-testid="guided-link-budget" className="mx-auto max-w-3xl space-y-4">
-      {/* 常時見える結果：ゲージ＋次の一手 */}
+      {/* 初期表示では要点だけを示し、条件入力後に詳細を開ける。 */}
       {result ? (
-        <div id="guided-result-anchor" className="space-y-3">
+        <details id="guided-result-anchor" className="scroll-mt-24 rounded-lg border border-staf/30 bg-white p-3">
+          <summary className="cursor-pointer list-none rounded-md px-2 py-2 font-bold text-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40">
+            現在の結果：{result.judgement.label}／リンク余裕 {formatSigned(result.linkMarginDb, "dB")}　詳細を確認
+          </summary>
+          <div className="mt-3 space-y-3">
           <LinkMarginGauge result={result} />
 
           {/* A+D: 到達距離を第一級の指標として、信頼率レンジ（環境ばらつき込み）で常時表示 */}
@@ -370,7 +383,8 @@ export function GuidedLinkBudget({
             maxReachM={maxReachM}
             targetMarginDb={solveFor === "reach" ? targetMarginDb : 0}
           />
-        </div>
+          </div>
+        </details>
       ) : (
         <StateCard tone="caution" padding="md">
           入力に確認が必要な項目があります。「詳細モード」でエラー表示を確認してください。
@@ -587,6 +601,14 @@ export function GuidedLinkBudget({
           />
         </div>
       </Card>
+
+      <button
+        type="button"
+        onClick={openResultDetails}
+        className="inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-staf px-4 py-3 text-sm font-bold text-white transition hover:bg-staf-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-staf/40"
+      >
+        STEP 4 · 計算結果と次の行動を確認する
+      </button>
 
       {/* モバイル: スクロール中もマージンが見える固定バー */}
       {result ? (

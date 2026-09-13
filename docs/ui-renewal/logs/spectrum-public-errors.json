@@ -1,0 +1,8 @@
+[
+  {
+    "level": "error",
+    "message": "Error: Minified React error #418; visit https://react.dev/errors/418?args[]=HTML&args[]= for the full message or use the non-minified dev environment for full errors and additional helpful warnings.\n    at rD (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:35062)\n    at oq (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:85084)\n    at ik (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:114682)\n    at https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110730\n    at iu (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:110831)\n    at iX (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js:1:132934)\n    at MessagePort.w (https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/1255-ece7d574b4861f88.js:1:65169)",
+    "timestamp": "2026-09-13T13:21:05.345Z",
+    "url": "https://ohno-creator.github.io/rf-basic-link-calculator/_next/static/chunks/4bd1b696-100b9d70ed4e49c1.js"
+  }
+]

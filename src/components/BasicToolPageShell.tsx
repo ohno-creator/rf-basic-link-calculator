@@ -87,26 +87,27 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <div className="mx-auto max-w-5xl px-4 pb-8 pt-6 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 pb-8 pt-4 sm:px-6 lg:px-8">
         <header>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-3xl font-bold tracking-tight text-slate-950">{tool.title}</h1>
             {tool.scopeNote ? <HelpHint text={tool.scopeNote} /> : null}
           </div>
           {/* v4 R3: 各ツールの一文の本質（essenceLead）を「わかること」として見出し直下に昇格 */}
-          <p className="mt-3 flex max-w-prose items-start gap-2 text-sm leading-relaxed">
+          <p className="mt-3 flex max-w-3xl items-start gap-2 text-sm leading-relaxed">
             <span className="mt-0.5 inline-flex shrink-0 items-center rounded-full bg-staf-light px-2 py-0.5 text-xs font-semibold text-staf-dark">
               わかること
             </span>
             <span className="font-medium text-slate-900">{tool.essenceLead}</span>
           </p>
-          <p className="mt-2 line-clamp-2 max-w-prose text-sm leading-relaxed text-slate-600">
+          <p className="mt-2 max-w-3xl break-words text-sm leading-relaxed text-slate-600">
             {tool.description}
           </p>
         </header>
 
         <div className="mt-4">
-          <CollapsibleSection title="はじめての見方" defaultOpen={false} storageKey="beginner-guide">
+          <CollapsibleSection title="使い方・適用条件を確認" defaultOpen={false} storageKey="beginner-guide">
+            {tool.scopeNote ? <p className="mb-4 rounded-lg bg-amber-50 p-3 text-sm text-amber-950">{tool.scopeNote}</p> : null}
             <div className="grid gap-4 md:grid-cols-3 md:divide-x md:divide-slate-200">
               {beginnerItems.map((item) => {
                 const Icon = item.icon;
@@ -124,7 +125,7 @@ export function BasicToolPageShell({ tool, children }: BasicToolPageShellProps) 
           </CollapsibleSection>
         </div>
 
-        <div data-testid="tool-calculator" className="mt-6 space-y-6">{children}</div>
+        <div data-testid="tool-calculator" className="mt-4 space-y-6">{children}</div>
 
         <section className="mt-8">
           <h2 className="text-base font-bold text-slate-950">ほかのツール</h2>

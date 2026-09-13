@@ -1,0 +1,57 @@
+以下のTypeScript/Reactスニペットを読み取り専用でレビューしてください。画面操作・テスト実行・ファイル変更・別モデル呼出しはしていません。各指摘を「P0〜P3／確度／場所／再現条件／根拠／影響／最小修正案」で短く返してください。
+
+要件: 空欄・不正JSON・1MB超過では現在入力を保持。正常schemaVersion 2は既存readCaseで検証し、画面内確認後だけrestoreして貼付欄を消す。キャンセル時は復元も消去もしない。既存ファイル読込・保存形式・旧形式処理・外部非送信を維持。
+
+```tsx
+const [jsonText, setJsonText] = useState('');
+
+function load(raw: string, afterRestore?: () => void) {
+  try {
+    const result = readCase(raw);
+    if (result.legacy) {
+      setOld(result.saved);
+      setOldSnapshot(result.archivedSnapshot);
+      setMessage(`旧モデル ${result.saved.modelVersion} の入力記録です。数値結論は採用していません。${result.warning}`);
+      return;
+    }
+    requestConfirmation({
+      title: '保存した入力を復元しますか？',
+      description: '選択中の編集内容を、保存した入力で置き換えます。',
+      confirmLabel: '復元する',
+      action: () => {
+        restore(result.saved);
+        afterRestore?.();
+        setMessage(`保存時点：${result.saved.savedAt}。現在モデルで再評価しました。${result.warning}`);
+      }
+    });
+  } catch (e) {
+    setMessage(`読込できません。現在の入力は保持しました。${e instanceof Error ? e.message : ''}`);
+  }
+}
+
+function importJsonText() {
+  if (!jsonText.trim()) {
+    setMessage('JSON内容を貼り付けてください。現在の入力は保持しました');
+    return;
+  }
+  if (new Blob([jsonText]).size > MAX_BYTES) {
+    setMessage('JSONは1MB以下にしてください。現在入力は保持しました');
+    return;
+  }
+  load(jsonText, () => setJsonText(''));
+}
+
+<details className="json-paste">
+  <summary>ファイルを選べない場合：JSON内容を貼り付ける</summary>
+  <label htmlFor="comparison-json-text">JSON内容を貼り付け
+    <textarea id="comparison-json-text" value={jsonText} spellCheck={false} onChange={e => setJsonText(e.target.value)} />
+  </label>
+  <p className="hint">書き出したJSONを検証してから、画面内の確認を経て入力を置き換えます。内容は外部送信しません。</p>
+  <div className="actions">
+    <button disabled={!jsonText.trim()} onClick={importJsonText}>貼り付けたJSONを読み込む</button>
+    <button disabled={!jsonText} onClick={() => setJsonText('')}>貼り付け内容を消す</button>
+  </div>
+</details>
+```
+
+既存E2Eには、不正 `{` で入力保持、localStorageから取得した正常保存JSONで確認ダイアログ、復元後の現在長1 m・結果1.2 dB・textarea空を検査するケースを追加済みです。ブラウザ実測でも同じ結果を確認しました。ソースだけから未確認の事項は未確認と書いてください。

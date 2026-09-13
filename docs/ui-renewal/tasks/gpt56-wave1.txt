@@ -1,0 +1,11 @@
+GPT-6司令塔からの実装依頼。ユーザーが今からの開始を許可。作業場所は /Users/pc141/Documents/RF Basic Link Calculator/.ui-renewal-20260913/writer-gpt56 のみ。この専用独立コピーは公開コミット9aab9eb5由来。app/は統合正本なので編集禁止。元プロジェクトも編集禁止。他エージェント・CLI委任起動は禁止。Git add/commit/push/reset/stash/switch禁止。認証/権限設定の変更禁止。
+目的:営業と設計担当が目的から64機能を選び、検索と戻る操作で迷わず移動するUIへ実際に改善。
+所有ファイル: src/app/page.tsx, src/app/components/ToolDirectoryBrowser.tsx, src/components/Header.tsx, src/components/Footer.tsx, src/data/tools.ts, src/data/toolKeywords.ts, src/tests/toolSearch.test.ts（必要なら既存該当テスト）, e2e/ui-renewal.spec.ts（追加可能）。その他変更禁止。計算関数・比較モデル/保存・他のUIは変更しない。
+仕様:
+1 トップは5つの仕事から実在ツールへ直接進む入口。届く距離を見積もる（総合rf-basic-link-calculatorと簡易simple-link-budget、見通し等の条件に依存）、ケーブル/位置比較（cable-position-comparison）、整合と損失（vswr-return-loss/coaxial-cable-loss）、アンテナ形状（resonant-element-length/patch-antenna-dimensions）、基礎（db-family/rf-learning-quest）。各入口に分かること・前提の短文。トップの大きな比較専用heroと二重8カテゴリカードは置換し、業務の目的を主にする。単なる色変更ではなく構造を整理。5入口は個別の実リンク（ネストリンク禁止）。一覧への直接入口を上部に置く。
+2 全64ツールを一覧/検索に保持。現行tools.tsは63件で比較だけ欠落。比較のメタデータをlinkカテゴリ・link-overviewへ追加、検索語も追加。件数固定値テストの修正は実仕様に合わせる。
+3 一覧の検索qとcategoryをURL（既存basePathとhash保持）に同期。URLから初期復元・popstateで戻る操作にも追随。カテゴリ変更はpushState、入力検索は過剰履歴を避けreplaceStateなど適切に。存在しないカテゴリはすべてへ。選択カテゴリ・絞込件数・0件を文字とaria-liveで提示。クリア操作明瞭。スマホでカテゴリ9ボタンを大きいsticky帯にして結果が隠れないよう再構成。検索/カテゴリ/直接URL全部保持。
+4 Headerはコンパクトなホーム/検索/全ツール/既存相談。63件の重複メニューを整理しても検索パレット、Ctrl/Cmd+K、mobile search、既存最近使った機能は保持。フォーカス復帰・Esc・モバイル開閉/キーボード可。フッターの全一覧反復を全ツールへのリンクに短縮、会社/外部相談/コラム保持。
+5 Tailwind既存tokenを利用。余白・階層・白地の読みやすさ、390pxで横はみ出しなし、focus-visible、44px操作領域。広告風の主張や最適化保証は入れない。
+検証: npm ci --cache /private/tmp/rf-ui-npm-cache（専用コピー内）、lint、既存単体テスト。E2E用に新操作仕様のテストを書く（既存をskip/deleteしない）。実機ChromiumはこのsandboxでMachPort起動拒否が確認済みなので、失敗を合格とせずテストソースと制限を報告。buildまで余裕があれば実行。basePath/static export維持。
+終了時: 変更ファイル、具体的なUX変更、テスト、残課題。画面を見ていなければ明記。作業目安20分以内。直ちに実装し、設計確認で止まらない。

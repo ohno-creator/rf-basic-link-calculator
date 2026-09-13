@@ -1,0 +1,141 @@
+- main:
+  - link "スタッフ株式会社｜計算ツール一覧":
+    - /url: /rf-basic-link-calculator/
+  - generic: 社内・営業伴走β
+  - paragraph: 条件整理とケーブル比較
+  - heading "ケーブルを延ばすと、 アンテナを移した効果はどう変わる？" [level=1]:
+    - text: ケーブルを延ばすと、
+    - text: アンテナを移した効果はどう変わる？
+  - paragraph: ケーブルで失う分と、移動して変わる分を整理します。分からない条件を残したまま、次の評価へ進めます。
+  - navigation "測定状況":
+    - button "まだ測っていない" [pressed]
+    - button "変更前後を測った"
+  - button "説明例を試す（編集を置換）"
+  - button "自分の条件で始める（編集を置換）"
+  - heading "使用する条件" [level=2]
+  - text: 周波数の単位
+  - combobox "周波数の単位":
+    - option "MHz" [selected]
+    - option "GHz"
+  - text: 長さの単位
+  - combobox "長さの単位":
+    - option "m" [selected]
+    - option "cm"
+    - option "mm"
+  - generic: 使用周波数（MHz）
+  - checkbox "まだ分からない" [checked]
+  - text: まだ分からない
+  - text: 対象の構成
+  - combobox "対象の構成":
+    - option "まだ確認していない" [selected]
+    - option "一つの受動給電経路（アンプ等を含まない）"
+    - option "LNA・アンプ・分配器・MIMO全体・両側の同時変更等"
+  - paragraph: 品番からの自動入力は、公開承認データの確認後に提供します。このβ版は手入力・未確認・説明例で条件を整理します。
+  - group "現在":
+    - generic: 現在
+    - generic "無線機側の基準点からアンテナ給電点まで":
+      - text: 無線機
+      - generic: ── 給電経路 ──
+      - text: アンテナ
+    - text: 経路損失の入力方法
+    - combobox "経路損失の入力方法":
+      - option "長さと損失係数で計算" [selected]
+      - option "ケーブル・コネクタ込みの損失"
+      - option "まだ分からない"
+    - generic: 現在の長さ（m）
+    - checkbox "まだ分からない" [checked]
+    - text: まだ分からない
+    - generic: 現在の損失係数（dB/m）
+    - checkbox "まだ分からない" [checked]
+    - text: まだ分からない
+    - generic: 現在のコネクタ合計損失（dB）
+    - checkbox "まだ分からない" [checked]
+    - text: まだ分からない
+    - paragraph: 損失0 dBと未確認は別です。含めた変換部品・位置は構成メモに残してください。
+  - group "変更後":
+    - generic: 変更後
+    - generic "無線機側の基準点からアンテナ給電点まで":
+      - text: 無線機
+      - generic: ── 給電経路 ──
+      - text: アンテナ
+    - text: 経路損失の入力方法
+    - combobox "経路損失の入力方法":
+      - option "長さと損失係数で計算" [selected]
+      - option "ケーブル・コネクタ込みの損失"
+      - option "まだ分からない"
+    - generic: 変更後の長さ（m）
+    - checkbox "まだ分からない" [checked]
+    - text: まだ分からない
+    - checkbox "損失係数は現在と同じ（オンの間は連動）" [checked]
+    - text: 損失係数は現在と同じ（オンの間は連動）
+    - paragraph: 現在の係数と連動：未確認（まだ分からない）
+    - generic: 変更後のコネクタ合計損失（dB）
+    - checkbox "まだ分からない" [checked]
+    - text: まだ分からない
+    - paragraph: 損失0 dBと未確認は別です。含めた変換部品・位置は構成メモに残してください。
+  - generic "配置の効果も仮定してみる"
+  - heading "その他の条件はそろっていますか？" [level=2]
+  - paragraph: 利用者による確認・仮定の申告です。アプリが実験を認証するものではありません。
+  - text: 無線機・送信設定
+  - combobox "無線機・送信設定":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 相手機器
+  - combobox "相手機器":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: ケーブル・位置以外の構成
+  - combobox "ケーブル・位置以外の構成":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 姿勢・筐体・周囲の環境
+  - combobox "姿勢・筐体・周囲の環境":
+    - option "まだ不明" [selected]
+    - option "確認した（利用者の申告）"
+    - option "同じと仮定"
+    - option "異なる"
+  - text: 目的・品番・位置・構成と未確認事項（任意）
+  - textbox "目的・品番・位置・構成と未確認事項（任意）"
+  - region "未確認の条件を整理できます。全体差は未算出です。":
+    - paragraph: 今回分かること
+    - paragraph: 現在 経路を確認 → 変更後 経路を確認
+    - heading "未確認の条件を整理できます。全体差は未算出です。" [level=2]
+    - paragraph: 条件未確認：変更の効果は判断していません
+    - list
+    - heading "分からないこと・制約" [level=3]
+    - list:
+      - listitem: 通信成功、到達距離、認証適合、量産採用を保証する計算ではありません。
+      - listitem: 使用周波数が未確認です
+      - listitem: 単一の受動給電経路のモデルに適用できるか未確認、または対象外です
+      - listitem: 比較条件 無線機・送信設定：未確認
+      - listitem: 比較条件 相手機器：未確認
+      - listitem: 比較条件 ケーブル・位置以外の構成：未確認
+      - listitem: 比較条件 姿勢・筐体・周囲の環境：未確認
+      - listitem: 現在.長さ：未確認（まだ分からない）
+      - listitem: 現在.損失係数：未確認（まだ分からない）
+      - listitem: 現在.コネクタ損失：未確認（まだ分からない）
+      - listitem: 変更後.長さ：未確認（まだ分からない）
+      - listitem: 変更後.損失係数：未確認（まだ分からない）
+      - listitem: 変更後.コネクタ損失：未確認（まだ分からない）
+    - link "周波数・チャネルを確認する":
+      - /url: "#next-check"
+    - generic "条件・根拠・数式を詳しく見る"
+  - heading "次の確認：周波数・チャネルを確認する" [level=2]
+  - paragraph: 周波数・チャネル、相手機器、送信設定、ケーブル・位置、端末の姿勢、筐体、周囲の人や金属、読み方・時間条件をそろえます。可能ならA→B→Aや繰り返し測定を行い、切断・再送等も別途確認してください。
+  - paragraph: 回数や時間は機器・現場条件に応じて決めます。配置だけの切り分け値を完成構成へ使う場合は、適用条件の確認が必要です。
+  - heading "保存・説明" [level=2]
+  - paragraph: 比較入力・メモをアプリから送信しません。保存はこの端末・ブラウザーに残ります。共有端末では機密情報を保存しないでください。
+  - button "相談用まとめを作る"
+  - button "このブラウザーに1件保存"
+  - button "保存した1件を復元"
+  - button "保存した1件を削除"
+  - button "別ファイルへJSON書き出し"
+  - text: JSON読込（1MBまで・確認後に編集を置換）
+  - button "JSON読込（1MBまで・確認後に編集を置換）"
+  - status

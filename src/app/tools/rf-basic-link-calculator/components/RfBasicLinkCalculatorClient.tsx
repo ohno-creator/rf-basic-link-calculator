@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { quickStartPresets, type QuickStartPreset } from "@/data/quickStartPresets";
+import { quickStartPresets } from "@/data/quickStartPresets";
 import {
   calculateLinkBudget,
   defaultLinkBudgetInput,
@@ -17,12 +17,10 @@ import {
   loadStoredInput,
   saveStoredInput
 } from "@/lib/rf/share";
-import { BeginnerRoadmap } from "./BeginnerRoadmap";
 import { ConsultationCta } from "@/app/tools/_components/ConsultationCta";
 import { CalculatorTabs, type CalculatorMode } from "./CalculatorTabs";
 import { FaqSection } from "./FaqSection";
 import { HeroSection } from "./HeroSection";
-import { QuickStartPresets } from "./QuickStartPresets";
 import { SeoLinks } from "./SeoLinks";
 
 export function RfBasicLinkCalculatorClient() {
@@ -32,7 +30,6 @@ export function RfBasicLinkCalculatorClient() {
   const [isHydrated, setIsHydrated] = useState(false);
   const [shareState, setShareState] = useState<"idle" | "copied" | "error">("idle");
   const calculatorRef = useRef<HTMLDivElement | null>(null);
-  const presetRef = useRef<HTMLDivElement | null>(null);
   // 初回マウント時の復元が終わるまでは永続化を走らせないためのフラグ。
   const hydratedRef = useRef(false);
 
@@ -100,17 +97,9 @@ export function RfBasicLinkCalculatorClient() {
     return () => window.clearTimeout(timer);
   }, [input]);
 
-  function selectPreset(preset: QuickStartPreset) {
-    setInput(preset.input);
-    scrollToCalculator();
-  }
-
   function selectSample() {
     setInput(quickStartPresets[0].input);
-    window.setTimeout(() => {
-      presetRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      calculatorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 0);
+    scrollToCalculator();
   }
 
   const resetInput = useCallback(() => {
@@ -134,10 +123,6 @@ export function RfBasicLinkCalculatorClient() {
   return (
     <>
       <HeroSection onStart={scrollToCalculator} onSample={selectSample} />
-      <BeginnerRoadmap />
-      <div ref={presetRef}>
-        <QuickStartPresets onSelect={selectPreset} />
-      </div>
       <div ref={calculatorRef} data-testid="rf-calculator-shell" data-hydrated={isHydrated ? "true" : "false"}>
         <CalculatorTabs
           input={input}
