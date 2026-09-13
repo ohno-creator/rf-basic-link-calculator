@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
+import ComparisonWorkbench, { type ComparisonSnapshot } from './ComparisonWorkbench';
 import { QuantityInput, type NumericDraft } from './QuantityInput';
 import { decomposed, measured, unknown, linkCoefficient } from '@/lib/comparison/defaults';
 import { evaluate } from '@/lib/comparison/domain';
@@ -34,6 +35,7 @@ export default function ComparisonApp() {
   const [savedAt, setSavedAt] = useState('');
   const [jsonText, setJsonText] = useState('');
   const [confirmation, setConfirmation] = useState<PendingConfirmation | null>(null);
+  const [baseline, setBaseline] = useState<ComparisonSnapshot | null>(null);
   const confirmationReturnFocus = useRef<HTMLElement | null>(null);
   const request = linkCoefficient(method === 'decomposed' ? d : m, preferences.linkedCoefficient);
   const fieldErrors = Object.entries(errors).filter(([key, value]) => key.startsWith(method + '.') && value);
@@ -120,16 +122,19 @@ export default function ComparisonApp() {
     const content = output || report(request, evaluation, new Date().toISOString()); setOutput(content);
     try { await navigator.clipboard.writeText(content); setMessage('相談用まとめをコピーしました'); } catch { setMessage('自動コピーが利用できません。下の文章を選択して手動コピーしてください'); }
   }
+  const snapshot = (): ComparisonSnapshot => JSON.parse(JSON.stringify({ request, evaluation, preferences })) as ComparisonSnapshot;
   return <main className="comparison-app" id="comparison-main">
     <header className="no-print"><Link href="/">スタッフ株式会社｜計算ツール一覧</Link><span>社内・営業伴走β</span></header>
     <div className="no-print">
       <p className="eyebrow">条件整理とケーブル比較</p>
       <h1>ケーブルを延ばすと、<br />アンテナを移した効果はどう変わる？</h1>
       <p className="lead">ケーブルで失う分と、移動して変わる分を整理します。分からない条件を残したまま、次の評価へ進めます。</p>
-      <nav className="workflow-nav" aria-label="比較の作業手順"><a href="#comparison-input">1 条件を入力</a><a href="#comparison-result">2 結果を確認</a><a href="#comparison-save">3 保存・説明</a></nav>
+      <nav className="workflow-nav" aria-label="比較の作業手順"><a href="#comparison-input">1 条件を入力</a><a href="#comparison-workbench">2 結果を確認</a><a href="#comparison-save">3 保存・説明</a><p className="workflow-live" aria-live="polite">{vm.headline}</p></nav>
       <nav className="method" aria-label="測定状況"><button aria-pressed={method === 'decomposed'} onClick={() => { setMethod('decomposed'); setOutput(''); }}>まだ測っていない</button><button aria-pressed={method === 'measured-net'} onClick={() => { setMethod('measured-net'); setOutput(''); }}>変更前後を測った</button></nav>
       <div className="actions"><button onClick={() => reset(true)}>説明例を試す（編集を置換）</button><button onClick={() => reset(false)}>自分の条件で始める（編集を置換）</button></div>
       {evaluation.status === 'evaluated' && evaluation.containsExamples && <p className="example">説明用の仮定。実製品値ではありません。測定画面の数値も架空の説明例です。</p>}
+      <div className="comparison-studio">
+      <div className="studio-inputs">
       <section className="context" id="comparison-input" tabIndex={-1}><h2>1 · 使用する条件</h2>
         <div className="units"><label>周波数の単位<select disabled={fieldErrors.length > 0} value={preferences.frequencyUnit} onChange={e => setPreferences(p => ({ ...p, frequencyUnit: e.target.value as Preferences['frequencyUnit'] }))}><option>MHz</option><option>GHz</option></select></label>{method === 'decomposed' && <label>長さの単位<select disabled={fieldErrors.length > 0} value={preferences.lengthUnit} onChange={e => setPreferences(p => ({ ...p, lengthUnit: e.target.value as Preferences['lengthUnit'] }))}><option>m</option><option>cm</option><option>mm</option></select></label>}</div>
         {q('frequency', '使用周波数', request.context.frequencyMHz, frequencyMHz => context({ ...request.context, frequencyMHz }), { displayUnit: preferences.frequencyUnit, factor: preferences.frequencyUnit === 'GHz' ? 1000 : 1 })}
@@ -152,6 +157,9 @@ export default function ComparisonApp() {
         <label>記録の種類<select value={request.captureKind} onChange={e => update({ ...request, captureKind: e.target.value as Measured['captureKind'] })}><option value="single-pair">各構成1回の記録</option><option value="summary-value">利用者が集計した値（方法をメモ）</option></select></label>
         <label>変更前後のケーブル・位置・測定方法のメモ<textarea value={request.measurementNote} maxLength={2000} onChange={e => update({ ...request, measurementNote: e.target.value })} /></label>
       </section>}
+      </div>
+      <ComparisonWorkbench current={{ request, evaluation, preferences }} baseline={baseline} onPin={() => { setBaseline(snapshot()); setMessage('現在の条件を、このタブ内の基準案として固定しました'); }} onClear={() => { setBaseline(null); setMessage('このタブ内の固定案を破棄しました'); }} onMessage={setMessage} />
+      </div>
       <section id="comparison-conditions"><h2>その他の条件はそろっていますか？</h2><p>利用者による確認・仮定の申告です。アプリが実験を認証するものではありません。</p>
         <div className="checks">{request.context.checks.filter(c => method === 'measured-net' || c.key !== 'measurement-method').map(c => <label key={c.key}>{labels[c.key]}<select value={c.state} onChange={e => context({ ...request.context, checks: request.context.checks.map(check => check.key === c.key ? { ...check, state: e.target.value as typeof c.state } : check) })}>{(['unknown', 'confirmed', 'assumed', 'mismatch'] as const).map(state => <option key={state} value={state}>{labels[state]}</option>)}</select></label>)}</div>
         <label>目的・品番・位置・構成と未確認事項（任意）<textarea maxLength={2000} value={request.context.notes} onChange={e => context({ ...request.context, notes: e.target.value })} /></label>

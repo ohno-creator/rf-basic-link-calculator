@@ -56,3 +56,35 @@ test('B25/B26 画面幅・200%相当・キーボード・axe',async({page})=>{
  await page.setViewportSize({width:640,height:450});await page.keyboard.press('Tab');expect(await page.evaluate(()=>document.activeElement?.tagName)).not.toBe('BODY');
  const results=await new AxeBuilder({page}).analyze();expect(results.violations).toEqual([]);await page.screenshot({path:'test-results/comparison-mobile.png',fullPage:true});
 });
+
+test('C01 経路図と損失バーが入力・単位変更に連動する',async({page})=>{
+ await example(page);const workbench=page.locator('.comparison-workbench');await expect(workbench).toContainText('0.6 dB');await expect(workbench).toContainText('1.8 dB');await expect(workbench).toContainText('＋1.2 dB');
+ await page.locator('.units select').nth(1).selectOption('cm');await expect(page.getByLabel('変更後の長さ（cm）',{exact:true})).toHaveValue('300');await expect(workbench).toContainText('1.8 dB');
+});
+test('C02 固定案は編集中の変更から独立し再固定・破棄できる',async({page})=>{
+ await example(page);await page.getByRole('button',{name:'この条件を基準に固定'}).click();const fixed=page.getByRole('heading',{name:'固定した基準案'}).locator('..');await expect(fixed).toContainText('3 m の給電経路');
+ await page.getByLabel('変更後の長さ（m）',{exact:true}).fill('4');await expect(fixed).toContainText('3 m の給電経路');await page.getByRole('button',{name:'この条件を基準に固定'}).click();await expect(page.getByRole('heading',{name:'固定した基準案'}).locator('..')).toContainText('4 m の給電経路');await page.getByRole('button',{name:'固定した基準を破棄'}).click();await expect(page.getByRole('heading',{name:'固定した基準案'})).toHaveCount(0);
+});
+test('C03 invalidとunknownは数値バーを作らない',async({page})=>{
+ await example(page);await page.getByLabel('現在の長さ（m）',{exact:true}).fill('');const current=page.getByRole('heading',{name:'編集中の案'}).locator('..');await expect(current).toContainText('数値とバーは表示していません');await expect(current.locator('.bar-track')).toHaveCount(0);
+ await page.getByLabel('現在の長さ（m）',{exact:true}).fill('1');await page.getByRole('checkbox',{name:'まだ分からない'}).first().check();await expect(current).toContainText('未算出');await expect(current).not.toContainText('現在 0 dB');
+});
+test('C04 方式・周波数・測定指標が違う案の横断ランキングを保留する',async({page})=>{
+ await example(page);await page.getByRole('button',{name:'この条件を基準に固定'}).click();await page.getByLabel('使用周波数（MHz）',{exact:true}).fill('915');await expect(page.locator('.cross-compare')).toContainText('周波数が異なります');
+ await page.getByRole('button',{name:'変更前後を測った',exact:true}).click();await expect(page.locator('.cross-compare')).toContainText('比較方式が異なります');await expect(page.locator('.cross-compare')).toContainText('比較を保留');
+});
+test('C05 実測-80から-74は＋6 dBでケーブル寄与を再控除しない',async({page})=>{
+ await example(page);await page.getByRole('button',{name:'変更前後を測った',exact:true}).click();await page.getByLabel('変更後の表示（dBm）',{exact:true}).fill('-74');const workbench=page.locator('.comparison-workbench');await expect(workbench).toContainText('＋6 dB');await expect(workbench).toContainText('現在 -80 dBm → 変更後 -74 dBm');await expect(workbench).toContainText('再控除していません');await expect(workbench).toContainText('ばらつき未評価');
+});
+test('C06 SVGに図・条件・モデル・根拠・固定案を安全に含める',async({page})=>{
+ await example(page);await page.getByLabel('目的・品番・位置・構成と未確認事項（任意）').fill('<unsafe>&条件');await page.getByRole('button',{name:'この条件を基準に固定'}).click();const downloadPromise=page.waitForEvent('download');await page.getByRole('button',{name:'比較図をSVGで保存'}).click();const download=await downloadPromise;expect(download.suggestedFilename()).toBe('staf-cable-position-comparison.svg');const stream=await download.createReadStream();const chunks:Buffer[]=[];for await(const chunk of stream)chunks.push(Buffer.from(chunk));const svg=Buffer.concat(chunks).toString('utf8');expect(svg).toContain('<svg');expect(svg).toContain('<line');expect(svg).toContain('comparison-v2');expect(svg).toContain('固定した基準案');expect(svg).toContain('根拠種別');expect(svg).toContain('&lt;unsafe&gt;&amp;条件');expect(svg).not.toContain('<unsafe>');
+});
+
+test('C07 PCの入力と結果を並べ、幅変更で編集値を失わない',async({page})=>{
+ await page.setViewportSize({width:1440,height:900});await example(page);
+ const input=page.getByLabel('変更後の長さ（m）',{exact:true});await expect(input).toHaveCount(1);await input.fill('4');
+ await expect(page.locator('.workflow-live')).toBeVisible();await expect(page.locator('.workflow-live')).toContainText('1.8 dB');
+ const form=await page.locator('.studio-inputs').boundingBox();const figure=await page.locator('.comparison-workbench').boundingBox();expect(form).not.toBeNull();expect(figure).not.toBeNull();expect(figure!.x).toBeGreaterThan(form!.x+form!.width);
+ await page.setViewportSize({width:390,height:844});await expect(input).toHaveValue('4');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+ await page.getByRole('link',{name:'2 結果を確認',exact:true}).focus();await page.keyboard.press('Enter');await expect(page.locator('#comparison-workbench')).toBeFocused();
+});
